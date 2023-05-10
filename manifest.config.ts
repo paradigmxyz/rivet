@@ -23,7 +23,7 @@ export const manifest = {
   },
   content_scripts: [
     {
-      matches: ["*://*/*"],
+      matches: ['*://*/*'],
       js: ['src/entries/content/index.ts'],
       run_at: 'document_start',
       all_frames: true,
@@ -41,7 +41,7 @@ export const manifest = {
     'unlimitedStorage',
     'webRequest',
   ],
-  host_permissions: ["*://*/*"],
+  host_permissions: ['*://*/*'],
   web_accessible_resources: [
     {
       resources: ['inpage-*.js', '*.woff2'],

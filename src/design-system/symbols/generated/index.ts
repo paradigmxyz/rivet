@@ -63,4 +63,4 @@ export default {
       viewBox: { width: 29.408203125, height: 29.408203125 },
     },
   },
-} as const;
+} as const

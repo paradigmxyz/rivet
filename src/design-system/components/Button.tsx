@@ -1,11 +1,15 @@
 import * as React from 'react'
+
 import { Box } from './Box'
-import type { BackgroundColor, ForegroundColor, Spacing } from '../tokens'
+import { BoxStyles } from './Box.css'
+import { ButtonHeight, ButtonVariant, buttonHeightStyles } from './Button.css'
+import { Text, TextProps } from './Text'
 
 export type ButtonProps = {
   children: string | React.ReactNode
-  height?: Extract<Spacing, '40px' | '52px'>
+  height?: ButtonHeight
   width?: 'fit' | 'full'
+  variant?: ButtonVariant
 } & (
   | {
       as?: 'button'
@@ -17,76 +21,110 @@ export type ButtonProps = {
       href: string
       onClick?: never
     }
-) &
-  (
-    | {
-        color?: BackgroundColor
-        variant?: 'default'
-      }
-    | {
-        color?: ForegroundColor
-        variant: 'stroked'
-      }
-  )
+)
 
-const classesForHeight = {
-  '40px': ['px-16px', 'text-16px', 'tracking-wide'],
-  '52px': ['px-16px', 'text-18px', 'tracking-wide'],
-}
+const stylesForHeight = {
+  '40px': {
+    paddingHorizontal: '16px',
+  },
+  '52px': {
+    paddingHorizontal: '20px',
+  },
+} satisfies Record<NonNullable<ButtonProps['height']>, BoxStyles>
 
-const classesForVariant = ({
-  color,
-}: { color: ButtonProps['color'] }): Record<
-  NonNullable<ButtonProps['variant']>,
-  (string | boolean)[]
-> => ({
-  default: [`bg-${color}`, `hover:bg-${color}/90`, `active:bg-${color}/80`],
-  stroked: [
-    color !== 'accent' && `border-${color}`,
-    color === 'accent' && 'border-accent/20',
-    'border-[1.5px]',
-    'hover:bg-accent/[0.04]',
-    'active:bg-accent/[0.02]',
-  ],
-})
+const stylesForVariant = {
+  'solid primary': {
+    backgroundColor: {
+      default: 'primary',
+      hover: 'primaryHover',
+    },
+  },
+  'solid body': {
+    backgroundColor: {
+      default: 'body',
+      hover: 'bodyHover',
+    },
+  },
+  'solid green': {
+    backgroundColor: {
+      default: 'green',
+      hover: 'greenHover',
+    },
+  },
+  'solid red': {
+    backgroundColor: {
+      default: 'red',
+      hover: 'redHover',
+    },
+    borderWidth: '1.5px',
+  },
+  'stroked primary': {
+    backgroundColor: {
+      hover: 'primary / 0.05',
+    },
+    borderWidth: '1.5px',
+  },
+  'stroked scrim': {
+    backgroundColor: {
+      hover: 'primary / 0.02',
+    },
+    borderColor: 'scrim',
+    borderWidth: '1.5px',
+  },
+  'tint red': {
+    backgroundColor: {
+      default: 'redTint',
+      hover: 'redTintHover',
+    },
+    borderWidth: '1.5px',
+  },
+  'tint green': {
+    backgroundColor: {
+      default: 'greenTint',
+      hover: 'greenTintHover',
+    },
+    borderWidth: '1.5px',
+  },
+} satisfies Record<NonNullable<ButtonProps['variant']>, BoxStyles>
+
+const textStylesForHeight = {
+  '40px': {
+    size: '15px',
+  },
+  '52px': {
+    size: '18px',
+  },
+} satisfies Record<
+  NonNullable<ButtonProps['height']>,
+  { size: TextProps['size'] }
+>
 
 export function Button({
   as = 'button',
   children,
-  color = 'accent',
-  height = '52px',
+  height = '40px',
   href,
   onClick,
-  variant = 'default',
+  variant = 'solid primary',
   width = 'full',
 }: ButtonProps) {
   return (
     <Box
       as={as}
-      className={[
-        'inline-flex',
-        'items-center',
-        'justify-center',
-        'rounded-6px',
-        'font-medium',
-        'transition-colors',
-        'focus-visible:outline-none',
-        'focus-visible:ring-2',
-        'focus-visible:ring-ring',
-        'focus-visible:ring-offset-2',
-        'disabled:opacity-50',
-        'disabled:pointer-events-none',
-        'ring-offset-background',
-        `h-${height}`,
-        `w-${width}`,
-        'text-label',
-        ...classesForVariant({ color })[variant],
-        ...classesForHeight[height],
-      ]}
       href={href}
       onClick={onClick}
+      className={buttonHeightStyles[height]}
+      display="flex"
+      alignItems="center"
+      justifyContent="center"
+      width={width}
+      transform={{
+        hoveractive: 'shrink',
+      }}
+      {...stylesForVariant[variant]}
+      {...stylesForHeight[height]}
     >
-      {children}
+      <Text {...textStylesForHeight[height]}>{children}</Text>
     </Box>
   )
 }

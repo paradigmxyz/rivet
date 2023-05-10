@@ -1,19 +1,17 @@
-
-import type { ReactNode } from 'react'
 import { Box } from '../../design-system/components/Box'
+import type { ReactNode } from 'react'
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <Box
-      className={[
-        'border-neutral-700',
-        'border-[1px]',
-        'bg-surface',
-        'flex',
-        'h-[560px]',
-        'w-[360px]',
-        'p-16px',
-      ]}
+      backgroundColor="surface"
+      borderWidth="1.5px"
+      display="flex"
+      padding="16px"
+      style={{
+        height: 560,
+        width: 360,
+      }}
     >
       {children}
     </Box>

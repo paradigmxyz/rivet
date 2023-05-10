@@ -1,18 +1,20 @@
 import path from 'path'
 
 import { mkdirSync, readFileSync, writeFileSync } from 'fs-extra'
-import { capitalize } from 'lodash'
 import opentype from 'opentype.js'
 import prettierTypeScript from 'prettier/parser-typescript'
 import prettier from 'prettier/standalone'
 import SVGPathCommander from 'svg-path-commander'
 
+import type { SFSymbol } from '../src/design-system/symbols/generated/types'
 import {
+  type FontWeight,
   fontWeight,
   symbolNames,
-  type FontWeight,
 } from '../src/design-system/tokens'
-import type { SFSymbol } from '../src/design-system/symbols/generated/types'
+
+const capitalize = (str: string) =>
+  `${str.charAt(0).toUpperCase()}${str.slice(1).toLowerCase()}`
 
 const weights = Object.keys(fontWeight)
 ;(async () => {
@@ -20,7 +22,9 @@ const weights = Object.keys(fontWeight)
 
   const chars = readFileSync(
     path.join(__dirname, '../public/sources/chars.txt'),
-    { encoding: 'utf-8' },
+    {
+      encoding: 'utf-8',
+    },
   ).match(/.{1,2}/g)
   if (!chars) return
 

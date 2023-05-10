@@ -1,29 +1,26 @@
-import { Box } from "../../design-system/components/Box";
-import { OnboardingStart } from "../../screens/OnboardingStart";
+import { Box } from '../../design-system/components/Box'
+import { OnboardingStart } from '../../screens/OnboardingStart'
 
 export default function TabsIndex() {
   return (
     <Box
-      className={[
-        'bg-primary',
-        'text-white',
-        'flex',
-        'justify-center',
-        'items-center',
-        'min-h-screen',
-      ]}
+      backgroundColor="body"
+      display="flex"
+      justifyContent="center"
+      alignItems="center"
+      style={{
+        minHeight: '100vh',
+      }}
     >
       <Box
-        className={[
-          'flex',
-          'border-neutral-700',
-          'border-[1px]',
-          'rounded-12px',
-          'bg-surface',
-          'h-[560px]',
-          'w-[360px]',
-          'p-16px',
-        ]}
+        backgroundColor="surface"
+        borderWidth="1px"
+        display="flex"
+        padding="16px"
+        style={{
+          height: 560,
+          width: 360,
+        }}
       >
         <OnboardingStart />
       </Box>

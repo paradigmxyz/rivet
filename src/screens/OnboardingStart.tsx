@@ -6,14 +6,14 @@ import { Text } from '../design-system/components/Text'
 
 export function OnboardingStart() {
   return (
-    <Box className={['flex', 'flex-col', 'items-center']}>
-      <Box className={['flex', 'items-center', 'flex-1']}>
+    <Box display="flex" flexDirection="column" alignItems="center">
+      <Box display="flex" alignItems="center" style={{ flex: 1 }}>
         <Stack alignHorizontal="center" gap="20px">
           <Wallet size="136px" />
-          <Text as="h1" size="40px" weight="medium">
+          <Text as="h1" size="32px" weight="medium">
             Dev Wallet
           </Text>
-          <Text align="center" size="20px">
+          <Text align="center" size="18px">
             Start using the most powerful, open-source, and developer-focused
             wallet to build your decentralized apps.
           </Text>
@@ -23,7 +23,7 @@ export function OnboardingStart() {
         <Button as="a" href="#/create-wallet">
           Create a new wallet
         </Button>
-        <Button variant="stroked">Import existing</Button>
+        <Button variant="stroked scrim">Import existing</Button>
       </Stack>
     </Box>
   )

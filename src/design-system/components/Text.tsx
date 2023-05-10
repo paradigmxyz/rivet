@@ -1,16 +1,15 @@
 import React from 'react'
 
 import { Box } from './Box'
-import type { FontSize, FontWeight, ForegroundColor } from '../tokens'
-import { cn } from '../utils/cn'
+import { TextStyles, textStyles } from './Text.css'
 
 export type TextProps = {
-  align?: 'left' | 'center' | 'right'
-  as?: 'div' | 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
+  align?: TextStyles['textAlign']
+  as?: 'div' | 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'code'
   children: React.ReactNode
-  color?: ForegroundColor
-  size?: FontSize
-  weight?: FontWeight
+  color?: TextStyles['color']
+  size?: TextStyles['fontSize']
+  weight?: TextStyles['fontWeight']
   testId?: string
 }
 
@@ -18,20 +17,20 @@ export function Text({
   align,
   as = 'div',
   children,
-  color = 'label',
-  size = '16px',
-  weight = 'light',
+  color = 'text',
+  size = '15px',
+  weight = 'regular',
   testId,
 }: TextProps) {
   return (
     <Box
       as={as}
-      className={cn(
-        align && `text-${align}`,
-        `text-${color}`,
-        `text-${size}`,
-        `font-${weight}`,
-      )}
+      className={textStyles({
+        color,
+        fontSize: size,
+        fontWeight: weight,
+        textAlign: align,
+      })}
       testId={testId}
     >
       {children}
