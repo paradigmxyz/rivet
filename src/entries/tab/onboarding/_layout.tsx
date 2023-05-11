@@ -1,7 +1,7 @@
-import { Box } from '../../design-system/components/Box'
-import { OnboardingStart } from '../../screens/OnboardingStart'
+import { Outlet } from 'react-router-dom'
+import { Box } from '../../../design-system/components/Box'
 
-export default function TabsIndex() {
+export default function Layout() {
   return (
     <Box
       backgroundColor="body"
@@ -16,13 +16,13 @@ export default function TabsIndex() {
         backgroundColor="surface"
         borderWidth="1px"
         display="flex"
-        padding="16px"
+        padding="24px"
         style={{
           height: 560,
           width: 360,
         }}
       >
-        <OnboardingStart />
+        <Outlet />
       </Box>
     </Box>
   )

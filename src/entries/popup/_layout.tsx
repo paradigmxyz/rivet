@@ -7,7 +7,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       backgroundColor="surface"
       borderWidth="1.5px"
       display="flex"
-      padding="16px"
+      padding="24px"
       style={{
         height: 560,
         width: 360,

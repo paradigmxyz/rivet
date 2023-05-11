@@ -12,7 +12,7 @@ export type ButtonProps = {
   variant?: ButtonVariant
 } & (
   | {
-      as?: 'button'
+      as?: 'button' | 'div'
       href?: never
       onClick?: () => void
     }

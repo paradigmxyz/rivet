@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { Wallet } from '../components/icons/Wallet'
 import { Box } from '../design-system/components/Box'
 import { Button } from '../design-system/components/Button'
@@ -20,9 +21,11 @@ export function OnboardingStart() {
         </Stack>
       </Box>
       <Stack gap="8px">
-        <Button as="a" href="#/create-wallet">
-          Create a new wallet
-        </Button>
+        <Link to="create-wallet">
+          <Button as="div">
+            Create a new wallet
+          </Button>
+        </Link>
         <Button variant="stroked scrim">Import existing</Button>
       </Stack>
     </Box>
