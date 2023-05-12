@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { AccentColorProvider } from '../../design-system/AccentColorProvider'
 import { ThemeProvider } from '../../design-system/ThemeProvider'
 import { Bleed } from '../../design-system/components/Bleed'
@@ -13,7 +15,6 @@ import { Separator } from '../../design-system/components/Separator'
 import { Stack } from '../../design-system/components/Stack'
 import { Text } from '../../design-system/components/Text'
 import { Theme } from '../../design-system/tokens'
-import { useState } from 'react'
 
 export default function DesignSystem() {
   const [colorMode, setColorMode] = useState<Theme>('dark')

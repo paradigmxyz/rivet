@@ -1,6 +1,11 @@
-import { layer, style } from '@vanilla-extract/css'
+import { globalStyle, layer, style } from '@vanilla-extract/css'
 
 const reset = layer('reset')
+
+globalStyle('a', {
+  textDecoration: 'none',
+  color: 'inherit',
+})
 
 export const resetBase = style({
   '@layer': {
@@ -16,27 +21,29 @@ export const resetBase = style({
   },
 })
 
-const a = style({
-  '@layer': { [reset]: { textDecoration: 'none', color: 'inherit' } },
-})
 const list = style({
   '@layer': { [reset]: { listStyle: 'none' } },
 })
+
 const table = style({
   '@layer': { [reset]: { borderCollapse: 'collapse', borderSpacing: 0 } },
 })
+
 const appearanceNone = style({
   '@layer': { [reset]: { appearance: 'none' } },
 })
+
 const backgroundTransparent = style({
   '@layer': { [reset]: { backgroundColor: 'transparent' } },
 })
+
 const button = style([
   backgroundTransparent,
   {
     '@layer': { [reset]: { color: 'unset', cursor: 'default' } },
   },
 ])
+
 const field = [appearanceNone, backgroundTransparent]
 
 const quotes = style({
@@ -92,7 +99,6 @@ const input = style([
 ])
 
 export const resetElements = {
-  a,
   blockquote: quotes,
   button,
   input,

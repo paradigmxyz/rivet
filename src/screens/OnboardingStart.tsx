@@ -1,14 +1,15 @@
 import { Wallet } from '../components/icons/Wallet'
 import { Box } from '../design-system/components/Box'
 import { Button } from '../design-system/components/Button'
+import { Row, Rows } from '../design-system/components/Rows'
 import { Stack } from '../design-system/components/Stack'
 import { Text } from '../design-system/components/Text'
 import { Link } from 'react-router-dom'
 
 export function OnboardingStart() {
   return (
-    <Box display="flex" flexDirection="column" alignItems="center">
-      <Box display="flex" alignItems="center" style={{ flex: 1 }}>
+    <Rows>
+      <Row alignVertical="center">
         <Stack alignHorizontal="center" gap="20px">
           <Wallet size="136px" />
           <Text as="h1" size="32px" weight="medium">
@@ -19,13 +20,15 @@ export function OnboardingStart() {
             wallet to build your decentralized apps.
           </Text>
         </Stack>
-      </Box>
-      <Stack gap="8px">
-        <Link to="create-wallet">
-          <Button as="div">Create a new wallet</Button>
-        </Link>
-        <Button variant="stroked scrim">Import existing</Button>
-      </Stack>
-    </Box>
+      </Row>
+      <Row height="content">
+        <Stack gap="8px">
+          <Box as={Link} to="create-wallet">
+            <Button as="div">Create a new wallet</Button>
+          </Box>
+          <Button variant="stroked scrim">Import preloaded wallets</Button>
+        </Stack>
+      </Row>
+    </Rows>
   )
 }

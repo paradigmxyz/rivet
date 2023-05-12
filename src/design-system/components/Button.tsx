@@ -111,6 +111,7 @@ export function Button({
       href={href}
       onClick={onClick}
       className={buttonHeightStyles[height]}
+      cursor="pointer"
       display="flex"
       alignItems="center"
       justifyContent="center"

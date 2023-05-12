@@ -63,6 +63,7 @@ export function Rows({
 }
 
 interface RowProps {
+  alignVertical?: AlignVertical
   height?: 'content' | keyof typeof styles.height
   children: ReactNode
 }
@@ -90,11 +91,15 @@ function getRowProps(node: NonNullable<ReactNode>): RowProps | null {
     : null
 }
 
-function PrivateRow({ children, height }: RowProps) {
+function PrivateRow({ alignVertical, children, height }: RowProps) {
   if (height) {
     return (
       <Box
+        alignItems={
+          alignVertical && alignVerticalToJustifyContent[alignVertical]
+        }
         className={height !== 'content' ? styles.height[height] : undefined}
+        display="flex"
         flexGrow="0"
         flexShrink="0"
       >
@@ -104,7 +109,13 @@ function PrivateRow({ children, height }: RowProps) {
   }
 
   return (
-    <Box flexGrow="1" flexShrink="1" flexBasis="0">
+    <Box
+      alignItems={alignVertical && alignVerticalToJustifyContent[alignVertical]}
+      display="flex"
+      flexGrow="1"
+      flexShrink="1"
+      flexBasis="0"
+    >
       {children}
     </Box>
   )
