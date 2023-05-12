@@ -44,7 +44,7 @@ export const manifest = {
   host_permissions: ['*://*/*'],
   web_accessible_resources: [
     {
-      resources: ['inpage-*.js', '*.woff2'],
+      resources: ['src/entries/inpage/index.ts', '*.woff2'],
       matches: ['<all_urls>'],
     },
   ],

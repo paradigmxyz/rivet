@@ -13,6 +13,7 @@ export default defineConfig({
     webExtension({
       additionalInputs: {
         html: ['src/entries/tab/_app.html'],
+        scripts: ['src/entries/inpage/index.ts'],
       },
       manifest,
     }),
