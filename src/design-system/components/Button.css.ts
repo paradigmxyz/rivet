@@ -3,8 +3,8 @@ import { styleVariants } from '@vanilla-extract/css'
 import { BackgroundColor, ForegroundColor } from '../tokens'
 
 const buttonHeight = {
-  '40px': 40,
-  '52px': 52,
+  '36px': 36,
+  '44px': 44,
 } as const
 export type ButtonHeight = keyof typeof buttonHeight
 

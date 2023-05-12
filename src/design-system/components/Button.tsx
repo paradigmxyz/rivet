@@ -24,13 +24,13 @@ export type ButtonProps = {
 )
 
 const stylesForHeight = {
-  '40px': {
+  '36px': {
+    paddingHorizontal: '12px',
+  },
+  '44px': {
     paddingHorizontal: '16px',
   },
-  '52px': {
-    paddingHorizontal: '20px',
-  },
-} satisfies Record<NonNullable<ButtonProps['height']>, BoxStyles>
+} satisfies Record<ButtonHeight, BoxStyles>
 
 const stylesForVariant = {
   'solid primary': {
@@ -85,24 +85,21 @@ const stylesForVariant = {
     },
     borderWidth: '1.5px',
   },
-} satisfies Record<NonNullable<ButtonProps['variant']>, BoxStyles>
+} satisfies Record<ButtonVariant, BoxStyles>
 
 const textStylesForHeight = {
-  '40px': {
+  '36px': {
     size: '15px',
   },
-  '52px': {
+  '44px': {
     size: '18px',
   },
-} satisfies Record<
-  NonNullable<ButtonProps['height']>,
-  { size: TextProps['size'] }
->
+} satisfies Record<ButtonHeight, { size: TextProps['size'] }>
 
 export function Button({
   as = 'button',
   children,
-  height = '40px',
+  height = '36px',
   href,
   onClick,
   variant = 'solid primary',

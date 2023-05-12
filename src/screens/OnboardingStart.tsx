@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom'
 import { Wallet } from '../components/icons/Wallet'
 import { Box } from '../design-system/components/Box'
 import { Button } from '../design-system/components/Button'
 import { Stack } from '../design-system/components/Stack'
 import { Text } from '../design-system/components/Text'
+import { Link } from 'react-router-dom'
 
 export function OnboardingStart() {
   return (
@@ -22,9 +22,7 @@ export function OnboardingStart() {
       </Box>
       <Stack gap="8px">
         <Link to="create-wallet">
-          <Button as="div">
-            Create a new wallet
-          </Button>
+          <Button as="div">Create a new wallet</Button>
         </Link>
         <Button variant="stroked scrim">Import existing</Button>
       </Stack>

@@ -76,6 +76,9 @@ const input = style([
     '@layer': {
       [reset]: {
         selectors: {
+          '&:focus-visible': {
+            outline: 'none',
+          },
           '&::-ms-clear': {
             display: 'none',
           },

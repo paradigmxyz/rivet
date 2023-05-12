@@ -1,8 +1,15 @@
 import { AccentColorProvider } from '../../design-system/AccentColorProvider'
 import { ThemeProvider } from '../../design-system/ThemeProvider'
+import { Bleed } from '../../design-system/components/Bleed'
 import { Box } from '../../design-system/components/Box'
 import { Button } from '../../design-system/components/Button'
+import { Column, Columns } from '../../design-system/components/Columns'
+import { Inline } from '../../design-system/components/Inline'
+import { Input } from '../../design-system/components/Input'
+import { Inset } from '../../design-system/components/Inset'
+import { Row, Rows } from '../../design-system/components/Rows'
 import { SFSymbol } from '../../design-system/components/SFSymbol'
+import { Separator } from '../../design-system/components/Separator'
 import { Stack } from '../../design-system/components/Stack'
 import { Text } from '../../design-system/components/Text'
 import { Theme } from '../../design-system/tokens'
@@ -243,6 +250,23 @@ export default function DesignSystem() {
         >
           <Stack gap="24px">
             <Text weight="medium" size="22px">
+              Bleed
+            </Text>
+            <Box backgroundColor="body">
+              <Bleed space="-8px">
+                <Box backgroundColor="primary / 0.2" style={{ height: 50 }} />
+              </Bleed>
+            </Box>
+          </Stack>
+        </Box>
+        <Box
+          backgroundColor="surface"
+          margin="-24px"
+          borderRadius="12px"
+          padding="24px"
+        >
+          <Stack gap="24px">
+            <Text weight="medium" size="22px">
               Button
             </Text>
             <Stack gap="16px">
@@ -295,28 +319,182 @@ export default function DesignSystem() {
                 Height
               </Text>
               <Box display="flex" gap="8px">
-                <Button height="52px" width="fit">
+                <Button height="44px" width="fit">
                   Button
                 </Button>
-                <Button variant="stroked primary" height="52px" width="fit">
+                <Button variant="stroked primary" height="44px" width="fit">
                   Button
                 </Button>
-                <Button variant="tint green" height="52px" width="fit">
+                <Button variant="tint green" height="44px" width="fit">
                   Button
                 </Button>
               </Box>
               <Box display="flex" gap="8px">
-                <Button height="40px" width="fit">
+                <Button height="36px" width="fit">
                   Button
                 </Button>
-                <Button variant="stroked primary" height="40px" width="fit">
+                <Button variant="stroked primary" height="36px" width="fit">
                   Button
                 </Button>
-                <Button variant="tint green" height="40px" width="fit">
+                <Button variant="tint green" height="36px" width="fit">
                   Button
                 </Button>
               </Box>
             </Stack>
+          </Stack>
+        </Box>
+        <Box
+          backgroundColor="surface"
+          margin="-24px"
+          borderRadius="12px"
+          padding="24px"
+        >
+          <Stack gap="24px">
+            <Text weight="medium" size="22px">
+              Columns
+            </Text>
+            <Columns gap="12px">
+              <Box backgroundColor="primary / 0.2" style={{ height: 100 }} />
+              <Box backgroundColor="primary / 0.2" style={{ height: 100 }} />
+              <Box backgroundColor="primary / 0.2" style={{ height: 100 }} />
+            </Columns>
+            <Columns gap="12px">
+              <Column width="1/4">
+                <Box backgroundColor="primary / 0.2" style={{ height: 100 }} />
+              </Column>
+              <Column width="1/3">
+                <Box backgroundColor="primary / 0.2" style={{ height: 100 }} />
+              </Column>
+              <Column>
+                <Box backgroundColor="primary / 0.2" style={{ height: 100 }} />
+              </Column>
+            </Columns>
+            <Columns gap="12px">
+              <Box backgroundColor="primary / 0.2" style={{ height: 100 }} />
+              <Column width="content">
+                <Box
+                  backgroundColor="primary / 0.2"
+                  style={{ height: 100, width: 100 }}
+                />
+              </Column>
+            </Columns>
+          </Stack>
+        </Box>
+        <Box
+          backgroundColor="surface"
+          margin="-24px"
+          borderRadius="12px"
+          padding="24px"
+        >
+          <Stack gap="24px">
+            <Text weight="medium" size="22px">
+              Inline
+            </Text>
+            <Inline gap="8px">
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ height: 50, width: 50 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ height: 50, width: 50 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ height: 50, width: 50 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ height: 50, width: 50 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ height: 50, width: 50 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ height: 50, width: 50 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ height: 50, width: 50 }}
+              />
+            </Inline>
+          </Stack>
+        </Box>
+        <Box
+          backgroundColor="surface"
+          margin="-24px"
+          borderRadius="12px"
+          padding="24px"
+        >
+          <Stack gap="24px">
+            <Text weight="medium" size="22px">
+              Input
+            </Text>
+            <Input placeholder="Enter your email..." />
+          </Stack>
+        </Box>
+        <Box
+          backgroundColor="surface"
+          margin="-24px"
+          borderRadius="12px"
+          padding="24px"
+        >
+          <Stack gap="24px">
+            <Text weight="medium" size="22px">
+              Inset
+            </Text>
+            <Box backgroundColor="body">
+              <Inset space="24px">
+                <Box backgroundColor="primary / 0.2" style={{ height: 50 }} />
+              </Inset>
+            </Box>
+          </Stack>
+        </Box>
+        <Box
+          backgroundColor="surface"
+          margin="-24px"
+          borderRadius="12px"
+          padding="24px"
+        >
+          <Stack gap="24px">
+            <Text weight="medium" size="22px">
+              Rows
+            </Text>
+            <Box style={{ height: 300 }}>
+              <Rows gap="12px">
+                <Box backgroundColor="primary / 0.2" height="full" />
+                <Box backgroundColor="primary / 0.2" height="full" />
+                <Box backgroundColor="primary / 0.2" height="full" />
+              </Rows>
+            </Box>
+            <Box style={{ height: 300 }}>
+              <Rows gap="12px">
+                <Row height="1/4">
+                  <Box backgroundColor="primary / 0.2" height="full" />
+                </Row>
+                <Row height="1/4">
+                  <Box backgroundColor="primary / 0.2" height="full" />
+                </Row>
+                <Row>
+                  <Box backgroundColor="primary / 0.2" height="full" />
+                </Row>
+              </Rows>
+            </Box>
+          </Stack>
+        </Box>
+        <Box
+          backgroundColor="surface"
+          margin="-24px"
+          borderRadius="12px"
+          padding="24px"
+        >
+          <Stack gap="24px">
+            <Text weight="medium" size="22px">
+              Separator
+            </Text>
+            <Separator />
           </Stack>
         </Box>
         <Box
@@ -346,24 +524,51 @@ export default function DesignSystem() {
               Stack
             </Text>
             <Stack gap="16px">
-              <Box backgroundColor="accent" style={{ height: 40 }} />
-              <Box backgroundColor="accent" style={{ height: 40 }} />
-              <Box backgroundColor="accent" style={{ height: 40 }} />
+              <Box backgroundColor="primary / 0.2" style={{ height: 40 }} />
+              <Box backgroundColor="primary / 0.2" style={{ height: 40 }} />
+              <Box backgroundColor="primary / 0.2" style={{ height: 40 }} />
             </Stack>
             <Stack alignHorizontal="left" gap="16px">
-              <Box backgroundColor="accent" style={{ width: 40, height: 40 }} />
-              <Box backgroundColor="accent" style={{ width: 40, height: 40 }} />
-              <Box backgroundColor="accent" style={{ width: 40, height: 40 }} />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ width: 40, height: 40 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ width: 40, height: 40 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ width: 40, height: 40 }}
+              />
             </Stack>
             <Stack alignHorizontal="center" gap="16px">
-              <Box backgroundColor="accent" style={{ width: 40, height: 40 }} />
-              <Box backgroundColor="accent" style={{ width: 40, height: 40 }} />
-              <Box backgroundColor="accent" style={{ width: 40, height: 40 }} />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ width: 40, height: 40 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ width: 40, height: 40 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ width: 40, height: 40 }}
+              />
             </Stack>
             <Stack alignHorizontal="right" gap="16px">
-              <Box backgroundColor="accent" style={{ width: 40, height: 40 }} />
-              <Box backgroundColor="accent" style={{ width: 40, height: 40 }} />
-              <Box backgroundColor="accent" style={{ width: 40, height: 40 }} />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ width: 40, height: 40 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ width: 40, height: 40 }}
+              />
+              <Box
+                backgroundColor="primary / 0.2"
+                style={{ width: 40, height: 40 }}
+              />
             </Stack>
           </Stack>
         </Box>

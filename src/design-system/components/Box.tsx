@@ -1,5 +1,5 @@
 import type * as Polymorphic from '@radix-ui/react-polymorphic'
-import clsx from 'clsx'
+import clsx, { ClassValue } from 'clsx'
 import { forwardRef, useMemo } from 'react'
 
 import { useAccentColor } from '../AccentColorProvider'
@@ -12,6 +12,7 @@ import { BoxStyles, boxStyles } from './Box.css'
 type PolymorphicBox = Polymorphic.ForwardRefComponent<
   'div',
   BoxStyles & {
+    className?: ClassValue
     testId?: string
   }
 >

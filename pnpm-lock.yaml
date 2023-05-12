@@ -46,6 +46,9 @@ dependencies:
   '@vanilla-extract/css':
     specifier: ^1.11.0
     version: 1.11.0
+  '@vanilla-extract/css-utils':
+    specifier: ^0.1.3
+    version: 0.1.3
   '@vanilla-extract/dynamic':
     specifier: ^2.0.3
     version: 2.0.3
@@ -91,6 +94,9 @@ dependencies:
   react-dom:
     specifier: ^18.2.0
     version: 18.2.0(react@18.2.0)
+  react-flatten-children:
+    specifier: ^1.1.2
+    version: 1.1.2
   react-router:
     specifier: ^6.10.0
     version: 6.10.0(react@18.2.0)
@@ -1214,6 +1220,10 @@ packages:
       '@babel/core': 7.21.4
     transitivePeerDependencies:
       - supports-color
+    dev: false
+
+  /@vanilla-extract/css-utils@0.1.3:
+    resolution: {integrity: sha512-PZAcHROlgtCUGI2y0JntdNwvPwCNyeVnkQu6KTYKdmxBbK3w72XJUmLFYapfaFfgami4I9CTLnrJTPdtmS3gpw==}
     dev: false
 
   /@vanilla-extract/css@1.11.0:
@@ -4054,6 +4064,10 @@ packages:
       loose-envify: 1.4.0
       react: 18.2.0
       scheduler: 0.23.0
+    dev: false
+
+  /react-flatten-children@1.1.2:
+    resolution: {integrity: sha512-9pnG/uw2Wa0n97s+yBZg/WgfMPE8RC4qNcr6iYbyb19sacCk3gRJCmCzAhTuANSWesFsK9v/yTKW42pkenaAfw==}
     dev: false
 
   /react-refresh@0.14.0:

@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router-dom'
 import { Box } from '../../../design-system/components/Box'
+import { Outlet } from 'react-router-dom'
 
 export default function Layout() {
   return (

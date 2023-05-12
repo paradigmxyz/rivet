@@ -16,6 +16,7 @@ import {
   strokeWeights,
   viewports,
 } from '../tokens'
+import { createVar } from '@vanilla-extract/css'
 
 const colorOpacities = [
   '0.02',
@@ -70,6 +71,8 @@ const borderColorsForBackgroundColorWithOpacities = getColorOpacityVariants(
   colorOpacities,
 )
 
+export const gapVar = createVar()
+
 const boxBaseProperties = defineProperties({
   properties: {
     alignItems: ['stretch', 'flex-start', 'center', 'flex-end'],
@@ -86,7 +89,10 @@ const boxBaseProperties = defineProperties({
     flexBasis: ['0'],
     flexGrow: ['0', '1'],
     flexShrink: ['0', '1'],
-    gap: spacing,
+    gap: mapValues(spacing, (gap) => ({
+      gap,
+      vars: { [gapVar]: gap },
+    })),
     height: {
       fit: 'fit-content',
       full: '100%',
@@ -134,6 +140,7 @@ const boxColorProperties = defineProperties({
     default: {},
     hover: { selector: '&:hover' },
     hoveractive: { selector: '&:hover:active' },
+    hoverfocus: { selector: '&:hover:focus' },
     focus: { selector: '&:focus' },
     active: { selector: '&:active' },
     disabled: { selector: '&:disabled' },
@@ -142,7 +149,6 @@ const boxColorProperties = defineProperties({
   properties: {
     backgroundColor: {
       accent: `rgb(${inheritedColorVars.accent})`,
-      ...accentColorWithOpacities,
       ...mapValues(backgroundColorVars, (colorVar, color) => {
         const borderColorForBackgroundColor = (
           borderColorForBackgroundColorVars as any
@@ -162,28 +168,30 @@ const boxColorProperties = defineProperties({
           },
         }
       }),
+      ...accentColorWithOpacities,
       ...backgroundColorsWithOpacities,
     },
     borderColor: {
       accent: `rgb(${inheritedColorVars.accent})`,
-      ...accentColorWithOpacities,
       border: `rgb(${inheritedColorVars.border})`,
+      transparent: 'transparent',
       ...mapValues(foregroundColorVars, (colorVar) => `rgb(${colorVar})`),
       ...mapValues(
         borderColorForBackgroundColorVars,
         (colorVar) => `rgb(${colorVar})`,
       ),
+      ...accentColorWithOpacities,
       ...borderColorsForBackgroundColorWithOpacities,
     },
     color: {
       accent: `rgb(${inheritedColorVars.accent})`,
-      ...accentColorWithOpacities,
       text: `rgb(${inheritedColorVars.text})`,
       ...mapValues(foregroundColorVars, (colorVar) => `rgb(${colorVar})`),
       ...mapValues(
         mapKeys(backgroundColorVars, (key) => `background ${key}`),
         (colorVar) => `rgb(${colorVar})`,
       ),
+      ...accentColorWithOpacities,
       ...mapKeys(backgroundColorsWithOpacities, (key) => `background ${key}`),
     },
     transform: {
