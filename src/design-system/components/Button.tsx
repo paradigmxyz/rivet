@@ -1,11 +1,15 @@
 import * as React from 'react'
 
 import { Box } from './Box'
-import { BoxStyles } from './Box.css'
-import { ButtonHeight, ButtonVariant, buttonHeightStyles } from './Button.css'
-import { Text, TextProps } from './Text'
+import type { BoxStyles } from './Box.css'
+import {
+  type ButtonHeight,
+  type ButtonVariant,
+  buttonHeightStyles,
+} from './Button.css'
+import { Text, type TextProps } from './Text'
 
-export type ButtonProps = {
+type ButtonProps = {
   children: string | React.ReactNode
   height?: ButtonHeight
   width?: 'fit' | 'full'
@@ -111,10 +115,10 @@ export function Button({
       href={href}
       onClick={onClick}
       className={buttonHeightStyles[height]}
-      cursor="pointer"
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
+      cursor='pointer'
+      display='flex'
+      alignItems='center'
+      justifyContent='center'
       width={width}
       transform={{
         hoveractive: 'shrink',

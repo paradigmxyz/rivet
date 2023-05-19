@@ -1,11 +1,11 @@
-import { ReactNode, useMemo } from 'react'
+import { type ReactNode, useMemo } from 'react'
 
 import { ColorSchemeContext } from './ColorSchemeProvider'
 import {
   colorModeProviderStyle,
   colorSchemeForThemeClass,
 } from './styles/theme.css'
-import { Theme } from './tokens'
+import type { Theme } from './tokens'
 
 interface ThemeProviderProps {
   children: ReactNode | ((args: { className: string }) => ReactNode)

@@ -1,14 +1,11 @@
-import { EventEmitter } from 'eventemitter3'
+import { createRpcMessenger } from '~/messengers'
+import { createProvider } from '~/provider'
 
-class WindowProvider extends EventEmitter {
-  async request(): Promise<any> {
-    return '0x1'
-  }
-}
+const messenger = createRpcMessenger({ connection: 'background <> inpage' })
 
 if (shouldInjectProvider()) {
   console.log('injection complete in window')
-  window.ethereum = new WindowProvider()
+  window.ethereum = createProvider({ messenger })
   window.dispatchEvent(new Event('ethereum#initialized'))
 }
 

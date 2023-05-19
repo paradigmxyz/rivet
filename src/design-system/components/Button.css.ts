@@ -1,6 +1,6 @@
 import { styleVariants } from '@vanilla-extract/css'
 
-import { BackgroundColor, ForegroundColor } from '../tokens'
+import type { BackgroundColor, ForegroundColor } from '../tokens'
 
 const buttonHeight = {
   '36px': 36,

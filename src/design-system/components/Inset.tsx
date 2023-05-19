@@ -1,6 +1,6 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
-import { Spacing } from '../tokens'
+import type { Spacing } from '../tokens'
 import { Box } from './Box'
 
 type InsetProps = {

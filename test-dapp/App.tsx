@@ -1,17 +1,17 @@
-import 'viem/window'
-import '../src/design-system/styles/global.css'
 import { useEffect, useState } from 'react'
 import type { Hex } from 'viem'
+import 'viem/window'
+import '~/design-system/styles/global.css'
 
-import { Box } from '../src/design-system/components/Box'
-import { Text } from '../src/design-system/components/Text'
-import { Stack } from '../src/design-system/components/Stack'
+import { Box, Stack, Text } from '~/design-system'
 
 function App() {
   const [blockNumber, setBlockNumber] = useState<Hex>()
   useEffect(() => {
-    (async () => {
-      setBlockNumber(await window.ethereum?.request({ method: 'eth_blockNumber' }))
+    ;(async () => {
+      setBlockNumber(
+        await window.ethereum?.request({ method: 'eth_blockNumber' }),
+      )
     })()
   }, [])
 

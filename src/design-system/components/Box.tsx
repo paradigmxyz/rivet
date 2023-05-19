@@ -1,13 +1,16 @@
 import type * as Polymorphic from '@radix-ui/react-polymorphic'
-import clsx, { ClassValue } from 'clsx'
+import clsx, { type ClassValue } from 'clsx'
 import { forwardRef, useMemo } from 'react'
 
 import { useAccentColor } from '../AccentColorProvider'
 import { ColorSchemeProvider, useColorScheme } from '../ColorSchemeProvider'
 import { resetBase, resetElements } from '../styles/reset.css'
 import { colorSchemeForThemeClass } from '../styles/theme.css'
-import { BackgroundColor, backgroundColor as backgroundColors } from '../tokens'
-import { BoxStyles, boxStyles } from './Box.css'
+import {
+  type BackgroundColor,
+  backgroundColor as backgroundColors,
+} from '../tokens'
+import { type BoxStyles, boxStyles } from './Box.css'
 
 type PolymorphicBox = Polymorphic.ForwardRefComponent<
   'div',

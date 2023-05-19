@@ -1,6 +1,6 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
-import { NegatedSpacing } from '../tokens'
+import type { NegatedSpacing } from '../tokens'
 import { Box } from './Box'
 
 type BleedProps = {

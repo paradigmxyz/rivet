@@ -1,15 +1,15 @@
 import { assignInlineVars } from '@vanilla-extract/dynamic'
 import chroma from 'chroma-js'
 import {
-  CSSProperties,
-  ReactNode,
+  type CSSProperties,
+  type ReactNode,
   createContext,
   useContext,
   useMemo,
 } from 'react'
 
 import { inheritedColorVars } from './styles/theme.css'
-import { ColorScheme, defaultInheritedColor } from './tokens'
+import { type ColorScheme, defaultInheritedColor } from './tokens'
 import { toRgb } from './utils/toRgb'
 
 const AccentColorContext = createContext<{

@@ -1,7 +1,11 @@
-import { ReactNode, createContext, useContext, useMemo } from 'react'
+import { type ReactNode, createContext, useContext, useMemo } from 'react'
 
 import { useAccentColor } from './AccentColorProvider'
-import { BackgroundColor, ColorScheme, backgroundColor } from './tokens'
+import {
+  type BackgroundColor,
+  type ColorScheme,
+  backgroundColor,
+} from './tokens'
 
 type ColorSchemeProviderProps = {
   color: 'accent' | BackgroundColor

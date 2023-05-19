@@ -1,4 +1,4 @@
-import { type ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
 import type { Spacing } from '../tokens'
 import { Box } from './Box'
@@ -23,10 +23,10 @@ export function Stack({ alignHorizontal, children, gap }: StackProps) {
       alignItems={
         alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
       }
-      display="flex"
-      flexDirection="column"
+      display='flex'
+      flexDirection='column'
       gap={gap}
-      width="full"
+      width='full'
     >
       {children}
     </Box>

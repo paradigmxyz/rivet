@@ -1,7 +1,7 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import flattenChildren from 'react-flatten-children'
 
-import { Spacing } from '../tokens'
+import type { Spacing } from '../tokens'
 import { Box } from './Box'
 import * as styles from './Columns.css'
 
@@ -35,8 +35,8 @@ export function Columns({
 }: ColumnsProps) {
   return (
     <Box
-      display="flex"
-      flexDirection="row"
+      display='flex'
+      flexDirection='row'
       gap={gap}
       alignItems={alignVertical && alignVerticalToAlignItems[alignVertical]}
       justifyContent={
@@ -90,8 +90,8 @@ function PrivateColumn({ children, width }: ColumnProps) {
     return (
       <Box
         className={width !== 'content' ? styles.width[width] : undefined}
-        flexGrow="0"
-        flexShrink="0"
+        flexGrow='0'
+        flexShrink='0'
       >
         {children}
       </Box>
@@ -99,7 +99,7 @@ function PrivateColumn({ children, width }: ColumnProps) {
   }
 
   return (
-    <Box flexGrow="1" flexShrink="1" flexBasis="0">
+    <Box flexGrow='1' flexShrink='1' flexBasis='0'>
       {children}
     </Box>
   )

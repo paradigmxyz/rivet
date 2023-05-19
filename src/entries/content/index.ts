@@ -1,3 +1,3 @@
-export {}
+import { setupBridgeTransportRelay } from '~/messengers/transports/bridge'
 
-console.log('hello from content script')
+setupBridgeTransportRelay()

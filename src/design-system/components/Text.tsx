@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { Box } from './Box'
-import { TextStyles, textStyles } from './Text.css'
+import { type TextStyles, textStyles } from './Text.css'
 
 export type TextProps = {
   align?: TextStyles['textAlign']

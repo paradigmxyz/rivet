@@ -5,7 +5,7 @@ import type {
   SymbolName,
 } from '../../design-system/tokens'
 import { Box } from './Box'
-import { BoxStyles } from './Box.css'
+import type { BoxStyles } from './Box.css'
 
 export type SFSymbolProps = {
   color?: BoxStyles['color']
@@ -24,17 +24,17 @@ export function SFSymbol({
   return (
     <Box>
       <Box
-        as="svg"
+        as='svg'
         viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
-        fill="none"
+        fill='none'
         color={color}
         style={{
           width: size,
           height: size,
         }}
-        xmlns="http://www.w3.org/2000/svg"
+        xmlns='http://www.w3.org/2000/svg'
       >
-        <path d={symbol.path} fill="currentColor" />
+        <path d={symbol.path} fill='currentColor' />
       </Box>
     </Box>
   )

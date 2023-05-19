@@ -1,15 +1,15 @@
-import { InputHTMLAttributes } from 'react'
+import type { InputHTMLAttributes } from 'react'
 
 import { Box } from './Box'
-import { BoxStyles } from './Box.css'
+import type { BoxStyles } from './Box.css'
 import {
-  InputHeight,
-  InputVariant,
+  type InputHeight,
+  type InputVariant,
   backgroundStyle,
   heightStyles,
   placeholderStyle,
 } from './Input.css'
-import { TextStyles, textStyles } from './Text.css'
+import { type TextStyles, textStyles } from './Text.css'
 
 export type InputProps = {
   'aria-label'?: InputHTMLAttributes<HTMLInputElement>['aria-label']
@@ -60,8 +60,8 @@ export function Input({
   return (
     <Box
       {...inputProps}
-      as="input"
-      borderWidth="1px"
+      as='input'
+      borderWidth='1px'
       className={[
         backgroundStyle,
         heightStyles[height],
@@ -72,7 +72,7 @@ export function Input({
       ]}
       placeholder={placeholder}
       testId={testId}
-      width="full"
+      width='full'
       {...stylesForVariant[variant]}
       {...stylesForHeight[height]}
     />

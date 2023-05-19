@@ -1,6 +1,6 @@
-import { StrokeWeight, strokeWeights } from '../tokens'
+import { type StrokeWeight, strokeWeights } from '../tokens'
 import { Box } from './Box'
-import { BoxStyles } from './Box.css'
+import type { BoxStyles } from './Box.css'
 
 export type SeparatorProps = {
   color?: BoxStyles['backgroundColor']
@@ -13,7 +13,7 @@ export function Separator({
 }: SeparatorProps) {
   return (
     <Box
-      borderRadius="round"
+      borderRadius='round'
       backgroundColor={color}
       style={{ height: strokeWeights[strokeWeight] }}
     />

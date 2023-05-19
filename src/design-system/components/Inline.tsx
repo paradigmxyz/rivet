@@ -1,8 +1,8 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 
-import { Spacing } from '../tokens'
+import type { Spacing } from '../tokens'
 import { Box } from './Box'
-import { BoxStyles } from './Box.css'
+import type { BoxStyles } from './Box.css'
 
 const alignHorizontalToJustifyContent = {
   center: 'center',
@@ -38,8 +38,8 @@ export function Inline({
 }: InlineProps) {
   return (
     <Box
-      display="flex"
-      flexDirection="row"
+      display='flex'
+      flexDirection='row'
       height={height}
       alignItems={alignVertical && alignVerticalToAlignItems[alignVertical]}
       justifyContent={alignHorizontalToJustifyContent[alignHorizontal]}

@@ -1,7 +1,7 @@
-import { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import flattenChildren from 'react-flatten-children'
 
-import { Spacing } from '../tokens'
+import type { Spacing } from '../tokens'
 import { Box } from './Box'
 import * as styles from './Rows.css'
 
@@ -35,11 +35,11 @@ export function Rows({
 }: RowsProps) {
   return (
     <Box
-      display="flex"
-      flexDirection="column"
-      flexGrow="1"
-      height="full"
-      width="full"
+      display='flex'
+      flexDirection='column'
+      flexGrow='1'
+      height='full'
+      width='full'
       gap={gap}
       alignItems={
         alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
@@ -99,9 +99,9 @@ function PrivateRow({ alignVertical, children, height }: RowProps) {
           alignVertical && alignVerticalToJustifyContent[alignVertical]
         }
         className={height !== 'content' ? styles.height[height] : undefined}
-        display="flex"
-        flexGrow="0"
-        flexShrink="0"
+        display='flex'
+        flexGrow='0'
+        flexShrink='0'
       >
         {children}
       </Box>
@@ -111,10 +111,10 @@ function PrivateRow({ alignVertical, children, height }: RowProps) {
   return (
     <Box
       alignItems={alignVertical && alignVerticalToJustifyContent[alignVertical]}
-      display="flex"
-      flexGrow="1"
-      flexShrink="1"
-      flexBasis="0"
+      display='flex'
+      flexGrow='1'
+      flexShrink='1'
+      flexBasis='0'
     >
       {children}
     </Box>
