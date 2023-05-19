@@ -5,7 +5,7 @@ export const syncStorage = createStorage({ type: 'sync' })
 function createStorage({
   key: prefixKey = 'wagmi.wallet',
   type,
-}: { key?: string, type: 'session' | 'local' | 'sync' }) {
+}: { key?: string; type: 'session' | 'local' | 'sync' }) {
   const storage = chrome.storage[type]
 
   const getKey = (key: string) => `${prefixKey}.${key}`

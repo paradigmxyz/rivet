@@ -62,7 +62,8 @@
     "vite-plugin-crx-hot-reload": "^1.0.4",
     "vite-tsconfig-paths": "^4.2.0",
     "web-ext": "^7.6.1",
-    "webextension-polyfill": "^0.10.0"
+    "webextension-polyfill": "^0.10.0",
+    "zustand": "^4.3.8"
   },
   "devDependencies": {
     "tsup": "^6.7.0"

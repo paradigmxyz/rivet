@@ -6,6 +6,9 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createHashRouter } from 'react-router-dom'
 import '~/design-system/styles/global.css'
+import { syncStores } from '~/zustand'
+
+syncStores()
 
 const router = createHashRouter([
   {
