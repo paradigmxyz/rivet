@@ -1,7 +1,7 @@
 import pkg from './package.json'
 
-export const manifest = {
-  name: pkg.extension.name,
+export const getManifest = ({ dev }: { dev?: boolean }) => ({
+  name: `${pkg.extension.name}${dev ? ' (dev)' : ''}`,
   description: pkg.extension.description,
   version: pkg.version,
   manifest_version: 3,
@@ -48,4 +48,4 @@ export const manifest = {
       matches: ['<all_urls>'],
     },
   ],
-} satisfies chrome.runtime.Manifest
+}) satisfies chrome.runtime.Manifest

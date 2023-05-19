@@ -465,21 +465,21 @@ export default function DesignSystem() {
             </Text>
             <Box style={{ height: 300 }}>
               <Rows gap="12px">
-                <Box backgroundColor="primary / 0.2" height="full" />
-                <Box backgroundColor="primary / 0.2" height="full" />
-                <Box backgroundColor="primary / 0.2" height="full" />
+                <Box backgroundColor="primary / 0.2" flex="1" />
+                <Box backgroundColor="primary / 0.2" flex="1" />
+                <Box backgroundColor="primary / 0.2" flex="1" />
               </Rows>
             </Box>
             <Box style={{ height: 300 }}>
               <Rows gap="12px">
                 <Row height="1/4">
-                  <Box backgroundColor="primary / 0.2" height="full" />
+                  <Box backgroundColor="primary / 0.2" flex="1" />
                 </Row>
                 <Row height="1/4">
-                  <Box backgroundColor="primary / 0.2" height="full" />
+                  <Box backgroundColor="primary / 0.2" flex="1" />
                 </Row>
                 <Row>
-                  <Box backgroundColor="primary / 0.2" height="full" />
+                  <Box backgroundColor="primary / 0.2" flex="1" />
                 </Row>
               </Rows>
             </Box>

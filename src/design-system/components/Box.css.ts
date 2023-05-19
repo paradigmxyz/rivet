@@ -92,6 +92,7 @@ const boxBaseProperties = defineProperties({
     bottom: positionSpacing,
     cursor: ['pointer'],
     display: ['none', 'flex', 'block', 'inline'],
+    flex: ['1'],
     flexDirection: ['row', 'column'],
     flexWrap: ['wrap'],
     flexBasis: ['0'],

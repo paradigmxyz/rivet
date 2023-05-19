@@ -1,22 +1,14 @@
-import { type EIP1193Provider } from 'viem'
+import { EventEmitter } from 'eventemitter3'
 
-declare global {
-  interface Window {
-    ethereum?: EIP1193Provider
-  }
-}
-
-const provider: EIP1193Provider = {
-  on() {},
-  removeListener() {},
+class WindowProvider extends EventEmitter {
   async request(): Promise<any> {
     return '0x1'
-  },
+  }
 }
 
 if (shouldInjectProvider()) {
   console.log('injection complete in window')
-  window.ethereum = provider
+  window.ethereum = new WindowProvider()
   window.dispatchEvent(new Event('ethereum#initialized'))
 }
 
