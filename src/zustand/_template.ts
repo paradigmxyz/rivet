@@ -10,7 +10,9 @@ type TemplateState = {
 export const templateStore = createStore<TemplateState>(
   (set) => ({
     foo: undefined,
-    setFoo: (foo) => set({ foo }),
+    setFoo(foo) {
+      set({ foo })
+    },
   }),
   {
     persist: {

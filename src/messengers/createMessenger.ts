@@ -5,10 +5,10 @@ import { windowTransport } from './transports/window'
 import type { Messenger, MessengerSchema } from './types'
 
 const transportsForConnection = {
-  'popup <> inpage': bridgeTransport,
+  'devtools <> inpage': bridgeTransport,
   'background <> inpage': bridgeTransport,
-  'background <> popup': extensionTransport,
-  'popup <> contentScript': tabTransport,
+  'background <> devtools': extensionTransport,
+  'devtools <> contentScript': tabTransport,
   'background <> contentScript': tabTransport,
   'contentScript <> inpage': windowTransport,
 } as const

@@ -9,19 +9,6 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
     background: {
       service_worker: 'src/entries/background/index.ts',
     },
-    action: {
-      // default_icon: {
-      //   '16': 'images/icon-16.png',
-      //   '19': 'images/icon-19.png',
-      //   '32': 'images/icon-16@2x.png',
-      //   '38': 'images/icon-19@2x.png',
-      //   '64': 'images/icon-16@4x.png',
-      //   '128': 'images/icon-16@8x.png',
-      //   '512': 'images/icon-16@32x.png',
-      // },
-      default_title: pkg.extension.name,
-      default_popup: 'src/entries/popup/_app.html',
-    },
     content_scripts: [
       {
         matches: ['*://*/*'],

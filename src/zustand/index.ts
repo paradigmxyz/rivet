@@ -1,4 +1,6 @@
-// TODO: remove this
-export { templateStore, useTemplateState } from './_template'
+export {
+  pendingRequestsStore,
+  usePendingRequestsStore,
+} from './pending-requests'
 
 export { syncStores } from './utils'

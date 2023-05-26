@@ -21,7 +21,7 @@ export default defineConfig({
     vanillaExtractPlugin(),
     webExtension({
       additionalInputs: {
-        html: ['src/entries/tab/_app.html'],
+        html: ['src/index.html', 'src/design-system/playground/index.html'],
         scripts: ['src/entries/inpage/index.ts'],
       },
       manifest: getManifest({ dev }),

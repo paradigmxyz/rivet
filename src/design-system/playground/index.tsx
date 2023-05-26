@@ -1,4 +1,9 @@
+import '../../hmr'
+
 import { useState } from 'react'
+import ReactDOM from 'react-dom/client'
+
+import '~/design-system/styles/global.css'
 
 import {
   AccentColorProvider,
@@ -20,7 +25,7 @@ import {
   ThemeProvider,
 } from '~/design-system'
 
-export default function DesignSystem() {
+function DesignSystem() {
   const [theme, setTheme] = useState<Theme>('dark')
 
   const toggleTheme = () => {
@@ -750,3 +755,7 @@ export default function DesignSystem() {
     </Box>
   )
 }
+
+ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+  <DesignSystem />,
+)

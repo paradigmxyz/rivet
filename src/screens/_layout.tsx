@@ -10,8 +10,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       display='flex'
       padding='24px'
       style={{
-        height: 560,
-        width: 360,
+        height: '100vh',
       }}
     >
       {children}

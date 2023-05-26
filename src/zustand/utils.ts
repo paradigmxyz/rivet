@@ -1,6 +1,7 @@
 import {
   type PersistOptions,
   type StateStorage,
+  createJSONStorage,
   persist,
 } from 'zustand/middleware'
 import {
@@ -9,6 +10,7 @@ import {
   createStore as create,
 } from 'zustand/vanilla'
 
+import { localStorage } from '../storage'
 import * as stores from './index'
 
 //////////////////////////////////////////////////////////////////
@@ -53,7 +55,9 @@ export function createStore<TState>(
       persist(initializer, {
         ...persistOptions,
         name,
-        getStorage: () => (persistOptions ? persistStorage : noopStorage),
+        storage: createJSONStorage(() =>
+          persistOptions ? persistStorage : noopStorage,
+        ),
       }),
     ),
     { initializer },

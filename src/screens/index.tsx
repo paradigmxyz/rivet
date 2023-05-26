@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import { Wallet } from '~/components/icons/Wallet'
 import { Box, Button, Row, Rows, Stack, Text } from '~/design-system'
 
-export function OnboardingStart() {
+export default function Index() {
   return (
     <Rows>
       <Row alignVertical='center'>
