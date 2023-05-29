@@ -12,6 +12,10 @@ If you want to contribute, but aren't sure where to start, you can create a [new
 
 <br>
 
+---
+
+<br>
+
 ## Overview of the Web Extension
 
 Here is a [great primer](https://developer.chrome.com/docs/extensions/mv3/getstarted/extensions-101/) on Web Extensions. The rest of the [Chrome Developers guides](https://developer.chrome.com/docs/extensions/mv3/) are pretty good too.
@@ -41,24 +45,34 @@ Below is a diagram which visualizes these four contexts.
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/interface-diagram-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="./assets/interface-diagram-light.png">
-  <img src="./assets/interface-diagram-light.png">
+  <img src="./assets/interface-diagram-light.png" height="400">
 </picture>
 
-#### Cross-context Messaging
+<br>
+<br>
 
-We can utilize a combination of the [`chrome.runtime.sendMessage`/`chrome.tabs.sendMessage` APIs](https://developer.chrome.com/docs/extensions/mv3/messaging/) and [`window.postMessage` API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) to communicate between contexts. 
+### Cross-context Messaging
+
+We can utilize a combination of the [`chrome.runtime.sendMessage`/`chrome.tabs.sendMessage` APIs](https://developer.chrome.com/docs/extensions/mv3/messaging/) and [`window.postMessage` API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) to communicate between contexts.
+
+<br>
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./assets/messaging-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="./assets/messaging-light.png">
-  <img src="./assets/messaging-light.png">
+  <img src="./assets/messaging-light.png" height="300">
 </picture>
+
+<br>
+<br>
 
 It is important to note that the **Inpage** context does not have access to Web Extension APIs, and the **Background**/**Wallet** contexts do not have access to the `window` instance, which makes messaging between these contexts non-trivial. To make this possible, we need to set up a "bridge relay" in the **Content Script** context which has access to `window` and the Web Extension APIs.
 
 To make this communication easier, we have created a ["Messenger" abstraction](../src/messengers/getMessenger.ts) so you don't have to think about what transport (`window.postMessage` vs. `chrome.runtime.sendMessage` vs. `chrome.tabs.sendMessage`) to use, setting up a bridge relay, and dealing their synchronous nature.
 
-##### Example
+<br>
+
+#### Example
 
 `example.ts` (**Wallet** context)
 
@@ -85,22 +99,19 @@ messenger.reply('ping', (args) => {
 });
 ```
 
+---
+
 ## Getting Started
 
 This guide is intended to help you get started with contributing. By following these steps, you will understand the development process and workflow.
 
 1. [Cloning the repository](#cloning-the-repository)
 2. [Installing Node.js and pnpm](#installing-nodejs-and-pnpm)
-3. [Installing Foundry](#installing-foundry)
+3. [Installing Anvil](#installing-anvil)
 4. [Installing dependencies](#installing-dependencies)
 5. [Running the Web Extension](#running-the-web-extension)
 6. [Installing the Web Extension](#installing-the-web-extension)
 7. [Submitting a pull request](#submitting-a-pull-request)
-8. [Versioning](#versioning)
-
-<br>
-
----
 
 <br>
 
