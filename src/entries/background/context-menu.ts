@@ -5,11 +5,8 @@ const inpageMessenger = getMessenger({
 })
 
 export function setupContextMenu() {
-  chrome.contextMenus.create({
-    id: 'open-wallet',
-    title: 'Open Wallet',
-    type: 'normal',
-    contexts: ['action'],
+  chrome.action.onClicked.addListener(() => {
+    inpageMessenger.send('toggleWallet', { open: true })
   })
 
   if (process.env.NODE_ENV === 'development') {
@@ -34,9 +31,7 @@ export function setupContextMenu() {
   }
 
   chrome.contextMenus.onClicked.addListener(({ menuItemId }) => {
-    if (menuItemId === 'open-wallet') {
-      inpageMessenger.send('toggleWallet', { open: true })
-    } else if (menuItemId === 'open-wallet-tab') {
+    if (menuItemId === 'open-wallet-tab') {
       chrome.tabs.create({
         url: `chrome-extension://${chrome.runtime.id}/src/index.html`,
       })

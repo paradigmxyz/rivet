@@ -6,6 +6,7 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
     description: pkg.extension.description,
     version: pkg.version,
     manifest_version: 3,
+    action: {},
     background: {
       service_worker: 'src/entries/background/index.ts',
     },
