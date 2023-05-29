@@ -57,7 +57,7 @@ export function setupRpcHandler() {
         })
       })
 
-      inpageMessenger.send('toggleWallet', { open: false })
+      inpageMessenger.send('toggleWallet', { useStorage: true })
       removePendingRequest(payload.id)
 
       return response

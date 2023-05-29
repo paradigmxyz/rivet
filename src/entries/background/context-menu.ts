@@ -6,7 +6,7 @@ const inpageMessenger = getMessenger({
 
 export function setupContextMenu() {
   chrome.action.onClicked.addListener(() => {
-    inpageMessenger.send('toggleWallet', { open: true })
+    inpageMessenger.send('toggleWallet', undefined)
   })
 
   if (process.env.NODE_ENV === 'development') {

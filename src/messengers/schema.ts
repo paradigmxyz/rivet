@@ -9,5 +9,11 @@ export type Schema = {
     response: void,
   ]
   request: [payload: RpcRequest, response: RpcResponse]
-  toggleWallet: [payload: { open: boolean }, response: void]
+  toggleWallet: [
+    payload:
+      | { open: boolean; useStorage?: never }
+      | { open?: never; useStorage: true }
+      | void,
+    response: void,
+  ]
 }
