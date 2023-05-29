@@ -32,8 +32,8 @@ The Dev Wallet has four isolated contexts:
   - It is exposed to **only a subset** of the global [Web Extension APIs](https://developer.chrome.com/docs/extensions/reference/) (ie. `chrome.runtime`). 
   - Its [`window` instance](https://developer.mozilla.org/en-US/docs/Web/API/Window) is **not the same** as the current webpage's `window` instance.
 - **Inpage**:
-  - Executes JavaScript in the context of the current webpage. The **Inpage** context is mainly responsible for injecting the `window.ethereum` provider into the current webpage.
-  - It is **not** exposed to the global [Web Extension APIs](https://developer.chrome.com/docs/extensions/reference/) (ie. `chrome.runtime`).
+  - Similar to the **Content Script** and executes JavaScript in the context of the current webpage. The **Inpage** context is mainly responsible for injecting the `window.ethereum` provider into the current webpage.
+  - Unlike the Content Script, it is **not** exposed to the global [Web Extension APIs](https://developer.chrome.com/docs/extensions/reference/) (ie. `chrome.runtime`).
   - Its [`window` instance](https://developer.mozilla.org/en-US/docs/Web/API/Window) is the same as the current webpage's `window` instance.
 
 Below is a diagram which visualizes these four contexts.
@@ -49,9 +49,9 @@ Below is a diagram which visualizes these four contexts.
 We can utilize a combination of the [`chrome.runtime.sendMessage`/`chrome.tabs.sendMessage` APIs](https://developer.chrome.com/docs/extensions/mv3/messaging/) and [`window.postMessage` API](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) to communicate between contexts. 
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./assets/context-diagram-dark.png">
-  <source media="(prefers-color-scheme: light)" srcset="./assets/context-diagram-light.png">
-  <img src="./assets/context-diagram-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="./assets/messaging-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="./assets/messaging-light.png">
+  <img src="./assets/messaging-light.png">
 </picture>
 
 It is important to note that the **Inpage** context does not have access to Web Extension APIs, and the **Background**/**Wallet** contexts do not have access to the `window` instance, which makes messaging between these contexts non-trivial. To make this possible, we need to set up a "bridge relay" in the **Content Script** context which has access to `window` and the Web Extension APIs.
@@ -63,7 +63,7 @@ To make this communication easier, we have created a ["Messenger" abstraction](.
 `example.ts` (**Wallet** context)
 
 ```tsx
-import { getMessenger } from '~/core/messengers';
+import { getMessenger } from '~/messengers';
 
 const messenger = getMessenger({ connection: 'background <> wallet' });
 
@@ -76,7 +76,7 @@ async function example() {
 `background.ts` (**Background** context)
 
 ```tsx
-import { getMessenger } from '~/core/messengers';
+import { getMessenger } from '~/messengers';
 
 const messenger = getMessenger({ connection: 'background <> wallet' });
 
