@@ -1,7 +1,7 @@
 import { getMessenger } from '~/messengers'
 import { windowStorage } from '~/storage'
 
-const backgroundMessenger = getMessenger({ connection: 'background <> inpage' })
+const backgroundMessenger = getMessenger({ connection: 'background <> contentScript' })
 
 export async function injectWallet() {
   const extensionId: string = await backgroundMessenger.send(

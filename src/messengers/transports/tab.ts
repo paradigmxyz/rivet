@@ -30,11 +30,11 @@ function sendMessage<TPayload>(
  * scripts where `chrome.tabs` & `chrome.runtime` is defined.
  *
  * Compatible connections:
- * - ❌ Popup <-> Inpage
+ * - ❌ Wallet <-> Inpage
  * - ❌ Background <-> Inpage
- * - ❌ Background <-> Popup
- * - ✅ Popup <-> Content Script
- * - ✅ Background <-> Content Script
+ * - ✅ Background <-> Wallet
+ * - ❌ Wallet <-> Content Script
+ * - ❌ Background <-> Content Script
  * - ❌ Content Script <-> Inpage
  */
 export const tabTransport = {

@@ -5,13 +5,14 @@ const inpageMessenger = getMessenger({
 })
 
 export function setupContextMenu() {
+  chrome.contextMenus.create({
+    id: 'open-wallet',
+    title: 'Open Wallet',
+    type: 'normal',
+    contexts: ['action'],
+  })
+
   if (process.env.NODE_ENV === 'development') {
-    chrome.contextMenus.create({
-      id: 'open-wallet',
-      title: 'Open Wallet',
-      type: 'normal',
-      contexts: ['action'],
-    })
     chrome.contextMenus.create({
       id: 'open-wallet-tab',
       title: 'Open Wallet in a New Tab',
@@ -30,23 +31,23 @@ export function setupContextMenu() {
       type: 'normal',
       contexts: ['action'],
     })
-
-    chrome.contextMenus.onClicked.addListener(({ menuItemId }) => {
-      if (menuItemId === 'open-wallet') {
-        inpageMessenger.send('toggleWallet', { open: true })
-      } else if (menuItemId === 'open-wallet-tab') {
-        chrome.tabs.create({
-          url: `chrome-extension://${chrome.runtime.id}/src/index.html`,
-        })
-      } else if (menuItemId === 'open-design-system') {
-        chrome.tabs.create({
-          url: `chrome-extension://${chrome.runtime.id}/src/design-system/playground/index.html`,
-        })
-      } else if (menuItemId === 'open-test-dapp') {
-        chrome.tabs.create({
-          url: 'http://localhost:5173',
-        })
-      }
-    })
   }
+
+  chrome.contextMenus.onClicked.addListener(({ menuItemId }) => {
+    if (menuItemId === 'open-wallet') {
+      inpageMessenger.send('toggleWallet', { open: true })
+    } else if (menuItemId === 'open-wallet-tab') {
+      chrome.tabs.create({
+        url: `chrome-extension://${chrome.runtime.id}/src/index.html`,
+      })
+    } else if (menuItemId === 'open-design-system') {
+      chrome.tabs.create({
+        url: `chrome-extension://${chrome.runtime.id}/src/design-system/playground/index.html`,
+      })
+    } else if (menuItemId === 'open-test-dapp') {
+      chrome.tabs.create({
+        url: 'http://localhost:5173',
+      })
+    }
+  })
 }
