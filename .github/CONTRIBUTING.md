@@ -70,8 +70,6 @@ It is important to note that the **Inpage** context does not have access to Web 
 
 To make this communication easier, we have created a ["Messenger" abstraction](../src/messengers/getMessenger.ts) so you don't have to think about what transport (`window.postMessage` vs. `chrome.runtime.sendMessage` vs. `chrome.tabs.sendMessage`) to use, setting up a bridge relay, and dealing their synchronous nature.
 
-<br>
-
 #### Example
 
 `example.ts` (**Wallet** context)
