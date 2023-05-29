@@ -1,19 +1,18 @@
 import { formatEther, hexToBigInt } from 'viem'
 
 import { Button, Inline, Row, Rows, Stack, Text } from '~/design-system'
-import { createPendingRequestMessenger } from '~/messengers'
+import { getMessenger } from '~/messengers'
+import type { RpcRequest } from '~/messengers/schema'
 
-import type { RpcRequest } from '../messengers/createRpcMessenger'
-
-const pendingRequestMessenger = createPendingRequestMessenger({
-  connection: 'background <> devtools',
+const backgroundMessenger = getMessenger({
+  connection: 'background <> wallet',
 })
 
 export default function PendingRequest({ request }: { request: RpcRequest }) {
   const handleApprove = async () => {
-    await pendingRequestMessenger.send('pendingRequest', {
+    await backgroundMessenger.send('pendingRequest', {
       request,
-      type: 'approve',
+      status: 'approved',
     })
   }
 

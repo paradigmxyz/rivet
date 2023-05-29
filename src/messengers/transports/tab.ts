@@ -26,7 +26,7 @@ function sendMessage<TPayload>(
 }
 
 /**
- * Creates a "tab messenger" that can be used to communicate between
+ * Creates a "tab transport" that can be used to communicate between
  * scripts where `chrome.tabs` & `chrome.runtime` is defined.
  *
  * Compatible connections:

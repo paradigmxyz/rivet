@@ -1,6 +1,6 @@
-import { createMessenger } from '~/messengers'
+import { getMessenger } from '~/messengers'
 
 export function setupExtensionId() {
-  const messenger = createMessenger({ connection: 'background <> inpage' })
+  const messenger = getMessenger({ connection: 'background <> inpage' })
   messenger.reply('extensionId', async () => chrome.runtime.id)
 }

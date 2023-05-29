@@ -2,7 +2,7 @@ import type { SendMessage, Transport } from './types'
 import { isValidReply, isValidSend } from './utils'
 
 /**
- * Creates a "window messenger" that can be used to communicate between
+ * Creates a "window transport" that can be used to communicate between
  * scripts where `window` is defined.
  *
  * Compatible connections:

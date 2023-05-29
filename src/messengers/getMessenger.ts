@@ -1,25 +1,27 @@
+import type { Schema } from './schema'
 import { bridgeTransport } from './transports/bridge'
 import { extensionTransport } from './transports/extension'
 import { tabTransport } from './transports/tab'
+import type { Transport } from './transports/types'
 import { windowTransport } from './transports/window'
-import type { Messenger, MessengerSchema } from './types'
 
 const transportsForConnection = {
-  'devtools <> inpage': bridgeTransport,
+  'wallet <> inpage': bridgeTransport,
   'background <> inpage': bridgeTransport,
-  'background <> devtools': extensionTransport,
-  'devtools <> contentScript': tabTransport,
+  'background <> wallet': extensionTransport,
+  'wallet <> contentScript': tabTransport,
   'background <> contentScript': tabTransport,
   'contentScript <> inpage': windowTransport,
 } as const
 type Connection = keyof typeof transportsForConnection
 
-export type CreateMessengerParameters = {
+export type GetMessengerParameters = {
   connection: Connection
 }
+export type Messenger = Transport<Schema>
 
-export function createMessenger<
-  TSchema extends MessengerSchema | undefined = undefined,
->({ connection }: CreateMessengerParameters): Messenger<TSchema> {
-  return transportsForConnection[connection] as Messenger<TSchema>
+export function getMessenger({
+  connection,
+}: GetMessengerParameters): Messenger {
+  return transportsForConnection[connection] as Messenger
 }

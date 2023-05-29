@@ -1,11 +1,11 @@
 import type { EIP1193Provider } from 'viem'
 
-import type { RpcMessenger } from './messengers/createRpcMessenger'
-import { createEmitter } from './utils/emitter'
+import type { Messenger } from '~/messengers'
+import { createEmitter } from '~/utils'
 
 export function createProvider({
   messenger,
-}: { messenger: RpcMessenger }): EIP1193Provider {
+}: { messenger: Messenger }): EIP1193Provider {
   // @ts-expect-error
   const _emitter = createEmitter()
 

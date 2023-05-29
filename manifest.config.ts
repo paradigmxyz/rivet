@@ -32,7 +32,7 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
     host_permissions: ['*://*/*'],
     web_accessible_resources: [
       {
-        resources: ['src/entries/inpage/index.ts', '*.woff2'],
+        resources: ['*.woff2'],
         matches: ['<all_urls>'],
       },
     ],

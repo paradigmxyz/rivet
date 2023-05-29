@@ -1,6 +1,6 @@
 import { useStore } from 'zustand'
 
-import type { RpcRequest } from '../messengers/createRpcMessenger'
+import type { RpcRequest } from '~/messengers/schema'
 import { createStore } from './utils'
 
 export type PendingRequestsState = {

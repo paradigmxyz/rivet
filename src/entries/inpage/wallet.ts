@@ -1,21 +1,27 @@
-import { createMessenger } from '~/messengers'
+import { getMessenger } from '~/messengers'
+import { windowStorage } from '~/storage'
 
-const backgroundMessenger = createMessenger({ connection: 'background <> inpage' })
+const backgroundMessenger = getMessenger({ connection: 'background <> inpage' })
 
-export async function injectDevtools() {
-  const extensionId: string = await backgroundMessenger.send('extensionId', undefined)
+export async function injectWallet() {
+  const extensionId: string = await backgroundMessenger.send(
+    'extensionId',
+    undefined,
+  )
 
-  // Inject Devtools elements
+  // Inject wallet elements
   const container = injectContainer()
   injectIframe({ container, extensionId })
-  const handle = injectHandle({ container })
-  const openButton = injectOpenButton({ container })
-  // TODO: put close button inside devtools context
-  const closeButton = injectCloseButton({ container })
 
-  // Setup listeners
+  const handle = injectHandle({ container })
   setupHandleListeners({ container, handle })
-  setupToggleListeners({ container, closeButton, handle, openButton })
+
+  const displayOpenButton = windowStorage.local.getItem('display-toggle')
+  if (displayOpenButton !== false) {
+    const openButton = injectOpenButton({ container })
+    const closeButton = injectCloseButton({ container })
+    setupToggleListeners({ container, closeButton, handle, openButton })
+  }
 }
 
 /////////////////////////////////////////////////////////////////////
@@ -66,11 +72,11 @@ function injectOpenButton({ container }: { container: HTMLElement }) {
   const toggle = document.createElement('div')
   toggle.style.background = 'blue'
   toggle.style.position = 'absolute'
-  toggle.style.top = '16px'
+  toggle.style.bottom = '16px'
   toggle.style.right = '16px'
   toggle.style.borderRadius = '100%'
-  toggle.style.width = '28px'
-  toggle.style.height = '28px'
+  toggle.style.width = '40px'
+  toggle.style.height = '40px'
   toggle.style.cursor = 'pointer'
   toggle.style.display = 'flex'
   toggle.style.alignItems = 'center'
@@ -93,9 +99,25 @@ function injectOpenButton({ container }: { container: HTMLElement }) {
     'M11.7502 8.03125C7.74503 8.02475 3.84276 9.3251 0.541226 11.7448C0.768001 8.85732 1.92252 6.1417 3.80979 4.08629C5.92352 1.78424 8.78075 0.5 11.75 0.5H82.25C83.7212 0.5 85.1791 0.815517 86.5409 1.42987C87.9029 2.04429 89.1434 2.94617 90.1902 4.08629C91.2371 5.22648 92.0696 6.58236 92.6383 8.07747C93.0835 9.24825 93.3599 10.4856 93.4588 11.7455C90.2592 9.4021 86.4027 8.03125 82.25 8.03125L11.7508 8.03125C11.7506 8.03125 11.7504 8.03125 11.7502 8.03125ZM82.25 25.0938H11.7508C7.74541 25.0871 3.84292 26.3875 0.541226 28.8073C0.768001 25.9198 1.92252 23.2042 3.80979 21.1488C5.92352 18.8467 8.78075 17.5625 11.75 17.5625H82.25C83.7212 17.5625 85.1791 17.878 86.5409 18.4924C87.9029 19.1068 89.1434 20.0087 90.1902 21.1488C91.2371 22.289 92.0696 23.6449 92.6383 25.14C93.0835 26.3108 93.3599 27.5481 93.4588 28.808C90.2592 26.4646 86.4027 25.0938 82.25 25.0938ZM31.3333 34.625C32.5713 34.625 33.7682 35.1602 34.6577 36.129C35.5485 37.0992 36.0556 38.4236 36.0556 39.8125C36.0556 42.9488 37.1991 45.9644 39.2464 48.194C41.2949 50.4251 44.0829 51.6875 47 51.6875C49.9171 51.6875 52.7051 50.4251 54.7536 48.194C56.8009 45.9644 57.9444 42.9488 57.9444 39.8125C57.9444 38.4236 58.4515 37.0992 59.3423 36.129C60.2318 35.1602 61.4287 34.625 62.6667 34.625H82.25C83.7212 34.625 85.1791 34.9405 86.5409 35.5549C87.9029 36.1693 89.1434 37.0712 90.1902 38.2113C91.2371 39.3515 92.0696 40.7074 92.6383 42.2025C93.2069 43.6976 93.5 45.3014 93.5 46.9219V78.2031C93.5 79.8236 93.2069 81.4274 92.6383 82.9225C92.0696 84.4176 91.2371 85.7735 90.1902 86.9137C89.1434 88.0538 87.9029 88.9557 86.5409 89.5701C85.1791 90.1845 83.7212 90.5 82.25 90.5H11.75C8.78075 90.5 5.92352 89.2158 3.80979 86.9137C1.69475 84.6102 0.5 81.4776 0.5 78.2031V46.9219C0.5 43.6474 1.69475 40.5148 3.80979 38.2113C5.92352 35.9092 8.78075 34.625 11.75 34.625H31.3333Z',
   )
   path.setAttribute('stroke', 'white')
-  path.setAttribute('stroke-width', '4')
+  path.setAttribute('stroke-width', '5')
   path.setAttribute('fill', 'none')
   walletIcon.appendChild(path)
+
+  const closeButton = document.createElement('div')
+  closeButton.innerText = '✕'
+  closeButton.style.position = 'absolute'
+  closeButton.style.fontSize = '12px'
+  closeButton.style.top = '-6px'
+  closeButton.style.right = '-6px'
+  closeButton.style.cursor = 'pointer'
+  closeButton.style.alignItems = 'center'
+  closeButton.style.justifyContent = 'center'
+  closeButton.addEventListener('click', (e) => {
+    e.stopPropagation()
+    toggle.style.display = 'none'
+    windowStorage.local.setItem('display-toggle', false)
+  })
+  toggle.appendChild(closeButton)
 
   return toggle
 }
@@ -159,6 +181,12 @@ function setupToggleListeners({
   handle: HTMLElement
   openButton: HTMLElement
 }) {
+  let drag = false
+  let dragging = true
+
+  /////////////////////////////////////////////////////////////////////
+  // Click Listeners
+
   async function listener({ open }: { open: boolean }) {
     if (!open) {
       openButton.style.display = 'flex'
@@ -175,12 +203,55 @@ function setupToggleListeners({
   }
 
   openButton.addEventListener('click', () => {
+    if (dragging) return
     listener({ open: true })
   })
 
   closeButton.addEventListener('click', () => {
+    if (dragging) return
     listener({ open: false })
   })
 
-  backgroundMessenger.reply('toggle-devtools', listener)
+  backgroundMessenger.reply('toggleWallet', listener)
+
+  /////////////////////////////////////////////////////////////////////
+  // Drag Listeners
+
+  openButton.addEventListener('mousedown', () => (drag = true))
+
+  document.addEventListener('mousemove', (event) => {
+    if (!drag) return
+
+    const pageWidth = window.innerWidth
+    const pageHeight = window.innerHeight
+
+    const rightBound = 0
+    const bottomBound = 0
+    const leftBound = pageWidth - parseInt(openButton.style.width) - 0
+    const topBound = pageHeight - parseInt(openButton.style.height) - 0
+
+    let right = pageWidth - event.clientX - parseInt(openButton.style.width) / 2
+    let bottom =
+      pageHeight - event.clientY - parseInt(openButton.style.height) / 2
+
+    if (right < rightBound) right = rightBound
+    if (bottom < bottomBound) bottom = bottomBound
+    if (right > leftBound) right = leftBound
+    if (bottom > topBound) bottom = topBound
+
+    openButton.style.right = `${right}px`
+    openButton.style.bottom = `${bottom}px`
+  })
+
+  document.addEventListener('mousemove', () => {
+    dragging = true
+    setTimeout(() => {
+      if (drag) return
+      dragging = false
+    }, 0)
+  })
+
+  document.addEventListener('mouseup', () => {
+    drag = false
+  })
 }

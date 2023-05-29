@@ -10,28 +10,23 @@ import {
   createStore as create,
 } from 'zustand/vanilla'
 
-import { localStorage } from '../storage'
 import * as stores from './index'
+import { webextStorage } from '~/storage'
 
 //////////////////////////////////////////////////////////////////
 // Zustand Storages
 
 export const persistStorage: StateStorage = {
-  getItem: async (key: string): Promise<string | null> => {
-    return (await localStorage.get(key)) || null
-  },
-  setItem: async (key: string, value: string): Promise<void> => {
-    await localStorage.set(key, value)
-  },
-  removeItem: async (key: string): Promise<void> => {
-    await localStorage.remove(key)
+  ...webextStorage.local,
+  getItem: async (key) => {
+    return (await webextStorage.local.getItem(key)) || null
   },
 }
 
 export const noopStorage: StateStorage = {
-  getItem: async (): Promise<string | null> => null,
-  setItem: async (): Promise<void> => undefined,
-  removeItem: async (): Promise<void> => undefined,
+  getItem: async () => null,
+  setItem: async () => undefined,
+  removeItem: async () => undefined,
 }
 
 //////////////////////////////////////////////////////////////////
@@ -80,12 +75,12 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
       )
       const version = persistOptions.version
       const newStore = persistOptions.serialize?.({ state, version })
-      await localStorage.set(storageName, newStore)
+      await webextStorage.local.setItem(storageName, newStore)
     }
     store.persist.rehydrate()
   }
 
-  localStorage.listen(storageName, listener)
+  webextStorage.local.subscribe(storageName, listener)
 }
 
 export function syncStores() {

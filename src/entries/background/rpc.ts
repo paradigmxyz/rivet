@@ -2,11 +2,7 @@ import { type Chain, createClient, custom } from 'viem'
 import { foundry, mainnet } from 'viem/chains'
 import { rpc } from 'viem/utils'
 
-import {
-  createMessenger,
-  createPendingRequestMessenger,
-  createRpcMessenger,
-} from '~/messengers'
+import { getMessenger } from '~/messengers'
 import { pendingRequestsStore } from '~/zustand'
 
 const anvilMainnet = {
@@ -30,27 +26,25 @@ const rpcClient = createClient({
   }),
 })
 
-const inpageMessener = createMessenger({
+const inpageMessenger = getMessenger({
   connection: 'background <> inpage',
 })
-const pendingRequestMessenger = createPendingRequestMessenger({
-  connection: 'background <> devtools',
+const walletMessenger = getMessenger({
+  connection: 'background <> wallet',
 })
-const rpcMessenger = createRpcMessenger({ connection: 'background <> inpage' })
 
 export function setupRpcHandler() {
-  rpcMessenger.reply('request', async (payload) => {
+  inpageMessenger.reply('request', async (payload) => {
     const { setPendingRequest, removePendingRequest } =
       pendingRequestsStore.getState()
 
     if (payload.method === 'eth_sendTransaction') {
       setPendingRequest(payload)
 
-      console.log('test')
-      inpageMessener.send('toggle-devtools', { open: true })
+      inpageMessenger.send('toggleWallet', { open: true })
 
       const response = await new Promise((resolve, reject) => {
-        pendingRequestMessenger.reply('pendingRequest', async ({ request }) => {
+        walletMessenger.reply('pendingRequest', async ({ request }) => {
           if (request.id !== payload.id) return
           try {
             const response = await rpcClient.request(request)
@@ -63,7 +57,7 @@ export function setupRpcHandler() {
         })
       })
 
-      inpageMessener.send('toggle-devtools', { open: false })
+      inpageMessenger.send('toggleWallet', { open: false })
       removePendingRequest(payload.id)
 
       return response

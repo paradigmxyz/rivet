@@ -1,12 +1,12 @@
-import { createRpcMessenger } from '~/messengers'
+import { getMessenger } from '~/messengers'
 import { createProvider } from '~/provider'
 
-const rpcMessenger = createRpcMessenger({ connection: 'background <> inpage' })
+const backgroundMessenger = getMessenger({ connection: 'background <> inpage' })
 
 export function injectProvider() {
   if (shouldInjectProvider()) {
     console.log('injection complete in window')
-    window.ethereum = createProvider({ messenger: rpcMessenger })
+    window.ethereum = createProvider({ messenger: backgroundMessenger })
     window.dispatchEvent(new Event('ethereum#initialized'))
   }
 }

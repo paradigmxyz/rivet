@@ -1,4 +1,4 @@
-import { detectScriptType } from '../../utils/detectScriptType'
+import { detectScriptType } from '~/utils'
 
 import { tabTransport } from './tab'
 import type { Transport } from './types'
