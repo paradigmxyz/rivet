@@ -5,7 +5,18 @@ import { type TextStyles, textStyles } from './Text.css'
 
 export type TextProps = {
   align?: TextStyles['textAlign']
-  as?: 'div' | 'p' | 'span' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'code'
+  as?:
+    | 'div'
+    | 'p'
+    | 'span'
+    | 'h1'
+    | 'h2'
+    | 'h3'
+    | 'h4'
+    | 'h5'
+    | 'h6'
+    | 'code'
+    | 'pre'
   children: React.ReactNode
   color?: TextStyles['color']
   size?: TextStyles['fontSize']

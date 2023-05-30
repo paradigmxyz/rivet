@@ -3,9 +3,11 @@ import {
   type Address,
   type Hash,
   type Hex,
+  isHex,
   numberToHex,
   parseEther,
   stringToHex,
+  stringify,
 } from 'viem'
 import 'viem/window'
 import '~/design-system/styles/global.css'
@@ -19,6 +21,7 @@ export default function App() {
       marginHorizontal='auto'
       maxWidth='1152px'
       paddingTop='40px'
+      paddingBottom='152px'
     >
       <Stack gap='32px'>
         <Text weight='semibold' size='32px'>
@@ -30,6 +33,7 @@ export default function App() {
         <ChainId />
         <SendTransaction />
         <SignMessage />
+        <SignTypedData />
       </Stack>
     </Box>
   )
@@ -201,7 +205,6 @@ function SignMessage() {
       })
       setSignature(signature)
     } catch (err) {
-      console.log(err)
       setError(err as Error)
     }
   }
@@ -219,6 +222,73 @@ function SignMessage() {
             placeholder='message'
           />
         </Box>
+        <Button onClick={handleClickSign} width='fit'>
+          Sign
+        </Button>
+      </Inline>
+      {signature && <Text>Signature: {signature}</Text>}
+      {error && <Text>Error: {error.message}</Text>}
+    </Stack>
+  )
+}
+
+function SignTypedData() {
+  const [signature, setSignature] = useState<Hex | undefined>()
+  const [error, setError] = useState<Error>()
+
+  const handleClickSign = async () => {
+    setSignature(undefined)
+    try {
+      const typedData = stringify(
+        {
+          domain: {
+            name: 'Ether Mail',
+            version: '1',
+            chainId: 1,
+            verifyingContract: '0x0000000000000000000000000000000000000000',
+          },
+          types: {
+            Person: [
+              { name: 'name', type: 'string' },
+              { name: 'wallet', type: 'address' },
+            ],
+            Mail: [
+              { name: 'from', type: 'Person' },
+              { name: 'to', type: 'Person' },
+              { name: 'contents', type: 'string' },
+            ],
+          },
+          primaryType: 'Mail',
+          message: {
+            from: {
+              name: 'Cow',
+              wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826',
+            },
+            to: {
+              name: 'Bob',
+              wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB',
+            },
+            contents: 'Hello, Bob!',
+          },
+        },
+        (_, value) => (isHex(value) ? value.toLowerCase() : value),
+      )
+      const signature = await window.ethereum?.request({
+        method: 'eth_signTypedData_v4',
+        params: ['0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', typedData],
+      })
+      setSignature(signature)
+    } catch (err) {
+      setError(err as Error)
+    }
+  }
+
+  return (
+    <Stack gap='12px'>
+      <Text size='18px' weight='semibold'>
+        eth_signTypedData_v4
+      </Text>
+      <Inline wrap={false} gap='12px'>
         <Button onClick={handleClickSign} width='fit'>
           Sign
         </Button>

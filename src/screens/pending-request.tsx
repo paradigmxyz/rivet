@@ -41,6 +41,9 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
           {request.method === 'personal_sign' && (
             <SignMessageDetails params={request.params} />
           )}
+          {request.method === 'eth_signTypedData_v4' && (
+            <SignTypedData params={request.params} />
+          )}
         </Stack>
       </Row>
       <Row height='content'>
@@ -89,6 +92,23 @@ function SignMessageDetails({
   return (
     <Stack gap='12px'>
       <Text size='12px'>Message: {hexToString(data)}</Text>
+      <Text size='12px'>Address: {address}</Text>
+    </Stack>
+  )
+}
+
+function SignTypedData({
+  params,
+}: {
+  params: ExtractParams<'eth_signTypedData_v4'>
+}) {
+  const [address, data] = params
+  return (
+    <Stack gap='12px'>
+      <Text size='12px'>Message:</Text>
+      <Text as='pre' size='12px'>
+        {JSON.stringify(JSON.parse(data), null, 2)}
+      </Text>
       <Text size='12px'>Address: {address}</Text>
     </Stack>
   )
