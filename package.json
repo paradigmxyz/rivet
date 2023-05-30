@@ -7,6 +7,7 @@
     "description": "A cool wallet."
   },
   "scripts": {
+    "anvil": "anvil --fork-url https://cloudflare-eth.com",
     "build": "tsc && vite build",
     "build:ds": "vite build -c src/design-system/vite.config.ts",
     "dev": "vite --open",

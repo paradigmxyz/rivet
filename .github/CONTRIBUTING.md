@@ -175,10 +175,11 @@ pnpm install
 
 ### Running the Web Extension
 
-After you have installed dependencies, you are ready to run the Web Extension. To do so, run the following command:
+After you have installed dependencies, you are ready to run the Web Extension. To do so, run the following:
 
 ```bash
-pnpm dev
+pnpm anvil # start Anvil instance
+pnpm dev # start dev server
 ```
 
 This will run a script that will build the Web Extension and start a dev server for the Test Dapp, it will also open the Test Dapp in a new browser tab. The Web Extension also utilizes Hot Module Replacement (HMR), so you can make changes to the code and see them reflected in the extension without having to reload the extension itself.
