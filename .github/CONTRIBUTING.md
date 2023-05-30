@@ -1,18 +1,10 @@
 # Contributing
 
-Thanks for your interest in contributing to Dev Wallet! Please take a moment to review this document **before submitting a pull request.**
+Thanks for your interest in contributing to Dev Wallet! Please take a moment to review this document **before submitting a pull request.** If you want to contribute, but aren't sure where to start, you can create a [new discussion](https://github.com/wagmi-dev/wallet/discussions).
 
-If you want to contribute, but aren't sure where to start, you can create a [new discussion](https://github.com/wagmi-dev/wallet/discussions).
-
-> **Note**
->
-> **Please ask first before starting work on any significant new features.**
+> **Note** **Please ask first before starting work on any significant new features.**
 >
 > It's never a fun experience to have your pull request declined after investing time and effort into a new feature. To avoid this from happening, we request that contributors create a [feature request](https://github.com/wagmi-dev/wallet/discussions/new?category=ideas) to first discuss any API changes or significant new ideas.
-
-<br>
-
----
 
 <br>
 
@@ -97,7 +89,7 @@ messenger.reply('ping', (args) => {
 });
 ```
 
----
+<br>
 
 ## Getting Started
 
@@ -118,17 +110,17 @@ This guide is intended to help you get started with contributing. By following t
 To start contributing to the project, clone it to your local machine using git:
 
 ```bash
-git clone https://github.com/wagmi-dev/wallet.git --recurse-submodules
+git clone https://github.com/wagmi-dev/wallet.git
 ```
 
 Or the [GitHub CLI](https://cli.github.com):
 
 ```bash
-gh repo clone wagmi-dev/wallet -- --recurse-submodules
+gh repo clone wagmi-dev/wallet
 ```
 
 <div align="right">
-  <a href="#basic-guide">&uarr; back to top</a></b>
+  <a href="#getting-started">&uarr; back to top</a></b>
 </div>
 
 ### Installing Node.js and pnpm
@@ -148,7 +140,7 @@ If the versions are not correct or you don't have Node.js or pnpm installed, dow
 - Install [pnpm](https://pnpm.io/installation)
 
 <div align="right">
-  <a href="#basic-guide">&uarr; back to top</a></b>
+  <a href="#getting-started">&uarr; back to top</a></b>
 </div>
 
 ### Installing Anvil
@@ -161,6 +153,10 @@ Install Anvil using the following command:
 curl -L https://foundry.paradigm.xyz | bash
 ```
 
+<div align="right">
+  <a href="#getting-started">&uarr; back to top</a></b>
+</div>
+
 ### Installing dependencies
 
 Once in the project's root directory, run the following command to install the project's dependencies:
@@ -170,7 +166,7 @@ pnpm install
 ```
 
 <div align="right">
-  <a href="#basic-guide">&uarr; back to top</a></b>
+  <a href="#getting-started">&uarr; back to top</a></b>
 </div>
 
 ### Running the Web Extension
@@ -185,7 +181,7 @@ pnpm dev # start dev server
 This will run a script that will build the Web Extension and start a dev server for the Test Dapp, it will also open the Test Dapp in a new browser tab. The Web Extension also utilizes Hot Module Replacement (HMR), so you can make changes to the code and see them reflected in the extension without having to reload the extension itself.
 
 <div align="right">
-  <a href="#basic-guide">&uarr; back to top</a></b>
+  <a href="#getting-started">&uarr; back to top</a></b>
 </div>
 
 ### Installing the Web Extension
@@ -198,6 +194,10 @@ Once you have your dev server running, you can install the Web Extension in your
 4. Select the `dist/dev` folder in the Dev Wallet's root directory
 5. You're good to go! Don't forget to pin the Extension to your browser's toolbar for easy access. 🎉
 
+<div align="right">
+  <a href="#getting-started">&uarr; back to top</a></b>
+</div>
+
 ### Submitting a pull request
 
 When you're ready to submit a pull request, you can follow these naming conventions:
@@ -208,16 +208,17 @@ When you're ready to submit a pull request, you can follow these naming conventi
 When you submit a pull request, GitHub will automatically lint, build, and test your changes. If you see an ❌, it's most likely a bug in your code. Please, inspect the logs through the GitHub UI to find the cause.
 
 <div align="right">
-  <a href="#basic-guide">&uarr; back to top</a></b>
+  <a href="#getting-started">&uarr; back to top</a></b>
 </div>
 
 <br>
-<br>
 
-<div>
+---
+
+<div align="center">
   ✅ Now you're ready to contribute to the Dev Wallet!
 </div>
 
-<div align="right">
-  <a href="#advanced-guide">&uarr; back to top</a></b>
-</div>
+---
+
+<br>

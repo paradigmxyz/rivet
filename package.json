@@ -1,7 +1,6 @@
 {
   "name": "wallet",
   "version": "0.0.0",
-  "private": true,
   "extension": {
     "name": "Wallet",
     "description": "A cool wallet."
@@ -60,7 +59,6 @@
     "rome": "^12.1.2",
     "simple-git-hooks": "^2.8.1",
     "svg-path-commander": "^2.0.5",
-    "tsup": "^6.7.0",
     "typescript": "^5.0.2",
     "viem": "0.0.0-1-0.20230530T023515",
     "vite": "^4.3.0",
