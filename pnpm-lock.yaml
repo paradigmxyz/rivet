@@ -16,6 +16,15 @@ devDependencies:
   '@samrum/vite-plugin-web-extension':
     specifier: ^4.1.0
     version: 4.1.0(vite@4.3.0)
+  '@tanstack/query-async-storage-persister':
+    specifier: 5.0.0-alpha.42
+    version: 5.0.0-alpha.42
+  '@tanstack/react-query':
+    specifier: 5.0.0-alpha.42
+    version: 5.0.0-alpha.42(react-dom@18.2.0)(react@18.2.0)
+  '@tanstack/react-query-persist-client':
+    specifier: 5.0.0-alpha.42
+    version: 5.0.0-alpha.42(@tanstack/react-query@5.0.0-alpha.42)
   '@types/chroma-js':
     specifier: ^2.4.0
     version: 2.4.0
@@ -1144,6 +1153,48 @@ packages:
     engines: {node: '>=14.16'}
     dependencies:
       defer-to-connect: 2.0.1
+    dev: true
+
+  /@tanstack/query-async-storage-persister@5.0.0-alpha.42:
+    resolution: {integrity: sha512-JpQ3buQsefM+XbmyMLP3YN7c+KX7Mby8QMJuVl7PtPxLqG5xntRo3EOx7i6FSDczxySusKJ6VkTXAvxBDIkcMQ==}
+    dependencies:
+      '@tanstack/query-persist-client-core': 5.0.0-alpha.42
+    dev: true
+
+  /@tanstack/query-core@5.0.0-alpha.42:
+    resolution: {integrity: sha512-wkJl0M8VJdLl5x+VAeb5kjqlqL6rhcb40QeMeqtJuXpkfRU2I74f7kuLQf7vchBTfkkvsIztMdOEfl0nucZlWQ==}
+    dev: true
+
+  /@tanstack/query-persist-client-core@5.0.0-alpha.42:
+    resolution: {integrity: sha512-gIKMcy+Y0V8pXDxBozVUhwrk1K5rBxfz5nUIaEF6m75mdLgVtnX9nYdwBEErT93xE8wiNYAgRgGA/674VwP3yg==}
+    dependencies:
+      '@tanstack/query-core': 5.0.0-alpha.42
+    dev: true
+
+  /@tanstack/react-query-persist-client@5.0.0-alpha.42(@tanstack/react-query@5.0.0-alpha.42):
+    resolution: {integrity: sha512-qyUZsl3mCy4MPCVXBN5NcoBBRtPPrdEe6r5BHO28Me4LZzkjTMl7StmlwDI3OoehdupY8REcQCQUjJV/HK7HJw==}
+    peerDependencies:
+      '@tanstack/react-query': 5.0.0-alpha.42
+    dependencies:
+      '@tanstack/query-persist-client-core': 5.0.0-alpha.42
+      '@tanstack/react-query': 5.0.0-alpha.42(react-dom@18.2.0)(react@18.2.0)
+    dev: true
+
+  /@tanstack/react-query@5.0.0-alpha.42(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-FjuG1iQPSJO1r7wTK8tNr5mGbk9Iok+7UcSO1hmFAkHiASH+ARpyVy0wmMzgjrcWaSX3haGaitaIABcY243u5g==}
+    peerDependencies:
+      react: ^18.0.0
+      react-dom: ^18.0.0
+      react-native: '*'
+    peerDependenciesMeta:
+      react-dom:
+        optional: true
+      react-native:
+        optional: true
+    dependencies:
+      '@tanstack/query-core': 5.0.0-alpha.42
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
     dev: true
 
   /@thednp/dommatrix@2.0.4:

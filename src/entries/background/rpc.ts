@@ -1,18 +1,13 @@
-import { type Chain, createClient, custom } from 'viem'
-import { foundry, mainnet } from 'viem/chains'
+import { createClient, custom } from 'viem'
 import { type RpcResponse, rpc } from 'viem/utils'
 
 import { UserRejectedRequestError } from '~/errors'
 import { getMessenger } from '~/messengers'
+import { localMainnet } from '~/viem'
 import { pendingRequestsStore } from '~/zustand'
 
-const anvilMainnet = {
-  ...mainnet,
-  rpcUrls: foundry.rpcUrls,
-} as const satisfies Chain
-
 const rpcClient = createClient({
-  chain: anvilMainnet,
+  chain: localMainnet,
   transport: custom({
     async request({ method, params, id }) {
       // Anvil doesn't support `personal_sign` – use `eth_sign` instead.
@@ -21,7 +16,7 @@ const rpcClient = createClient({
         params = [params[1], params[0]]
       }
 
-      return rpc.http(anvilMainnet.rpcUrls.default.http[0], {
+      return rpc.http(localMainnet.rpcUrls.default.http[0], {
         body: {
           method,
           params,

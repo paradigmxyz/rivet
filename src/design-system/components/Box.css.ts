@@ -84,7 +84,23 @@ const boxBaseProperties = defineProperties({
       'space-between',
     ],
     backdropFilter: ['blur(26px)'],
+    borderBottomWidth: mapValues(strokeWeights, (borderBottomWidth) => ({
+      borderStyle: 'solid',
+      borderBottomWidth,
+    })),
+    borderLeftWidth: mapValues(strokeWeights, (borderLeftWidth) => ({
+      borderStyle: 'solid',
+      borderLeftWidth,
+    })),
     borderRadius: radii,
+    borderRightWidth: mapValues(strokeWeights, (borderRightWidth) => ({
+      borderStyle: 'solid',
+      borderRightWidth,
+    })),
+    borderTopWidth: mapValues(strokeWeights, (borderTopWidth) => ({
+      borderStyle: 'solid',
+      borderTopWidth,
+    })),
     borderWidth: mapValues(strokeWeights, (borderWidth) => ({
       borderStyle: 'solid',
       borderWidth,

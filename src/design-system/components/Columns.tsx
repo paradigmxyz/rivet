@@ -31,12 +31,13 @@ export function Columns({
   alignHorizontal,
   alignVertical,
   children,
-  gap,
+  gap = '0px',
 }: ColumnsProps) {
   return (
     <Box
       display='flex'
       flexDirection='row'
+      height='full'
       gap={gap}
       alignItems={alignVertical && alignVerticalToAlignItems[alignVertical]}
       justifyContent={
@@ -92,6 +93,7 @@ function PrivateColumn({ children, width }: ColumnProps) {
         className={width !== 'content' ? styles.width[width] : undefined}
         flexGrow='0'
         flexShrink='0'
+        height='full'
       >
         {children}
       </Box>
@@ -99,7 +101,7 @@ function PrivateColumn({ children, width }: ColumnProps) {
   }
 
   return (
-    <Box flexGrow='1' flexShrink='1' flexBasis='0'>
+    <Box flexGrow='1' flexShrink='1' flexBasis='0' height='full'>
       {children}
     </Box>
   )

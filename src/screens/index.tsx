@@ -1,6 +1,5 @@
-import { Link } from 'react-router-dom'
 import { Wallet } from '~/components/icons/Wallet'
-import { Box, Button, Row, Rows, Stack, Text } from '~/design-system'
+import { Row, Rows, Stack, Text } from '~/design-system'
 
 export default function Index() {
   return (
@@ -15,14 +14,6 @@ export default function Index() {
             Start using the most powerful, open-source, and developer-focused
             wallet to build your decentralized apps.
           </Text>
-        </Stack>
-      </Row>
-      <Row height='content'>
-        <Stack gap='8px'>
-          <Box as={Link} to='create-wallet'>
-            <Button as='div'>Create a new wallet</Button>
-          </Box>
-          <Button variant='stroked scrim'>Import preloaded wallets</Button>
         </Stack>
       </Row>
     </Rows>
