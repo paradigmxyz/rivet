@@ -20,7 +20,7 @@ const alignVerticalToJustifyContent = {
 } as const
 type AlignVertical = keyof typeof alignVerticalToJustifyContent
 
-type RowsProps = {
+export type RowsProps = {
   alignHorizontal?: AlignHorizontal
   alignVertical?: AlignVertical
   children: ReactNode
@@ -62,10 +62,11 @@ export function Rows({
   )
 }
 
-interface RowProps {
+export type RowProps = {
   alignVertical?: AlignVertical
-  height?: 'content' | keyof typeof styles.height
   children: ReactNode
+  height?: 'content' | keyof typeof styles.height
+  style?: React.CSSProperties
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -91,7 +92,7 @@ function getRowProps(node: NonNullable<ReactNode>): RowProps | null {
     : null
 }
 
-function PrivateRow({ alignVertical, children, height }: RowProps) {
+function PrivateRow({ alignVertical, children, height, style }: RowProps) {
   if (height) {
     return (
       <Box
@@ -102,6 +103,7 @@ function PrivateRow({ alignVertical, children, height }: RowProps) {
         display='flex'
         flexGrow='0'
         flexShrink='0'
+        style={style}
       >
         {children}
       </Box>
@@ -115,6 +117,7 @@ function PrivateRow({ alignVertical, children, height }: RowProps) {
       flexGrow='1'
       flexShrink='1'
       flexBasis='0'
+      style={style}
     >
       {children}
     </Box>

@@ -5,7 +5,8 @@ import {
   hexToString,
 } from 'viem'
 
-import { Button, Inline, Row, Rows, Stack, Text } from '~/design-system'
+import { Container } from '~/components'
+import { Button, Inline, Stack, Text } from '~/design-system'
 import { getMessenger } from '~/messengers'
 import type { RpcRequest } from '~/messengers/schema'
 
@@ -29,34 +30,33 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
   }
 
   return (
-    <Rows>
-      <Row>
-        <Stack gap='32px'>
-          <Text weight='medium' size='22px'>
-            Pending Request
-          </Text>
-          {request.method === 'eth_sendTransaction' && (
-            <SendTransactionDetails params={request.params} />
-          )}
-          {request.method === 'personal_sign' && (
-            <SignMessageDetails params={request.params} />
-          )}
-          {request.method === 'eth_signTypedData_v4' && (
-            <SignTypedData params={request.params} />
-          )}
-        </Stack>
-      </Row>
-      <Row height='content'>
+    <Container
+      footer={
         <Inline gap='12px' wrap={false}>
-          <Button onClick={handleApprove} variant='tint green'>
-            Approve
-          </Button>
           <Button onClick={handleReject} variant='tint red'>
             Reject
           </Button>
+          <Button onClick={handleApprove} variant='tint green'>
+            Approve
+          </Button>
         </Inline>
-      </Row>
-    </Rows>
+      }
+    >
+      <Stack gap='32px'>
+        <Text weight='medium' size='22px'>
+          Pending Request
+        </Text>
+        {request.method === 'eth_sendTransaction' && (
+          <SendTransactionDetails params={request.params} />
+        )}
+        {request.method === 'personal_sign' && (
+          <SignMessageDetails params={request.params} />
+        )}
+        {request.method === 'eth_signTypedData_v4' && (
+          <SignTypedData params={request.params} />
+        )}
+      </Stack>
+    </Container>
   )
 }
 

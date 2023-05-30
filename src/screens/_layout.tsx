@@ -21,7 +21,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           <Header />
         </Row>
         <Row>
-          <Box padding='24px'>{children}</Box>
+          <Box style={{ overflowY: 'scroll' }}>{children}</Box>
         </Row>
       </Rows>
     </Box>
@@ -42,7 +42,7 @@ function Header() {
   })
 
   const { data: addresses } = useQuery({
-    enabled: listening,
+    enabled: Boolean(listening),
     queryKey: ['addresses'],
     queryFn: walletClient.getAddresses,
   })
