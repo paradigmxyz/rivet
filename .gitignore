@@ -15,8 +15,6 @@ dist-ssr
 public/initializeTheme.*
 
 # Editor directories and files
-.vscode/*
-!.vscode/extensions.json
 .idea
 .DS_Store
 *.suo

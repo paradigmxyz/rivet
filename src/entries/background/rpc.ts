@@ -1,6 +1,6 @@
 import { type Chain, createClient, custom } from 'viem'
 import { foundry, mainnet } from 'viem/chains'
-import { rpc, type RpcRequest, type RpcResponse } from 'viem/utils'
+import { type RpcRequest, type RpcResponse, rpc } from 'viem/utils'
 
 import { UserRejectedRequestError } from '~/errors'
 import { getMessenger } from '~/messengers'
@@ -57,7 +57,7 @@ export function setupRpcHandler() {
                   error: {
                     code: UserRejectedRequestError.code,
                     message: UserRejectedRequestError.message,
-                    data: { request }
+                    data: { request },
                   },
                 } satisfies RpcResponse)
 

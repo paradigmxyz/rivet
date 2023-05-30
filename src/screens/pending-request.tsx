@@ -1,4 +1,4 @@
-import { formatEther, hexToBigInt, type EIP1474Methods } from 'viem'
+import { type EIP1474Methods, formatEther, hexToBigInt } from 'viem'
 
 import { Button, Inline, Row, Rows, Stack, Text } from '~/design-system'
 import { getMessenger } from '~/messengers'
@@ -40,7 +40,9 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
           <Button onClick={handleApprove} variant='tint green'>
             Approve
           </Button>
-          <Button onClick={handleReject} variant='tint red'>Reject</Button>
+          <Button onClick={handleReject} variant='tint red'>
+            Reject
+          </Button>
         </Inline>
       </Row>
     </Rows>
@@ -65,9 +67,7 @@ function SendTransactionDetails({
     <Stack gap='12px'>
       <Text size='12px'>From: {from}</Text>
       <Text size='12px'>To: {to}</Text>
-      <Text size='12px'>
-        Value: {formatEther(hexToBigInt(value ?? '0x0'))}
-      </Text>
+      <Text size='12px'>Value: {formatEther(hexToBigInt(value ?? '0x0'))}</Text>
     </Stack>
   )
 }
