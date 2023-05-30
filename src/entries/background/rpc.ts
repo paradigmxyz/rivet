@@ -1,7 +1,8 @@
 import { type Chain, createClient, custom } from 'viem'
 import { foundry, mainnet } from 'viem/chains'
-import { rpc } from 'viem/utils'
+import { rpc, type RpcRequest, type RpcResponse } from 'viem/utils'
 
+import { UserRejectedRequestError } from '~/errors'
 import { getMessenger } from '~/messengers'
 import { pendingRequestsStore } from '~/zustand'
 
@@ -18,7 +19,6 @@ const rpcClient = createClient({
         body: {
           method,
           params,
-          // @ts-expect-error – TODO: add upstream in viem
           id,
         },
       })
@@ -43,24 +43,38 @@ export function setupRpcHandler() {
 
       inpageMessenger.send('toggleWallet', { open: true })
 
-      const response = await new Promise((resolve, reject) => {
-        walletMessenger.reply('pendingRequest', async ({ request }) => {
-          if (request.id !== payload.id) return
-          try {
-            const response = await rpcClient.request(request)
-            resolve(response)
-            return response
-          } catch (err) {
-            reject(err)
-            throw err
-          }
+      try {
+        const response = await new Promise((resolve, reject) => {
+          walletMessenger.reply(
+            'pendingRequest',
+            async ({ request, status }) => {
+              if (request.id !== payload.id) return
+
+              if (status === 'rejected')
+                resolve({
+                  id: payload.id,
+                  jsonrpc: '2.0',
+                  error: {
+                    code: UserRejectedRequestError.code,
+                    message: UserRejectedRequestError.message,
+                    data: { request }
+                  },
+                } satisfies RpcResponse)
+
+              try {
+                const response = await rpcClient.request(request as RpcRequest)
+                resolve(response)
+              } catch (err) {
+                reject(err)
+              }
+            },
+          )
         })
-      })
-
-      inpageMessenger.send('toggleWallet', { useStorage: true })
-      removePendingRequest(payload.id)
-
-      return response
+        return response as RpcResponse
+      } finally {
+        inpageMessenger.send('toggleWallet', { useStorage: true })
+        removePendingRequest(payload.id)
+      }
     }
 
     return rpcClient.request(payload as any)

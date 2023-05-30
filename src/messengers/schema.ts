@@ -1,6 +1,7 @@
+import type { EIP1193Parameters, EIP1474Methods } from 'viem'
 import type { RpcResponse } from 'viem/utils'
 
-export type RpcRequest = { id: number; method: string; params?: any }
+export type RpcRequest = EIP1193Parameters<EIP1474Methods> & { id: number }
 
 export type Schema = {
   extensionId: [payload: void, response: string]

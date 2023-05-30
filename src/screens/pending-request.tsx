@@ -1,4 +1,4 @@
-import { formatEther, hexToBigInt } from 'viem'
+import { formatEther, hexToBigInt, type EIP1474Methods } from 'viem'
 
 import { Button, Inline, Row, Rows, Stack, Text } from '~/design-system'
 import { getMessenger } from '~/messengers'
@@ -16,6 +16,13 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
     })
   }
 
+  const handleReject = async () => {
+    await backgroundMessenger.send('pendingRequest', {
+      request,
+      status: 'rejected',
+    })
+  }
+
   return (
     <Rows>
       <Row>
@@ -23,13 +30,9 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
           <Text weight='medium' size='22px'>
             Pending Request
           </Text>
-          <Stack gap='12px'>
-            <Text size='12px'>From: {request.params[0].from}</Text>
-            <Text size='12px'>To: {request.params[0].to}</Text>
-            <Text size='12px'>
-              Value: {formatEther(hexToBigInt(request.params[0].value))}
-            </Text>
-          </Stack>
+          {request.method === 'eth_sendTransaction' && (
+            <SendTransactionDetails params={request.params} />
+          )}
         </Stack>
       </Row>
       <Row height='content'>
@@ -37,9 +40,34 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
           <Button onClick={handleApprove} variant='tint green'>
             Approve
           </Button>
-          <Button variant='tint red'>Reject</Button>
+          <Button onClick={handleReject} variant='tint red'>Reject</Button>
         </Inline>
       </Row>
     </Rows>
+  )
+}
+
+////////////////////////////////////////////////////////////////////////
+// Detail Components
+
+type ExtractParams<Method extends string> = Extract<
+  EIP1474Methods[number],
+  { Method: Method }
+>['Parameters']
+
+function SendTransactionDetails({
+  params,
+}: {
+  params: ExtractParams<'eth_sendTransaction'>
+}) {
+  const [{ from, to, value }] = params
+  return (
+    <Stack gap='12px'>
+      <Text size='12px'>From: {from}</Text>
+      <Text size='12px'>To: {to}</Text>
+      <Text size='12px'>
+        Value: {formatEther(hexToBigInt(value ?? '0x0'))}
+      </Text>
+    </Stack>
   )
 }
