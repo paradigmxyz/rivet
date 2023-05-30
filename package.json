@@ -41,7 +41,6 @@
     "@vitejs/plugin-react": "^4.0.0-beta.0",
     "bun": "^0.5.9",
     "chroma-js": "^2.4.2",
-    "class-variance-authority": "~0.5.2",
     "clsx": "^1.2.1",
     "esbuild": "^0.17.17",
     "esbuild-register": "^3.4.2",
@@ -56,7 +55,9 @@
     "react-router-dom": "^6.10.0",
     "remeda": "^1.14.0",
     "rome": "^12.1.2",
+    "simple-git-hooks": "^2.8.1",
     "svg-path-commander": "^2.0.5",
+    "tsup": "^6.7.0",
     "typescript": "^5.0.2",
     "viem": "0.0.0-1-0.20230529T224105",
     "vite": "^4.3.0",
@@ -66,7 +67,8 @@
     "webextension-polyfill": "^0.10.0",
     "zustand": "^4.3.8"
   },
-  "devDependencies": {
-    "tsup": "^6.7.0"
-  }
+  "simple-git-hooks": {
+    "pre-commit": "pnpm format && pnpm lint:fix"
+  },
+  "packageManager": "pnpm@8.3.1"
 }
