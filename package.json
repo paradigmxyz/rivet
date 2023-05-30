@@ -18,7 +18,7 @@
     "symbols": "node -r esbuild-register scripts/generate-symbols.ts",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
+  "devDependencies": {
     "@capsizecss/core": "^3.1.0",
     "@capsizecss/vanilla-extract": "^1.0.0",
     "@radix-ui/colors": "^0.1.8",
