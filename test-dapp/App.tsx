@@ -38,17 +38,21 @@ function RequestAccounts() {
 
   useEffect(() => {
     ;(async () => {
-      const accounts = await window.ethereum?.request({ method: 'eth_requestAccounts' })
+      const accounts = await window.ethereum?.request({
+        method: 'eth_requestAccounts',
+      })
       setAccounts(accounts)
     })()
   }, [])
-  
+
   return (
     <Stack gap='12px'>
       <Text size='18px' weight='semibold'>
         eth_requestAccounts
       </Text>
-      {accounts?.map(account => <Text>{account}</Text>)}
+      {accounts?.map((account) => (
+        <Text>{account}</Text>
+      ))}
     </Stack>
   )
 }
@@ -58,17 +62,21 @@ function Accounts() {
 
   useEffect(() => {
     ;(async () => {
-      const accounts = await window.ethereum?.request({ method: 'eth_accounts' })
+      const accounts = await window.ethereum?.request({
+        method: 'eth_accounts',
+      })
       setAccounts(accounts)
     })()
   }, [])
-  
+
   return (
     <Stack gap='12px'>
       <Text size='18px' weight='semibold'>
         eth_accounts
       </Text>
-      {accounts?.map(account => <Text>{account}</Text>)}
+      {accounts?.map((account) => (
+        <Text>{account}</Text>
+      ))}
     </Stack>
   )
 }
@@ -99,9 +107,7 @@ function ChainId() {
 
   useEffect(() => {
     ;(async () => {
-      setChainId(
-        await window.ethereum?.request({ method: 'eth_chainId' }),
-      )
+      setChainId(await window.ethereum?.request({ method: 'eth_chainId' }))
     })()
   }, [])
 
