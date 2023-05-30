@@ -59,7 +59,7 @@
     "svg-path-commander": "^2.0.5",
     "tsup": "^6.7.0",
     "typescript": "^5.0.2",
-    "viem": "0.0.0-1-0.20230529T224105",
+    "viem": "0.0.0-1-0.20230530T023515",
     "vite": "^4.3.0",
     "vite-plugin-crx-hot-reload": "^1.0.4",
     "vite-tsconfig-paths": "^4.2.0",

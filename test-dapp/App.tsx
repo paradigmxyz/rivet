@@ -5,6 +5,7 @@ import {
   type Hex,
   numberToHex,
   parseEther,
+  stringToHex,
 } from 'viem'
 import 'viem/window'
 import '~/design-system/styles/global.css'
@@ -28,6 +29,7 @@ export default function App() {
         <BlockNumber />
         <ChainId />
         <SendTransaction />
+        <SignMessage />
       </Stack>
     </Box>
   )
@@ -175,6 +177,53 @@ function SendTransaction() {
         </Button>
       </Inline>
       {hash && <Text>Tx Hash: {hash}</Text>}
+      {error && <Text>Error: {error.message}</Text>}
+    </Stack>
+  )
+}
+
+function SignMessage() {
+  const [message, setMessage] = useState('')
+  const [signature, setSignature] = useState<Hex | undefined>()
+  const [error, setError] = useState<Error>()
+
+  const handleClickSign = async () => {
+    if (!message) return
+
+    setSignature(undefined)
+    try {
+      const signature = await window.ethereum?.request({
+        method: 'personal_sign',
+        params: [
+          stringToHex(message),
+          '0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266',
+        ],
+      })
+      setSignature(signature)
+    } catch (err) {
+      console.log(err)
+      setError(err as Error)
+    }
+  }
+
+  return (
+    <Stack gap='12px'>
+      <Text size='18px' weight='semibold'>
+        eth_signMessage
+      </Text>
+      <Inline wrap={false} gap='12px'>
+        <Box style={{ width: '500px' }}>
+          <Input
+            onChange={(e) => setMessage(e.target.value)}
+            value={message}
+            placeholder='message'
+          />
+        </Box>
+        <Button onClick={handleClickSign} width='fit'>
+          Sign
+        </Button>
+      </Inline>
+      {signature && <Text>Signature: {signature}</Text>}
       {error && <Text>Error: {error.message}</Text>}
     </Stack>
   )

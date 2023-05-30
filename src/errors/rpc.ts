@@ -67,12 +67,7 @@ export class UserRejectedRequestError extends ProviderRpcError {
     super(error, {
       code: UserRejectedRequestError.code,
       metaMessages: request
-        ? [
-            `Method: ${request.method}`,
-            ...(request.params
-              ? ['Params:', prettyPrint(request.params[0] || {})]
-              : []),
-          ]
+        ? [`Request: ${JSON.stringify(request, null, 2)}`]
         : undefined,
       shortMessage: UserRejectedRequestError.message,
     })
@@ -186,19 +181,4 @@ export class UnknownRpcError extends ProviderRpcError {
       shortMessage: 'An unknown RPC error occurred.',
     })
   }
-}
-
-function prettyPrint(
-  args: Record<string, bigint | number | string | undefined | false | unknown>,
-) {
-  const entries = Object.entries(args)
-    .map(([key, value]) => {
-      if (value === undefined || value === false) return null
-      return [key, value]
-    })
-    .filter(Boolean) as [string, string][]
-  const maxLength = entries.reduce((acc, [key]) => Math.max(acc, key.length), 0)
-  return entries
-    .map(([key, value]) => `  ${`${key}:`.padEnd(maxLength + 1)}  ${value}`)
-    .join('\n')
 }

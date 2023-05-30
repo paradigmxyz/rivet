@@ -1,6 +1,6 @@
 import { type Chain, createClient, custom } from 'viem'
 import { foundry, mainnet } from 'viem/chains'
-import { type RpcRequest, type RpcResponse, rpc } from 'viem/utils'
+import { type RpcResponse, rpc } from 'viem/utils'
 
 import { UserRejectedRequestError } from '~/errors'
 import { getMessenger } from '~/messengers'
@@ -15,6 +15,12 @@ const rpcClient = createClient({
   chain: anvilMainnet,
   transport: custom({
     async request({ method, params, id }) {
+      // Anvil doesn't support `personal_sign` – use `eth_sign` instead.
+      if (method === 'personal_sign') {
+        method = 'eth_sign'
+        params = [params[1], params[0]]
+      }
+
       return rpc.http(anvilMainnet.rpcUrls.default.http[0], {
         body: {
           method,
@@ -38,7 +44,13 @@ export function setupRpcHandler() {
     const { setPendingRequest, removePendingRequest } =
       pendingRequestsStore.getState()
 
-    if (payload.method === 'eth_sendTransaction') {
+    // If the method is a "signable" method, request approval from the user.
+    if (
+      payload.method === 'eth_sendTransaction' ||
+      payload.method === 'eth_sign' ||
+      payload.method === 'eth_signTypedData_v4' ||
+      payload.method === 'personal_sign'
+    ) {
       setPendingRequest(payload)
 
       inpageMessenger.send('toggleWallet', { open: true })
@@ -62,7 +74,7 @@ export function setupRpcHandler() {
                 } satisfies RpcResponse)
 
               try {
-                const response = await rpcClient.request(request as RpcRequest)
+                const response = await rpcClient.request(request)
                 resolve(response)
               } catch (err) {
                 reject(err)

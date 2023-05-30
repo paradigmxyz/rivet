@@ -1,4 +1,9 @@
-import { type EIP1474Methods, formatEther, hexToBigInt } from 'viem'
+import {
+  type EIP1474Methods,
+  formatEther,
+  hexToBigInt,
+  hexToString,
+} from 'viem'
 
 import { Button, Inline, Row, Rows, Stack, Text } from '~/design-system'
 import { getMessenger } from '~/messengers'
@@ -32,6 +37,9 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
           </Text>
           {request.method === 'eth_sendTransaction' && (
             <SendTransactionDetails params={request.params} />
+          )}
+          {request.method === 'personal_sign' && (
+            <SignMessageDetails params={request.params} />
           )}
         </Stack>
       </Row>
@@ -68,6 +76,20 @@ function SendTransactionDetails({
       <Text size='12px'>From: {from}</Text>
       <Text size='12px'>To: {to}</Text>
       <Text size='12px'>Value: {formatEther(hexToBigInt(value ?? '0x0'))}</Text>
+    </Stack>
+  )
+}
+
+function SignMessageDetails({
+  params,
+}: {
+  params: ExtractParams<'personal_sign'>
+}) {
+  const [data, address] = params
+  return (
+    <Stack gap='12px'>
+      <Text size='12px'>Message: {hexToString(data)}</Text>
+      <Text size='12px'>Address: {address}</Text>
     </Stack>
   )
 }
