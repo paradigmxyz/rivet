@@ -103,6 +103,7 @@ function PrivateRow({ alignVertical, children, height, style }: RowProps) {
         display='flex'
         flexGrow='0'
         flexShrink='0'
+        width='full'
         style={style}
       >
         {children}
@@ -117,6 +118,7 @@ function PrivateRow({ alignVertical, children, height, style }: RowProps) {
       flexGrow='1'
       flexShrink='1'
       flexBasis='0'
+      width='full'
       style={style}
     >
       {children}

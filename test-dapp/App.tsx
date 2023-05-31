@@ -8,6 +8,7 @@ import {
   parseEther,
   stringToHex,
   stringify,
+  hexToNumber,
 } from 'viem'
 import 'viem/window'
 import '~/design-system/styles/global.css'
@@ -103,7 +104,7 @@ function BlockNumber() {
       <Text size='18px' weight='semibold'>
         eth_blockNumber
       </Text>
-      <Text>{blockNumber}</Text>
+      {blockNumber && <Text>{hexToNumber(blockNumber)}</Text>}
     </Stack>
   )
 }
@@ -122,7 +123,7 @@ function ChainId() {
       <Text size='18px' weight='semibold'>
         eth_chainId
       </Text>
-      <Text>{chainId}</Text>
+      {chainId && <Text>{hexToNumber(chainId)}</Text>}
     </Stack>
   )
 }

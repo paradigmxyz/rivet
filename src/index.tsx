@@ -2,42 +2,38 @@ import './hmr'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createHashRouter } from 'react-router-dom'
+
 import '~/design-system/styles/global.css'
 import { QueryClientProvider } from '~/react-query'
-import { syncStores, usePendingRequestsStore } from '~/zustand'
+import { syncStores } from '~/zustand'
 
 import Layout from './screens/_layout.tsx'
 import Index from './screens/index'
-import PendingRequest from './screens/pending-request.tsx'
+import NetworkConfig from './screens/network-config.tsx'
 
 syncStores()
 
 const router = createHashRouter([
   {
     path: '/',
-    element: <Index />,
+    element: <Layout />,
+    children: [
+      {
+        path: '',
+        element: <Index />,
+      },
+      {
+        path: 'network-config',
+        element: <NetworkConfig />,
+      },
+    ],
   },
 ])
-
-function App() {
-  const { pendingRequests } = usePendingRequestsStore()
-  const pendingRequest = pendingRequests[pendingRequests.length - 1]
-
-  return (
-    <Layout>
-      {pendingRequests.length > 0 ? (
-        <PendingRequest request={pendingRequest} />
-      ) : (
-        <RouterProvider router={router} />
-      )}
-    </Layout>
-  )
-}
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider>
-      <App />
+      <RouterProvider router={router} />
     </QueryClientProvider>
   </React.StrictMode>,
 )

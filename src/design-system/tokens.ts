@@ -239,6 +239,10 @@ export type BackgroundColor = keyof typeof backgroundColor
 
 export type ForegroundColorValue = Record<ColorScheme, string>
 export const foregroundColor = {
+  label: {
+    light: globalColors.gray.gray11,
+    dark: globalColors.grayDark.gray11,
+  },
   scrim: {
     light: globalColors.blackA.blackA5,
     dark: globalColors.grayDark.gray6,

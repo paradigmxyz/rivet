@@ -11,17 +11,11 @@ import {
 } from './Input.css'
 import { type TextStyles, textStyles } from './Text.css'
 
-export type InputProps = {
-  'aria-label'?: InputHTMLAttributes<HTMLInputElement>['aria-label']
-  autoFocus?: InputHTMLAttributes<HTMLInputElement>['autoFocus']
+export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, keyof BoxStyles> & {
   height?: InputHeight
-  onBlur?: InputHTMLAttributes<HTMLInputElement>['onBlur']
-  onChange?: InputHTMLAttributes<HTMLInputElement>['onChange']
-  onFocus?: InputHTMLAttributes<HTMLInputElement>['onFocus']
   placeholder?: string
   testId?: string
   variant?: InputVariant
-  value?: InputHTMLAttributes<HTMLInputElement>['value']
 }
 
 export const stylesForVariant = {

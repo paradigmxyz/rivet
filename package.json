@@ -55,6 +55,7 @@
     "react-flatten-children": "^1.1.2",
     "react-router": "^6.10.0",
     "react-router-dom": "^6.10.0",
+    "react-tracked": "^1.7.11",
     "remeda": "^1.14.0",
     "rome": "^12.1.2",
     "simple-git-hooks": "^2.8.1",

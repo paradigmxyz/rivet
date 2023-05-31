@@ -1,4 +1,4 @@
-import { useStore } from 'zustand'
+import { createTrackedSelector } from 'react-tracked'
 
 import type { RpcRequest } from '~/messengers/schema'
 
@@ -36,4 +36,5 @@ export const pendingRequestsStore = createStore<PendingRequestsState>(
   },
 )
 
-export const usePendingRequestsStore = () => useStore(pendingRequestsStore)
+export const usePendingRequestsStore =
+  createTrackedSelector(pendingRequestsStore)

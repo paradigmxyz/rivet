@@ -16,14 +16,22 @@ type ButtonProps = {
   variant?: ButtonVariant
 } & (
   | {
-      as?: 'button' | 'div'
+      as?: 'button'
       href?: never
       onClick?: () => void
+      type?: 'button' | 'submit'
+    }
+  | {
+      as?: 'div'
+      href?: never
+      onClick?: () => void
+      type?: never
     }
   | {
       as: 'a'
       href: string
       onClick?: never
+      type?: never
     }
 )
 

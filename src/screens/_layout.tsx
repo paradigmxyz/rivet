@@ -1,10 +1,16 @@
 import { useQuery } from '@tanstack/react-query'
-import type { ReactNode } from 'react'
+import { Link, Outlet } from 'react-router-dom'
 
 import { Box, Column, Columns, Inline, Row, Rows, Text } from '~/design-system'
-import { publicClient, walletClient } from '~/viem'
+import { usePublicClient, useWalletClient } from '~/hooks'
+import { usePendingRequestsStore } from '~/zustand'
 
-export default function Layout({ children }: { children: ReactNode }) {
+import PendingRequest from './pending-request'
+
+export default function Layout() {
+  const { pendingRequests } = usePendingRequestsStore()
+  const pendingRequest = pendingRequests[pendingRequests.length - 1]
+
   return (
     <Box
       backgroundColor='surface'
@@ -21,7 +27,13 @@ export default function Layout({ children }: { children: ReactNode }) {
           <Header />
         </Row>
         <Row>
-          <Box style={{ overflowY: 'scroll' }}>{children}</Box>
+          <Box style={{ overflowY: 'scroll' }} width='full'>
+            {pendingRequests.length > 0 ? (
+              <PendingRequest request={pendingRequest} />
+            ) : (
+              <Outlet />
+            )}
+          </Box>
         </Row>
       </Rows>
     </Box>
@@ -29,8 +41,11 @@ export default function Layout({ children }: { children: ReactNode }) {
 }
 
 function Header() {
+  const publicClient = usePublicClient()
+  const walletClient = useWalletClient()
+
   const { data: listening, status } = useQuery({
-    queryKey: ['listening'],
+    queryKey: ['listening', publicClient],
     queryFn: async () => {
       try {
         return await publicClient.request({ method: 'net_listening' })
@@ -43,7 +58,7 @@ function Header() {
 
   const { data: addresses } = useQuery({
     enabled: Boolean(listening),
-    queryKey: ['addresses'],
+    queryKey: ['addresses', walletClient],
     queryFn: walletClient.getAddresses,
   })
 
@@ -54,40 +69,51 @@ function Header() {
     <Box
       borderColor='primary / 0.1'
       borderBottomWidth='1px'
-      paddingHorizontal='24px'
       width='full'
       style={{ height: '48px' }}
     >
       <Columns alignVertical='center'>
         <Column width='content'>
-          <Box
-            borderColor='primary / 0.1'
-            borderRightWidth='1px'
-            display='flex'
-            flexDirection='column'
-            height='full'
-            paddingRight='12px'
-            style={{ width: '64px' }}
-          >
-            <Inline alignVertical='center' gap='8px' wrap={false}>
-              <Box
-                backgroundColor={
-                  status === 'pending'
-                    ? 'primary / 0.5'
+          <Link to='/network-config'>
+            <Box
+              backgroundColor={{ default: 'surface', hover: 'surfaceHover' }}
+              display='flex'
+              flexDirection='row'
+              height='full'
+              paddingLeft='24px'
+              paddingRight='12px'
+              style={{ width: '88px' }}
+            >
+              <Inline alignVertical='center' gap='8px' wrap={false}>
+                <Box
+                  backgroundColor={
+                    status === 'pending'
+                      ? 'primary / 0.5'
+                      : listening
+                      ? 'green'
+                      : 'red'
+                  }
+                  borderWidth='1px'
+                  borderRadius='round'
+                  marginLeft='-12px'
+                  style={{ width: 10, height: 10 }}
+                />
+                <Text size='14px'>
+                  {status === 'pending'
+                    ? '…'
                     : listening
-                    ? 'green'
-                    : 'red'
-                }
-                borderWidth='1px'
-                borderRadius='round'
-                marginLeft='-12px'
-                style={{ width: 10, height: 10 }}
-              />
-              <Text size='14px'>
-                {status === 'pending' ? '…' : listening ? 'Online' : 'Offline'}
-              </Text>
-            </Inline>
-          </Box>
+                    ? 'Online'
+                    : 'Offline'}
+                </Text>
+              </Inline>
+            </Box>
+          </Link>
+        </Column>
+        <Column width='content'>
+          <Box
+            backgroundColor='primary / 0.1'
+            style={{ width: '1px', height: '100%' }}
+          />
         </Column>
         <Column>
           <Box

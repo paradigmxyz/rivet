@@ -14,7 +14,7 @@ export function Container({
   return (
     <Rows>
       <Row alignVertical={alignVertical} style={{ overflowY: 'scroll' }}>
-        <Box paddingHorizontal='12px' paddingVertical='20px'>
+        <Box paddingHorizontal='12px' paddingVertical='20px' width='full'>
           {children}
         </Box>
       </Row>

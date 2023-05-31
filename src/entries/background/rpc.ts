@@ -1,31 +1,47 @@
-import { createClient, custom } from 'viem'
+import {
+  type Chain,
+  type Client,
+  type Transport,
+  createClient,
+  custom,
+} from 'viem'
 import { type RpcResponse, rpc } from 'viem/utils'
 
 import { UserRejectedRequestError } from '~/errors'
 import { getMessenger } from '~/messengers'
-import { localMainnet } from '~/viem'
-import { pendingRequestsStore } from '~/zustand'
+import { getChain } from '~/viem'
+import { networksStore, pendingRequestsStore } from '~/zustand'
 
-const rpcClient = createClient({
-  chain: localMainnet,
-  transport: custom({
-    async request({ method, params, id }) {
-      // Anvil doesn't support `personal_sign` – use `eth_sign` instead.
-      if (method === 'personal_sign') {
-        method = 'eth_sign'
-        params = [params[1], params[0]]
-      }
+const clientCache = new Map()
+export function getRpcClient(): Client<Transport, undefined, Chain> {
+  const rpcUrl = networksStore.getState().network.rpcUrl
 
-      return rpc.http(localMainnet.rpcUrls.default.http[0], {
-        body: {
-          method,
-          params,
-          id,
-        },
-      })
-    },
-  }),
-})
+  const cachedClient = clientCache.get(rpcUrl)
+  if (cachedClient) return cachedClient
+
+  const client = createClient({
+    chain: getChain({ rpcUrl }),
+    transport: custom({
+      async request({ method, params, id }) {
+        // Anvil doesn't support `personal_sign` – use `eth_sign` instead.
+        if (method === 'personal_sign') {
+          method = 'eth_sign'
+          params = [params[1], params[0]]
+        }
+
+        return rpc.http(rpcUrl, {
+          body: {
+            method,
+            params,
+            id,
+          },
+        })
+      },
+    }),
+  })
+  clientCache.set(rpcUrl, client)
+  return client
+}
 
 const inpageMessenger = getMessenger({
   connection: 'background <> inpage',
@@ -36,6 +52,8 @@ const walletMessenger = getMessenger({
 
 export function setupRpcHandler() {
   inpageMessenger.reply('request', async (payload) => {
+    const rpcClient = getRpcClient()
+
     const { setPendingRequest, removePendingRequest } =
       pendingRequestsStore.getState()
 
