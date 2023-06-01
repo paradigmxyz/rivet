@@ -52,7 +52,7 @@ export default function NetworkConfig() {
       >
         <Stack gap='20px'>
           <Stack gap='12px'>
-            <Text color='label' size='12px' weight='medium'>
+            <Text color='label' size='11px'>
               CHAIN ID
             </Text>
             <Input
@@ -64,7 +64,7 @@ export default function NetworkConfig() {
           </Stack>
           <Stack gap='8px'>
             <Stack gap='12px'>
-              <Text color='label' size='12px' weight='medium'>
+              <Text color='label' size='11px'>
                 RPC URL
               </Text>
               <Input
@@ -80,7 +80,7 @@ export default function NetworkConfig() {
             )}
           </Stack>
           <Stack gap='12px'>
-            <Text color='label' size='12px' weight='medium'>
+            <Text color='label' size='11px'>
               NAME
             </Text>
             <Input placeholder='Ethereum' {...register('name')} />
