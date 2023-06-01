@@ -1,3 +1,4 @@
+export { useDebounce } from './useDebounce'
 export { useNetworkStatus } from './useNetworkStatus'
 export { usePublicClient } from './usePublicClient'
 export { useSyncExternalStoreWithTracked } from './useSyncExternalStoreWithTracked'

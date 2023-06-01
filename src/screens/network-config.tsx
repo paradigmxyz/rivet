@@ -1,35 +1,46 @@
-import { useMutation } from '@tanstack/react-query'
-import { type FormEvent, useRef } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { useForm } from 'react-hook-form'
 import { useHref, useNavigate } from 'react-router-dom'
 
+import { getPublicClient } from '../viem'
 import { Container } from '~/components'
 import { Button, Inline, Input, Stack, Text } from '~/design-system'
+import { useDebounce } from '~/hooks'
 import { useNetwork } from '~/zustand'
 
 export default function NetworkConfig() {
-  const {
-    network: { rpcUrl },
-    updateNetwork,
-  } = useNetwork()
+  const { network, updateNetwork } = useNetwork()
 
-  const formRef = useRef<HTMLFormElement>(null)
+  type FormValues = {
+    name: string
+    rpcUrl: string
+  }
+  const { register, handleSubmit, watch } = useForm<FormValues>({
+    defaultValues: { name: network.name, rpcUrl: network.rpcUrl },
+  })
+
+  const debouncedRpcUrl = useDebounce(watch('rpcUrl'), 300)
+  const { data: chainId, isError: isOffline } = useQuery({
+    enabled: Boolean(debouncedRpcUrl),
+    queryKey: ['chainId', debouncedRpcUrl],
+    queryFn: async () => {
+      const publicClient = getPublicClient({ rpcUrl: debouncedRpcUrl })
+      return publicClient.getChainId()
+    },
+  })
 
   const navigate = useNavigate()
   const href = useHref('/')
 
-  const { mutate: submit } = useMutation({
-    mutationFn: async (event: FormEvent<HTMLFormElement>) => {
-      event.preventDefault()
-      const formData = new FormData(formRef.current!)
-      const rpcUrl = formData.get('rpcUrl') as string
-      await updateNetwork({ rpcUrl })
-      navigate('/')
-    },
+  const onSubmit = handleSubmit(async ({ name, rpcUrl }) => {
+    await updateNetwork({ name, rpcUrl })
+    navigate('/')
   })
 
   return (
-    <form ref={formRef} onSubmit={submit} style={{ height: '100%' }}>
+    <form onSubmit={onSubmit} style={{ height: '100%' }}>
       <Container
+        header={<Text size='16px'>Network</Text>}
         footer={
           <Inline gap='8px' wrap={false}>
             <Button as='a' href={href} variant='stroked scrim'>
@@ -39,19 +50,40 @@ export default function NetworkConfig() {
           </Inline>
         }
       >
-        <Stack gap='32px'>
-          <Text weight='medium' size='22px'>
-            Network Config
-          </Text>
+        <Stack gap='20px'>
           <Stack gap='12px'>
             <Text color='label' size='12px' weight='medium'>
-              RPC URL
+              CHAIN ID
             </Text>
             <Input
-              defaultValue={rpcUrl}
-              name='rpcUrl'
-              placeholder='http://localhost:8545'
+              disabled
+              name='chainId'
+              placeholder='1'
+              value={chainId || network.chainId}
             />
+          </Stack>
+          <Stack gap='8px'>
+            <Stack gap='12px'>
+              <Text color='label' size='12px' weight='medium'>
+                RPC URL
+              </Text>
+              <Input
+                placeholder='http://localhost:8545'
+                state={isOffline ? 'warning' : undefined}
+                {...register('rpcUrl', { required: true })}
+              />
+            </Stack>
+            {isOffline && (
+              <Text color='yellow' size='11px'>
+                Warning: Network is offline
+              </Text>
+            )}
+          </Stack>
+          <Stack gap='12px'>
+            <Text color='label' size='12px' weight='medium'>
+              NAME
+            </Text>
+            <Input placeholder='Ethereum' {...register('name')} />
           </Stack>
         </Stack>
       </Container>

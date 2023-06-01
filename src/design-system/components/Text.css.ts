@@ -2,7 +2,11 @@ import { createStyleObject as capsize } from '@capsizecss/core'
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
 import { mapValues } from 'remeda'
 
-import { foregroundColorVars, inheritedColorVars } from '../styles/theme.css'
+import {
+  backgroundColorVars,
+  foregroundColorVars,
+  inheritedColorVars,
+} from '../styles/theme.css'
 import { fontWeight } from '../tokens'
 
 const fontMetrics = {
@@ -34,6 +38,7 @@ const textProperties = defineProperties({
     color: {
       accent: `rgb(${inheritedColorVars.accent})`,
       text: `rgb(${inheritedColorVars.text})`,
+      ...mapValues(backgroundColorVars, (colorVar) => `rgb(${colorVar})`),
       ...mapValues(foregroundColorVars, (colorVar) => `rgb(${colorVar})`),
     },
     fontSize: {
@@ -42,6 +47,7 @@ const textProperties = defineProperties({
       '12px': defineType(12, 15, 0.52),
       '14px': defineType(14, 19, 0.48),
       '15px': defineType(15, 21, 0.35),
+      '16px': defineType(16, 21, 0.35),
       '18px': defineType(18, 23, 0.36),
       '20px': defineType(20, 25, 0.36),
       '22px': defineType(22, 29, 0.35),

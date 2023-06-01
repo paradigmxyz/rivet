@@ -1,9 +1,10 @@
-import type { InputHTMLAttributes } from 'react'
+import { type InputHTMLAttributes, forwardRef } from 'react'
 
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
 import {
   type InputHeight,
+  type InputState,
   type InputVariant,
   backgroundStyle,
   heightStyles,
@@ -18,6 +19,7 @@ export type InputProps = Omit<
   height?: InputHeight
   placeholder?: string
   testId?: string
+  state?: InputState
   variant?: InputVariant
 }
 
@@ -35,6 +37,15 @@ export const stylesForVariant = {
   },
 } satisfies Record<InputVariant, BoxStyles>
 
+export const stylesForState = {
+  warning: {
+    borderColor: 'yellow',
+  },
+  error: {
+    borderColor: 'red',
+  },
+} satisfies Record<InputState, BoxStyles>
+
 export const stylesForHeight = {
   '36px': {
     paddingHorizontal: '12px',
@@ -47,31 +58,39 @@ export const textStylesForHeight = {
   },
 } satisfies Record<InputHeight, TextStyles>
 
-export function Input({
-  placeholder,
-  height = '36px',
-  variant = 'solid',
-  testId,
-  ...inputProps
-}: InputProps) {
-  return (
-    <Box
-      {...inputProps}
-      as='input'
-      borderWidth='1px'
-      className={[
-        backgroundStyle,
-        heightStyles[height],
-        textStyles({
-          ...textStylesForHeight[height],
-        }),
-        placeholderStyle,
-      ]}
-      placeholder={placeholder}
-      testId={testId}
-      width='full'
-      {...stylesForVariant[variant]}
-      {...stylesForHeight[height]}
-    />
-  )
-}
+export const Input = forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      placeholder,
+      height = '36px',
+      state,
+      variant = 'solid',
+      testId,
+      ...inputProps
+    },
+    ref,
+  ) => {
+    return (
+      <Box
+        {...inputProps}
+        as='input'
+        borderWidth='1px'
+        className={[
+          backgroundStyle,
+          heightStyles[height],
+          textStyles({
+            ...textStylesForHeight[height],
+          }),
+          placeholderStyle,
+        ]}
+        placeholder={placeholder}
+        testId={testId}
+        width='full'
+        {...stylesForVariant[variant]}
+        {...stylesForHeight[height]}
+        {...(state && stylesForState[state])}
+        ref={ref}
+      />
+    )
+  },
+)

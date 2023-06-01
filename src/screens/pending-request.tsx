@@ -31,6 +31,7 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
 
   return (
     <Container
+      header={<Text size='16px'>Pending Request</Text>}
       footer={
         <Inline gap='12px' wrap={false}>
           <Button onClick={handleReject} variant='tint red'>
@@ -43,9 +44,6 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
       }
     >
       <Stack gap='32px'>
-        <Text weight='medium' size='22px'>
-          Pending Request
-        </Text>
         {request.method === 'eth_sendTransaction' && (
           <SendTransactionDetails params={request.params} />
         )}

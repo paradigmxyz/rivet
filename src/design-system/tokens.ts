@@ -234,6 +234,34 @@ export const backgroundColor = {
       border: globalColors.greenDark.green8,
     },
   },
+  yellow: {
+    light: {
+      value: globalColors.yellowDark.yellow11,
+      scheme: 'light',
+      text: globalColors.yellow.yellow12,
+      border: globalColors.yellowDark.yellow11,
+    },
+    dark: {
+      value: globalColors.yellowDark.yellow11,
+      scheme: 'light',
+      text: globalColors.yellow.yellow12,
+      border: globalColors.yellowDark.yellow11,
+    },
+  },
+  yellowTint: {
+    light: {
+      value: globalColors.yellow.yellow4,
+      scheme: 'light',
+      text: globalColors.yellow.yellow11,
+      border: globalColors.yellow.yellow6,
+    },
+    dark: {
+      value: globalColors.yellowDark.yellow5,
+      scheme: 'dark',
+      text: globalColors.yellowDark.yellow11,
+      border: globalColors.yellowDark.yellow7,
+    },
+  },
 } as const satisfies Record<string, BackgroundColorValue>
 export type BackgroundColor = keyof typeof backgroundColor
 

@@ -11,6 +11,8 @@ export const inputHeights = {
 } as const
 export type InputHeight = keyof typeof inputHeights
 
+export type InputState = 'warning' | 'error'
+
 export type InputKind = 'solid'
 export const inputVariants = [
   'solid',

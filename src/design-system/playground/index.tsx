@@ -170,6 +170,20 @@ function DesignSystem() {
                 >
                   <Text>greenTintHover</Text>
                 </Box>
+                <Box
+                  backgroundColor='yellow'
+                  borderWidth='1.5px'
+                  padding='20px'
+                >
+                  <Text>yellow</Text>
+                </Box>
+                <Box
+                  backgroundColor='yellowTint'
+                  borderWidth='1.5px'
+                  padding='20px'
+                >
+                  <Text>yellow</Text>
+                </Box>
               </Stack>
             </Box>
           </Stack>
