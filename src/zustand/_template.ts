@@ -2,12 +2,15 @@ import { useStore } from 'zustand'
 
 import { createStore } from './utils'
 
-type TemplateState = {
+export type TemplateState = {
   foo?: string
+}
+export type TemplateActions = {
   setFoo: (foo?: string) => void
 }
+export type TemplateStore = TemplateState & TemplateActions
 
-export const templateStore = createStore<TemplateState>(
+export const templateStore = createStore<TemplateStore>(
   (set) => ({
     foo: undefined,
     setFoo(foo) {

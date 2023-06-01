@@ -66,6 +66,7 @@ function Header() {
   })
 
   // TODO: retrieve selected account from global sync state (zustand).
+  // @ts-expect-error
   const _address = addresses?.[0]
 
   return (

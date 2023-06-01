@@ -9,11 +9,14 @@ type Network = {
   rpcUrl: string
 }
 
-export type NetworkStore = {
+export type NetworkState = {
   network: Network
   networks: readonly Network[]
+}
+export type NetworkActions = {
   updateNetwork: (network: Partial<Network>) => Promise<void>
 }
+export type NetworkStore = NetworkState & NetworkActions
 
 const defaultNetwork = {
   chainId: defaultChain.id,
