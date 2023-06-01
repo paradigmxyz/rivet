@@ -1,4 +1,4 @@
-import { createTrackedSelector } from 'react-tracked'
+import { useSyncExternalStoreWithTracked } from '~/hooks'
 
 import { defaultChain, getPublicClient } from '../viem'
 import { createStore } from './utils'
@@ -61,4 +61,5 @@ export const networkStore = createStore<NetworkStore>(
   },
 )
 
-export const useNetwork = createTrackedSelector(networkStore)
+export const useNetwork = () =>
+  useSyncExternalStoreWithTracked(networkStore.subscribe, networkStore.getState)

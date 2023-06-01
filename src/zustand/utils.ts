@@ -1,10 +1,14 @@
-import { type Mutate, type StoreApi, create } from 'zustand'
 import {
   type PersistOptions,
   type StateStorage,
   createJSONStorage,
   persist,
 } from 'zustand/middleware'
+import {
+  type Mutate,
+  type StoreApi,
+  createStore as create,
+} from 'zustand/vanilla'
 
 import * as stores from './index'
 import { webextStorage } from '~/storage'

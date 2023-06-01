@@ -4,6 +4,7 @@ import type { RpcResponse } from 'viem/utils'
 export type RpcRequest = EIP1193Parameters<EIP1474Methods> & { id: number }
 
 export type Schema = {
+  chainChanged: [payload: string, response: void]
   extensionId: [payload: void, response: string]
   pendingRequest: [
     payload: { request: RpcRequest; status: 'approved' | 'rejected' },

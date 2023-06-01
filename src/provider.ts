@@ -13,13 +13,19 @@ export function getProvider({
   const cachedProvider = rpcUrl ? providerCache.get(rpcUrl) : undefined
   if (cachedProvider) return cachedProvider
 
-  // @ts-expect-error
-  const _emitter = createEmitter()
+  const emitter = createEmitter<{ chainChanged: { chainId: string } }>()
 
   let _id = 0
 
+  messenger.reply('chainChanged', async (chainId) => {
+    emitter.emit('chainChanged', { chainId })
+  })
+
   const provider: EIP1193Provider = {
-    on() {},
+    on(eventName, cb: (...args: any[]) => void) {
+      if (eventName === 'chainChanged')
+        return emitter.on('chainChanged', (data) => cb(data.chainId))
+    },
     removeListener() {},
     async request({ method, params }) {
       const id = _id++

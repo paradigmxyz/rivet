@@ -28,6 +28,13 @@ export default function App() {
         <Text weight='semibold' size='32px'>
           Test Dapp
         </Text>
+        <Text weight='semibold' size='22px'>
+          Events
+        </Text>
+        <ChainChanged />
+        <Text weight='semibold' size='22px'>
+          Methods
+        </Text>
         <RequestAccounts />
         <Accounts />
         <BlockNumber />
@@ -37,6 +44,23 @@ export default function App() {
         <SignTypedData />
       </Stack>
     </Box>
+  )
+}
+
+function ChainChanged() {
+  const [chainIds, setChainIds] = useState<number[]>([])
+  useEffect(() => {
+    window.ethereum?.on('chainChanged', (chainId) => {
+      setChainIds((chainIds) => [...chainIds, hexToNumber(chainId as Hex)])
+    })
+  }, [])
+  return (
+    <Stack gap='12px'>
+      <Text size='18px' weight='semibold'>
+        chainChanged
+      </Text>
+      <Text>{JSON.stringify(chainIds)}</Text>
+    </Stack>
   )
 }
 

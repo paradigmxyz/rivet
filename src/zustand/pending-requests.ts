@@ -1,5 +1,4 @@
-import { createTrackedSelector } from 'react-tracked'
-
+import { useSyncExternalStoreWithTracked } from '~/hooks'
 import type { RpcRequest } from '~/messengers/schema'
 
 import { createStore } from './utils'
@@ -39,4 +38,8 @@ export const pendingRequestsStore = createStore<PendingRequestsStore>(
   },
 )
 
-export const usePendingRequests = createTrackedSelector(pendingRequestsStore)
+export const usePendingRequests = () =>
+  useSyncExternalStoreWithTracked(
+    pendingRequestsStore.subscribe,
+    pendingRequestsStore.getState,
+  )

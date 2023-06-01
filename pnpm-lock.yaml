@@ -130,6 +130,9 @@ devDependencies:
   typescript:
     specifier: ^5.0.2
     version: 5.0.2
+  use-sync-external-store:
+    specifier: ^1.2.0
+    version: 1.2.0(react@18.2.0)
   viem:
     specifier: 0.0.0-1-0.20230530T023515
     version: 0.0.0-1-0.20230530T023515(typescript@5.0.2)
