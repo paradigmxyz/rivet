@@ -9,18 +9,20 @@ import { type RpcResponse, rpc } from 'viem/utils'
 
 import { UserRejectedRequestError } from '~/errors'
 import { getMessenger } from '~/messengers'
-import { getChain } from '~/viem'
-import { networksStore, pendingRequestsStore } from '~/zustand'
+import { buildChain } from '~/viem'
+import { networkStore, pendingRequestsStore } from '~/zustand'
 
 const clientCache = new Map()
-export function getRpcClient(): Client<Transport, undefined, Chain> {
-  const rpcUrl = networksStore.getState().network.rpcUrl
+export function getRpcClient({
+  rpcUrl: rpcUrl_,
+}: { rpcUrl?: string }): Client<Transport, undefined, Chain> {
+  const rpcUrl = rpcUrl_ || networkStore.getState().network.rpcUrl
 
   const cachedClient = clientCache.get(rpcUrl)
   if (cachedClient) return cachedClient
 
   const client = createClient({
-    chain: getChain({ rpcUrl }),
+    chain: buildChain({ rpcUrl }),
     transport: custom({
       async request({ method, params, id }) {
         // Anvil doesn't support `personal_sign` – use `eth_sign` instead.
@@ -29,13 +31,20 @@ export function getRpcClient(): Client<Transport, undefined, Chain> {
           params = [params[1], params[0]]
         }
 
-        return rpc.http(rpcUrl, {
+        const result = await rpc.http(rpcUrl, {
           body: {
             method,
             params,
             id,
           },
         })
+        if ((result as { success?: boolean }).success === false)
+          return {
+            id,
+            jsonrpc: '2.0',
+            error: 'An unknown error occurred.',
+          } as RpcResponse
+        return result
       },
     }),
   })
@@ -51,20 +60,20 @@ const walletMessenger = getMessenger({
 })
 
 export function setupRpcHandler() {
-  inpageMessenger.reply('request', async (payload) => {
-    const rpcClient = getRpcClient()
+  inpageMessenger.reply('request', async ({ request, rpcUrl }) => {
+    const rpcClient = getRpcClient({ rpcUrl })
 
     const { setPendingRequest, removePendingRequest } =
       pendingRequestsStore.getState()
 
     // If the method is a "signable" method, request approval from the user.
     if (
-      payload.method === 'eth_sendTransaction' ||
-      payload.method === 'eth_sign' ||
-      payload.method === 'eth_signTypedData_v4' ||
-      payload.method === 'personal_sign'
+      request.method === 'eth_sendTransaction' ||
+      request.method === 'eth_sign' ||
+      request.method === 'eth_signTypedData_v4' ||
+      request.method === 'personal_sign'
     ) {
-      setPendingRequest(payload)
+      setPendingRequest(request)
 
       inpageMessenger.send('toggleWallet', { open: true })
 
@@ -72,12 +81,12 @@ export function setupRpcHandler() {
         const response = await new Promise((resolve, reject) => {
           walletMessenger.reply(
             'pendingRequest',
-            async ({ request, status }) => {
-              if (request.id !== payload.id) return
+            async ({ request: pendingRequest, status }) => {
+              if (pendingRequest.id !== request.id) return
 
               if (status === 'rejected')
                 resolve({
-                  id: payload.id,
+                  id: request.id,
                   jsonrpc: '2.0',
                   error: {
                     code: UserRejectedRequestError.code,
@@ -87,7 +96,7 @@ export function setupRpcHandler() {
                 } satisfies RpcResponse)
 
               try {
-                const response = await rpcClient.request(request)
+                const response = await rpcClient.request(pendingRequest)
                 resolve(response)
               } catch (err) {
                 reject(err)
@@ -98,10 +107,10 @@ export function setupRpcHandler() {
         return response as RpcResponse
       } finally {
         inpageMessenger.send('toggleWallet', { useStorage: true })
-        removePendingRequest(payload.id)
+        removePendingRequest(request.id)
       }
     }
 
-    return rpcClient.request(payload as any)
+    return rpcClient.request(request as any)
   })
 }

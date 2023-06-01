@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider, createHashRouter } from 'react-router-dom'
 
 import '~/design-system/styles/global.css'
+import { useNetworkStatus } from '~/hooks'
 import { QueryClientProvider } from '~/react-query'
 import { syncStores } from '~/zustand'
 
@@ -30,9 +31,15 @@ const router = createHashRouter([
   },
 ])
 
+function SyncNetwork() {
+  useNetworkStatus()
+  return null
+}
+
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <QueryClientProvider>
+      <SyncNetwork />
       <RouterProvider router={router} />
     </QueryClientProvider>
   </React.StrictMode>,

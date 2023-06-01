@@ -9,18 +9,16 @@ import {
 import { type Chain, foundry, mainnet } from 'viem/chains'
 
 import { getMessenger } from '~/messengers'
-import { createProvider } from '~/provider'
+import { getProvider } from '~/provider'
 
 export const defaultChain = {
   ...mainnet,
   rpcUrls: foundry.rpcUrls,
 } as const satisfies Chain
 
-const provider = createProvider({
-  messenger: getMessenger({ connection: 'background <> wallet' }),
-})
+const messenger = getMessenger({ connection: 'background <> wallet' })
 
-export function getChain({ rpcUrl }: { rpcUrl: string }): Chain {
+export function buildChain({ rpcUrl }: { rpcUrl: string }): Chain {
   return {
     ...defaultChain,
     rpcUrls: {
@@ -42,8 +40,15 @@ export function getPublicClient({
   if (cachedClient) return cachedClient
 
   const publicClient = createPublicClient({
-    chain: getChain({ rpcUrl }),
-    transport: custom(provider, { retryCount: 0 }),
+    key: rpcUrl,
+    chain: buildChain({ rpcUrl }),
+    transport: custom(
+      getProvider({
+        messenger,
+        rpcUrl,
+      }),
+      { retryCount: 0 },
+    ),
   })
   publicClientCache.set(rpcUrl, publicClient)
   return publicClient
@@ -57,8 +62,15 @@ export function getWalletClient({
   if (cachedClient) return cachedClient
 
   const walletClient = createWalletClient({
-    chain: getChain({ rpcUrl }),
-    transport: custom(provider, { retryCount: 0 }),
+    key: rpcUrl,
+    chain: buildChain({ rpcUrl }),
+    transport: custom(
+      getProvider({
+        messenger,
+        rpcUrl,
+      }),
+      { retryCount: 0 },
+    ),
   })
   walletClientCache.set(rpcUrl, walletClient)
   return walletClient

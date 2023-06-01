@@ -58,7 +58,8 @@ export function Columns({
   )
 }
 
-interface ColumnProps {
+type ColumnProps = {
+  alignVertical?: AlignVertical
   width?: 'content' | keyof typeof styles.width
   children: ReactNode
 }
@@ -86,14 +87,19 @@ function getColumnProps(node: NonNullable<ReactNode>): ColumnProps | null {
     : null
 }
 
-function PrivateColumn({ children, width }: ColumnProps) {
+function PrivateColumn({ alignVertical, children, width }: ColumnProps) {
   if (width) {
     return (
       <Box
         className={width !== 'content' ? styles.width[width] : undefined}
+        display='flex'
+        flexDirection='column'
         flexGrow='0'
         flexShrink='0'
         height='full'
+        justifyContent={
+          alignVertical && alignVerticalToAlignItems[alignVertical]
+        }
       >
         {children}
       </Box>
@@ -101,7 +107,16 @@ function PrivateColumn({ children, width }: ColumnProps) {
   }
 
   return (
-    <Box flexGrow='1' flexShrink='1' flexBasis='0' height='full'>
+    <Box
+      className={styles.width['0']}
+      display='flex'
+      flexDirection='column'
+      flexGrow='1'
+      flexShrink='1'
+      flexBasis='0'
+      justifyContent={alignVertical && alignVerticalToAlignItems[alignVertical]}
+      height='full'
+    >
       {children}
     </Box>
   )

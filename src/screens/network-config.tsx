@@ -1,31 +1,34 @@
+import { useMutation } from '@tanstack/react-query'
 import { type FormEvent, useRef } from 'react'
 import { useHref, useNavigate } from 'react-router-dom'
 
 import { Container } from '~/components'
 import { Button, Inline, Input, Stack, Text } from '~/design-system'
-import { useNetworksStore } from '~/zustand'
+import { useNetwork } from '~/zustand'
 
 export default function NetworkConfig() {
   const {
     network: { rpcUrl },
     updateNetwork,
-  } = useNetworksStore()
+  } = useNetwork()
 
   const formRef = useRef<HTMLFormElement>(null)
 
   const navigate = useNavigate()
   const href = useHref('/')
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const formData = new FormData(formRef.current!)
-    const rpcUrl = formData.get('rpcUrl') as string
-    updateNetwork((network) => ({ ...network, rpcUrl }))
-    navigate('/')
-  }
+  const { mutate: submit } = useMutation({
+    mutationFn: async (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+      const formData = new FormData(formRef.current!)
+      const rpcUrl = formData.get('rpcUrl') as string
+      await updateNetwork({ rpcUrl })
+      navigate('/')
+    },
+  })
 
   return (
-    <form ref={formRef} onSubmit={handleSubmit} style={{ height: '100%' }}>
+    <form ref={formRef} onSubmit={submit} style={{ height: '100%' }}>
       <Container
         footer={
           <Inline gap='8px' wrap={false}>

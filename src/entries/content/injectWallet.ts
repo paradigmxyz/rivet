@@ -86,6 +86,7 @@ function setupHandleListeners({
   document.addEventListener('mousemove', (e) => {
     if (!isDragging) return
     const width = startWidth + startX - e.pageX
+    if (width < 360) return
     container.style.width = `${width}px`
     handle.style.right = `${width - 16}px`
   })

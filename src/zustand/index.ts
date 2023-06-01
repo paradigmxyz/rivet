@@ -1,6 +1,6 @@
-export { networksStore, useNetworksStore } from './networks'
+export { networkStore, useNetwork } from './network'
 export {
   pendingRequestsStore,
-  usePendingRequestsStore,
+  usePendingRequests,
 } from './pending-requests'
 export { syncStores } from './utils'

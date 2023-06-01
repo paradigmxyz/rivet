@@ -37,6 +37,7 @@ const textProperties = defineProperties({
       ...mapValues(foregroundColorVars, (colorVar) => `rgb(${colorVar})`),
     },
     fontSize: {
+      '9px': defineType(9, 11, 0.56),
       '11px': defineType(11, 13, 0.56),
       '12px': defineType(12, 15, 0.52),
       '14px': defineType(14, 19, 0.48),
@@ -49,6 +50,7 @@ const textProperties = defineProperties({
     },
     fontWeight,
     textAlign: ['left', 'center', 'right'],
+    whiteSpace: ['nowrap'],
   },
 })
 

@@ -3,12 +3,12 @@ import {
   type Address,
   type Hash,
   type Hex,
+  hexToNumber,
   isHex,
   numberToHex,
   parseEther,
   stringToHex,
   stringify,
-  hexToNumber,
 } from 'viem'
 import 'viem/window'
 import '~/design-system/styles/global.css'

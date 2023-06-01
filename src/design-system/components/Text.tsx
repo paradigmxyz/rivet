@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { Box } from './Box'
+import type { BoxStyles } from './Box.css'
 import { type TextStyles, textStyles } from './Text.css'
 
 export type TextProps = {
@@ -21,6 +22,8 @@ export type TextProps = {
   color?: TextStyles['color']
   size?: TextStyles['fontSize']
   weight?: TextStyles['fontWeight']
+  width?: BoxStyles['width']
+  wrap?: boolean
   testId?: string
 }
 
@@ -31,6 +34,7 @@ export function Text({
   color = 'text',
   size = '15px',
   weight = 'regular',
+  wrap = true,
   testId,
 }: TextProps) {
   return (
@@ -43,8 +47,23 @@ export function Text({
         textAlign: align,
       })}
       testId={testId}
+      width={wrap ? undefined : 'full'}
     >
-      {children}
+      <Box
+        as='span'
+        style={
+          wrap
+            ? undefined
+            : {
+                display: 'block',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden',
+                whiteSpace: 'nowrap',
+              }
+        }
+      >
+        {children}
+      </Box>
     </Box>
   )
 }

@@ -9,7 +9,10 @@ export type Schema = {
     payload: { request: RpcRequest; status: 'approved' | 'rejected' },
     response: void,
   ]
-  request: [payload: RpcRequest, response: RpcResponse]
+  request: [
+    payload: { request: RpcRequest; rpcUrl?: string },
+    response: RpcResponse,
+  ]
   toggleWallet: [
     payload:
       | { open: boolean; useStorage?: never }

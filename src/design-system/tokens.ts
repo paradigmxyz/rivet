@@ -397,7 +397,11 @@ export const strokeWeights = {
 export type StrokeWeight = keyof typeof strokeWeights
 
 // Note: Don't forget to generate the symbols with `pnpm symbols`!
-export const symbolNames = ['wallet.pass', 'person.circle'] as const
+export const symbolNames = [
+  'wallet.pass',
+  'person.circle',
+  'chevron.down',
+] as const
 export type SymbolName = typeof symbolNames[number]
 
 export const textAlignment = ['left', 'center', 'right'] as const

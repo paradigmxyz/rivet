@@ -36,5 +36,4 @@ export const pendingRequestsStore = createStore<PendingRequestsState>(
   },
 )
 
-export const usePendingRequestsStore =
-  createTrackedSelector(pendingRequestsStore)
+export const usePendingRequests = createTrackedSelector(pendingRequestsStore)

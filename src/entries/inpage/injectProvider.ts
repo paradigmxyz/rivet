@@ -1,12 +1,12 @@
 import { getMessenger } from '~/messengers'
-import { createProvider } from '~/provider'
+import { getProvider } from '~/provider'
 
 const backgroundMessenger = getMessenger({ connection: 'background <> inpage' })
 
 export function injectProvider() {
   if (shouldInjectProvider()) {
     console.log('injection complete in window')
-    window.ethereum = createProvider({ messenger: backgroundMessenger })
+    window.ethereum = getProvider({ messenger: backgroundMessenger })
     window.dispatchEvent(new Event('ethereum#initialized'))
   }
 }

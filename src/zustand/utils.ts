@@ -65,13 +65,12 @@ async function syncStore({ store }: { store: StoreWithPersist<unknown> }) {
     if (changedStore === undefined) {
       // Retrieve the default state from the store initializer.
       const state = store.initializer(
-        () => undefined,
+        (x) => x,
         () => null,
         {} as any,
       )
       const version = persistOptions.version
-      const newStore = persistOptions.serialize?.({ state, version })
-      await webextStorage.local.setItem(storageName, newStore)
+      await persistOptions.storage?.setItem(storageName, { state, version })
     }
     store.persist.rehydrate()
   }

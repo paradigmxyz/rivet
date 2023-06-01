@@ -2,17 +2,23 @@ import { type EIP1193Provider, UnknownRpcError } from 'viem'
 
 import { UserRejectedRequestError } from '~/errors'
 import type { Messenger } from '~/messengers'
+import type { RpcRequest } from '~/messengers/schema'
 import { createEmitter } from '~/utils'
 
-export function createProvider({
+const providerCache = new Map<string, EIP1193Provider>()
+export function getProvider({
   messenger,
-}: { messenger: Messenger }): EIP1193Provider {
+  rpcUrl,
+}: { messenger: Messenger; rpcUrl?: string }): EIP1193Provider {
+  const cachedProvider = rpcUrl ? providerCache.get(rpcUrl) : undefined
+  if (cachedProvider) return cachedProvider
+
   // @ts-expect-error
   const _emitter = createEmitter()
 
   let _id = 0
 
-  return {
+  const provider: EIP1193Provider = {
     on() {},
     removeListener() {},
     async request({ method, params }) {
@@ -20,10 +26,13 @@ export function createProvider({
       const { result, error, ...response } = await messenger.send(
         'request',
         {
-          method,
-          params,
-          id,
-        } as any,
+          request: {
+            method,
+            params,
+            id,
+          } as RpcRequest,
+          rpcUrl,
+        },
         { id },
       )
       if (response.id !== id) return
@@ -35,4 +44,6 @@ export function createProvider({
       return result
     },
   }
+  if (rpcUrl) providerCache.set(rpcUrl, provider)
+  return provider
 }

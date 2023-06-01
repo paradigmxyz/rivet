@@ -11,7 +11,10 @@ import {
 } from './Input.css'
 import { type TextStyles, textStyles } from './Text.css'
 
-export type InputProps = Omit<InputHTMLAttributes<HTMLInputElement>, keyof BoxStyles> & {
+export type InputProps = Omit<
+  InputHTMLAttributes<HTMLInputElement>,
+  keyof BoxStyles
+> & {
   height?: InputHeight
   placeholder?: string
   testId?: string
