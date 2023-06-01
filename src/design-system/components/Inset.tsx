@@ -30,6 +30,7 @@ export function Inset({
       paddingBottom={bottom ?? vertical ?? space}
       paddingLeft={left ?? horizontal ?? space}
       paddingRight={right ?? horizontal ?? space}
+      width='full'
     >
       {children}
     </Box>

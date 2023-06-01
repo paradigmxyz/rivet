@@ -3307,13 +3307,13 @@ export type SFSymbolName =
   | '50.circle.fill'
   | '50.square'
   | '50.square.fill'
-  | 'applelogo'
+  | 'applelogo';
 
 export type SFSymbol = {
-  name: SFSymbolName
-  path: string
+  name: SFSymbolName;
+  path: string;
   viewBox: {
-    width: number
-    height: number
-  }
-}
+    width: number;
+    height: number;
+  };
+};

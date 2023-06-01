@@ -1,9 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
-import type { ReactNode } from 'react'
+import { type ReactNode, useCallback } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 
 import {
-  Bleed,
   Box,
   Column,
   Columns,
@@ -18,7 +17,14 @@ import {
 import { useNetworkStatus, useWalletClient } from '~/hooks'
 import { useNetwork, usePendingRequests } from '~/zustand'
 
+import { getMessenger } from '../messengers'
 import PendingRequest from './pending-request'
+
+const contentMessenger = getMessenger({ connection: 'wallet <> contentScript' })
+
+function truncateAddress(address: string) {
+  return `${address.slice(0, 8)}\u2026${address.slice(-6)}`
+}
 
 export default function Layout() {
   const { pendingRequests } = usePendingRequests()
@@ -66,101 +72,139 @@ function Header() {
   })
 
   // TODO: retrieve selected account from global sync state (zustand).
-  // @ts-expect-error
-  const _address = addresses?.[0]
+  const address = addresses?.[0]
+
+  const handleClose = useCallback(() => {
+    contentMessenger.send('toggleWallet', undefined)
+  }, [])
 
   return (
-    <Box
-      borderColor='primary / 0.1'
-      borderBottomWidth='1px'
-      width='full'
-      style={{ height: '48px' }}
-    >
-      <Columns alignVertical='center'>
-        <Column alignVertical='center' width='content'>
-          <Inset left='12px' right='8px'>
-            <Box style={{ width: '52px' }}>
-              <HeaderItem label='Status'>
-                <Inline alignVertical='center' gap='4px' wrap={false}>
-                  <Box
-                    backgroundColor={
-                      status === 'pending'
-                        ? 'primary / 0.5'
-                        : listening
-                        ? 'green'
-                        : 'red'
-                    }
-                    borderWidth='1px'
-                    borderRadius='round'
-                    style={{ width: 8, height: 8 }}
-                  />
-                  <Text size='12px'>
-                    {status === 'pending'
-                      ? ''
-                      : listening
-                      ? 'Online'
-                      : 'Offline'}
-                  </Text>
-                </Inline>
-              </HeaderItem>
-            </Box>
-          </Inset>
-        </Column>
-        <Column width='content'>
-          <Box
-            backgroundColor='primary / 0.1'
-            height='full'
-            style={{ width: '1px' }}
-          />
-        </Column>
-        <Column alignVertical='center'>
-          <Link to='network-config' style={{ height: '100%' }}>
-            <Box
-              backgroundColor={{
-                hover: 'primary / 0.02',
-              }}
-              height='full'
-              paddingLeft='12px'
-              style={{ cursor: 'default' }}
-            >
-              <Columns>
-                <Column>
-                  <Columns gap='8px'>
-                    <Column alignVertical='center' width='1/2'>
-                      <HeaderItem label='RPC URL'>
-                        <Inline alignVertical='center' gap='8px' wrap={false}>
-                          <Text size='12px' wrap={false} width='full'>
-                            {network.rpcUrl.replace(/https?:\/\//, '')}
-                          </Text>
-                        </Inline>
+    <Box style={{ height: '80px' }} width='full'>
+      <Rows>
+        <Row>
+          <Box borderColor='primary / 0.1' borderBottomWidth='1px' width='full'>
+            <Columns>
+              <Column>
+                <Box
+                  alignItems='center'
+                  // backgroundColor={{
+                  //   hover: 'primary / 0.02',
+                  // }}
+                  display='flex'
+                  height='full'
+                  style={{ cursor: 'default' }}
+                >
+                  <Inset horizontal='12px'>
+                    {address && (
+                      <HeaderItem label='Account'>
+                        <Text size='11px'>{truncateAddress(address)}</Text>
                       </HeaderItem>
-                    </Column>
-                    <Column alignVertical='center' width='1/2'>
-                      <HeaderItem label='Chain'>
-                        <Inline alignVertical='center' gap='8px' wrap={false}>
-                          <Text size='12px' wrap={false} width='full'>
-                            {network.chainId}: {network.name}
-                          </Text>
-                        </Inline>
-                      </HeaderItem>
-                    </Column>
-                  </Columns>
-                </Column>
-                <Column alignVertical='center' width='content'>
-                  <Inset right='12px'>
-                    <SFSymbol
-                      color='label'
-                      size='12px'
-                      symbol='chevron.down'
-                      weight='medium'
-                    />
+                    )}
                   </Inset>
-                </Column>
-              </Columns>
-            </Box>
-          </Link>
-        </Column>
-      </Columns>
+                </Box>
+              </Column>
+              <Column width='content'>
+                <Box
+                  backgroundColor='primary / 0.1'
+                  height='full'
+                  style={{ width: '1px' }}
+                />
+              </Column>
+              <Column width='content'>
+                <Box
+                  alignItems='center'
+                  as='button'
+                  backgroundColor={{
+                    hover: 'primary / 0.02',
+                  }}
+                  display='flex'
+                  justifyContent='center'
+                  height='full'
+                  onClick={handleClose}
+                  style={{ width: '40px' }}
+                >
+                  <SFSymbol size='12px' symbol='xmark' weight='medium' />
+                </Box>
+              </Column>
+            </Columns>
+          </Box>
+        </Row>
+        <Row>
+          <Box borderColor='primary / 0.1' borderBottomWidth='1px' width='full'>
+            <Columns alignVertical='center'>
+              <Column alignVertical='center' width='content'>
+                <Inset left='12px' right='8px'>
+                  <Box style={{ width: '52px' }}>
+                    <HeaderItem label='Status'>
+                      <Inline alignVertical='center' gap='4px' wrap={false}>
+                        <Box
+                          backgroundColor={
+                            status === 'pending'
+                              ? 'primary / 0.5'
+                              : listening
+                              ? 'green'
+                              : 'red'
+                          }
+                          borderWidth='1px'
+                          borderRadius='round'
+                          style={{ width: 8, height: 8 }}
+                        />
+                        <Text size='12px'>
+                          {status === 'pending'
+                            ? ''
+                            : listening
+                            ? 'Online'
+                            : 'Offline'}
+                        </Text>
+                      </Inline>
+                    </HeaderItem>
+                  </Box>
+                </Inset>
+              </Column>
+              <Column width='content'>
+                <Box
+                  backgroundColor='primary / 0.1'
+                  height='full'
+                  style={{ width: '1px' }}
+                />
+              </Column>
+              <Column alignVertical='center'>
+                <Link to='network-config' style={{ height: '100%' }}>
+                  <Box
+                    backgroundColor={{
+                      hover: 'primary / 0.02',
+                    }}
+                    height='full'
+                    paddingLeft='12px'
+                    style={{ cursor: 'default' }}
+                  >
+                    <Columns>
+                      <Column>
+                        <Columns gap='8px'>
+                          <Column alignVertical='center' width='1/2'>
+                            <HeaderItem label='RPC URL'>
+                              <Text size='12px' wrap={false} width='full'>
+                                {network.rpcUrl.replace(/https?:\/\//, '')}
+                              </Text>
+                            </HeaderItem>
+                          </Column>
+                          <Column alignVertical='center' width='1/2'>
+                            <HeaderItem label='Chain'>
+                              <Text size='12px' wrap={false} width='full'>
+                                {network.chainId}: {network.name}
+                              </Text>
+                            </HeaderItem>
+                          </Column>
+                        </Columns>
+                      </Column>
+                    </Columns>
+                  </Box>
+                </Link>
+              </Column>
+            </Columns>
+          </Box>
+        </Row>
+      </Rows>
     </Box>
   )
 }
@@ -170,13 +214,11 @@ function HeaderItem({
   label,
 }: { children: ReactNode; label: string }) {
   return (
-    <Bleed top='-4px'>
-      <Stack gap='8px'>
-        <Text color='label' size='9px'>
-          {label.toUpperCase()}
-        </Text>
-        <Box>{children}</Box>
-      </Stack>
-    </Bleed>
+    <Stack gap='8px'>
+      <Text color='label' size='9px'>
+        {label.toUpperCase()}
+      </Text>
+      <Box>{children}</Box>
+    </Stack>
   )
 }

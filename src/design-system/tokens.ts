@@ -401,6 +401,7 @@ export const symbolNames = [
   'wallet.pass',
   'person.circle',
   'chevron.down',
+  'xmark',
 ] as const
 export type SymbolName = typeof symbolNames[number]
 
