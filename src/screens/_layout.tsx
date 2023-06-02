@@ -1,4 +1,3 @@
-import { useQuery } from '@tanstack/react-query'
 import { type ReactNode, useCallback } from 'react'
 import { Link, Outlet } from 'react-router-dom'
 
@@ -14,8 +13,8 @@ import {
   Stack,
   Text,
 } from '~/design-system'
-import { useNetworkStatus, useWalletClient } from '~/hooks'
-import { useNetwork, usePendingRequests } from '~/zustand'
+import { useNetworkStatus } from '~/hooks'
+import { useAccount, useNetwork, usePendingRequests } from '~/zustand'
 
 import { getMessenger } from '../messengers'
 import PendingRequest from './pending-request'
@@ -60,19 +59,10 @@ export default function Layout() {
 }
 
 function Header() {
-  const walletClient = useWalletClient()
+  const { account } = useAccount()
   const { network } = useNetwork()
 
   const { data: listening, status } = useNetworkStatus()
-
-  const { data: addresses } = useQuery({
-    enabled: Boolean(listening),
-    queryKey: ['addresses', walletClient.key],
-    queryFn: walletClient.getAddresses,
-  })
-
-  // TODO: retrieve selected account from global sync state (zustand).
-  const address = addresses?.[0]
 
   const handleClose = useCallback(() => {
     contentMessenger.send('toggleWallet', undefined)
@@ -95,9 +85,11 @@ function Header() {
                   style={{ cursor: 'default' }}
                 >
                   <Inset horizontal='12px'>
-                    {address && (
+                    {account && (
                       <HeaderItem label='Account'>
-                        <Text size='11px'>{truncateAddress(address)}</Text>
+                        <Text size='11px'>
+                          {truncateAddress(account.address)}
+                        </Text>
                       </HeaderItem>
                     )}
                   </Inset>

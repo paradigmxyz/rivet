@@ -1,9 +1,9 @@
+import { EventEmitter } from 'eventemitter3'
 import { type EIP1193Provider, UnknownRpcError } from 'viem'
 
 import { UserRejectedRequestError } from '~/errors'
 import type { Messenger } from '~/messengers'
 import type { RpcRequest } from '~/messengers/schema'
-import { createEmitter } from '~/utils'
 
 const providerCache = new Map<string, EIP1193Provider>()
 export function getProvider({
@@ -13,20 +13,21 @@ export function getProvider({
   const cachedProvider = rpcUrl ? providerCache.get(rpcUrl) : undefined
   if (cachedProvider) return cachedProvider
 
-  const emitter = createEmitter<{ chainChanged: { chainId: string } }>()
+  const emitter = new EventEmitter()
 
   let _id = 0
 
+  messenger.reply('accountsChanged', async (accounts) => {
+    emitter.emit('accountsChanged', accounts)
+  })
+
   messenger.reply('chainChanged', async (chainId) => {
-    emitter.emit('chainChanged', { chainId })
+    emitter.emit('chainChanged', chainId)
   })
 
   const provider: EIP1193Provider = {
-    on(eventName, cb: (...args: any[]) => void) {
-      if (eventName === 'chainChanged')
-        return emitter.on('chainChanged', (data) => cb(data.chainId))
-    },
-    removeListener() {},
+    on: emitter.on.bind(emitter),
+    removeListener: emitter.removeListener.bind(emitter),
     async request({ method, params }) {
       const id = _id++
       const { result, error, ...response } = await messenger.send(

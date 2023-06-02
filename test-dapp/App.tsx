@@ -31,6 +31,7 @@ export default function App() {
         <Text weight='semibold' size='22px'>
           Events
         </Text>
+        <AccountsChanged />
         <ChainChanged />
         <Text weight='semibold' size='22px'>
           Methods
@@ -44,6 +45,27 @@ export default function App() {
         <SignTypedData />
       </Stack>
     </Box>
+  )
+}
+
+function AccountsChanged() {
+  const [accounts, setAccounts] = useState<Address[][]>([])
+  useEffect(() => {
+    window.ethereum?.on('accountsChanged', (accounts) => {
+      setAccounts((x) => [...x, accounts as Address[]])
+    })
+  }, [])
+  return (
+    <Stack gap='12px'>
+      <Text size='18px' weight='semibold'>
+        accountsChanged
+      </Text>
+      <Stack gap='8px'>
+        {accounts.map((x) => (
+          <Text>{JSON.stringify(x)}</Text>
+        ))}
+      </Stack>
+    </Stack>
   )
 }
 

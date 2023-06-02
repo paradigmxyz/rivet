@@ -9,7 +9,7 @@ import { useDebounce } from '~/hooks'
 import { useNetwork } from '~/zustand'
 
 export default function NetworkConfig() {
-  const { network, updateNetwork } = useNetwork()
+  const { network, setNetwork } = useNetwork()
 
   type FormValues = {
     name: string
@@ -33,7 +33,7 @@ export default function NetworkConfig() {
   const href = useHref('/')
 
   const onSubmit = handleSubmit(async ({ name, rpcUrl }) => {
-    await updateNetwork({ name, rpcUrl })
+    await setNetwork({ name, rpcUrl })
     navigate('/')
   })
 

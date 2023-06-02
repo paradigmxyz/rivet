@@ -1,5 +1,4 @@
 import { useRef } from 'react'
-// @ts-expect-error
 import { useSyncExternalStoreWithSelector } from 'use-sync-external-store/shim/with-selector.js'
 import { deepEqual } from '~/utils'
 
@@ -16,7 +15,7 @@ export function useSyncExternalStoreWithTracked<
   isEqual: (a: Selection, b: Selection) => boolean = deepEqual,
 ) {
   const trackedKeys = useRef<string[]>([])
-  const result = useSyncExternalStoreWithSelector(
+  const result = useSyncExternalStoreWithSelector<Snapshot, Selection>(
     subscribe,
     getSnapshot,
     getServerSnapshot,

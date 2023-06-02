@@ -35,6 +35,7 @@
     "@types/prettier": "^2.7.2",
     "@types/react": "^18.0.32",
     "@types/react-dom": "^18.0.11",
+    "@types/use-sync-external-store": "^0.0.3",
     "@types/webextension-polyfill": "^0.10.0",
     "@vanilla-extract/css": "^1.11.0",
     "@vanilla-extract/css-utils": "^0.1.3",

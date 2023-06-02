@@ -14,7 +14,7 @@ export type NetworkState = {
   networks: readonly Network[]
 }
 export type NetworkActions = {
-  updateNetwork: (network: Partial<Network>) => Promise<void>
+  setNetwork(network: Partial<Network>): Promise<void>
 }
 export type NetworkStore = NetworkState & NetworkActions
 
@@ -28,7 +28,7 @@ export const networkStore = createStore<NetworkStore>(
   (set, get) => ({
     network: defaultNetwork,
     networks: [defaultNetwork],
-    async updateNetwork(network) {
+    async setNetwork(network) {
       const updatedNetwork = {
         ...get().network,
         ...network,
@@ -55,7 +55,7 @@ export const networkStore = createStore<NetworkStore>(
   }),
   {
     persist: {
-      name: 'networks',
+      name: 'network',
       version: 0,
     },
   },
