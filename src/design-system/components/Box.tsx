@@ -41,9 +41,10 @@ export const Box = forwardRef(
       typeof props.backgroundColor === 'string'
         ? props.backgroundColor
         : props.backgroundColor?.default
-    const baseBackgroundColor = backgroundColor?.split(
+    const [baseBackgroundColor, opacity] = (backgroundColor || '').split(
       ' / ',
-    )[0] as BackgroundColor
+    ) as [BackgroundColor, string]
+    const applyColorScheme = !opacity || parseFloat(opacity) > 0.5
 
     const {
       scheme: accentColorScheme,
@@ -88,7 +89,7 @@ export const Box = forwardRef(
           typeof Component === 'string'
             ? resetElements[Component as keyof typeof resetElements]
             : undefined,
-          colorSchemeClasses,
+          applyColorScheme && colorSchemeClasses,
           boxStyles(boxStyleProps),
           className,
         )}
@@ -101,7 +102,7 @@ export const Box = forwardRef(
       />
     )
 
-    return backgroundColor ? (
+    return backgroundColor && applyColorScheme ? (
       <ColorSchemeProvider color={baseBackgroundColor}>
         {el}
       </ColorSchemeProvider>

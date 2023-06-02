@@ -18,8 +18,9 @@ import {
 } from '~/zustand'
 
 import Layout from './screens/_layout.tsx'
+import Accounts from './screens/accounts.tsx'
 import Index from './screens/index'
-import NetworkConfig from './screens/network-config.tsx'
+import Network from './screens/network.tsx'
 
 syncStores()
 
@@ -33,8 +34,12 @@ const router = createHashRouter([
         element: <Index />,
       },
       {
-        path: 'network-config',
-        element: <NetworkConfig />,
+        path: 'accounts',
+        element: <Accounts />,
+      },
+      {
+        path: 'network',
+        element: <Network />,
       },
     ],
   },
@@ -63,7 +68,11 @@ function AccountsChangedEmitter() {
   useEffect(() => {
     if (!account) return
 
-    const accounts_ = accountsForRpcUrl({ rpcUrl: account.rpcUrl })
+    let accounts_ = accountsForRpcUrl({ rpcUrl: account.rpcUrl })
+    accounts_ = [
+      account,
+      ...accounts_.filter((x) => x.address !== account.address),
+    ]
 
     if (prevAccounts.current && !deepEqual(prevAccounts.current, accounts_))
       inpageMessenger.send(
@@ -96,15 +105,19 @@ function NetworkChangedEmitter() {
 function SyncJsonRpcAccounts() {
   const { data: chainId } = useNetworkStatus()
   const walletClient = useWalletClient()
-  const { setJsonRpcAccounts } = useAccount()
+  const { accountsForRpcUrl, setJsonRpcAccounts } = useAccount()
 
   // rome-ignore lint/nursery/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     ;(async () => {
       const addresses = await walletClient.getAddresses()
-      setJsonRpcAccounts({ addresses, rpcUrl: walletClient.key })
+      const addresses_ = accountsForRpcUrl({ rpcUrl: walletClient.key }).map(
+        (x) => x.address,
+      )
+      if (!deepEqual(addresses, addresses_))
+        setJsonRpcAccounts({ addresses, rpcUrl: walletClient.key })
     })()
-  }, [chainId, setJsonRpcAccounts, walletClient])
+  }, [accountsForRpcUrl, chainId, setJsonRpcAccounts, walletClient])
 
   return null
 }

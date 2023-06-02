@@ -75,25 +75,27 @@ function Header() {
           <Box borderColor='primary / 0.1' borderBottomWidth='1px' width='full'>
             <Columns>
               <Column>
-                <Box
-                  alignItems='center'
-                  // backgroundColor={{
-                  //   hover: 'primary / 0.02',
-                  // }}
-                  display='flex'
-                  height='full'
-                  style={{ cursor: 'default' }}
-                >
-                  <Inset horizontal='12px'>
-                    {account && (
-                      <HeaderItem label='Account'>
-                        <Text size='11px'>
-                          {truncateAddress(account.address)}
-                        </Text>
-                      </HeaderItem>
-                    )}
-                  </Inset>
-                </Box>
+                <Link to='accounts' style={{ height: '100%' }}>
+                  <Box
+                    alignItems='center'
+                    backgroundColor={{
+                      hover: 'primary / 0.05',
+                    }}
+                    display='flex'
+                    height='full'
+                    style={{ cursor: 'default' }}
+                  >
+                    <Inset horizontal='12px'>
+                      {account && (
+                        <HeaderItem label='Account'>
+                          <Text size='11px'>
+                            {truncateAddress(account.address)}
+                          </Text>
+                        </HeaderItem>
+                      )}
+                    </Inset>
+                  </Box>
+                </Link>
               </Column>
               <Column width='content'>
                 <Box
@@ -107,15 +109,19 @@ function Header() {
                   alignItems='center'
                   as='button'
                   backgroundColor={{
-                    hover: 'primary / 0.02',
+                    hover: 'primary / 0.05',
                   }}
                   display='flex'
                   justifyContent='center'
                   height='full'
                   onClick={handleClose}
-                  style={{ width: '40px' }}
+                  style={{ width: '28px' }}
                 >
-                  <SFSymbol size='12px' symbol='xmark' weight='medium' />
+                  <SFSymbol
+                    size='12px'
+                    symbol='chevron.right.2'
+                    weight='medium'
+                  />
                 </Box>
               </Column>
             </Columns>
@@ -161,10 +167,10 @@ function Header() {
                 />
               </Column>
               <Column alignVertical='center'>
-                <Link to='network-config' style={{ height: '100%' }}>
+                <Link to='network' style={{ height: '100%' }}>
                   <Box
                     backgroundColor={{
-                      hover: 'primary / 0.02',
+                      hover: 'primary / 0.05',
                     }}
                     height='full'
                     paddingLeft='12px'

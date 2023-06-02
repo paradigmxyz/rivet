@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
-import { useHref, useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { getPublicClient } from '../viem'
 import { Container } from '~/components'
-import { Button, Inline, Input, Stack, Text } from '~/design-system'
+import { Button, Inline, Input, SFSymbol, Stack, Text } from '~/design-system'
 import { useDebounce } from '~/hooks'
 import { useNetwork } from '~/zustand'
 
-export default function NetworkConfig() {
+export default function Network() {
   const { network, setNetwork } = useNetwork()
 
   type FormValues = {
@@ -30,7 +30,6 @@ export default function NetworkConfig() {
   })
 
   const navigate = useNavigate()
-  const href = useHref('/')
 
   const onSubmit = handleSubmit(async ({ name, rpcUrl }) => {
     await setNetwork({ name, rpcUrl })
@@ -40,15 +39,20 @@ export default function NetworkConfig() {
   return (
     <form onSubmit={onSubmit} style={{ height: '100%' }}>
       <Container
-        header={<Text size='16px'>Network</Text>}
-        footer={
-          <Inline gap='8px' wrap={false}>
-            <Button as='a' href={href} variant='stroked scrim'>
-              Back
-            </Button>
-            <Button type='submit'>Update</Button>
+        header={
+          <Inline alignVertical='center' alignHorizontal='justify' wrap={false}>
+            <Text size='16px'>Network</Text>
+            <Link to='/'>
+              <SFSymbol
+                color='label'
+                size='12px'
+                symbol='xmark'
+                weight='medium'
+              />
+            </Link>
           </Inline>
         }
+        footer={<Button type='submit'>Update</Button>}
       >
         <Stack gap='20px'>
           <Stack gap='12px'>
