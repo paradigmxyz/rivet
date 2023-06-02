@@ -16,6 +16,7 @@ import {
 import { useNetworkStatus } from '~/hooks'
 import { useAccount, useNetwork, usePendingRequests } from '~/zustand'
 
+import { BrandIcon } from '../components/icons/BrandIcon'
 import { getMessenger } from '../messengers'
 import PendingRequest from './pending-request'
 
@@ -74,6 +75,29 @@ function Header() {
         <Row>
           <Box borderColor='primary / 0.1' borderBottomWidth='1px' width='full'>
             <Columns>
+              <Column width='content'>
+                <Link to='/' style={{ height: '100%' }}>
+                  <Box
+                    alignItems='center'
+                    backgroundColor={{
+                      hover: 'primary / 0.05',
+                    }}
+                    display='flex'
+                    justifyContent='center'
+                    height='full'
+                    style={{ width: '36px' }}
+                  >
+                    <BrandIcon size='22px' />
+                  </Box>
+                </Link>
+              </Column>
+              <Column width='content'>
+                <Box
+                  backgroundColor='primary / 0.1'
+                  height='full'
+                  style={{ width: '1px' }}
+                />
+              </Column>
               <Column>
                 <Link to='accounts' style={{ height: '100%' }}>
                   <Box

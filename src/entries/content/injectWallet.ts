@@ -55,11 +55,11 @@ function injectIframe({
 function injectHandle({ container }: { container: HTMLElement }) {
   const handle = document.createElement('div')
   handle.style.display = 'none'
-  handle.style.width = '24px'
+  handle.style.width = '16px'
   handle.style.height = '100%'
   handle.style.position = 'absolute'
-  handle.style.top = '0'
-  handle.style.right = `${parseInt(container.style.width) - 16}px`
+  handle.style.top = '80px'
+  handle.style.right = `${parseInt(container.style.width) - 8}px`
   handle.style.cursor = 'ew-resize'
   container.appendChild(handle)
   return handle
@@ -88,7 +88,7 @@ function setupHandleListeners({
     const width = startWidth + startX - e.pageX
     if (width < 360) return
     container.style.width = `${width}px`
-    handle.style.right = `${width - 16}px`
+    handle.style.right = `${width - 8}px`
   })
 
   document.addEventListener('mouseup', () => {
@@ -119,7 +119,7 @@ function setupToggleListeners({
     } else {
       container.style.width = '360px'
       handle.style.display = 'block'
-      handle.style.right = '344px'
+      handle.style.right = '352px'
     }
 
     if (typeof args?.open === 'undefined')
