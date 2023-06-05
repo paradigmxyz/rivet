@@ -1,3 +1,4 @@
+export { useBlockNumber } from './useBlockNumber'
 export { useDebounce } from './useDebounce'
 export { useNetworkStatus } from './useNetworkStatus'
 export { usePublicClient } from './usePublicClient'

@@ -1,11 +1,11 @@
 import { Box, Text } from '~/design-system'
-import { useNetwork } from '~/zustand'
+import { useBlockNumber } from '~/hooks'
 
 export default function Index() {
-  const { network } = useNetwork()
+  const { data: blockNumber } = useBlockNumber({ watch: true })
   return (
     <Box padding='12px'>
-      <Text>Block number: {network.blockNumber?.toString()}</Text>
+      <Text>Block number: {blockNumber?.toString()}</Text>
     </Box>
   )
 }

@@ -5,7 +5,6 @@ import { createStore } from './utils'
 
 type RpcUrl = string
 type Network = {
-  blockNumber?: bigint
   chainId: number
   name: string
   rpcUrl: RpcUrl
@@ -16,13 +15,6 @@ export type NetworkState = {
   networks: Record<RpcUrl, Network>
 }
 export type NetworkActions = {
-  setBlockNumber({
-    blockNumber,
-    rpcUrl,
-  }: {
-    blockNumber: bigint
-    rpcUrl: RpcUrl
-  }): void
   upsertNetwork({
     network,
     rpcUrl,
@@ -46,24 +38,6 @@ export const networkStore = createStore<NetworkStore>(
     network: defaultNetwork,
     networks: {
       [defaultRpcUrl]: defaultNetwork,
-    },
-    setBlockNumber({ blockNumber, rpcUrl }) {
-      set((state) => {
-        const network = {
-          ...state.network,
-          blockNumber,
-        }
-        return {
-          ...state,
-          ...(rpcUrl === state.network.rpcUrl && {
-            network,
-          }),
-          networks: {
-            ...state.networks,
-            [state.network.rpcUrl]: network,
-          },
-        }
-      })
     },
     async upsertNetwork({ network, rpcUrl }) {
       if (!network.chainId) {

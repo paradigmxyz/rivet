@@ -5,7 +5,7 @@ import { RouterProvider, createHashRouter } from 'react-router-dom'
 import { numberToHex } from 'viem'
 
 import '~/design-system/styles/global.css'
-import { useNetworkStatus, usePublicClient, useWalletClient } from '~/hooks'
+import { useNetworkStatus, useWalletClient } from '~/hooks'
 import { getMessenger } from '~/messengers'
 import { QueryClientProvider } from '~/react-query'
 import { deepEqual } from '~/utils'
@@ -49,7 +49,6 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <QueryClientProvider>
     <AccountsChangedEmitter />
     <NetworkChangedEmitter />
-    <SyncBlockNumber />
     <SyncJsonRpcAccounts />
     <SyncNetwork />
     <RouterProvider router={router} />
@@ -103,27 +102,6 @@ function NetworkChangedEmitter() {
 
     prevNetwork.current = network
   }, [network])
-
-  return null
-}
-
-/** Keeps block number in sync. */
-function SyncBlockNumber() {
-  const { data: listening } = useNetworkStatus()
-  const { setBlockNumber } = useNetwork()
-  const publicClient = usePublicClient()
-
-  useEffect(() => {
-    if (!listening) return
-
-    // TODO: Switch to viem `watchBlockNumber`.
-    const interval = setInterval(() => {
-      publicClient.getBlockNumber({ maxAge: 0 }).then((blockNumber) => {
-        setBlockNumber({ rpcUrl: publicClient.key, blockNumber })
-      })
-    }, 1_000)
-    return () => clearInterval(interval)
-  }, [listening, publicClient, setBlockNumber])
 
   return null
 }
