@@ -1,6 +1,8 @@
 import { useQuery } from '@tanstack/react-query'
+import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
+import * as chains from 'viem/chains'
 
 import { getPublicClient } from '../viem'
 import { Container } from '~/components'
@@ -15,9 +17,10 @@ export default function Network() {
     name: string
     rpcUrl: string
   }
-  const { register, handleSubmit, watch } = useForm<FormValues>({
-    defaultValues: { name: network.name, rpcUrl: network.rpcUrl },
-  })
+  const { register, handleSubmit, setValue, getFieldState, watch } =
+    useForm<FormValues>({
+      defaultValues: { name: network.name, rpcUrl: network.rpcUrl },
+    })
 
   const debouncedRpcUrl = useDebounce(watch('rpcUrl'), 300)
   const { data: chainId, isError: isOffline } = useQuery({
@@ -28,6 +31,15 @@ export default function Network() {
       return publicClient.getChainId()
     },
   })
+
+  useEffect(() => {
+    const { isDirty } = getFieldState('name')
+    if (isDirty) return
+    const name = Object.values(chains).find(
+      (chain) => chain.id === chainId,
+    )?.name
+    setValue('name', name || 'Ethereum')
+  }, [chainId])
 
   const navigate = useNavigate()
 

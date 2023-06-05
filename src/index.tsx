@@ -66,7 +66,10 @@ function AccountsChangedEmitter() {
   const prevAccounts = useRef<AccountState['accounts']>()
   // rome-ignore lint/nursery/useExhaustiveDependencies: `inpageMessenger` isn't stateful...
   useEffect(() => {
-    if (!account) return
+    if (!account) {
+      prevAccounts.current = []
+      return
+    }
 
     let accounts_ = accountsForRpcUrl({ rpcUrl: account.rpcUrl })
     accounts_ = [
@@ -111,11 +114,7 @@ function SyncJsonRpcAccounts() {
   useEffect(() => {
     ;(async () => {
       const addresses = await walletClient.getAddresses()
-      const addresses_ = accountsForRpcUrl({ rpcUrl: walletClient.key }).map(
-        (x) => x.address,
-      )
-      if (!deepEqual(addresses, addresses_))
-        setJsonRpcAccounts({ addresses, rpcUrl: walletClient.key })
+      setJsonRpcAccounts({ addresses, rpcUrl: walletClient.key })
     })()
   }, [accountsForRpcUrl, chainId, setJsonRpcAccounts, walletClient])
 

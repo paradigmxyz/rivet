@@ -3,31 +3,35 @@ import { useSyncExternalStoreWithTracked } from '~/hooks'
 import { defaultChain, getPublicClient } from '../viem'
 import { createStore } from './utils'
 
+type RpcUrl = string
 type Network = {
   chainId: number
   name: string
-  rpcUrl: string
+  rpcUrl: RpcUrl
 }
 
 export type NetworkState = {
   network: Network
-  networks: readonly Network[]
+  networks: Record<RpcUrl, Network>
 }
 export type NetworkActions = {
   setNetwork(network: Partial<Network>): Promise<void>
 }
 export type NetworkStore = NetworkState & NetworkActions
 
+const defaultRpcUrl = defaultChain.rpcUrls.default.http[0]
 const defaultNetwork = {
   chainId: defaultChain.id,
   name: defaultChain.name,
-  rpcUrl: defaultChain.rpcUrls.default.http[0],
+  rpcUrl: defaultRpcUrl,
 } satisfies Network
 
 export const networkStore = createStore<NetworkStore>(
   (set, get) => ({
     network: defaultNetwork,
-    networks: [defaultNetwork],
+    networks: {
+      [defaultRpcUrl]: defaultNetwork,
+    },
     async setNetwork(network) {
       const updatedNetwork = {
         ...get().network,
@@ -42,13 +46,14 @@ export const networkStore = createStore<NetworkStore>(
       }
 
       set((state) => {
+        const networks = state.networks
+        delete networks[state.network.rpcUrl]
+        networks[updatedNetwork.rpcUrl] = updatedNetwork
+
         return {
           ...state,
           network: updatedNetwork,
-          networks: state.networks.map((network) => {
-            if (state.network.rpcUrl === network.rpcUrl) return updatedNetwork
-            return network
-          }),
+          networks,
         }
       })
     },
