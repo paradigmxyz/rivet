@@ -1,5 +1,10 @@
 lockfileVersion: '6.0'
 
+patchedDependencies:
+  '@samrum/vite-plugin-web-extension@4.1.0':
+    hash: blhk2ionup5caiiqs4b7rh47wy
+    path: patches/@samrum__vite-plugin-web-extension@4.1.0.patch
+
 devDependencies:
   '@capsizecss/core':
     specifier: ^3.1.0
@@ -15,7 +20,7 @@ devDependencies:
     version: 0.0.14(react@18.2.0)
   '@samrum/vite-plugin-web-extension':
     specifier: ^4.1.0
-    version: 4.1.0(vite@4.3.0)
+    version: 4.1.0(patch_hash=blhk2ionup5caiiqs4b7rh47wy)(vite@4.3.0)
   '@tanstack/query-async-storage-persister':
     specifier: 5.0.0-alpha.42
     version: 5.0.0-alpha.42
@@ -1137,7 +1142,7 @@ packages:
     dev: true
     optional: true
 
-  /@samrum/vite-plugin-web-extension@4.1.0(vite@4.3.0):
+  /@samrum/vite-plugin-web-extension@4.1.0(patch_hash=blhk2ionup5caiiqs4b7rh47wy)(vite@4.3.0):
     resolution: {integrity: sha512-svWVC8uucBBf96mPd8JFNCis+daH+IlZmbg95iCdKJfMi+DmSdqnfPNJ1oxNx8/LrrMz1Mn8BY04RnWx4qOPVA==}
     engines: {node: ^14.18.0 || >=16.0.0}
     peerDependencies:
@@ -1151,6 +1156,7 @@ packages:
       magic-string: 0.27.0
       vite: 4.3.0(@types/node@18.15.13)
     dev: true
+    patched: true
 
   /@scure/base@1.1.1:
     resolution: {integrity: sha512-ZxOhsSyxYwLJj3pLZCefNitxsj093tb2vq90mp2txoYeBqbcjDjqFhyM8eUjq/uFm6zJ+mUuqxlS2FkuSY1MTA==}

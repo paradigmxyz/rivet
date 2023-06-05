@@ -77,5 +77,10 @@
   "simple-git-hooks": {
     "pre-commit": "pnpm format && pnpm lint:fix"
   },
-  "packageManager": "pnpm@8.3.1"
+  "packageManager": "pnpm@8.3.1",
+  "pnpm": {
+    "patchedDependencies": {
+      "@samrum/vite-plugin-web-extension@4.1.0": "patches/@samrum__vite-plugin-web-extension@4.1.0.patch"
+    }
+  }
 }

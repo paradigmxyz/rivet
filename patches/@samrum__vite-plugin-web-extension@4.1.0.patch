@@ -1,0 +1,13 @@
+diff --git a/dist/index.js b/dist/index.js
+index a16b52f22720fe43c878862ca890c7fbbc36d96d..65627cb94dc1d53b08c483c1cfc10509ee374034 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -188,7 +188,7 @@ class DevBuilder {
+     }
+     async writeBuild({ devServerPort, manifestHtmlFiles, }) {
+         this.hmrServerOrigin = this.getHmrServerOrigin(devServerPort);
+-        await fsExtra.emptyDir(this.outDir);
++        // await fsExtra.emptyDir(this.outDir);
+         const publicDir = path.resolve(process.cwd(), this.viteConfig.root, this.viteConfig.publicDir);
+         fsExtra.copy(publicDir, this.outDir);
+         await this.writeManifestHtmlFiles(manifestHtmlFiles);
