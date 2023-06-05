@@ -1,6 +1,8 @@
+import { replacer, reviver } from './utils'
+
 export type WebextStorage = {
   clear(): Promise<void>
-  getItem(key: string): Promise<any>
+  getItem<T>(key: string, defaultValue?: T | null): Promise<T | null>
   setItem(key: string, value: unknown): Promise<void>
   removeItem(key: string): Promise<void>
   subscribe<TValue = unknown>(
@@ -50,12 +52,24 @@ function createWebextStorage({
     async clear() {
       await storage.clear()
     },
-    async getItem(key) {
+    async getItem(key, defaultState = null) {
       const result = await storage.get(getKey(key))
-      return result[getKey(key)]
+      const value = result[getKey(key)]
+      try {
+        return value ? JSON.parse(value, reviver) : defaultState
+      } catch (error) {
+        console.warn(error)
+        return defaultState
+      }
     },
-    async setItem(key, value) {
-      await storage.set({ [getKey(key)]: value })
+    async setItem(key, value_) {
+      if (value_ === null) this.removeItem(getKey(key))
+
+      try {
+        await storage.set({ [getKey(key)]: JSON.stringify(value_, replacer) })
+      } catch (err) {
+        console.error(err)
+      }
     },
     async removeItem(key) {
       await storage.remove(getKey(key))

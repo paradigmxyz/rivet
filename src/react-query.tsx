@@ -1,6 +1,9 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
 import { QueryClient } from '@tanstack/react-query'
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client'
+import {
+  PersistQueryClientProvider,
+  type PersistedClient,
+} from '@tanstack/react-query-persist-client'
 import type { ReactNode } from 'react'
 
 import { webextStorage } from './storage'
@@ -21,6 +24,10 @@ export const queryClient = new QueryClient({
 
 const asyncStoragePersister = createAsyncStoragePersister({
   storage: webextStorage.local,
+  // Serialization is handled in `storage`.
+  serialize: (x) => x as unknown as string,
+  // Deserialization is handled in `storage`.
+  deserialize: (x) => x as unknown as PersistedClient,
 })
 
 export function QueryClientProvider({ children }: { children: ReactNode }) {

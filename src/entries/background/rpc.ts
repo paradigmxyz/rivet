@@ -78,10 +78,10 @@ export function setupRpcHandler() {
       request.method === 'eth_signTypedData_v4' ||
       request.method === 'personal_sign'
     ) {
-      const { setPendingRequest, removePendingRequest } =
+      const { addPendingRequest, removePendingRequest } =
         pendingRequestsStore.getState()
 
-      setPendingRequest(request)
+      addPendingRequest(request)
 
       inpageMessenger.send('toggleWallet', { open: true })
 

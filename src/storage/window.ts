@@ -1,5 +1,7 @@
+import { replacer, reviver } from './utils'
+
 export type WindowStorage = Omit<Storage, 'getItem' | 'setItem'> & {
-  getItem<T>(key: string, defaultState?: T | null): T | null
+  getItem<T>(key: string, defaultValue?: T | null): T | null
   setItem<T>(key: string, value: T | null): void
 }
 
@@ -34,20 +36,20 @@ function createWindowStorage({
 
   return {
     ...storage,
-    getItem(key, defaultState = null) {
+    getItem(key, defaultValue = null) {
       const value = storage.getItem(getKey(key))
       try {
-        return value ? JSON.parse(value) : defaultState
+        return value ? JSON.parse(value, reviver) : defaultValue
       } catch (error) {
         console.warn(error)
-        return defaultState
+        return defaultValue
       }
     },
     setItem(key, value) {
       if (value === null) storage.removeItem(getKey(key))
 
       try {
-        storage.setItem(getKey(key), JSON.stringify(value))
+        storage.setItem(getKey(key), JSON.stringify(value, replacer))
       } catch (err) {
         console.error(err)
       }

@@ -11,7 +11,7 @@ import { useDebounce } from '~/hooks'
 import { useNetwork } from '~/zustand'
 
 export default function Network() {
-  const { network, setNetwork } = useNetwork()
+  const { network, upsertNetwork, switchNetwork } = useNetwork()
 
   type FormValues = {
     name: string
@@ -44,7 +44,8 @@ export default function Network() {
   const navigate = useNavigate()
 
   const onSubmit = handleSubmit(async ({ name, rpcUrl }) => {
-    await setNetwork({ name, rpcUrl })
+    await upsertNetwork({ rpcUrl, network: { name } })
+    switchNetwork(rpcUrl)
     navigate('/')
   })
 

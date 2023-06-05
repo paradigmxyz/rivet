@@ -5,6 +5,7 @@ import { createStore } from './utils'
 
 type RpcUrl = string
 type Network = {
+  blockNumber?: bigint
   chainId: number
   name: string
   rpcUrl: RpcUrl
@@ -15,7 +16,21 @@ export type NetworkState = {
   networks: Record<RpcUrl, Network>
 }
 export type NetworkActions = {
-  setNetwork(network: Partial<Network>): Promise<void>
+  setBlockNumber({
+    blockNumber,
+    rpcUrl,
+  }: {
+    blockNumber: bigint
+    rpcUrl: RpcUrl
+  }): void
+  upsertNetwork({
+    network,
+    rpcUrl,
+  }: {
+    network: Partial<Network>
+    rpcUrl: RpcUrl
+  }): Promise<void>
+  switchNetwork(rpcUrl: RpcUrl): void
 }
 export type NetworkStore = NetworkState & NetworkActions
 
@@ -27,33 +42,62 @@ const defaultNetwork = {
 } satisfies Network
 
 export const networkStore = createStore<NetworkStore>(
-  (set, get) => ({
+  (set) => ({
     network: defaultNetwork,
     networks: {
       [defaultRpcUrl]: defaultNetwork,
     },
-    async setNetwork(network) {
-      const updatedNetwork = {
-        ...get().network,
-        ...network,
-      }
-      if (network.rpcUrl && !network.chainId) {
+    setBlockNumber({ blockNumber, rpcUrl }) {
+      set((state) => {
+        const network = {
+          ...state.network,
+          blockNumber,
+        }
+        return {
+          ...state,
+          ...(rpcUrl === state.network.rpcUrl && {
+            network,
+          }),
+          networks: {
+            ...state.networks,
+            [state.network.rpcUrl]: network,
+          },
+        }
+      })
+    },
+    async upsertNetwork({ network, rpcUrl }) {
+      if (!network.chainId) {
         try {
-          updatedNetwork.chainId = await getPublicClient({
-            rpcUrl: network.rpcUrl,
+          network.chainId = await getPublicClient({
+            rpcUrl,
           }).getChainId()
-        } catch {}
+        } catch {
+          network.chainId = defaultChain.id
+        }
       }
 
       set((state) => {
         const networks = state.networks
-        delete networks[state.network.rpcUrl]
-        networks[updatedNetwork.rpcUrl] = updatedNetwork
+        networks[rpcUrl] = {
+          ...networks[rpcUrl],
+          ...network,
+          rpcUrl,
+        }
 
         return {
           ...state,
-          network: updatedNetwork,
+          ...(network.rpcUrl === state.network.rpcUrl && {
+            network: networks[rpcUrl],
+          }),
           networks,
+        }
+      })
+    },
+    switchNetwork(rpcUrl) {
+      set((state) => {
+        return {
+          ...state,
+          network: state.networks[rpcUrl],
         }
       })
     },

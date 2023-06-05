@@ -5,7 +5,7 @@ import { useNetwork } from '~/zustand'
 import { usePublicClient } from './usePublicClient'
 
 export function useNetworkStatus() {
-  const { network, setNetwork } = useNetwork()
+  const { network, upsertNetwork } = useNetwork()
   const publicClient = usePublicClient()
 
   return useQuery({
@@ -13,7 +13,8 @@ export function useNetworkStatus() {
     queryFn: async () => {
       try {
         const chainId = await publicClient.getChainId()
-        if (network.chainId !== chainId) setNetwork({ chainId })
+        if (network.chainId !== chainId)
+          upsertNetwork({ rpcUrl: network.rpcUrl, network: { chainId } })
         return chainId
       } catch {
         return false

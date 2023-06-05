@@ -21,10 +21,12 @@ export function getProvider({
   let _id = Math.floor(Math.random() * 10000)
 
   messenger.reply('accountsChanged', async (accounts) => {
+    // TODO: only emit if connected
     emitter.emit('accountsChanged', accounts)
   })
 
   messenger.reply('chainChanged', async (chainId) => {
+    // TODO: only emit if connected
     emitter.emit('chainChanged', chainId)
   })
 

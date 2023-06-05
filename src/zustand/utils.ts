@@ -1,7 +1,6 @@
 import {
   type PersistOptions,
-  type StateStorage,
-  createJSONStorage,
+  type PersistStorage,
   persist,
 } from 'zustand/middleware'
 import {
@@ -16,14 +15,14 @@ import { webextStorage } from '~/storage'
 //////////////////////////////////////////////////////////////////
 // Zustand Storages
 
-export const persistStorage: StateStorage = {
+export const persistStorage: PersistStorage<any> = {
   ...webextStorage.local,
   getItem: async (key) => {
     return (await webextStorage.local.getItem(key)) || null
   },
 }
 
-export const noopStorage: StateStorage = {
+export const noopStorage: PersistStorage<any> = {
   getItem: async () => null,
   setItem: async () => undefined,
   removeItem: async () => undefined,
@@ -50,9 +49,7 @@ export function createStore<TState>(
       persist(initializer, {
         ...persistOptions,
         name,
-        storage: createJSONStorage(() =>
-          persistOptions ? persistStorage : noopStorage,
-        ),
+        storage: persistOptions ? persistStorage : noopStorage,
       }),
     ),
     { initializer },
