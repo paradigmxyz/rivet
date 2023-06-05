@@ -22,4 +22,12 @@ export {
   usePendingRequests,
 } from './pending-requests'
 
+export {
+  type SessionsActions,
+  type SessionsState,
+  type SessionsStore,
+  sessionsStore,
+  useSessions,
+} from './sessions'
+
 export { syncStores } from './utils'

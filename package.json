@@ -7,10 +7,11 @@
   },
   "scripts": {
     "anvil": "anvil --fork-url https://cloudflare-eth.com",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && pnpm build:inpage",
     "build:ds": "vite build -c src/design-system/vite.config.ts",
+    "build:inpage": "vite build -c vite.config.inpage.ts",
     "clean": "rimraf dist",
-    "dev": "vite --open",
+    "dev": "NODE_ENV=development pnpm build:inpage && vite --open",
     "format": "rome format . --write",
     "lint": "rome check .",
     "lint:fix": "pnpm lint --apply",

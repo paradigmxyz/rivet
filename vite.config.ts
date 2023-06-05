@@ -8,11 +8,12 @@ import { getManifest } from './manifest.config'
 
 const dev = process.env.NODE_ENV === 'development'
 
-const outDir = dev ? 'dist/dev' : 'dist/build'
+export const outDir = dev ? 'dist/dev' : 'dist/build'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   build: {
+    emptyOutDir: false,
     outDir,
   },
   plugins: [
@@ -22,7 +23,6 @@ export default defineConfig({
     webExtension({
       additionalInputs: {
         html: ['src/index.html', 'src/design-system/playground/index.html'],
-        scripts: ['src/entries/inpage/index.ts'],
       },
       manifest: getManifest({ dev }),
     }),

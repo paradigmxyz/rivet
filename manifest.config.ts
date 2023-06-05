@@ -36,5 +36,9 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
         resources: ['*.woff2'],
         matches: ['<all_urls>'],
       },
+      {
+        resources: ['inpage.js'],
+        matches: ['*://*/*'],
+      },
     ],
   }) satisfies chrome.runtime.Manifest

@@ -1,16 +1,23 @@
 import {
+  type Address,
   type Chain,
   type Client,
   type Transport,
   createClient,
   custom,
+  numberToHex,
 } from 'viem'
 import { type RpcResponse, rpc } from 'viem/utils'
 
 import { UserRejectedRequestError } from '~/errors'
 import { getMessenger } from '~/messengers'
 import { buildChain } from '~/viem'
-import { networkStore, pendingRequestsStore } from '~/zustand'
+import {
+  accountStore,
+  networkStore,
+  pendingRequestsStore,
+  sessionsStore,
+} from '~/zustand'
 
 const clientCache = new Map()
 export function getRpcClient({
@@ -31,20 +38,20 @@ export function getRpcClient({
           params = [params[1], params[0]]
         }
 
-        const result = await rpc.http(rpcUrl, {
+        const response = await rpc.http(rpcUrl, {
           body: {
             method,
             params,
             id,
           },
         })
-        if ((result as { success?: boolean }).success === false)
+        if ((response as { success?: boolean }).success === false)
           return {
             id,
             jsonrpc: '2.0',
             error: 'An unknown error occurred.',
           } as RpcResponse
-        return result
+        return response
       },
     }),
   })
@@ -60,11 +67,9 @@ const walletMessenger = getMessenger({
 })
 
 export function setupRpcHandler() {
-  inpageMessenger.reply('request', async ({ request, rpcUrl }) => {
+  inpageMessenger.reply('request', async ({ request, rpcUrl }, meta) => {
+    const isInpage = !meta.sender.frameId || meta.sender.frameId === 0
     const rpcClient = getRpcClient({ rpcUrl })
-
-    const { setPendingRequest, removePendingRequest } =
-      pendingRequestsStore.getState()
 
     // If the method is a "signable" method, request approval from the user.
     if (
@@ -73,6 +78,9 @@ export function setupRpcHandler() {
       request.method === 'eth_signTypedData_v4' ||
       request.method === 'personal_sign'
     ) {
+      const { setPendingRequest, removePendingRequest } =
+        pendingRequestsStore.getState()
+
       setPendingRequest(request)
 
       inpageMessenger.send('toggleWallet', { open: true })
@@ -111,6 +119,46 @@ export function setupRpcHandler() {
       }
     }
 
-    return rpcClient.request(request as any)
+    if (isInpage && request.method === 'eth_requestAccounts') {
+      const { accountsForRpcUrl } = accountStore.getState()
+      const { network } = networkStore.getState()
+      const accounts = accountsForRpcUrl({ rpcUrl: network.rpcUrl })
+
+      const host = new URL(meta.sender.url || '').host
+      const addresses = accounts.map((x) => x.address) as Address[]
+
+      const { addSession } = sessionsStore.getState()
+      addSession({ session: { host, addresses } })
+      inpageMessenger.send('connect', { chainId: numberToHex(network.chainId) })
+
+      return {
+        id: request.id,
+        jsonrpc: '2.0',
+        result: addresses,
+      } as RpcResponse
+    }
+
+    if (isInpage && request.method === 'eth_accounts') {
+      const { accountsForRpcUrl } = accountStore.getState()
+      const { network } = networkStore.getState()
+      const accounts = accountsForRpcUrl({ rpcUrl: network.rpcUrl })
+
+      const host = new URL(meta.sender.url || '').host
+
+      const { getSession } = sessionsStore.getState()
+      const session = getSession({ host })
+
+      const addresses = session
+        ? (accounts.map((x) => x.address) as Address[])
+        : []
+
+      return {
+        id: request.id,
+        jsonrpc: '2.0',
+        result: addresses,
+      } as RpcResponse
+    }
+
+    return rpcClient.request(request)
   })
 }

@@ -10,12 +10,15 @@ export function getProvider({
   messenger,
   rpcUrl,
 }: { messenger: Messenger; rpcUrl?: string }): EIP1193Provider {
-  const cachedProvider = rpcUrl ? providerCache.get(rpcUrl) : undefined
+  const cachedProvider = rpcUrl
+    ? providerCache.get(`${messenger.name}.${rpcUrl}`)
+    : undefined
   if (cachedProvider) return cachedProvider
 
   const emitter = new EventEmitter()
 
-  let _id = 0
+  // Workaround for id conflicts between inpage & wallet.
+  let _id = Math.floor(Math.random() * 10000)
 
   messenger.reply('accountsChanged', async (accounts) => {
     emitter.emit('accountsChanged', accounts)
@@ -23,6 +26,10 @@ export function getProvider({
 
   messenger.reply('chainChanged', async (chainId) => {
     emitter.emit('chainChanged', chainId)
+  })
+
+  messenger.reply('connect', async ({ chainId }) => {
+    emitter.emit('connect', { chainId })
   })
 
   const provider: EIP1193Provider = {

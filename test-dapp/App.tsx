@@ -33,6 +33,7 @@ export default function App() {
         </Text>
         <AccountsChanged />
         <ChainChanged />
+        <Connect />
         <Text weight='semibold' size='22px'>
           Methods
         </Text>
@@ -86,17 +87,32 @@ function ChainChanged() {
   )
 }
 
+function Connect() {
+  const [chainId, setChainId] = useState<number>()
+  useEffect(() => {
+    window.ethereum?.on('connect', ({ chainId }) => {
+      setChainId(hexToNumber(chainId as Hex))
+    })
+  }, [])
+  return (
+    <Stack gap='12px'>
+      <Text size='18px' weight='semibold'>
+        connect
+      </Text>
+      <Text>chain id: {chainId}</Text>
+    </Stack>
+  )
+}
+
 function RequestAccounts() {
   const [accounts, setAccounts] = useState<Address[]>()
 
-  useEffect(() => {
-    ;(async () => {
-      const accounts = await window.ethereum?.request({
-        method: 'eth_requestAccounts',
-      })
-      setAccounts(accounts)
-    })()
-  }, [])
+  const requestAccounts = async () => {
+    const accounts = await window.ethereum?.request({
+      method: 'eth_requestAccounts',
+    })
+    setAccounts(accounts)
+  }
 
   return (
     <Stack gap='12px'>
@@ -106,6 +122,9 @@ function RequestAccounts() {
       {accounts?.map((account) => (
         <Text>{account}</Text>
       ))}
+      <Button onClick={requestAccounts} width='fit'>
+        Request
+      </Button>
     </Stack>
   )
 }

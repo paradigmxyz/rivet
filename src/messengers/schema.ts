@@ -6,6 +6,7 @@ export type RpcRequest = EIP1193Parameters<EIP1474Methods> & { id: number }
 export type Schema = {
   accountsChanged: [payload: Address[], response: void]
   chainChanged: [payload: string, response: void]
+  connect: [payload: { chainId: string }, response: void]
   extensionId: [payload: void, response: string]
   pendingRequest: [
     payload: { request: RpcRequest; status: 'approved' | 'rejected' },

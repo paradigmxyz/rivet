@@ -61,7 +61,7 @@ const inpageMessenger = getMessenger({ connection: 'wallet <> inpage' })
 
 /** Emits EIP-1193 `accountsChanged` Event */
 function AccountsChangedEmitter() {
-  const { account, accounts, accountsForRpcUrl } = useAccount()
+  const { account, accountsForRpcUrl } = useAccount()
 
   const prevAccounts = useRef<AccountState['accounts']>()
   // rome-ignore lint/nursery/useExhaustiveDependencies: `inpageMessenger` isn't stateful...
@@ -81,7 +81,7 @@ function AccountsChangedEmitter() {
       )
 
     prevAccounts.current = accounts_
-  }, [account, accounts])
+  }, [account])
 
   return null
 }

@@ -99,27 +99,29 @@ function Header() {
                 />
               </Column>
               <Column>
-                <Link to='accounts' style={{ height: '100%' }}>
-                  <Box
-                    alignItems='center'
-                    backgroundColor={{
-                      hover: 'primary / 0.05',
-                    }}
-                    display='flex'
-                    height='full'
-                    style={{ cursor: 'default' }}
-                  >
-                    <Inset horizontal='12px'>
-                      {account && (
-                        <HeaderItem label='Account'>
-                          <Text size='11px'>
-                            {truncateAddress(account.address)}
-                          </Text>
-                        </HeaderItem>
-                      )}
-                    </Inset>
-                  </Box>
-                </Link>
+                {account && (
+                  <Link to='accounts' style={{ height: '100%' }}>
+                    <Box
+                      alignItems='center'
+                      backgroundColor={{
+                        hover: 'primary / 0.05',
+                      }}
+                      display='flex'
+                      height='full'
+                      style={{ cursor: 'default' }}
+                    >
+                      <Inset horizontal='12px'>
+                        {account && (
+                          <HeaderItem label='Account'>
+                            <Text size='11px'>
+                              {truncateAddress(account.address)}
+                            </Text>
+                          </HeaderItem>
+                        )}
+                      </Inset>
+                    </Box>
+                  </Link>
+                )}
               </Column>
               <Column width='content'>
                 <Box
@@ -157,7 +159,7 @@ function Header() {
               <Column alignVertical='center' width='content'>
                 <Inset left='12px' right='8px'>
                   <Box style={{ width: '52px' }}>
-                    <HeaderItem label='Status'>
+                    <HeaderItem label='Network'>
                       <Inline alignVertical='center' gap='4px' wrap={false}>
                         <Box
                           backgroundColor={
