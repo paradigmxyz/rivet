@@ -13,8 +13,13 @@ import {
   Stack,
   Text,
 } from '~/design-system'
-import { useNetworkStatus } from '~/hooks'
-import { useAccount, useNetwork, usePendingRequests } from '~/zustand'
+import { useHost, useNetworkStatus } from '~/hooks'
+import {
+  useAccount,
+  useNetwork,
+  usePendingRequests,
+  useSessions,
+} from '~/zustand'
 
 import { BrandIcon } from '../components/icons/BrandIcon'
 import { getMessenger } from '../messengers'
@@ -63,7 +68,11 @@ function Header() {
   const { account } = useAccount()
   const { network } = useNetwork()
 
+  const { data: host } = useHost()
   const { data: listening, status } = useNetworkStatus()
+  const { sessions } = useSessions()
+
+  const isConnected = Boolean(host && sessions[host])
 
   const handleClose = useCallback(() => {
     contentMessenger.send('toggleWallet', undefined)
@@ -122,6 +131,39 @@ function Header() {
                     </Box>
                   </Link>
                 )}
+              </Column>
+              <Column width='content'>
+                <Box
+                  backgroundColor='primary / 0.1'
+                  height='full'
+                  style={{ width: '1px' }}
+                />
+              </Column>
+              <Column>
+                <Link to='session' style={{ height: '100%' }}>
+                  <Box
+                    alignItems='center'
+                    backgroundColor={{
+                      hover: 'primary / 0.05',
+                    }}
+                    display='flex'
+                    height='full'
+                    style={{ cursor: 'default' }}
+                  >
+                    <Inset horizontal='12px'>
+                      <HeaderItem label={host?.replace('www.', '') || ''}>
+                        <Inline alignVertical='center' gap='4px' wrap={false}>
+                          <Text
+                            size='12px'
+                            style={{ opacity: isConnected ? 1 : 0.5 }}
+                          >
+                            {isConnected ? 'Connected' : 'Disconnected'}
+                          </Text>
+                        </Inline>
+                      </HeaderItem>
+                    </Inset>
+                  </Box>
+                </Link>
               </Column>
               <Column width='content'>
                 <Box
@@ -239,7 +281,7 @@ function HeaderItem({
 }: { children: ReactNode; label: string }) {
   return (
     <Stack gap='8px'>
-      <Text color='label' size='9px'>
+      <Text color='label' size='9px' wrap={false}>
         {label.toUpperCase()}
       </Text>
       <Box>{children}</Box>

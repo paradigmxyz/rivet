@@ -15,6 +15,7 @@ export type Schema = {
     response: void,
   ]
   connect: [payload: { chainId: string }, response: void]
+  disconnect: [payload: undefined, response: void]
   extensionId: [payload: void, response: string]
   pendingRequest: [
     payload: { request: RpcRequest; status: 'approved' | 'rejected' },

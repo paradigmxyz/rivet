@@ -21,6 +21,7 @@ export type TextProps = {
   children: React.ReactNode
   color?: TextStyles['color']
   size?: TextStyles['fontSize']
+  style?: React.CSSProperties
   weight?: TextStyles['fontWeight']
   width?: BoxStyles['width']
   wrap?: boolean
@@ -33,6 +34,7 @@ export function Text({
   children,
   color = 'text',
   size = '15px',
+  style,
   weight = 'regular',
   wrap = true,
   testId,
@@ -47,6 +49,7 @@ export function Text({
         textAlign: align,
       })}
       testId={testId}
+      style={style}
       width={wrap ? undefined : 'full'}
     >
       <Box

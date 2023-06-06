@@ -88,18 +88,21 @@ function ChainChanged() {
 }
 
 function Connect() {
-  const [chainId, setChainId] = useState<number>()
+  const [lastEvent, setLastEvent] = useState<string>('')
   useEffect(() => {
-    window.ethereum?.on('connect', ({ chainId }) => {
-      setChainId(hexToNumber(chainId as Hex))
+    window.ethereum?.on('connect', () => {
+      setLastEvent('connect')
+    })
+    window.ethereum?.on('disconnect', () => {
+      setLastEvent('disconnect')
     })
   }, [])
   return (
     <Stack gap='12px'>
       <Text size='18px' weight='semibold'>
-        connect
+        connect/disconnect
       </Text>
-      <Text>chain id: {chainId}</Text>
+      <Text>last event: {lastEvent}</Text>
     </Stack>
   )
 }

@@ -91,7 +91,8 @@ export default function Network() {
               />
             </Stack>
             {isOffline && (
-              <Text color='yellow' size='11px'>
+              /* TODO: foreground yellow color */
+              <Text color='background yellow' size='11px'>
                 Warning: Network is offline
               </Text>
             )}

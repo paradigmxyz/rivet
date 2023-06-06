@@ -6,15 +6,17 @@ export function Container({
   alignVertical,
   children,
   header,
+  fit,
   footer,
 }: {
   alignVertical?: RowProps['alignVertical']
   children: ReactNode
   header?: ReactNode
+  fit?: boolean
   footer?: ReactNode
 }) {
   return (
-    <Rows>
+    <Rows fit={fit}>
       <Row alignVertical={alignVertical} style={{ overflowY: 'scroll' }}>
         <Stack>
           {header && (

@@ -36,7 +36,7 @@ export class ProviderRpcError<TData = unknown> extends BaseError {
   data?: TData
 
   constructor(
-    error: RpcError<TData>,
+    error: RpcError<TData> | Error,
     { code, details, metaMessages, shortMessage }: ProviderRpcErrorOptions,
   ) {
     super(shortMessage, {
@@ -44,7 +44,7 @@ export class ProviderRpcError<TData = unknown> extends BaseError {
       metaMessages,
     })
     this.code = code
-    this.data = error.data
+    if ('data' in error) this.data = error.data
   }
 }
 
@@ -86,7 +86,7 @@ export class UnauthorizedProviderError extends ProviderRpcError {
 
   override name = 'UnauthorizedProviderError'
 
-  constructor(error: RpcError) {
+  constructor(error: Error) {
     super(error, {
       code: 4100,
       shortMessage:
@@ -105,7 +105,7 @@ export class UnsupportedProviderMethodError extends ProviderRpcError {
 
   override name = 'UnsupportedProviderMethodError'
 
-  constructor(error: RpcError) {
+  constructor(error: Error) {
     super(error, {
       code: 4200,
       shortMessage: 'The Provider does not support the requested method.',
@@ -123,7 +123,7 @@ export class ProviderDisconnectedError extends ProviderRpcError {
 
   override name = 'ProviderDisconnectedError'
 
-  constructor(error: RpcError) {
+  constructor(error: Error) {
     super(error, {
       code: 4900,
       shortMessage: 'The Provider is disconnected from all chains.',
@@ -141,7 +141,7 @@ export class ChainDisconnectedError extends ProviderRpcError {
 
   override name = 'ChainDisconnectedError'
 
-  constructor(error: RpcError) {
+  constructor(error: Error) {
     super(error, {
       code: 4901,
       shortMessage: 'The Provider is not connected to the requested chain.',
@@ -159,7 +159,7 @@ export class SwitchChainError extends ProviderRpcError {
 
   override name = 'SwitchChainError'
 
-  constructor(error: RpcError) {
+  constructor(error: Error) {
     super(error, {
       code: 4902,
       shortMessage: 'An error occurred when attempting to switch chain.',

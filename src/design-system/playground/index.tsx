@@ -336,6 +336,9 @@ function DesignSystem() {
                 <Button variant='tint red' width='fit'>
                   Button
                 </Button>
+                <Button variant='tint primary' width='fit'>
+                  Button
+                </Button>
               </Box>
             </Stack>
             <Stack gap='16px'>

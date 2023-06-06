@@ -1,7 +1,7 @@
 import { EventEmitter } from 'eventemitter3'
 import { type EIP1193Provider, UnknownRpcError } from 'viem'
 
-import { UserRejectedRequestError } from '~/errors'
+import { ProviderDisconnectedError, UserRejectedRequestError } from '~/errors'
 import type { Messenger } from '~/messengers'
 import type { RpcRequest } from '~/messengers/schema'
 
@@ -33,6 +33,13 @@ export function getProvider({
 
   messenger.reply('connect', async ({ chainId }) => {
     emitter.emit('connect', { chainId })
+  })
+
+  messenger.reply('disconnect', async () => {
+    emitter.emit(
+      'disconnect',
+      new ProviderDisconnectedError(new Error('Disconnected.')),
+    )
   })
 
   const provider: EIP1193Provider = {

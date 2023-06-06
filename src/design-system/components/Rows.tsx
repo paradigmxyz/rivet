@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, createContext, useContext } from 'react'
 import flattenChildren from 'react-flatten-children'
 
 import type { Spacing } from '../tokens'
@@ -25,13 +25,17 @@ export type RowsProps = {
   alignVertical?: AlignVertical
   children: ReactNode
   gap?: Spacing
+  fit?: boolean
 }
+
+const RowsContext = createContext<{ fit?: boolean }>({ fit: false })
 
 export function Rows({
   alignHorizontal,
   alignVertical,
   children,
   gap,
+  fit,
 }: RowsProps) {
   return (
     <Box
@@ -48,16 +52,18 @@ export function Rows({
         alignVertical && alignVerticalToJustifyContent[alignVertical]
       }
     >
-      {flattenChildren(children).map((child, index) => {
-        const rowProps = getRowProps(child)
+      <RowsContext.Provider value={{ fit }}>
+        {flattenChildren(children).map((child, index) => {
+          const rowProps = getRowProps(child)
 
-        return rowProps ? (
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          <PrivateRow key={index} {...rowProps} />
-        ) : (
-          <PrivateRow key={index}>{child}</PrivateRow>
-        )
-      })}
+          return rowProps ? (
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            <PrivateRow key={index} {...rowProps} />
+          ) : (
+            <PrivateRow key={index}>{child}</PrivateRow>
+          )
+        })}
+      </RowsContext.Provider>
     </Box>
   )
 }
@@ -93,6 +99,8 @@ function getRowProps(node: NonNullable<ReactNode>): RowProps | null {
 }
 
 function PrivateRow({ alignVertical, children, height, style }: RowProps) {
+  const { fit } = useContext(RowsContext)
+
   if (height) {
     return (
       <Box
@@ -117,7 +125,7 @@ function PrivateRow({ alignVertical, children, height, style }: RowProps) {
       display='flex'
       flexGrow='1'
       flexShrink='1'
-      flexBasis='0'
+      flexBasis={fit ? undefined : '0'}
       width='full'
       style={style}
     >

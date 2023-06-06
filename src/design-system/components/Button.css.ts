@@ -21,8 +21,9 @@ export const buttonVariants = [
   'solid green',
   'stroked primary',
   'stroked scrim',
-  'tint red',
   'tint green',
+  'tint primary',
+  'tint red',
 ] as const satisfies readonly `${ButtonKind} ${
   | BackgroundColor
   | ForegroundColor}`[]

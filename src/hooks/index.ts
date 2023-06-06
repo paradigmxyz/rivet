@@ -1,5 +1,6 @@
 export { useBlockNumber } from './useBlockNumber'
 export { useDebounce } from './useDebounce'
+export { useHost } from './useHost'
 export { useNetworkStatus } from './useNetworkStatus'
 export { usePublicClient } from './usePublicClient'
 export { useSyncExternalStoreWithTracked } from './useSyncExternalStoreWithTracked'

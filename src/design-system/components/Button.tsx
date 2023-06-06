@@ -83,17 +83,25 @@ const stylesForVariant = {
     borderColor: 'scrim',
     borderWidth: '1.5px',
   },
-  'tint red': {
-    backgroundColor: {
-      default: 'redTint',
-      hover: 'redTintHover',
-    },
-    borderWidth: '1.5px',
-  },
   'tint green': {
     backgroundColor: {
       default: 'greenTint',
       hover: 'greenTintHover',
+    },
+    borderWidth: '1.5px',
+  },
+  'tint primary': {
+    backgroundColor: {
+      default: 'primary / 0.05',
+      hover: 'primary / 0.1',
+    },
+    borderColor: 'primary / 0.2',
+    borderWidth: '1.5px',
+  },
+  'tint red': {
+    backgroundColor: {
+      default: 'redTint',
+      hover: 'redTintHover',
     },
     borderWidth: '1.5px',
   },

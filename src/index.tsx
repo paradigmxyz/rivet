@@ -22,6 +22,7 @@ import Layout from './screens/_layout.tsx'
 import Accounts from './screens/accounts.tsx'
 import Index from './screens/index'
 import Network from './screens/network.tsx'
+import Session from './screens/session.tsx'
 
 syncStores()
 
@@ -41,6 +42,10 @@ const router = createHashRouter([
       {
         path: 'network',
         element: <Network />,
+      },
+      {
+        path: 'session',
+        element: <Session />,
       },
     ],
   },
