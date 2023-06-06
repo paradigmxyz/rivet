@@ -1,15 +1,20 @@
 import { useQuery } from '@tanstack/react-query'
 
+import { useNetworkStatus } from './useNetworkStatus'
 import { usePublicClient } from './usePublicClient'
 
-export function useBlockNumber({ watch }: { watch?: boolean } = {}) {
+export function useBlockNumber() {
   const publicClient = usePublicClient()
+  const { data: chainId } = useNetworkStatus()
 
   return useQuery({
+    enabled: Boolean(chainId),
     queryKey: ['blockNumber', publicClient.key],
-    queryFn: async () => {
-      return await publicClient.getBlockNumber({ maxAge: 0 })
+    async queryFn() {
+      return (await publicClient.getBlockNumber({ maxAge: 0 })) || null
     },
-    refetchInterval: watch ? 1_000 : false,
+    gcTime: 0,
+    // TODO: configure based on interval mining config.
+    refetchInterval: 1_000,
   })
 }

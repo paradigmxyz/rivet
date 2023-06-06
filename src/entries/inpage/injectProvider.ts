@@ -5,6 +5,9 @@ const backgroundMessenger = getMessenger({ connection: 'background <> inpage' })
 
 export function injectProvider() {
   console.log('injection complete in window')
-  window.ethereum = getProvider({ messenger: backgroundMessenger })
+  window.ethereum = getProvider({
+    host: window.location.host,
+    messenger: backgroundMessenger,
+  })
   window.dispatchEvent(new Event('ethereum#initialized'))
 }

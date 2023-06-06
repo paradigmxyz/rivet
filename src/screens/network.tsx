@@ -26,7 +26,7 @@ export default function Network() {
   const { data: chainId, isError: isOffline } = useQuery({
     enabled: Boolean(debouncedRpcUrl),
     queryKey: ['chainId', debouncedRpcUrl],
-    queryFn: async () => {
+    async queryFn() {
       const publicClient = getPublicClient({ rpcUrl: debouncedRpcUrl })
       return publicClient.getChainId()
     },

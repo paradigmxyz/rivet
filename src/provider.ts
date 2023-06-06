@@ -7,9 +7,10 @@ import type { RpcRequest } from '~/messengers/schema'
 
 const providerCache = new Map<string, EIP1193Provider>()
 export function getProvider({
+  host,
   messenger,
   rpcUrl,
-}: { messenger: Messenger; rpcUrl?: string }): EIP1193Provider {
+}: { host?: string; messenger: Messenger; rpcUrl?: string }): EIP1193Provider {
   const cachedProvider = rpcUrl
     ? providerCache.get(`${messenger.name}.${rpcUrl}`)
     : undefined
@@ -20,13 +21,13 @@ export function getProvider({
   // Workaround for id conflicts between inpage & wallet.
   let _id = Math.floor(Math.random() * 10000)
 
-  messenger.reply('accountsChanged', async (accounts) => {
-    // TODO: only emit if connected
+  messenger.reply('accountsChanged', async ({ accounts, sessions }) => {
+    if (host && !sessions[host]) return
     emitter.emit('accountsChanged', accounts)
   })
 
-  messenger.reply('chainChanged', async (chainId) => {
-    // TODO: only emit if connected
+  messenger.reply('chainChanged', async ({ chainId, sessions }) => {
+    if (host && !sessions[host]) return
     emitter.emit('chainChanged', chainId)
   })
 

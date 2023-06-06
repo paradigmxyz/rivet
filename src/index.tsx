@@ -5,7 +5,7 @@ import { RouterProvider, createHashRouter } from 'react-router-dom'
 import { numberToHex } from 'viem'
 
 import '~/design-system/styles/global.css'
-import { useNetworkStatus, useWalletClient } from '~/hooks'
+import { useBlockNumber, useNetworkStatus, useWalletClient } from '~/hooks'
 import { getMessenger } from '~/messengers'
 import { QueryClientProvider } from '~/react-query'
 import { deepEqual } from '~/utils'
@@ -15,6 +15,7 @@ import {
   syncStores,
   useAccount,
   useNetwork,
+  useSessions,
 } from '~/zustand'
 
 import Layout from './screens/_layout.tsx'
@@ -49,6 +50,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <QueryClientProvider>
     <AccountsChangedEmitter />
     <NetworkChangedEmitter />
+    <SyncBlockNumber />
     <SyncJsonRpcAccounts />
     <SyncNetwork />
     <RouterProvider router={router} />
@@ -62,9 +64,10 @@ const inpageMessenger = getMessenger({ connection: 'wallet <> inpage' })
 /** Emits EIP-1193 `accountsChanged` Event */
 function AccountsChangedEmitter() {
   const { account, accountsForRpcUrl } = useAccount()
+  const { sessions } = useSessions()
 
   const prevAccounts = useRef<AccountState['accounts']>()
-  // rome-ignore lint/nursery/useExhaustiveDependencies: `inpageMessenger` isn't stateful...
+  // rome-ignore lint/nursery/useExhaustiveDependencies:
   useEffect(() => {
     if (!account) {
       prevAccounts.current = []
@@ -78,10 +81,10 @@ function AccountsChangedEmitter() {
     ]
 
     if (prevAccounts.current && !deepEqual(prevAccounts.current, accounts_))
-      inpageMessenger.send(
-        'accountsChanged',
-        accounts_.map((x) => x.address),
-      )
+      inpageMessenger.send('accountsChanged', {
+        accounts: accounts_.map((x) => x.address),
+        sessions,
+      })
 
     prevAccounts.current = accounts_
   }, [account])
@@ -92,17 +95,28 @@ function AccountsChangedEmitter() {
 /** Emits EIP-1193 `chainChanged` Event */
 function NetworkChangedEmitter() {
   const { network } = useNetwork()
+  const { sessions } = useSessions()
 
   const prevNetwork = useRef<NetworkState['network']>()
+  // rome-ignore lint/nursery/useExhaustiveDependencies:
   useEffect(() => {
     if (!network.chainId) return
 
     if (prevNetwork.current && prevNetwork.current.chainId !== network.chainId)
-      inpageMessenger.send('chainChanged', numberToHex(network.chainId))
+      inpageMessenger.send('chainChanged', {
+        chainId: numberToHex(network.chainId),
+        sessions,
+      })
 
     prevNetwork.current = network
   }, [network])
 
+  return null
+}
+
+/** Keeps block number in sync. */
+function SyncBlockNumber() {
+  useBlockNumber()
   return null
 }
 

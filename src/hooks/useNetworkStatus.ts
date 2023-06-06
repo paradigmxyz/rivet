@@ -10,7 +10,7 @@ export function useNetworkStatus() {
 
   return useQuery({
     queryKey: ['listening', publicClient.key],
-    queryFn: async () => {
+    async queryFn() {
       try {
         const chainId = await publicClient.getChainId()
         if (network.chainId !== chainId)
