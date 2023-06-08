@@ -68,27 +68,27 @@ const stylesForVariant = {
       default: 'red',
       hover: 'redHover',
     },
-    borderWidth: '1.5px',
+    borderWidth: '1px',
   },
   'stroked primary': {
     backgroundColor: {
       hover: 'primary / 0.05',
     },
-    borderWidth: '1.5px',
+    borderWidth: '1px',
   },
   'stroked scrim': {
     backgroundColor: {
       hover: 'primary / 0.02',
     },
     borderColor: 'scrim',
-    borderWidth: '1.5px',
+    borderWidth: '1px',
   },
   'tint green': {
     backgroundColor: {
       default: 'greenTint',
       hover: 'greenTintHover',
     },
-    borderWidth: '1.5px',
+    borderWidth: '1px',
   },
   'tint primary': {
     backgroundColor: {
@@ -96,14 +96,14 @@ const stylesForVariant = {
       hover: 'primary / 0.1',
     },
     borderColor: 'primary / 0.2',
-    borderWidth: '1.5px',
+    borderWidth: '1px',
   },
   'tint red': {
     backgroundColor: {
       default: 'redTint',
       hover: 'redTintHover',
     },
-    borderWidth: '1.5px',
+    borderWidth: '1px',
   },
 } satisfies Record<ButtonVariant, BoxStyles>
 

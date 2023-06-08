@@ -1,8 +1,10 @@
 import {
   type PublicClient,
+  type TestClient,
   type Transport,
   type WalletClient,
   createPublicClient,
+  createTestClient,
   createWalletClient,
   custom,
 } from 'viem'
@@ -52,6 +54,29 @@ export function getPublicClient({
   })
   publicClientCache.set(rpcUrl, publicClient)
   return publicClient
+}
+
+const testClientCache = new Map()
+export function getTestClient({
+  rpcUrl,
+}: { rpcUrl: string }): TestClient<'anvil', Transport, Chain> {
+  const cachedClient = testClientCache.get(rpcUrl)
+  if (cachedClient) return cachedClient
+
+  const testClient = createTestClient({
+    key: rpcUrl,
+    chain: buildChain({ rpcUrl }),
+    transport: custom(
+      getProvider({
+        messenger,
+        rpcUrl,
+      }),
+      { retryCount: 0 },
+    ),
+    mode: 'anvil',
+  })
+  testClientCache.set(rpcUrl, testClient)
+  return testClient
 }
 
 const walletClientCache = new Map()

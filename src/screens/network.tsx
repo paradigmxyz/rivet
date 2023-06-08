@@ -1,12 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import * as chains from 'viem/chains'
 
 import { getPublicClient } from '../viem'
 import { Container } from '~/components'
-import { Button, Inline, Input, SFSymbol, Stack, Text } from '~/design-system'
+import { Button, Input, Stack, Text } from '~/design-system'
 import { useDebounce } from '~/hooks'
 import { useNetwork } from '~/zustand'
 
@@ -52,25 +52,14 @@ export default function Network() {
   return (
     <form onSubmit={onSubmit} style={{ height: '100%' }}>
       <Container
-        header={
-          <Inline alignVertical='center' alignHorizontal='justify' wrap={false}>
-            <Text size='16px'>Network</Text>
-            <Link to='/'>
-              <SFSymbol
-                color='label'
-                size='12px'
-                symbol='xmark'
-                weight='medium'
-              />
-            </Link>
-          </Inline>
-        }
+        dismissable
+        header='Network Configuration'
         footer={<Button type='submit'>Update</Button>}
       >
         <Stack gap='20px'>
           <Stack gap='12px'>
             <Text color='label' size='11px'>
-              CHAIN ID
+              Chain ID
             </Text>
             <Input
               disabled
@@ -99,7 +88,7 @@ export default function Network() {
           </Stack>
           <Stack gap='12px'>
             <Text color='label' size='11px'>
-              NAME
+              Name
             </Text>
             <Input placeholder='Ethereum' {...register('name')} />
           </Stack>

@@ -31,7 +31,7 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
 
   return (
     <Container
-      header={<Text size='16px'>Pending Request</Text>}
+      header='Pending Request'
       footer={
         <Inline gap='12px' wrap={false}>
           <Button onClick={handleReject} variant='tint red'>

@@ -1,8 +1,6 @@
-import { Link } from 'react-router-dom'
-
 import { connect, disconnect } from '~/actions'
 import { Container } from '~/components'
-import { Box, Button, Inline, SFSymbol, Text } from '~/design-system'
+import { Box, Button } from '~/design-system'
 import { useHost } from '~/hooks'
 import { getMessenger } from '~/messengers'
 import { useSessions } from '~/zustand'
@@ -17,26 +15,7 @@ export default function Session() {
   return (
     <>
       <Box>
-        <Container
-          fit
-          header={
-            <Inline
-              alignVertical='center'
-              alignHorizontal='justify'
-              wrap={false}
-            >
-              <Text size='16px'>{host?.replace('www.', '')}</Text>
-              <Link to='/'>
-                <SFSymbol
-                  color='label'
-                  size='12px'
-                  symbol='xmark'
-                  weight='medium'
-                />
-              </Link>
-            </Inline>
-          }
-        >
+        <Container dismissable fit header={host?.replace('www.', '')}>
           {isConnected ? (
             <Button
               onClick={() =>
@@ -59,7 +38,7 @@ export default function Session() {
         </Container>
       </Box>
       <Box>
-        <Container fit header={<Text size='16px'>Sessions</Text>}>
+        <Container fit header='Sessions'>
           TODO
         </Container>
       </Box>

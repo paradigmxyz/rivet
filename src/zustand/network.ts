@@ -5,6 +5,7 @@ import { createStore } from './utils'
 
 type RpcUrl = string
 type Network = {
+  blockTime: number
   chainId: number
   name: string
   rpcUrl: RpcUrl
@@ -20,7 +21,7 @@ export type NetworkActions = {
     rpcUrl,
   }: {
     network: Partial<Network>
-    rpcUrl: RpcUrl
+    rpcUrl?: RpcUrl
   }): Promise<void>
   switchNetwork(rpcUrl: RpcUrl): void
 }
@@ -28,18 +29,21 @@ export type NetworkStore = NetworkState & NetworkActions
 
 const defaultRpcUrl = defaultChain.rpcUrls.default.http[0]
 const defaultNetwork = {
+  blockTime: 1,
   chainId: defaultChain.id,
   name: defaultChain.name,
   rpcUrl: defaultRpcUrl,
 } satisfies Network
 
 export const networkStore = createStore<NetworkStore>(
-  (set) => ({
+  (set, get) => ({
     network: defaultNetwork,
     networks: {
       [defaultRpcUrl]: defaultNetwork,
     },
-    async upsertNetwork({ network, rpcUrl }) {
+    async upsertNetwork({ network, rpcUrl: rpcUrl_ }) {
+      const rpcUrl = rpcUrl_ || get().network.rpcUrl
+
       if (!network.chainId) {
         try {
           network.chainId = await getPublicClient({
@@ -53,14 +57,14 @@ export const networkStore = createStore<NetworkStore>(
       set((state) => {
         const networks = state.networks
         networks[rpcUrl] = {
-          ...networks[rpcUrl],
+          ...(networks[rpcUrl] || defaultNetwork),
           ...network,
           rpcUrl,
         }
 
         return {
           ...state,
-          ...(network.rpcUrl === state.network.rpcUrl && {
+          ...(rpcUrl === state.network.rpcUrl && {
             network: networks[rpcUrl],
           }),
           networks,

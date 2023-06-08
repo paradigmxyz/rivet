@@ -1,7 +1,5 @@
-import { Link } from 'react-router-dom'
-
 import { Container } from '~/components'
-import { Box, Inline, SFSymbol, Text } from '~/design-system'
+import { Box, Text } from '~/design-system'
 import { useAccount, useNetwork } from '~/zustand'
 
 export default function Accounts() {
@@ -11,21 +9,7 @@ export default function Accounts() {
   const { account, accountsForRpcUrl, setAccount } = useAccount()
 
   return (
-    <Container
-      header={
-        <Inline alignVertical='center' alignHorizontal='justify' wrap={false}>
-          <Text size='16px'>Accounts</Text>
-          <Link to='/'>
-            <SFSymbol
-              color='label'
-              size='12px'
-              symbol='xmark'
-              weight='medium'
-            />
-          </Link>
-        </Inline>
-      }
-    >
+    <Container dismissable header='Accounts'>
       {accountsForRpcUrl({ rpcUrl }).map((account_) => (
         <Box marginHorizontal='-12px'>
           <Box
