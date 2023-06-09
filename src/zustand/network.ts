@@ -14,6 +14,7 @@ type Network = {
 export type NetworkState = {
   network: Network
   networks: Record<RpcUrl, Network>
+  onboarded: boolean
 }
 export type NetworkActions = {
   upsertNetwork({
@@ -23,13 +24,14 @@ export type NetworkActions = {
     network: Partial<Network>
     rpcUrl?: RpcUrl
   }): Promise<void>
+  setOnboarded(onboarded: boolean): void
   switchNetwork(rpcUrl: RpcUrl): void
 }
 export type NetworkStore = NetworkState & NetworkActions
 
 const defaultRpcUrl = defaultChain.rpcUrls.default.http[0]
 const defaultNetwork = {
-  blockTime: 1,
+  blockTime: 0,
   chainId: defaultChain.id,
   name: defaultChain.name,
   rpcUrl: defaultRpcUrl,
@@ -41,8 +43,10 @@ export const networkStore = createStore<NetworkStore>(
     networks: {
       [defaultRpcUrl]: defaultNetwork,
     },
+    onboarded: false,
     async upsertNetwork({ network, rpcUrl: rpcUrl_ }) {
-      const rpcUrl = rpcUrl_ || get().network.rpcUrl
+      const prevRpcUrl = rpcUrl_ || get().network.rpcUrl
+      const rpcUrl = network.rpcUrl || prevRpcUrl
 
       if (!network.chainId) {
         try {
@@ -64,10 +68,18 @@ export const networkStore = createStore<NetworkStore>(
 
         return {
           ...state,
-          ...(rpcUrl === state.network.rpcUrl && {
+          ...(prevRpcUrl === state.network.rpcUrl && {
             network: networks[rpcUrl],
           }),
           networks,
+        }
+      })
+    },
+    setOnboarded(onboarded) {
+      set((state) => {
+        return {
+          ...state,
+          onboarded,
         }
       })
     },

@@ -69,6 +69,7 @@ export function Rows({
 }
 
 export type RowProps = {
+  alignHorizontal?: AlignHorizontal
   alignVertical?: AlignVertical
   children: ReactNode
   height?: 'content' | keyof typeof styles.height
@@ -98,7 +99,13 @@ function getRowProps(node: NonNullable<ReactNode>): RowProps | null {
     : null
 }
 
-function PrivateRow({ alignVertical, children, height, style }: RowProps) {
+function PrivateRow({
+  alignHorizontal,
+  alignVertical,
+  children,
+  height,
+  style,
+}: RowProps) {
   const { fit } = useContext(RowsContext)
 
   if (height) {
@@ -106,6 +113,9 @@ function PrivateRow({ alignVertical, children, height, style }: RowProps) {
       <Box
         alignItems={
           alignVertical && alignVerticalToJustifyContent[alignVertical]
+        }
+        justifyContent={
+          alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
         }
         className={height !== 'content' ? styles.height[height] : undefined}
         display='flex'
@@ -122,6 +132,9 @@ function PrivateRow({ alignVertical, children, height, style }: RowProps) {
   return (
     <Box
       alignItems={alignVertical && alignVerticalToJustifyContent[alignVertical]}
+      justifyContent={
+        alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
+      }
       display='flex'
       flexGrow='1'
       flexShrink='1'

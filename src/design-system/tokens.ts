@@ -273,7 +273,7 @@ export const foregroundColor = {
   },
   scrim: {
     light: globalColors.blackA.blackA5,
-    dark: globalColors.grayDark.gray6,
+    dark: globalColors.grayDark.gray8,
   },
 } as const satisfies Record<string, ForegroundColorValue>
 export type ForegroundColor = keyof typeof foregroundColor

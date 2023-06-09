@@ -1,3 +1,4 @@
+import { fallbackVar } from '@vanilla-extract/css'
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
 import { mapKeys, mapValues } from 'remeda'
 
@@ -16,7 +17,6 @@ import {
   strokeWeights,
   viewports,
 } from '../tokens'
-import { createVar } from '@vanilla-extract/css'
 
 const colorOpacities = [
   '0.02',
@@ -71,7 +71,7 @@ const borderColorsForBackgroundColorWithOpacities = getColorOpacityVariants(
   colorOpacities,
 )
 
-export const gapVar = createVar()
+export const gapVar = fallbackVar('0px')
 
 const boxBaseProperties = defineProperties({
   properties: {

@@ -170,7 +170,7 @@ export function Header() {
               >
                 <Columns>
                   <Column>
-                    <Columns gap='8px'>
+                    <Columns gap='16px'>
                       <Column alignVertical='center' width='1/3'>
                         <HeaderItem label='RPC URL'>
                           <Inline gap='4px' wrap={false}>
@@ -184,7 +184,7 @@ export function Header() {
                               }
                               borderWidth='1px'
                               borderRadius='round'
-                              style={{ width: 8, height: 8 }}
+                              style={{ minWidth: 8, minHeight: 8 }}
                             />
                             <Text size='12px' wrap={false} width='full'>
                               {network.rpcUrl.replace(/https?:\/\//, '')}

@@ -22,6 +22,9 @@ import Layout from './screens/_layout.tsx'
 import Accounts from './screens/accounts.tsx'
 import Index from './screens/index'
 import Network from './screens/network.tsx'
+import OnboardingCreateHosted from './screens/onboarding/create-hosted.tsx'
+import OnboardingDeployHosted from './screens/onboarding/deploy-hosted.tsx'
+import OnboardingStart from './screens/onboarding/start.tsx'
 import Session from './screens/session.tsx'
 
 syncStores()
@@ -46,6 +49,23 @@ const router = createHashRouter([
       {
         path: 'session',
         element: <Session />,
+      },
+      {
+        path: 'onboarding',
+        children: [
+          {
+            path: '',
+            element: <OnboardingStart />,
+          },
+          {
+            path: 'create-hosted',
+            element: <OnboardingCreateHosted />,
+          },
+          {
+            path: 'deploy-hosted',
+            element: <OnboardingDeployHosted />,
+          },
+        ],
       },
     ],
   },

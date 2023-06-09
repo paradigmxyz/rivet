@@ -1,13 +1,14 @@
 import { Outlet } from 'react-router-dom'
 
 import { Box, Row, Rows } from '~/design-system'
-import { usePendingRequests } from '~/zustand'
+import { useNetwork, usePendingRequests } from '~/zustand'
 
 import { Header } from '~/components'
 
 import PendingRequest from './pending-request'
 
 export default function Layout() {
+  const { onboarded } = useNetwork()
   const { pendingRequests } = usePendingRequests()
   const pendingRequest = pendingRequests[pendingRequests.length - 1]
 
@@ -23,9 +24,11 @@ export default function Layout() {
       }}
     >
       <Rows>
-        <Row height='content'>
-          <Header />
-        </Row>
+        {onboarded && (
+          <Row height='content'>
+            <Header />
+          </Row>
+        )}
         <Row>
           <Box style={{ overflowY: 'scroll' }} width='full'>
             {pendingRequests.length > 0 ? (

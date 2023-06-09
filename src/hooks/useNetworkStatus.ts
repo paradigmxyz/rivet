@@ -4,11 +4,14 @@ import { useNetwork } from '~/zustand'
 
 import { usePublicClient } from './usePublicClient'
 
-export function useNetworkStatus() {
+export function useNetworkStatus({
+  enabled = true,
+}: { enabled?: boolean } = {}) {
   const { network, upsertNetwork } = useNetwork()
   const publicClient = usePublicClient()
 
   return useQuery({
+    enabled,
     queryKey: ['listening', publicClient.key],
     async queryFn() {
       try {
@@ -21,5 +24,6 @@ export function useNetworkStatus() {
       }
     },
     refetchInterval: publicClient.pollingInterval,
+    retry: 5,
   })
 }
