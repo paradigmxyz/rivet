@@ -21,13 +21,13 @@ export default function Session() {
               onClick={() =>
                 host && disconnect({ host, messenger: inpageMessenger })
               }
-              variant='solid surface/fill/tertiary'
+              variant='solid fill'
             >
               Disconnect
             </Button>
           ) : (
             <Button
-              variant='solid surface/fill/tertiary'
+              variant='solid fill'
               onClick={() =>
                 host && connect({ host, messenger: inpageMessenger })
               }

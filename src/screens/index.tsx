@@ -43,10 +43,7 @@ function AutoMining() {
   return (
     <Stack gap='16px'>
       <Text color='text/tertiary'>Auto Mining</Text>
-      <Button
-        onClick={() => setAutomine(!automining)}
-        variant='solid surface/fill/tertiary'
-      >
+      <Button onClick={() => setAutomine(!automining)} variant='solid fill'>
         {automining ? 'Off' : 'On'}
       </Button>
     </Stack>
@@ -91,17 +88,13 @@ function IntervalMining() {
             <Text color='text/tertiary' size='11px'>
               {'‎'}
             </Text>
-            <Button
-              type='submit'
-              width='fit'
-              variant='solid surface/fill/tertiary'
-            >
+            <Button type='submit' width='fit' variant='solid fill'>
               Set
             </Button>
           </Stack>
         </Inline>
       </form>
-      <Button onClick={toggle} variant='solid surface/fill/tertiary'>
+      <Button onClick={toggle} variant='solid fill'>
         {network.blockTime > 0 ? 'Pause' : 'Continue'}
       </Button>
     </Stack>
@@ -160,11 +153,7 @@ function Mine() {
             <Text color='text/tertiary' size='11px'>
               {'‎'}
             </Text>
-            <Button
-              type='submit'
-              width='fit'
-              variant='solid surface/fill/tertiary'
-            >
+            <Button type='submit' width='fit' variant='solid fill'>
               Mine
             </Button>
           </Stack>
@@ -190,7 +179,7 @@ function Reset() {
   })
 
   return (
-    <Button onClick={() => reset()} variant='solid surface/fill/tertiary'>
+    <Button onClick={() => reset()} variant='solid fill'>
       Reset
     </Button>
   )

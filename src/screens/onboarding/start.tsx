@@ -86,7 +86,7 @@ export default function OnboardingStart() {
               <Link to='/onboarding/create-hosted'>
                 <Button height='44px'>Create hosted chain</Button>
               </Link>
-              <Button height='44px' variant='stroked surface/fill'>
+              <Button height='44px' variant='stroked fill'>
                 Use local chain
               </Button>
             </Stack>

@@ -34,10 +34,10 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
       header='Pending Request'
       footer={
         <Inline gap='12px' wrap={false}>
-          <Button onClick={handleReject} variant='tint surface/red'>
+          <Button onClick={handleReject} variant='tint red'>
             Reject
           </Button>
-          <Button onClick={handleApprove} variant='tint surface/green'>
+          <Button onClick={handleApprove} variant='tint green'>
             Approve
           </Button>
         </Inline>

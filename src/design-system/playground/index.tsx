@@ -285,22 +285,22 @@ function DesignSystem() {
                 Solid
               </Text>
               <Box display='flex' gap='8px'>
-                <Button variant='solid surface/invert' width='fit'>
+                <Button variant='solid invert' width='fit'>
                   Button
                 </Button>
-                <Button variant='solid surface/primary' width='fit'>
+                <Button variant='solid primary' width='fit'>
                   Button
                 </Button>
-                <Button variant='solid surface/fill/tertiary' width='fit'>
+                <Button variant='solid fill' width='fit'>
                   Button
                 </Button>
-                <Button variant='solid surface/blue' width='fit'>
+                <Button variant='solid blue' width='fit'>
                   Button
                 </Button>
-                <Button variant='solid surface/green' width='fit'>
+                <Button variant='solid green' width='fit'>
                   Button
                 </Button>
-                <Button variant='solid surface/red' width='fit'>
+                <Button variant='solid red' width='fit'>
                   Button
                 </Button>
               </Box>
@@ -310,19 +310,19 @@ function DesignSystem() {
                 Stroked
               </Text>
               <Box display='flex' gap='8px'>
-                <Button variant='stroked surface/fill' width='fit'>
+                <Button variant='stroked fill' width='fit'>
                   Button
                 </Button>
-                <Button variant='stroked surface/invert' width='fit'>
+                <Button variant='stroked invert' width='fit'>
                   Button
                 </Button>
-                <Button variant='stroked surface/blue' width='fit'>
+                <Button variant='stroked blue' width='fit'>
                   Button
                 </Button>
-                <Button variant='stroked surface/red' width='fit'>
+                <Button variant='stroked red' width='fit'>
                   Button
                 </Button>
-                <Button variant='stroked surface/green' width='fit'>
+                <Button variant='stroked green' width='fit'>
                   Button
                 </Button>
               </Box>
@@ -332,13 +332,13 @@ function DesignSystem() {
                 Tint
               </Text>
               <Box display='flex' gap='8px'>
-                <Button variant='tint surface/blue' width='fit'>
+                <Button variant='tint blue' width='fit'>
                   Button
                 </Button>
-                <Button variant='tint surface/green' width='fit'>
+                <Button variant='tint green' width='fit'>
                   Button
                 </Button>
-                <Button variant='tint surface/red' width='fit'>
+                <Button variant='tint red' width='fit'>
                   Button
                 </Button>
               </Box>
@@ -351,14 +351,10 @@ function DesignSystem() {
                 <Button height='44px' width='fit'>
                   Button
                 </Button>
-                <Button
-                  variant='stroked surface/invert'
-                  height='44px'
-                  width='fit'
-                >
+                <Button variant='stroked invert' height='44px' width='fit'>
                   Button
                 </Button>
-                <Button variant='tint surface/green' height='44px' width='fit'>
+                <Button variant='tint green' height='44px' width='fit'>
                   Button
                 </Button>
               </Box>
@@ -366,14 +362,10 @@ function DesignSystem() {
                 <Button height='36px' width='fit'>
                   Button
                 </Button>
-                <Button
-                  variant='stroked surface/invert'
-                  height='36px'
-                  width='fit'
-                >
+                <Button variant='stroked invert' height='36px' width='fit'>
                   Button
                 </Button>
-                <Button variant='tint surface/green' height='36px' width='fit'>
+                <Button variant='tint green' height='36px' width='fit'>
                   Button
                 </Button>
               </Box>

@@ -45,69 +45,65 @@ const stylesForHeight = {
 } satisfies Record<ButtonHeight, BoxStyles>
 
 const stylesForVariant = {
-  'solid surface/invert': {
+  'solid invert': {
     backgroundColor: 'surface/invert',
   },
-  'solid surface/primary': {
+  'solid primary': {
     backgroundColor: 'surface/primary',
   },
-  'solid surface/secondary/elevated': {
-    backgroundColor: 'surface/secondary/elevated',
-  },
-  'solid surface/fill/tertiary': {
+  'solid fill': {
     backgroundColor: 'surface/fill/tertiary',
   },
-  'solid surface/blue': {
+  'solid blue': {
     backgroundColor: 'surface/blue',
   },
-  'solid surface/green': {
+  'solid green': {
     backgroundColor: 'surface/green',
   },
-  'solid surface/red': {
+  'solid red': {
     backgroundColor: 'surface/red',
-    borderWidth: '1px',
   },
-  'stroked surface/fill': {
+  'stroked fill': {
     backgroundColor: {
       hover: 'surface/invert@0.02',
     },
     borderColor: 'surface/fill',
     borderWidth: '1px',
   },
-  'stroked surface/invert': {
+  'stroked invert': {
     backgroundColor: {
       hover: 'surface/invert@0.05',
     },
     borderWidth: '1px',
   },
-  'stroked surface/blue': {
+  'stroked blue': {
     backgroundColor: {
       hover: 'surface/blue@0.05',
     },
     borderColor: 'surface/blue',
     borderWidth: '1px',
   },
-  'stroked surface/red': {
+  'stroked red': {
     backgroundColor: {
       hover: 'surface/red@0.05',
     },
     borderColor: 'surface/red',
     borderWidth: '1px',
   },
-  'stroked surface/green': {
+  'stroked green': {
     backgroundColor: {
       hover: 'surface/green@0.05',
     },
     borderColor: 'surface/green',
     borderWidth: '1px',
   },
-  'tint surface/blue': {
+  'tint blue': {
     backgroundColor: 'surface/blueTint',
   },
-  'tint surface/green': {
+  'tint green': {
     backgroundColor: 'surface/greenTint',
   },
-  'tint surface/red': {
+  'tint red': {
     backgroundColor: 'surface/redTint',
   },
 } satisfies Record<ButtonVariant, BoxStyles>
@@ -122,27 +118,26 @@ const textStylesForHeight = {
 } satisfies Record<ButtonHeight, { size: TextProps['size'] }>
 
 const textStylesForVariant = {
-  'solid surface/invert': {},
-  'solid surface/primary': {},
-  'solid surface/secondary/elevated': {},
-  'solid surface/fill/tertiary': {},
-  'solid surface/blue': {},
-  'solid surface/green': {},
-  'solid surface/red': {},
-  'stroked surface/fill': {},
-  'stroked surface/invert': {},
-  'stroked surface/blue': {
+  'solid invert': {},
+  'solid primary': {},
+  'solid fill': {},
+  'solid blue': {},
+  'solid green': {},
+  'solid red': {},
+  'stroked fill': {},
+  'stroked invert': {},
+  'stroked blue': {
     color: 'surface/blue',
   },
-  'stroked surface/red': {
+  'stroked red': {
     color: 'surface/red',
   },
-  'stroked surface/green': {
+  'stroked green': {
     color: 'surface/green',
   },
-  'tint surface/blue': {},
-  'tint surface/green': {},
-  'tint surface/red': {},
+  'tint blue': {},
+  'tint green': {},
+  'tint red': {},
 } satisfies Record<ButtonVariant, { color?: TextProps['color'] }>
 
 export function Button({
@@ -151,7 +146,7 @@ export function Button({
   height = '36px',
   href,
   onClick,
-  variant = 'solid surface/invert',
+  variant = 'solid invert',
   width = 'full',
 }: ButtonProps) {
   return (
