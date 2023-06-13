@@ -62,7 +62,7 @@ export default function OnboardingDeployHosted() {
       header={
         <Inset vertical='20px'>
           <Stack gap='12px'>
-            <Text color='label' size='14px'>
+            <Text color='text/tertiary' size='14px'>
               Setup
             </Text>
             <Text>Deploy Node</Text>
@@ -72,7 +72,7 @@ export default function OnboardingDeployHosted() {
       footer={
         <Stack gap='16px'>
           <Box paddingTop='4px' paddingBottom='12px'>
-            <Text color='label'>Cancel setup</Text>
+            <Text color='text/tertiary'>Cancel setup</Text>
           </Box>
         </Stack>
       }

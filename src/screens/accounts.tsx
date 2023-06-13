@@ -17,9 +17,9 @@ export default function Accounts() {
             alignItems='center'
             backgroundColor={
               account?.address === account_.address
-                ? 'primary / 0.1'
+                ? 'surface/fill/tertiary'
                 : {
-                    hover: 'primary / 0.05',
+                    hover: 'surface/fill/quarternary',
                   }
             }
             display='flex'

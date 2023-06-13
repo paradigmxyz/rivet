@@ -36,7 +36,7 @@ function DesignSystem() {
 
   return (
     <Box
-      backgroundColor='body'
+      backgroundColor='surface/primary'
       marginHorizontal='auto'
       maxWidth='1152px'
       paddingTop='40px'
@@ -53,7 +53,7 @@ function DesignSystem() {
           Design System
         </Text>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -62,134 +62,107 @@ function DesignSystem() {
             <Text weight='medium' size='22px'>
               Color System
             </Text>
-            <Box backgroundColor='body' padding='8px'>
+            <Box backgroundColor='surface/primary' padding='8px'>
               <Stack gap='8px'>
-                <Box backgroundColor='body' borderWidth='1.5px' padding='20px'>
-                  <Text>body</Text>
+                <Box backgroundColor='surface/primary' hoverable padding='20px'>
+                  <Text>Surface / Primary</Text>
                 </Box>
                 <Box
-                  backgroundColor='bodyHover'
-                  borderWidth='1.5px'
+                  backgroundColor='surface/primary/elevated'
+                  hoverable
                   padding='20px'
                 >
-                  <Text>bodyHover</Text>
+                  <Text>Surface / Primary / Elevated</Text>
                 </Box>
                 <Box
-                  backgroundColor='surface'
-                  borderWidth='1.5px'
+                  backgroundColor='surface/secondary'
+                  hoverable
                   padding='20px'
                 >
-                  <Text>surface</Text>
+                  <Text>Surface / Secondary</Text>
                 </Box>
                 <Box
-                  backgroundColor='surfaceHover'
-                  borderWidth='1.5px'
+                  backgroundColor='surface/secondary/elevated'
+                  hoverable
                   padding='20px'
                 >
-                  <Text>surfaceHover</Text>
+                  <Text>Surface / Secondary / Elevated</Text>
+                </Box>
+                <Box backgroundColor='surface/fill' hoverable padding='20px'>
+                  <Text>Surface / Fill</Text>
                 </Box>
                 <Box
-                  backgroundColor='primary'
-                  borderWidth='1.5px'
+                  backgroundColor='surface/fill/secondary'
+                  hoverable
                   padding='20px'
                 >
-                  <Text>primary</Text>
+                  <Text>Surface / Fill / Secondary</Text>
                 </Box>
                 <Box
-                  backgroundColor='primaryHover'
-                  borderWidth='1.5px'
+                  backgroundColor='surface/fill/tertiary'
+                  hoverable
                   padding='20px'
                 >
-                  <Text>primaryHover</Text>
-                </Box>
-                <Box backgroundColor='white' borderWidth='1.5px' padding='20px'>
-                  <Text>white</Text>
+                  <Text>Surface / Fill / Tertiary</Text>
                 </Box>
                 <Box
-                  backgroundColor='whiteHover'
-                  borderWidth='1.5px'
+                  backgroundColor='surface/fill/quarternary'
+                  hoverable
                   padding='20px'
                 >
-                  <Text>whiteHover</Text>
+                  <Text>Surface / Fill / Quarternary</Text>
                 </Box>
-                <Box backgroundColor='black' borderWidth='1.5px' padding='20px'>
-                  <Text>black</Text>
+                <Box backgroundColor='surface/blue' hoverable padding='20px'>
+                  <Text>Surface / Blue</Text>
                 </Box>
                 <Box
-                  backgroundColor='blackHover'
-                  borderWidth='1.5px'
+                  backgroundColor='surface/blueTint'
+                  hoverable
                   padding='20px'
                 >
-                  <Text>blackHover</Text>
+                  <Text>Surface / Blue Tint</Text>
                 </Box>
-                <Box backgroundColor='red' borderWidth='1.5px' padding='20px'>
-                  <Text>red</Text>
+                <Box backgroundColor='surface/green' hoverable padding='20px'>
+                  <Text>Surface / Green</Text>
                 </Box>
                 <Box
-                  backgroundColor='redHover'
-                  borderWidth='1.5px'
+                  backgroundColor='surface/greenTint'
+                  hoverable
                   padding='20px'
                 >
-                  <Text>redHover</Text>
+                  <Text>Surface / Green Tint</Text>
+                </Box>
+                <Box backgroundColor='surface/red' hoverable padding='20px'>
+                  <Text>Surface / Red</Text>
+                </Box>
+                <Box backgroundColor='surface/redTint' hoverable padding='20px'>
+                  <Text>Surface / Red Tint</Text>
+                </Box>
+                <Box backgroundColor='surface/yellow' hoverable padding='20px'>
+                  <Text>Surface / Yellow</Text>
                 </Box>
                 <Box
-                  backgroundColor='redTint'
-                  borderWidth='1.5px'
+                  backgroundColor='surface/yellowTint'
+                  hoverable
                   padding='20px'
                 >
-                  <Text>redTint</Text>
+                  <Text>Surface / Yellow Tint</Text>
                 </Box>
-                <Box
-                  backgroundColor='redTintHover'
-                  borderWidth='1.5px'
-                  padding='20px'
-                >
-                  <Text>redTintHover</Text>
+                <Box backgroundColor='surface/invert' hoverable padding='20px'>
+                  <Text>Surface / Invert</Text>
                 </Box>
-                <Box backgroundColor='green' borderWidth='1.5px' padding='20px'>
-                  <Text>green</Text>
+                <Box backgroundColor='surface/white' hoverable padding='20px'>
+                  <Text>Surface / White</Text>
                 </Box>
-                <Box
-                  backgroundColor='greenHover'
-                  borderWidth='1.5px'
-                  padding='20px'
-                >
-                  <Text>greenHover</Text>
-                </Box>
-                <Box
-                  backgroundColor='greenTint'
-                  borderWidth='1.5px'
-                  padding='20px'
-                >
-                  <Text>greenTint</Text>
-                </Box>
-                <Box
-                  backgroundColor='greenTintHover'
-                  borderWidth='1.5px'
-                  padding='20px'
-                >
-                  <Text>greenTintHover</Text>
-                </Box>
-                <Box
-                  backgroundColor='yellow'
-                  borderWidth='1.5px'
-                  padding='20px'
-                >
-                  <Text>yellow</Text>
-                </Box>
-                <Box
-                  backgroundColor='yellowTint'
-                  borderWidth='1.5px'
-                  padding='20px'
-                >
-                  <Text>yellow</Text>
+                <Box backgroundColor='surface/black' hoverable padding='20px'>
+                  <Text>Surface / Black</Text>
                 </Box>
               </Stack>
             </Box>
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -202,25 +175,36 @@ function DesignSystem() {
               <Text weight='medium' size='18px'>
                 Contextual Inheritence
               </Text>
-              <Box backgroundColor='white' padding='8px'>
+              <Box backgroundColor='surface/white' padding='8px'>
                 <Text>White Context</Text>
                 <Box style={{ height: 10 }} />
-                <Box backgroundColor='body' padding='8px'>
-                  <Text>Body Context</Text>
+                <Box backgroundColor='surface/primary' padding='8px'>
+                  <Text>Surface / Primary Context</Text>
                   <Box style={{ height: 10 }} />
-                  <Box backgroundColor='black' padding='8px'>
+                  <Box backgroundColor='surface/black' padding='8px'>
                     <Text>Black Context</Text>
                     <Box style={{ height: 10 }} />
-                    <Box backgroundColor='surface' padding='8px'>
-                      <Text>Surface Context</Text>
+                    <Box
+                      backgroundColor='surface/secondary/elevated'
+                      padding='8px'
+                    >
+                      <Text>Surface / Secondary / Elevated Context</Text>
                     </Box>
                   </Box>
                 </Box>
               </Box>
-              <Box backgroundColor='red' borderWidth='1px' padding='8px'>
+              <Box
+                backgroundColor='surface/red'
+                borderWidth='1px'
+                padding='8px'
+              >
                 <Text>Red Context</Text>
               </Box>
-              <Box backgroundColor='redTint' borderWidth='1px' padding='8px'>
+              <Box
+                backgroundColor='surface/redTint'
+                borderWidth='1px'
+                padding='8px'
+              >
                 <Text>Red Tint Context</Text>
               </Box>
             </Stack>
@@ -255,7 +239,7 @@ function DesignSystem() {
                 </Box>
               </AccentColorProvider>
               <AccentColorProvider color='red'>
-                <Box backgroundColor='body' padding='8px'>
+                <Box backgroundColor='surface/primary' padding='8px'>
                   <Text color='accent'>Red Text Accent</Text>
                   <Box style={{ height: 10 }} />
                   <AccentColorProvider color='pink'>
@@ -267,7 +251,7 @@ function DesignSystem() {
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -276,15 +260,18 @@ function DesignSystem() {
             <Text weight='medium' size='22px'>
               Bleed
             </Text>
-            <Box backgroundColor='body'>
+            <Box backgroundColor='surface/primary'>
               <Bleed space='-8px'>
-                <Box backgroundColor='primary / 0.2' style={{ height: 50 }} />
+                <Box
+                  backgroundColor='surface/invert@0.2'
+                  style={{ height: 50 }}
+                />
               </Bleed>
             </Box>
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -298,16 +285,22 @@ function DesignSystem() {
                 Solid
               </Text>
               <Box display='flex' gap='8px'>
-                <Button variant='solid primary' width='fit'>
+                <Button variant='solid surface/invert' width='fit'>
                   Button
                 </Button>
-                <Button variant='solid body' width='fit'>
+                <Button variant='solid surface/primary' width='fit'>
                   Button
                 </Button>
-                <Button variant='solid green' width='fit'>
+                <Button variant='solid surface/fill/tertiary' width='fit'>
                   Button
                 </Button>
-                <Button variant='solid red' width='fit'>
+                <Button variant='solid surface/blue' width='fit'>
+                  Button
+                </Button>
+                <Button variant='solid surface/green' width='fit'>
+                  Button
+                </Button>
+                <Button variant='solid surface/red' width='fit'>
                   Button
                 </Button>
               </Box>
@@ -317,10 +310,19 @@ function DesignSystem() {
                 Stroked
               </Text>
               <Box display='flex' gap='8px'>
-                <Button variant='stroked primary' width='fit'>
+                <Button variant='stroked surface/fill' width='fit'>
                   Button
                 </Button>
-                <Button variant='stroked scrim' width='fit'>
+                <Button variant='stroked surface/invert' width='fit'>
+                  Button
+                </Button>
+                <Button variant='stroked surface/blue' width='fit'>
+                  Button
+                </Button>
+                <Button variant='stroked surface/red' width='fit'>
+                  Button
+                </Button>
+                <Button variant='stroked surface/green' width='fit'>
                   Button
                 </Button>
               </Box>
@@ -330,13 +332,13 @@ function DesignSystem() {
                 Tint
               </Text>
               <Box display='flex' gap='8px'>
-                <Button variant='tint green' width='fit'>
+                <Button variant='tint surface/blue' width='fit'>
                   Button
                 </Button>
-                <Button variant='tint red' width='fit'>
+                <Button variant='tint surface/green' width='fit'>
                   Button
                 </Button>
-                <Button variant='tint primary' width='fit'>
+                <Button variant='tint surface/red' width='fit'>
                   Button
                 </Button>
               </Box>
@@ -349,10 +351,14 @@ function DesignSystem() {
                 <Button height='44px' width='fit'>
                   Button
                 </Button>
-                <Button variant='stroked primary' height='44px' width='fit'>
+                <Button
+                  variant='stroked surface/invert'
+                  height='44px'
+                  width='fit'
+                >
                   Button
                 </Button>
-                <Button variant='tint green' height='44px' width='fit'>
+                <Button variant='tint surface/green' height='44px' width='fit'>
                   Button
                 </Button>
               </Box>
@@ -360,10 +366,14 @@ function DesignSystem() {
                 <Button height='36px' width='fit'>
                   Button
                 </Button>
-                <Button variant='stroked primary' height='36px' width='fit'>
+                <Button
+                  variant='stroked surface/invert'
+                  height='36px'
+                  width='fit'
+                >
                   Button
                 </Button>
-                <Button variant='tint green' height='36px' width='fit'>
+                <Button variant='tint surface/green' height='36px' width='fit'>
                   Button
                 </Button>
               </Box>
@@ -371,7 +381,7 @@ function DesignSystem() {
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -381,26 +391,47 @@ function DesignSystem() {
               Columns
             </Text>
             <Columns gap='12px'>
-              <Box backgroundColor='primary / 0.2' style={{ height: 100 }} />
-              <Box backgroundColor='primary / 0.2' style={{ height: 100 }} />
-              <Box backgroundColor='primary / 0.2' style={{ height: 100 }} />
+              <Box
+                backgroundColor='surface/invert@0.2'
+                style={{ height: 100 }}
+              />
+              <Box
+                backgroundColor='surface/invert@0.2'
+                style={{ height: 100 }}
+              />
+              <Box
+                backgroundColor='surface/invert@0.2'
+                style={{ height: 100 }}
+              />
             </Columns>
             <Columns gap='12px'>
               <Column width='1/4'>
-                <Box backgroundColor='primary / 0.2' style={{ height: 100 }} />
+                <Box
+                  backgroundColor='surface/invert@0.2'
+                  style={{ height: 100 }}
+                />
               </Column>
               <Column width='1/3'>
-                <Box backgroundColor='primary / 0.2' style={{ height: 100 }} />
+                <Box
+                  backgroundColor='surface/invert@0.2'
+                  style={{ height: 100 }}
+                />
               </Column>
               <Column>
-                <Box backgroundColor='primary / 0.2' style={{ height: 100 }} />
+                <Box
+                  backgroundColor='surface/invert@0.2'
+                  style={{ height: 100 }}
+                />
               </Column>
             </Columns>
             <Columns gap='12px'>
-              <Box backgroundColor='primary / 0.2' style={{ height: 100 }} />
+              <Box
+                backgroundColor='surface/invert@0.2'
+                style={{ height: 100 }}
+              />
               <Column width='content'>
                 <Box
-                  backgroundColor='primary / 0.2'
+                  backgroundColor='surface/invert@0.2'
                   style={{ height: 100, width: 100 }}
                 />
               </Column>
@@ -408,7 +439,7 @@ function DesignSystem() {
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -419,38 +450,38 @@ function DesignSystem() {
             </Text>
             <Inline gap='8px'>
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ height: 50, width: 50 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ height: 50, width: 50 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ height: 50, width: 50 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ height: 50, width: 50 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ height: 50, width: 50 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ height: 50, width: 50 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ height: 50, width: 50 }}
               />
             </Inline>
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -463,7 +494,7 @@ function DesignSystem() {
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -472,15 +503,18 @@ function DesignSystem() {
             <Text weight='medium' size='22px'>
               Inset
             </Text>
-            <Box backgroundColor='body'>
+            <Box backgroundColor='surface/primary'>
               <Inset space='24px'>
-                <Box backgroundColor='primary / 0.2' style={{ height: 50 }} />
+                <Box
+                  backgroundColor='surface/invert@0.2'
+                  style={{ height: 50 }}
+                />
               </Inset>
             </Box>
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -491,28 +525,28 @@ function DesignSystem() {
             </Text>
             <Box style={{ height: 300 }}>
               <Rows gap='12px'>
-                <Box backgroundColor='primary / 0.2' flex='1' />
-                <Box backgroundColor='primary / 0.2' flex='1' />
-                <Box backgroundColor='primary / 0.2' flex='1' />
+                <Box backgroundColor='surface/invert@0.2' flex='1' />
+                <Box backgroundColor='surface/invert@0.2' flex='1' />
+                <Box backgroundColor='surface/invert@0.2' flex='1' />
               </Rows>
             </Box>
             <Box style={{ height: 300 }}>
               <Rows gap='12px'>
                 <Row height='1/4'>
-                  <Box backgroundColor='primary / 0.2' flex='1' />
+                  <Box backgroundColor='surface/invert@0.2' flex='1' />
                 </Row>
                 <Row height='1/4'>
-                  <Box backgroundColor='primary / 0.2' flex='1' />
+                  <Box backgroundColor='surface/invert@0.2' flex='1' />
                 </Row>
                 <Row>
-                  <Box backgroundColor='primary / 0.2' flex='1' />
+                  <Box backgroundColor='surface/invert@0.2' flex='1' />
                 </Row>
               </Rows>
             </Box>
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -525,7 +559,7 @@ function DesignSystem() {
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -541,7 +575,7 @@ function DesignSystem() {
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'
@@ -551,56 +585,65 @@ function DesignSystem() {
               Stack
             </Text>
             <Stack gap='16px'>
-              <Box backgroundColor='primary / 0.2' style={{ height: 40 }} />
-              <Box backgroundColor='primary / 0.2' style={{ height: 40 }} />
-              <Box backgroundColor='primary / 0.2' style={{ height: 40 }} />
+              <Box
+                backgroundColor='surface/invert@0.2'
+                style={{ height: 40 }}
+              />
+              <Box
+                backgroundColor='surface/invert@0.2'
+                style={{ height: 40 }}
+              />
+              <Box
+                backgroundColor='surface/invert@0.2'
+                style={{ height: 40 }}
+              />
             </Stack>
             <Stack alignHorizontal='left' gap='16px'>
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ width: 40, height: 40 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ width: 40, height: 40 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ width: 40, height: 40 }}
               />
             </Stack>
             <Stack alignHorizontal='center' gap='16px'>
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ width: 40, height: 40 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ width: 40, height: 40 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ width: 40, height: 40 }}
               />
             </Stack>
             <Stack alignHorizontal='right' gap='16px'>
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ width: 40, height: 40 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ width: 40, height: 40 }}
               />
               <Box
-                backgroundColor='primary / 0.2'
+                backgroundColor='surface/invert@0.2'
                 style={{ width: 40, height: 40 }}
               />
             </Stack>
           </Stack>
         </Box>
         <Box
-          backgroundColor='surface'
+          backgroundColor='surface/primary/elevated'
           margin='-24px'
           borderRadius='12px'
           padding='24px'

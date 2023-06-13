@@ -18,7 +18,7 @@ import { backgroundColorVars } from './theme.css'
 })
 
 globalStyle('html, body', {
-  backgroundColor: `rgb(${backgroundColorVars.body})`,
+  backgroundColor: `rgb(${backgroundColorVars['surface/primary']})`,
   fontFamily:
     "'SFPro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
   fontFeatureSettings: '"rlig" 1, "calt" 1',

@@ -1,4 +1,4 @@
-import { fallbackVar } from '@vanilla-extract/css'
+import { createVar, fallbackVar } from '@vanilla-extract/css'
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
 import { mapKeys, mapValues } from 'remeda'
 
@@ -6,6 +6,7 @@ import {
   backgroundColorVars,
   borderColorForBackgroundColorVars,
   foregroundColorVars,
+  hoverForBackgroundColorVars,
   inheritedColorVars,
   textColorForBackgroundColorVars,
 } from '../styles/theme.css'
@@ -18,7 +19,7 @@ import {
   viewports,
 } from '../tokens'
 
-const colorOpacities = [
+const opacities = [
   '0.02',
   '0.05',
   '0.1',
@@ -47,31 +48,27 @@ function getColorOpacityVariants<
       ...acc,
       ...Object.fromEntries(
         opacities.map((opacity) => [
-          `${key} / ${opacity}`,
+          `${key}@${opacity}`,
           `rgb(${value} / ${opacity})`,
         ]),
       ),
     }
-  }, {} as any) as Record<
-    `${ExtractKeys<TVars>} / ${TOpacities[number]}`,
-    string
-  >
+  }, {} as any) as Record<`${ExtractKeys<TVars>}@${TOpacities[number]}`, string>
 }
 
 const accentColorWithOpacities = getColorOpacityVariants(
   { accent: inheritedColorVars.accent } as const,
-  colorOpacities,
+  opacities,
 )
 const backgroundColorsWithOpacities = getColorOpacityVariants(
   backgroundColorVars,
-  colorOpacities,
-)
-const borderColorsForBackgroundColorWithOpacities = getColorOpacityVariants(
-  borderColorForBackgroundColorVars,
-  colorOpacities,
+  opacities,
 )
 
 export const gapVar = fallbackVar('0px')
+
+const brightnessVar = createVar()
+const contrastVar = createVar()
 
 const boxBaseProperties = defineProperties({
   properties: {
@@ -136,7 +133,7 @@ const boxBaseProperties = defineProperties({
     marginRight: { auto: 'auto', ...negatedSpacing },
     marginTop: { auto: 'auto', ...negatedSpacing },
     maxWidth: viewports,
-    opacity: ['0.1'],
+    opacity: opacities,
     paddingBottom: spacing,
     paddingLeft: spacing,
     paddingRight: spacing,
@@ -160,7 +157,7 @@ const boxBaseProperties = defineProperties({
   },
 })
 
-const boxColorProperties = defineProperties({
+const boxInteractiveProperties = defineProperties({
   conditions: {
     default: {},
     hover: { selector: '&:hover' },
@@ -181,6 +178,7 @@ const boxColorProperties = defineProperties({
         const textColorForBackgroundColor = (
           textColorForBackgroundColorVars as any
         )[color]
+        const hoverForBackgroundColor = hoverForBackgroundColorVars[color]
 
         return {
           backgroundColor: `rgb(${colorVar})`,
@@ -188,11 +186,14 @@ const boxColorProperties = defineProperties({
           color: `rgb(${textColorForBackgroundColor})`,
           fill: `rgb(${textColorForBackgroundColor})`,
           vars: {
+            [brightnessVar]: hoverForBackgroundColor.brightness,
+            [contrastVar]: hoverForBackgroundColor.contrast,
             [inheritedColorVars.border]: borderColorForBackgroundColor,
             [inheritedColorVars.text]: textColorForBackgroundColor,
           },
         }
       }),
+      ...mapValues(foregroundColorVars, (colorVar) => `rgb(${colorVar})`),
       ...accentColorWithOpacities,
       ...backgroundColorsWithOpacities,
     },
@@ -201,21 +202,15 @@ const boxColorProperties = defineProperties({
       border: `rgb(${inheritedColorVars.border})`,
       transparent: 'transparent',
       ...mapValues(foregroundColorVars, (colorVar) => `rgb(${colorVar})`),
-      ...mapValues(
-        borderColorForBackgroundColorVars,
-        (colorVar) => `rgb(${colorVar})`,
-      ),
+      ...mapValues(backgroundColorVars, (colorVar) => `rgb(${colorVar})`),
       ...accentColorWithOpacities,
-      ...borderColorsForBackgroundColorWithOpacities,
+      ...backgroundColorsWithOpacities,
     },
     color: {
       accent: `rgb(${inheritedColorVars.accent})`,
       text: `rgb(${inheritedColorVars.text})`,
       ...mapValues(foregroundColorVars, (colorVar) => `rgb(${colorVar})`),
-      ...mapValues(
-        mapKeys(backgroundColorVars, (key) => `background ${key}`),
-        (colorVar) => `rgb(${colorVar})`,
-      ),
+      ...mapValues(backgroundColorVars, (colorVar) => `rgb(${colorVar})`),
       ...accentColorWithOpacities,
       ...mapKeys(backgroundColorsWithOpacities, (key) => `background ${key}`),
     },
@@ -225,5 +220,23 @@ const boxColorProperties = defineProperties({
   },
 })
 
-export const boxStyles = createSprinkles(boxBaseProperties, boxColorProperties)
+const boxHoverProperties = defineProperties({
+  conditions: {
+    hover: { selector: '&:hover' },
+  },
+  defaultCondition: 'hover',
+  properties: {
+    hover: {
+      translucent: {
+        filter: `brightness(${brightnessVar}) contrast(${contrastVar})`,
+      },
+    },
+  },
+})
+
+export const boxStyles = createSprinkles(
+  boxBaseProperties,
+  boxInteractiveProperties,
+  boxHoverProperties,
+)
 export type BoxStyles = Parameters<typeof boxStyles>[0]

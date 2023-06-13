@@ -14,8 +14,8 @@ export default function Layout() {
 
   return (
     <Box
-      backgroundColor='surface'
-      borderWidth='1.5px'
+      backgroundColor='surface/primary/elevated'
+      borderLeftWidth='1px'
       display='flex'
       style={{
         height: '100vh',

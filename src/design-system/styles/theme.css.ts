@@ -50,6 +50,12 @@ export const borderColorForBackgroundColorVars = createThemeContract(
 export const textColorForBackgroundColorVars = createThemeContract(
   mapValues(backgroundColor, () => null),
 )
+export const hoverForBackgroundColorVars = createThemeContract(
+  mapValues(backgroundColor, () => ({
+    brightness: null,
+    contrast: null,
+  })),
+)
 
 globalStyle(
   [
@@ -110,6 +116,17 @@ globalStyle(
                   defaultInheritedColor.border.light,
               ),
             ),
+          ),
+          ...assignVars(
+            hoverForBackgroundColorVars,
+            mapValues(backgroundColor, (color) => ({
+              brightness:
+                (color.light as { hover?: { brightness?: string } } | undefined)
+                  ?.hover?.brightness ?? '1',
+              contrast:
+                (color.light as { hover?: { contrast?: string } } | undefined)
+                  ?.hover?.contrast ?? '1',
+            })),
           ),
         },
       },
@@ -174,6 +191,17 @@ globalStyle(
               ),
             ),
           ),
+          ...assignVars(
+            hoverForBackgroundColorVars,
+            mapValues(backgroundColor, (color) => ({
+              brightness:
+                (color.dark as { hover?: { brightness?: string } } | undefined)
+                  ?.hover?.brightness ?? '1',
+              contrast:
+                (color.dark as { hover?: { contrast?: string } } | undefined)
+                  ?.hover?.contrast ?? '1',
+            })),
+          ),
         },
       },
     },
@@ -181,6 +209,6 @@ globalStyle(
 )
 
 export const colorModeProviderStyle = style({
-  backgroundColor: `rgb(${backgroundColorVars.body})`,
+  backgroundColor: `rgb(${backgroundColorVars['surface/primary']})`,
   color: `rgb(${inheritedColorVars.text})`,
 })

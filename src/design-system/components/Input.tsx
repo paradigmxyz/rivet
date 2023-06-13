@@ -26,23 +26,23 @@ export type InputProps = Omit<
 export const stylesForVariant = {
   solid: {
     backgroundColor: {
-      default: 'body / 0.5',
+      default: 'surface/primary/elevated',
     },
     borderColor: {
-      default: 'primary / 0.2',
-      hover: 'primary / 0.3',
-      focus: 'primary',
-      hoverfocus: 'primary',
+      default: 'surface/invert@0.2',
+      hover: 'surface/invert@0.3',
+      focus: 'surface/invert',
+      hoverfocus: 'surface/invert',
     },
   },
 } satisfies Record<InputVariant, BoxStyles>
 
 export const stylesForState = {
   warning: {
-    borderColor: 'yellow',
+    borderColor: 'surface/yellow',
   },
   error: {
-    borderColor: 'red',
+    borderColor: 'surface/red',
   },
 } satisfies Record<InputState, BoxStyles>
 

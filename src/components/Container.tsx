@@ -36,7 +36,7 @@ export function Container({
             <>
               <Box
                 alignItems='center'
-                backgroundColor='surface'
+                backgroundColor='surface/primary/elevated'
                 display='flex'
                 paddingHorizontal='12px'
                 width='full'
@@ -55,7 +55,7 @@ export function Container({
                   {dismissable && (
                     <Link to='..'>
                       <SFSymbol
-                        color='label'
+                        color='text/tertiary'
                         size='12px'
                         symbol='xmark'
                         weight='medium'

@@ -1,6 +1,6 @@
 import { createStyleObject as capsize } from '@capsizecss/core'
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
-import { mapKeys, mapValues } from 'remeda'
+import { mapValues } from 'remeda'
 
 import {
   backgroundColorVars,
@@ -38,10 +38,7 @@ const textProperties = defineProperties({
     color: {
       accent: `rgb(${inheritedColorVars.accent})`,
       text: `rgb(${inheritedColorVars.text})`,
-      ...mapValues(
-        mapKeys(backgroundColorVars, (key) => `background ${key}`),
-        (colorVar) => `rgb(${colorVar})`,
-      ),
+      ...mapValues(backgroundColorVars, (colorVar) => `rgb(${colorVar})`),
       ...mapValues(foregroundColorVars, (colorVar) => `rgb(${colorVar})`),
     },
     fontSize: {

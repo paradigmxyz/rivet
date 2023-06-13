@@ -15,15 +15,21 @@ export const buttonHeightStyles = styleVariants(buttonHeight, (height) => [
 export type ButtonKind = 'solid' | 'stroked' | 'tint'
 
 export const buttonVariants = [
-  'solid primary',
-  'solid body',
-  'solid red',
-  'solid green',
-  'stroked primary',
-  'stroked scrim',
-  'tint green',
-  'tint primary',
-  'tint red',
+  'solid surface/invert',
+  'solid surface/primary',
+  'solid surface/secondary/elevated',
+  'solid surface/fill/tertiary',
+  'solid surface/blue',
+  'solid surface/red',
+  'solid surface/green',
+  'stroked surface/fill',
+  'stroked surface/invert',
+  'stroked surface/blue',
+  'stroked surface/red',
+  'stroked surface/green',
+  'tint surface/blue',
+  'tint surface/green',
+  'tint surface/red',
 ] as const satisfies readonly `${ButtonKind} ${
   | BackgroundColor
   | ForegroundColor}`[]

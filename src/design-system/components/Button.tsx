@@ -45,65 +45,70 @@ const stylesForHeight = {
 } satisfies Record<ButtonHeight, BoxStyles>
 
 const stylesForVariant = {
-  'solid primary': {
-    backgroundColor: {
-      default: 'primary',
-      hover: 'primaryHover',
-    },
+  'solid surface/invert': {
+    backgroundColor: 'surface/invert',
   },
-  'solid body': {
-    backgroundColor: {
-      default: 'body',
-      hover: 'bodyHover',
-    },
+  'solid surface/primary': {
+    backgroundColor: 'surface/primary',
   },
-  'solid green': {
-    backgroundColor: {
-      default: 'green',
-      hover: 'greenHover',
-    },
+  'solid surface/secondary/elevated': {
+    backgroundColor: 'surface/secondary/elevated',
   },
-  'solid red': {
+  'solid surface/fill/tertiary': {
+    backgroundColor: 'surface/fill/tertiary',
+  },
+  'solid surface/blue': {
+    backgroundColor: 'surface/blue',
+  },
+  'solid surface/green': {
+    backgroundColor: 'surface/green',
+  },
+  'solid surface/red': {
+    backgroundColor: 'surface/red',
+    borderWidth: '1px',
+  },
+  'stroked surface/fill': {
     backgroundColor: {
-      default: 'red',
-      hover: 'redHover',
+      hover: 'surface/invert@0.02',
+    },
+    borderColor: 'surface/fill',
+    borderWidth: '1px',
+  },
+  'stroked surface/invert': {
+    backgroundColor: {
+      hover: 'surface/invert@0.05',
     },
     borderWidth: '1px',
   },
-  'stroked primary': {
+  'stroked surface/blue': {
     backgroundColor: {
-      hover: 'primary / 0.05',
+      hover: 'surface/blue@0.05',
     },
+    borderColor: 'surface/blue',
     borderWidth: '1px',
   },
-  'stroked scrim': {
+  'stroked surface/red': {
     backgroundColor: {
-      hover: 'primary / 0.02',
+      hover: 'surface/red@0.05',
     },
-    borderColor: 'scrim',
+    borderColor: 'surface/red',
     borderWidth: '1px',
   },
-  'tint green': {
+  'stroked surface/green': {
     backgroundColor: {
-      default: 'greenTint',
-      hover: 'greenTintHover',
+      hover: 'surface/green@0.05',
     },
+    borderColor: 'surface/green',
     borderWidth: '1px',
   },
-  'tint primary': {
-    backgroundColor: {
-      default: 'primary / 0.05',
-      hover: 'primary / 0.1',
-    },
-    borderColor: 'primary / 0.2',
-    borderWidth: '1px',
+  'tint surface/blue': {
+    backgroundColor: 'surface/blueTint',
   },
-  'tint red': {
-    backgroundColor: {
-      default: 'redTint',
-      hover: 'redTintHover',
-    },
-    borderWidth: '1px',
+  'tint surface/green': {
+    backgroundColor: 'surface/greenTint',
+  },
+  'tint surface/red': {
+    backgroundColor: 'surface/redTint',
   },
 } satisfies Record<ButtonVariant, BoxStyles>
 
@@ -116,13 +121,37 @@ const textStylesForHeight = {
   },
 } satisfies Record<ButtonHeight, { size: TextProps['size'] }>
 
+const textStylesForVariant = {
+  'solid surface/invert': {},
+  'solid surface/primary': {},
+  'solid surface/secondary/elevated': {},
+  'solid surface/fill/tertiary': {},
+  'solid surface/blue': {},
+  'solid surface/green': {},
+  'solid surface/red': {},
+  'stroked surface/fill': {},
+  'stroked surface/invert': {},
+  'stroked surface/blue': {
+    color: 'surface/blue',
+  },
+  'stroked surface/red': {
+    color: 'surface/red',
+  },
+  'stroked surface/green': {
+    color: 'surface/green',
+  },
+  'tint surface/blue': {},
+  'tint surface/green': {},
+  'tint surface/red': {},
+} satisfies Record<ButtonVariant, { color?: TextProps['color'] }>
+
 export function Button({
   as = 'button',
   children,
   height = '36px',
   href,
   onClick,
-  variant = 'solid primary',
+  variant = 'solid surface/invert',
   width = 'full',
 }: ButtonProps) {
   return (
@@ -135,6 +164,7 @@ export function Button({
       display='flex'
       alignItems='center'
       justifyContent='center'
+      hoverable
       width={width}
       transform={{
         hoveractive: 'shrink',
@@ -142,7 +172,9 @@ export function Button({
       {...stylesForVariant[variant]}
       {...stylesForHeight[height]}
     >
-      <Text {...textStylesForHeight[height]}>{children}</Text>
+      <Text {...textStylesForVariant[variant]} {...textStylesForHeight[height]}>
+        {children}
+      </Text>
     </Box>
   )
 }

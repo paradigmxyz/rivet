@@ -16,6 +16,7 @@ type PolymorphicBox = Polymorphic.ForwardRefComponent<
   'div',
   BoxStyles & {
     className?: ClassValue
+    hoverable?: boolean
     testId?: string
   }
 >
@@ -25,7 +26,7 @@ type PolymorphicBox = Polymorphic.ForwardRefComponent<
  * or when other layout primitives (such as: Rows, Inline, Columns, etc) are not sufficient.
  */
 export const Box = forwardRef(
-  ({ as: Component = 'div', className, testId, ...props }, ref) => {
+  ({ as: Component = 'div', className, hoverable, testId, ...props }, ref) => {
     const boxStyleProps: Record<string, unknown> = {}
     const restProps: Record<string, unknown> = {}
 
@@ -36,15 +37,18 @@ export const Box = forwardRef(
         restProps[key] = props[key as keyof typeof props]
       }
     }
+    if (hoverable) boxStyleProps.hover = 'translucent'
 
     const backgroundColor =
       typeof props.backgroundColor === 'string'
         ? props.backgroundColor
         : props.backgroundColor?.default
     const [baseBackgroundColor, opacity] = (backgroundColor || '').split(
-      ' / ',
+      '@',
     ) as [BackgroundColor, string]
-    const applyColorScheme = !opacity || parseFloat(opacity) > 0.5
+    const applyColorScheme =
+      backgroundColors[baseBackgroundColor] &&
+      (!opacity || parseFloat(opacity) > 0.5)
 
     const {
       scheme: accentColorScheme,
@@ -56,12 +60,12 @@ export const Box = forwardRef(
       if (!backgroundColor) return []
 
       const lightColorScheme =
-        backgroundColor === 'accent'
+        backgroundColor === 'accent' || !backgroundColors[baseBackgroundColor]
           ? accentColorScheme
           : backgroundColors[baseBackgroundColor][currentColorScheme.light]
               .scheme
       const darkColorScheme =
-        backgroundColor === 'accent'
+        backgroundColor === 'accent' || !backgroundColors[baseBackgroundColor]
           ? accentColorScheme
           : backgroundColors[baseBackgroundColor][currentColorScheme.dark]
               .scheme

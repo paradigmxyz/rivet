@@ -44,14 +44,18 @@ export function Header() {
     <Box style={{ height: '80px' }} width='full'>
       <Rows>
         <Row>
-          <Box borderColor='primary / 0.1' borderBottomWidth='1px' width='full'>
+          <Box
+            borderColor='separator/tertiary'
+            borderBottomWidth='1px'
+            width='full'
+          >
             <Columns>
               <Column width='content'>
                 <Link to='/' style={{ height: '100%' }}>
                   <Box
                     alignItems='center'
                     backgroundColor={{
-                      hover: 'primary / 0.05',
+                      hover: 'surface/fill/quarternary',
                     }}
                     display='flex'
                     justifyContent='center'
@@ -64,7 +68,7 @@ export function Header() {
               </Column>
               <Column width='content'>
                 <Box
-                  backgroundColor='primary / 0.1'
+                  backgroundColor='separator/tertiary'
                   height='full'
                   style={{ width: '1px' }}
                 />
@@ -75,7 +79,7 @@ export function Header() {
                     <Box
                       alignItems='center'
                       backgroundColor={{
-                        hover: 'primary / 0.05',
+                        hover: 'surface/fill/quarternary',
                       }}
                       display='flex'
                       height='full'
@@ -96,7 +100,7 @@ export function Header() {
               </Column>
               <Column width='content'>
                 <Box
-                  backgroundColor='primary / 0.1'
+                  backgroundColor='separator/tertiary'
                   height='full'
                   style={{ width: '1px' }}
                 />
@@ -106,7 +110,7 @@ export function Header() {
                   <Box
                     alignItems='center'
                     backgroundColor={{
-                      hover: 'primary / 0.05',
+                      hover: 'surface/fill/quarternary',
                     }}
                     display='flex'
                     height='full'
@@ -129,7 +133,7 @@ export function Header() {
               </Column>
               <Column width='content'>
                 <Box
-                  backgroundColor='primary / 0.1'
+                  backgroundColor='separator/tertiary'
                   height='full'
                   style={{ width: '1px' }}
                 />
@@ -139,7 +143,7 @@ export function Header() {
                   alignItems='center'
                   as='button'
                   backgroundColor={{
-                    hover: 'primary / 0.05',
+                    hover: 'surface/fill/quarternary',
                   }}
                   display='flex'
                   justifyContent='center'
@@ -158,11 +162,15 @@ export function Header() {
           </Box>
         </Row>
         <Row>
-          <Box borderColor='primary / 0.1' borderBottomWidth='1px' width='full'>
+          <Box
+            borderColor='separator/tertiary'
+            borderBottomWidth='1px'
+            width='full'
+          >
             <Link to='network' style={{ height: '100%' }}>
               <Box
                 backgroundColor={{
-                  hover: 'primary / 0.05',
+                  hover: 'surface/fill/quarternary',
                 }}
                 height='full'
                 paddingLeft='12px'
@@ -177,10 +185,10 @@ export function Header() {
                             <Box
                               backgroundColor={
                                 status === 'pending'
-                                  ? 'primary / 0.5'
+                                  ? 'surface/invert@0.5'
                                   : listening
-                                  ? 'green'
-                                  : 'red'
+                                  ? 'surface/green'
+                                  : 'surface/red'
                               }
                               borderWidth='1px'
                               borderRadius='round'
@@ -226,7 +234,7 @@ function HeaderItem({
 }: { children: ReactNode; label: string }) {
   return (
     <Stack gap='8px'>
-      <Text color='label' size='9px' wrap={false}>
+      <Text color='text/tertiary' size='9px' wrap={false}>
         {label.toUpperCase()}
       </Text>
       <Box>{children}</Box>

@@ -18,7 +18,7 @@ import { Box, Button, Inline, Input, Stack, Text } from '~/design-system'
 export default function App() {
   return (
     <Box
-      backgroundColor='body'
+      backgroundColor='surface/primary'
       marginHorizontal='auto'
       maxWidth='1152px'
       paddingTop='40px'

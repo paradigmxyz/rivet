@@ -47,7 +47,7 @@ export default function OnboardingCreateHosted() {
         header={
           <Inset vertical='20px'>
             <Stack gap='12px'>
-              <Text color='label' size='14px'>
+              <Text color='text/tertiary' size='14px'>
                 Setup
               </Text>
               <Text>Configure Options</Text>
@@ -58,7 +58,7 @@ export default function OnboardingCreateHosted() {
           <Stack gap='16px'>
             <Button height='44px'>Deploy node</Button>
             <Box paddingTop='4px' paddingBottom='12px'>
-              <Text color='label'>Cancel setup</Text>
+              <Text color='text/tertiary'>Cancel setup</Text>
             </Box>
           </Stack>
         }
@@ -66,7 +66,7 @@ export default function OnboardingCreateHosted() {
         <Stack gap='24px'>
           <Box style={{ position: 'relative' }}>
             <Stack gap='12px'>
-              <Text color='label' size='12px'>
+              <Text color='text/tertiary' size='12px'>
                 Name
               </Text>
               <Input {...register('name', { required: true })} />
@@ -88,19 +88,19 @@ export default function OnboardingCreateHosted() {
               <Separator />
             </Stack>
             <Stack gap='12px'>
-              <Text color='label' size='12px'>
+              <Text color='text/tertiary' size='12px'>
                 Chain ID
               </Text>
               <Input {...register('chainId')} />
             </Stack>
             <Stack gap='12px'>
-              <Text color='label' size='12px'>
+              <Text color='text/tertiary' size='12px'>
                 RPC URL
               </Text>
               <Input {...register('forkUrl')} />
             </Stack>
             <Stack gap='12px'>
-              <Text color='label' size='12px'>
+              <Text color='text/tertiary' size='12px'>
                 Block number
               </Text>
               <Input {...register('forkBlockNumber')} />

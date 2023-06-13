@@ -58,7 +58,7 @@ export default function Network() {
       >
         <Stack gap='20px'>
           <Stack gap='12px'>
-            <Text color='label' size='11px'>
+            <Text color='text/tertiary' size='11px'>
               Chain ID
             </Text>
             <Input
@@ -70,7 +70,7 @@ export default function Network() {
           </Stack>
           <Stack gap='8px'>
             <Stack gap='12px'>
-              <Text color='label' size='11px'>
+              <Text color='text/tertiary' size='11px'>
                 RPC URL
               </Text>
               <Input
@@ -80,14 +80,13 @@ export default function Network() {
               />
             </Stack>
             {isOffline && (
-              /* TODO: foreground yellow color */
-              <Text color='background yellow' size='11px'>
+              <Text color='surface/yellow' size='11px'>
                 Warning: Network is offline
               </Text>
             )}
           </Stack>
           <Stack gap='12px'>
-            <Text color='label' size='11px'>
+            <Text color='text/tertiary' size='11px'>
               Name
             </Text>
             <Input placeholder='Ethereum' {...register('name')} />

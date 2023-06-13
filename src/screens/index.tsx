@@ -24,11 +24,11 @@ export default function Index() {
       <Container fit header='Network'>
         <Stack gap='16px'>
           <AutoMining />
-          <Separator />
+          <Separator color='separator/quarternary' />
           <IntervalMining />
-          <Separator />
+          <Separator color='separator/quarternary' />
           <Mine />
-          <Separator />
+          <Separator color='separator/quarternary' />
           <Reset />
         </Stack>
       </Container>
@@ -42,8 +42,11 @@ function AutoMining() {
 
   return (
     <Stack gap='16px'>
-      <Text color='label'>Auto Mining</Text>
-      <Button onClick={() => setAutomine(!automining)} variant='tint primary'>
+      <Text color='text/tertiary'>Auto Mining</Text>
+      <Button
+        onClick={() => setAutomine(!automining)}
+        variant='solid surface/fill/tertiary'
+      >
         {automining ? 'Off' : 'On'}
       </Button>
     </Stack>
@@ -71,11 +74,11 @@ function IntervalMining() {
 
   return (
     <Stack gap='16px'>
-      <Text color='label'>Interval Mining</Text>
+      <Text color='text/tertiary'>Interval Mining</Text>
       <form onSubmit={submit}>
         <Inline gap='8px' wrap={false}>
           <Stack gap='12px' width='fit'>
-            <Text color='label' size='11px'>
+            <Text color='text/tertiary' size='11px'>
               Interval (s)
             </Text>
             <Input
@@ -85,16 +88,20 @@ function IntervalMining() {
           </Stack>
           <Stack gap='12px' width='fit'>
             {/* TODO: don't do this lol */}
-            <Text color='label' size='11px'>
+            <Text color='text/tertiary' size='11px'>
               {'‎'}
             </Text>
-            <Button type='submit' width='fit' variant='tint primary'>
+            <Button
+              type='submit'
+              width='fit'
+              variant='solid surface/fill/tertiary'
+            >
               Set
             </Button>
           </Stack>
         </Inline>
       </form>
-      <Button onClick={toggle} variant='tint primary'>
+      <Button onClick={toggle} variant='solid surface/fill/tertiary'>
         {network.blockTime > 0 ? 'Pause' : 'Continue'}
       </Button>
     </Stack>
@@ -127,11 +134,11 @@ function Mine() {
 
   return (
     <Stack gap='16px'>
-      <Text color='label'>Mine Blocks</Text>
+      <Text color='text/tertiary'>Mine Blocks</Text>
       <form onSubmit={submit}>
         <Inline gap='8px' wrap={false}>
           <Stack gap='12px' width='fit'>
-            <Text color='label' size='11px'>
+            <Text color='text/tertiary' size='11px'>
               Blocks
             </Text>
             <Input
@@ -140,7 +147,7 @@ function Mine() {
             />
           </Stack>
           <Stack gap='12px' width='fit'>
-            <Text color='label' size='11px'>
+            <Text color='text/tertiary' size='11px'>
               Interval (s)
             </Text>
             <Input
@@ -150,10 +157,14 @@ function Mine() {
           </Stack>
           <Stack gap='12px' width='fit'>
             {/* TODO: don't do this lol */}
-            <Text color='label' size='11px'>
+            <Text color='text/tertiary' size='11px'>
               {'‎'}
             </Text>
-            <Button type='submit' width='fit' variant='tint primary'>
+            <Button
+              type='submit'
+              width='fit'
+              variant='solid surface/fill/tertiary'
+            >
               Mine
             </Button>
           </Stack>
@@ -179,7 +190,7 @@ function Reset() {
   })
 
   return (
-    <Button onClick={() => reset()} variant='tint primary'>
+    <Button onClick={() => reset()} variant='solid surface/fill/tertiary'>
       Reset
     </Button>
   )

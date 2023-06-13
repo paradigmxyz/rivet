@@ -22,7 +22,7 @@ export function BrandIcon({ size }: { size: `${number}px` }) {
         cx={14.658}
         cy={14.342}
         r={6.462}
-        fill={`rgb(${backgroundColorVars.surface})`}
+        fill={`rgb(${backgroundColorVars['surface/primary/elevated']})`}
       />
       <Box as='circle' cx={14.658} cy={14.342} r={3.31} fill='currentColor' />
     </Box>

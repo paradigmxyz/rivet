@@ -8,7 +8,7 @@ export type SeparatorProps = {
 }
 
 export function Separator({
-  color = 'primary / 0.1',
+  color = 'separator/tertiary',
   strokeWeight = '1px',
 }: SeparatorProps) {
   return (

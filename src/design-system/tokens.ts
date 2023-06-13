@@ -1,265 +1,330 @@
-import * as globalColors from '@radix-ui/colors'
-
 export type Theme = 'light' | 'dark'
 export type ColorScheme = 'light' | 'dark'
 
 export type BackgroundColorValue = Record<
   Theme,
-  { value: string; scheme: ColorScheme; border?: string; text?: string }
+  {
+    value: string
+    scheme: ColorScheme
+    border?: string
+    text?: string
+    hover?: {
+      brightness?: string
+      contrast?: string
+    }
+  }
 >
 export const backgroundColor = {
-  body: {
+  'surface/primary': {
     light: {
-      value: globalColors.gray.gray3,
+      value: '#f5f5f5',
       scheme: 'light',
-      border: globalColors.gray.gray5,
-      text: globalColors.grayDark.gray1,
+      hover: {
+        brightness: '0.98',
+      },
     },
     dark: {
-      value: globalColors.grayDark.gray1,
+      value: '#000000',
       scheme: 'dark',
-      border: globalColors.grayDark.gray2,
-      text: globalColors.gray.gray1,
+      hover: {
+        contrast: '0.85',
+      },
     },
   },
-  bodyHover: {
+  'surface/primary/elevated': {
     light: {
-      value: globalColors.gray.gray4,
+      value: '#FFFFFF',
       scheme: 'light',
-      border: globalColors.gray.gray5,
-      text: globalColors.grayDark.gray1,
+      hover: {
+        brightness: '0.98',
+      },
     },
     dark: {
-      value: globalColors.grayDark.gray2,
+      value: '#191A1C',
       scheme: 'dark',
-      border: globalColors.grayDark.gray2,
-      text: globalColors.gray.gray1,
+      hover: {
+        contrast: '0.95',
+      },
     },
   },
-  surface: {
+  'surface/secondary': {
     light: {
-      value: globalColors.gray.gray1,
+      value: '#F0F1F5',
       scheme: 'light',
+      hover: {
+        brightness: '0.98',
+      },
     },
     dark: {
-      value: globalColors.grayDark.gray3,
+      value: '#1B1C1E',
       scheme: 'dark',
-      border: globalColors.grayDark.gray4,
+      hover: {
+        contrast: '0.85',
+      },
     },
   },
-  surfaceHover: {
+  'surface/secondary/elevated': {
     light: {
-      value: globalColors.gray.gray2,
+      value: '#FFFFFF',
       scheme: 'light',
+      hover: {
+        brightness: '0.98',
+      },
     },
     dark: {
-      value: globalColors.grayDark.gray4,
+      value: '#222324',
       scheme: 'dark',
-      border: globalColors.grayDark.gray4,
+      hover: {
+        contrast: '0.85',
+      },
     },
   },
-  primary: {
+  'surface/fill': {
     light: {
-      value: globalColors.slateDark.slate1,
-      scheme: 'dark',
-      border: globalColors.slateDark.slate8,
+      value: '#D9DBDF',
+      scheme: 'light',
+      hover: {
+        brightness: '0.98',
+      },
     },
     dark: {
-      value: globalColors.slate.slate1,
-      scheme: 'light',
-      border: globalColors.slate.slate4,
+      value: '#44474B',
+      scheme: 'dark',
+      hover: {
+        contrast: '0.85',
+      },
     },
   },
-  primaryHover: {
+  'surface/fill/secondary': {
     light: {
-      value: globalColors.slateDark.slate4,
-      scheme: 'dark',
-      border: globalColors.slateDark.slate8,
+      value: '#E4E6EA',
+      scheme: 'light',
+      hover: {
+        brightness: '0.98',
+      },
     },
     dark: {
-      value: globalColors.slate.slate4,
-      scheme: 'light',
-      border: globalColors.slate.slate4,
+      value: '#3E3F43',
+      scheme: 'dark',
+      hover: {
+        contrast: '0.85',
+      },
     },
   },
-  black: {
+  'surface/fill/tertiary': {
+    light: {
+      value: '#ececec',
+      scheme: 'light',
+      hover: {
+        brightness: '0.98',
+      },
+    },
+    dark: {
+      value: '#2e2f30',
+      scheme: 'dark',
+      hover: {
+        contrast: '0.95',
+      },
+    },
+  },
+  'surface/fill/quarternary': {
+    light: {
+      value: '#f9f9f9',
+      scheme: 'light',
+      hover: {
+        brightness: '0.98',
+      },
+    },
+    dark: {
+      value: '#212224',
+      scheme: 'dark',
+      hover: {
+        contrast: '0.95',
+      },
+    },
+  },
+  'surface/blue': {
+    light: {
+      value: '#3374F4',
+      scheme: 'dark',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+    dark: {
+      value: '#3898FE',
+      scheme: 'dark',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+  },
+  'surface/blueTint': {
+    light: {
+      value: '#d6e4f1',
+      scheme: 'light',
+      text: '#0165d1',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+    dark: {
+      value: '#0f3058',
+      scheme: 'dark',
+      text: '#4fa1f2',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+  },
+  'surface/green': {
+    light: {
+      value: '#2a9764',
+      scheme: 'dark',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+    dark: {
+      value: '#30a46c',
+      scheme: 'dark',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+  },
+  'surface/greenTint': {
+    light: {
+      value: '#ddf3e4',
+      scheme: 'light',
+      text: '#2a9764',
+      hover: {
+        brightness: '0.98',
+      },
+    },
+    dark: {
+      value: '#123929',
+      scheme: 'dark',
+      text: '#8cdeb7',
+      hover: {
+        brightness: '0.9',
+      },
+    },
+  },
+  'surface/red': {
+    light: {
+      value: '#dc3d43',
+      scheme: 'dark',
+      hover: {
+        brightness: '0.98',
+      },
+    },
+    dark: {
+      value: '#f2555a',
+      scheme: 'dark',
+      hover: {
+        brightness: '0.9',
+      },
+    },
+  },
+  'surface/redTint': {
+    light: {
+      value: '#ffe5e4',
+      scheme: 'light',
+      text: '#dc3d43',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+    dark: {
+      value: '#541b1e',
+      scheme: 'dark',
+      text: '#ffb2b5',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+  },
+  'surface/yellow': {
+    light: {
+      value: '#F9D24A',
+      scheme: 'light',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+    dark: {
+      value: '#FFDF3C',
+      scheme: 'light',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+  },
+  'surface/yellowTint': {
+    light: {
+      value: '#fff8bb',
+      scheme: 'light',
+      text: '#ae8b3a',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+    dark: {
+      value: '#3e3000',
+      scheme: 'dark',
+      text: '#efc000',
+      hover: {
+        brightness: '0.95',
+      },
+    },
+  },
+  'surface/invert': {
     light: {
       value: 'black',
       scheme: 'dark',
+      hover: {
+        contrast: '0.7',
+      },
     },
     dark: {
-      value: 'black',
-      scheme: 'dark',
+      value: 'white',
+      scheme: 'light',
+      hover: {
+        brightness: '0.95',
+      },
     },
   },
-  blackHover: {
-    light: {
-      value: 'black',
-      scheme: 'dark',
-    },
-    dark: {
-      value: globalColors.grayDark.gray2,
-      scheme: 'dark',
-    },
-  },
-  white: {
+  'surface/white': {
     light: {
       value: 'white',
       scheme: 'light',
+      hover: {
+        brightness: '0.98',
+      },
     },
     dark: {
       value: 'white',
       scheme: 'light',
+      hover: {
+        brightness: '0.95',
+      },
     },
   },
-  whiteHover: {
+  'surface/black': {
     light: {
-      value: globalColors.gray.gray1,
-      scheme: 'light',
-    },
-    dark: {
-      value: globalColors.gray.gray4,
-      scheme: 'light',
-    },
-  },
-  red: {
-    light: {
-      value: globalColors.red.red10,
-      scheme: 'light',
-      text: globalColors.red.red2,
-      border: globalColors.red.red11,
-    },
-    dark: {
-      value: globalColors.redDark.red10,
-      scheme: 'light',
-      text: globalColors.red.red2,
-      border: globalColors.redDark.red11,
-    },
-  },
-  redHover: {
-    light: {
-      value: globalColors.red.red9,
-      scheme: 'light',
-      text: globalColors.red.red2,
-      border: globalColors.red.red11,
-    },
-    dark: {
-      value: globalColors.redDark.red10,
-      scheme: 'light',
-      text: globalColors.red.red2,
-      border: globalColors.redDark.red11,
-    },
-  },
-  redTint: {
-    light: {
-      value: globalColors.red.red4,
-      scheme: 'light',
-      text: globalColors.red.red10,
-      border: globalColors.red.red6,
-    },
-    dark: {
-      value: globalColors.redDark.red5,
+      value: 'black',
       scheme: 'dark',
-      text: globalColors.red.red9,
-      border: globalColors.redDark.red7,
-    },
-  },
-  redTintHover: {
-    light: {
-      value: globalColors.red.red5,
-      scheme: 'light',
-      text: globalColors.red.red10,
-      border: globalColors.red.red6,
+      hover: {
+        contrast: '0.7',
+      },
     },
     dark: {
-      value: globalColors.redDark.red6,
+      value: 'black',
       scheme: 'dark',
-      text: globalColors.red.red9,
-      border: globalColors.redDark.red7,
-    },
-  },
-  green: {
-    light: {
-      value: globalColors.green.green10,
-      scheme: 'light',
-      text: globalColors.green.green2,
-      border: globalColors.greenA.greenA9,
-    },
-    dark: {
-      value: globalColors.greenDark.green9,
-      scheme: 'light',
-      text: globalColors.green.green2,
-      border: globalColors.greenDark.green11,
-    },
-  },
-  greenHover: {
-    light: {
-      value: globalColors.green.green9,
-      scheme: 'light',
-      text: globalColors.green.green2,
-      border: globalColors.greenA.greenA9,
-    },
-    dark: {
-      value: globalColors.greenDark.green10,
-      scheme: 'light',
-      text: globalColors.green.green2,
-      border: globalColors.greenDark.green11,
-    },
-  },
-  greenTint: {
-    light: {
-      value: globalColors.green.green4,
-      scheme: 'light',
-      text: globalColors.green.green10,
-      border: globalColors.green.green6,
-    },
-    dark: {
-      value: globalColors.greenDark.green5,
-      scheme: 'dark',
-      text: globalColors.greenDark.green11,
-      border: globalColors.greenDark.green8,
-    },
-  },
-  greenTintHover: {
-    light: {
-      value: globalColors.green.green5,
-      scheme: 'light',
-      text: globalColors.green.green10,
-      border: globalColors.green.green6,
-    },
-    dark: {
-      value: globalColors.greenDark.green6,
-      scheme: 'dark',
-      text: globalColors.greenDark.green11,
-      border: globalColors.greenDark.green8,
-    },
-  },
-  yellow: {
-    light: {
-      value: globalColors.yellowDark.yellow11,
-      scheme: 'light',
-      text: globalColors.yellow.yellow12,
-      border: globalColors.yellowDark.yellow11,
-    },
-    dark: {
-      value: globalColors.yellowDark.yellow11,
-      scheme: 'light',
-      text: globalColors.yellow.yellow12,
-      border: globalColors.yellowDark.yellow11,
-    },
-  },
-  yellowTint: {
-    light: {
-      value: globalColors.yellow.yellow4,
-      scheme: 'light',
-      text: globalColors.yellow.yellow11,
-      border: globalColors.yellow.yellow6,
-    },
-    dark: {
-      value: globalColors.yellowDark.yellow5,
-      scheme: 'dark',
-      text: globalColors.yellowDark.yellow11,
-      border: globalColors.yellowDark.yellow7,
+      hover: {
+        contrast: '0.85',
+      },
     },
   },
 } as const satisfies Record<string, BackgroundColorValue>
@@ -267,13 +332,45 @@ export type BackgroundColor = keyof typeof backgroundColor
 
 export type ForegroundColorValue = Record<ColorScheme, string>
 export const foregroundColor = {
-  label: {
-    light: globalColors.gray.gray11,
-    dark: globalColors.grayDark.gray11,
+  'separator/primary': {
+    light: '#000000',
+    dark: '#ffffff',
   },
-  scrim: {
-    light: globalColors.blackA.blackA5,
-    dark: globalColors.grayDark.gray8,
+  'separator/secondary': {
+    light: '#202020',
+    dark: '#9f9f9f',
+  },
+  'separator/tertiary': {
+    light: '#E4E5E9',
+    dark: '#3C3F43',
+  },
+  'separator/quarternary': {
+    light: '#F1F2F6',
+    dark: '#2B2C2F',
+  },
+  'stroke/primary': {
+    light: '#E4E5E9',
+    dark: '#3C3F43',
+  },
+  'stroke/secondary': {
+    light: '#F1F2F6',
+    dark: '#2B2C2F',
+  },
+  'text/primary': {
+    light: '#000000',
+    dark: '#FFFFFF',
+  },
+  'text/secondary': {
+    light: '#5B5C5F',
+    dark: '#C2C5CB',
+  },
+  'text/tertiary': {
+    light: '#848789',
+    dark: '#9A9BA1',
+  },
+  'text/quarternary': {
+    light: '#A3A4A8',
+    dark: '#78797E',
   },
 } as const satisfies Record<string, ForegroundColorValue>
 export type ForegroundColor = keyof typeof foregroundColor
@@ -281,16 +378,16 @@ export type ForegroundColor = keyof typeof foregroundColor
 export type DefaultInheritedColorValue = Record<ColorScheme, string>
 export const defaultInheritedColor = {
   accent: {
-    light: backgroundColor.primary.light.value,
-    dark: backgroundColor.primary.dark.value,
+    light: backgroundColor['surface/invert'].light.value,
+    dark: backgroundColor['surface/invert'].dark.value,
   },
   border: {
-    light: backgroundColor.body.light.border,
-    dark: backgroundColor.body.dark.border,
+    light: foregroundColor['stroke/primary'].light,
+    dark: foregroundColor['stroke/primary'].dark,
   },
   text: {
-    light: backgroundColor.body.light.text,
-    dark: backgroundColor.body.dark.text,
+    light: foregroundColor['text/primary'].light,
+    dark: foregroundColor['text/primary'].dark,
   },
 } as const satisfies Record<string, DefaultInheritedColorValue>
 export type InheritedColor = keyof typeof defaultInheritedColor
