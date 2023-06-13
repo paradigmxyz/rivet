@@ -193,20 +193,6 @@ function DesignSystem() {
                   </Box>
                 </Box>
               </Box>
-              <Box
-                backgroundColor='surface/red'
-                borderWidth='1px'
-                padding='8px'
-              >
-                <Text>Red Context</Text>
-              </Box>
-              <Box
-                backgroundColor='surface/redTint'
-                borderWidth='1px'
-                padding='8px'
-              >
-                <Text>Red Tint Context</Text>
-              </Box>
             </Stack>
             <Stack gap='16px'>
               <Text weight='medium' size='18px'>

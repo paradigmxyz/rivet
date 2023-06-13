@@ -26,7 +26,10 @@ type PolymorphicBox = Polymorphic.ForwardRefComponent<
  * or when other layout primitives (such as: Rows, Inline, Columns, etc) are not sufficient.
  */
 export const Box = forwardRef(
-  ({ as: Component = 'div', className, hoverable, testId, ...props }, ref) => {
+  (
+    { as: Component = 'div', className, hoverable, style, testId, ...props },
+    ref,
+  ) => {
     const boxStyleProps: Record<string, unknown> = {}
     const restProps: Record<string, unknown> = {}
 
@@ -47,7 +50,7 @@ export const Box = forwardRef(
       '@',
     ) as [BackgroundColor, string]
     const applyColorScheme =
-      backgroundColors[baseBackgroundColor] &&
+      (backgroundColor === 'accent' || backgroundColors[baseBackgroundColor]) &&
       (!opacity || parseFloat(opacity) > 0.5)
 
     const {
@@ -87,6 +90,7 @@ export const Box = forwardRef(
 
     const el = (
       <Component
+        {...restProps}
         ref={ref}
         className={clsx(
           resetBase,
@@ -101,8 +105,8 @@ export const Box = forwardRef(
         style={{
           ...accentColorStyle,
           ...(backgroundColor === 'accent' && accentForegroundStyle),
+          ...(style || {}),
         }}
-        {...restProps}
       />
     )
 
