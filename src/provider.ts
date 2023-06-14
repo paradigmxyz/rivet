@@ -1,7 +1,11 @@
 import { EventEmitter } from 'eventemitter3'
 import { type EIP1193Provider, UnknownRpcError } from 'viem'
 
-import { ProviderDisconnectedError, UserRejectedRequestError } from '~/errors'
+import {
+  ProviderDisconnectedError,
+  UnsupportedProviderMethodError,
+  UserRejectedRequestError,
+} from '~/errors'
 import type { Messenger } from '~/messengers'
 import type { RpcRequest } from '~/messengers/schema'
 
@@ -63,6 +67,8 @@ export function getProvider({
       if (error) {
         if (error.code === UserRejectedRequestError.code)
           throw new UserRejectedRequestError(error)
+        if (error.code === UnsupportedProviderMethodError.code)
+          throw new UnsupportedProviderMethodError(error)
         throw new UnknownRpcError(error)
       }
       return result

@@ -41,4 +41,11 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
         matches: ['*://*/*'],
       },
     ],
+    commands: {
+      'toggle-theme': {
+        // @ts-expect-error
+        suggested_key: 'Ctrl+Shift+Y',
+        description: 'Toggle Theme',
+      },
+    },
   }) satisfies chrome.runtime.Manifest

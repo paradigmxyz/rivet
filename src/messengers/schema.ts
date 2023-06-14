@@ -25,6 +25,7 @@ export type Schema = {
     payload: { request: RpcRequest; rpcUrl?: string },
     response: RpcResponse,
   ]
+  toggleTheme: [payload: void, response: void]
   toggleWallet: [
     payload:
       | { open: boolean; useStorage?: never }

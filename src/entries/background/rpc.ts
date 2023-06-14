@@ -9,7 +9,10 @@ import {
 } from 'viem'
 import { type RpcResponse, rpc } from 'viem/utils'
 
-import { UserRejectedRequestError } from '~/errors'
+import {
+  UnsupportedProviderMethodError,
+  UserRejectedRequestError,
+} from '~/errors'
 import { getMessenger } from '~/messengers'
 import { buildChain } from '~/viem'
 import {
@@ -70,6 +73,16 @@ export function setupRpcHandler() {
   inpageMessenger.reply('request', async ({ request, rpcUrl }, meta) => {
     const isInpage = !meta.sender.frameId || meta.sender.frameId === 0
     const rpcClient = getRpcClient({ rpcUrl })
+
+    if (!rpcUrl)
+      return {
+        id: request.id,
+        jsonrpc: '2.0',
+        error: {
+          code: UnsupportedProviderMethodError.code,
+          message: 'Dev Wallet has not been onboarded.',
+        },
+      } as RpcResponse
 
     // If the method is a "signable" method, request approval from the user.
     if (

@@ -16,4 +16,4 @@ export { Stack } from './components/Stack'
 export { Text } from './components/Text'
 
 export { initializeTheme } from './utils/initializeTheme'
-export { getTheme } from './utils/theme'
+export { getTheme, setTheme } from './utils/theme'

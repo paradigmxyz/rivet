@@ -15,7 +15,7 @@ export default function OnboardingDeployHosted() {
   const params = qs.parse(window.location.hash.split('?')[1])
 
   const { data } = useQuery<any>({
-    queryKey: ['deploya', params],
+    queryKey: ['deploy', params],
     queryFn: async () => {
       const res = await (
         await fetch('https://forked.network/api/instances', {
@@ -54,8 +54,6 @@ export default function OnboardingDeployHosted() {
       navigate('/')
     }
   }, [online])
-
-  console.log(online)
 
   return (
     <Container

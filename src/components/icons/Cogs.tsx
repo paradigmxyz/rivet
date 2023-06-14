@@ -1,4 +1,5 @@
 import { backgroundColorVars } from '../../design-system/styles/theme.css'
+import * as styles from './Cogs.css'
 import { Box } from '~/design-system'
 
 export function Cogs({ size }: { size: string }) {
@@ -13,6 +14,7 @@ export function Cogs({ size }: { size: string }) {
       }}
     >
       <Box
+        className={styles.spin}
         as='path'
         fill={`rgb(${backgroundColorVars['surface/invert']})`}
         d='m137 172 15.588 9v18L137 208l-15.588-9v-18L137 172Z'
@@ -31,7 +33,14 @@ export function Cogs({ size }: { size: string }) {
         r={4.109}
         fill={`rgb(${backgroundColorVars['surface/invert']})`}
       />
-      <Box as='g' style={{ opacity: 0.05 }}>
+      <Box
+        as='g'
+        className={styles.float}
+        style={{
+          opacity: 0.05,
+          animationDirection: 'reverse',
+        }}
+      >
         <Box
           as='path'
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
@@ -52,7 +61,11 @@ export function Cogs({ size }: { size: string }) {
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
         />
       </Box>
-      <Box as='g' style={{ opacity: 0.05 }}>
+      <Box
+        as='g'
+        className={styles.float}
+        style={{ opacity: 0.05, animationDelay: '2' }}
+      >
         <Box
           as='path'
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
@@ -73,7 +86,15 @@ export function Cogs({ size }: { size: string }) {
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
         />
       </Box>
-      <Box as='g' style={{ opacity: 0.05 }}>
+      <Box
+        as='g'
+        className={styles.float}
+        style={{
+          opacity: 0.05,
+          animationDelay: '1',
+          animationDirection: 'reverse',
+        }}
+      >
         <Box
           as='path'
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
@@ -94,7 +115,11 @@ export function Cogs({ size }: { size: string }) {
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
         />
       </Box>
-      <Box as='g' style={{ opacity: 0.05 }}>
+      <Box
+        as='g'
+        className={styles.float}
+        style={{ opacity: 0.05, animationDelay: '4' }}
+      >
         <Box
           as='path'
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
@@ -115,7 +140,15 @@ export function Cogs({ size }: { size: string }) {
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
         />
       </Box>
-      <Box as='g' style={{ opacity: 0.05 }}>
+      <Box
+        as='g'
+        className={styles.float}
+        style={{
+          opacity: 0.05,
+          animationDelay: '1',
+          animationDirection: 'reverse',
+        }}
+      >
         <Box
           as='path'
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
@@ -136,7 +169,11 @@ export function Cogs({ size }: { size: string }) {
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
         />
       </Box>
-      <Box as='g' style={{ opacity: 0.05 }}>
+      <Box
+        as='g'
+        className={styles.float}
+        style={{ opacity: 0.05, animationDelay: '3' }}
+      >
         <Box
           as='path'
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
@@ -157,7 +194,15 @@ export function Cogs({ size }: { size: string }) {
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
         />
       </Box>
-      <Box as='g' style={{ opacity: 0.05 }}>
+      <Box
+        as='g'
+        className={styles.float}
+        style={{
+          opacity: 0.05,
+          animationDelay: '4',
+          animationDirection: 'reverse',
+        }}
+      >
         <Box
           as='path'
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
@@ -178,7 +223,11 @@ export function Cogs({ size }: { size: string }) {
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
         />
       </Box>
-      <Box as='g' style={{ opacity: 0.05 }}>
+      <Box
+        as='g'
+        className={styles.float}
+        style={{ opacity: 0.05, animationDelay: '2' }}
+      >
         <Box
           as='path'
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
@@ -199,7 +248,15 @@ export function Cogs({ size }: { size: string }) {
           fill={`rgb(${backgroundColorVars['surface/invert']})`}
         />
       </Box>
-      <Box as='g' style={{ opacity: 0.05 }}>
+      <Box
+        as='g'
+        className={styles.float}
+        style={{
+          opacity: 0.05,
+          animationDelay: '3',
+          animationDirection: 'reverse',
+        }}
+      >
         <Box
           as='path'
           fill={`rgb(${backgroundColorVars['surface/invert']})`}

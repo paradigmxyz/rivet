@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client'
 import { RouterProvider, createHashRouter } from 'react-router-dom'
 import { numberToHex } from 'viem'
 
+import { getTheme, setTheme } from '~/design-system'
 import '~/design-system/styles/global.css'
 import { useBlockNumber, useNetworkStatus, useWalletClient } from '~/hooks'
 import { getMessenger } from '~/messengers'
@@ -70,6 +71,14 @@ const router = createHashRouter([
     ],
   },
 ])
+
+// Handle requests from background to toggle the theme.
+const backgroundMessenger = getMessenger({ connection: 'background <> wallet' })
+backgroundMessenger.reply('toggleTheme', async () => {
+  const { storageTheme, systemTheme } = getTheme()
+  const theme = storageTheme || systemTheme
+  setTheme(theme === 'dark' ? 'light' : 'dark')
+})
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <QueryClientProvider>

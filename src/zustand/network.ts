@@ -32,9 +32,9 @@ export type NetworkStore = NetworkState & NetworkActions
 const defaultRpcUrl = defaultChain.rpcUrls.default.http[0]
 const defaultNetwork = {
   blockTime: 0,
-  chainId: defaultChain.id,
-  name: defaultChain.name,
-  rpcUrl: defaultRpcUrl,
+  chainId: 0,
+  name: '',
+  rpcUrl: '',
 } satisfies Network
 
 export const networkStore = createStore<NetworkStore>(
