@@ -21,6 +21,9 @@ devDependencies:
   '@radix-ui/react-polymorphic':
     specifier: ^0.0.14
     version: 0.0.14(react@18.2.0)
+  '@radix-ui/react-progress':
+    specifier: ^1.0.3
+    version: 1.0.3(@types/react-dom@18.0.11)(@types/react@18.0.32)(react-dom@18.2.0)(react@18.2.0)
   '@samrum/vite-plugin-web-extension':
     specifier: ^4.1.0
     version: 4.1.0(patch_hash=blhk2ionup5caiiqs4b7rh47wy)(vite@4.3.0)
@@ -1258,6 +1261,28 @@ packages:
     dependencies:
       '@babel/runtime': 7.21.0
       '@radix-ui/react-slot': 1.0.2(@types/react@18.0.32)(react@18.2.0)
+      '@types/react': 18.0.32
+      '@types/react-dom': 18.0.11
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: true
+
+  /@radix-ui/react-progress@1.0.3(@types/react-dom@18.0.11)(@types/react@18.0.32)(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-5G6Om/tYSxjSeEdrb1VfKkfZfn/1IlPWd731h2RfPuSbIfNUgfqAwbKfJCg/PP6nuUCTrYzalwHSpSinoWoCag==}
+    peerDependencies:
+      '@types/react': '*'
+      '@types/react-dom': '*'
+      react: ^16.8 || ^17.0 || ^18.0
+      react-dom: ^16.8 || ^17.0 || ^18.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      '@types/react-dom':
+        optional: true
+    dependencies:
+      '@babel/runtime': 7.21.0
+      '@radix-ui/react-context': 1.0.1(@types/react@18.0.32)(react@18.2.0)
+      '@radix-ui/react-primitive': 1.0.3(@types/react-dom@18.0.11)(@types/react@18.0.32)(react-dom@18.2.0)(react@18.2.0)
       '@types/react': 18.0.32
       '@types/react-dom': 18.0.11
       react: 18.2.0
