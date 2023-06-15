@@ -11,6 +11,7 @@ import { Text, type TextProps } from './Text'
 
 type ButtonProps = {
   children: string | React.ReactNode
+  disabled?: boolean
   height?: ButtonHeight
   width?: 'fit' | 'full'
   variant?: ButtonVariant
@@ -143,6 +144,7 @@ const textStylesForVariant = {
 export function Button({
   as = 'button',
   children,
+  disabled,
   height = '36px',
   href,
   onClick,
@@ -154,16 +156,22 @@ export function Button({
       as={as}
       href={href}
       onClick={onClick}
+      disabled={disabled}
       className={buttonHeightStyles[height]}
-      cursor='pointer'
+      cursor={disabled ? 'not-allowed' : 'pointer'}
       display='flex'
       alignItems='center'
       justifyContent='center'
-      hoverable
+      hoverable={!disabled}
+      opacity={disabled ? '0.5' : undefined}
       width={width}
-      transform={{
-        hoveractive: 'shrink',
-      }}
+      transform={
+        disabled
+          ? {}
+          : {
+              hoveractive: 'shrink',
+            }
+      }
       {...stylesForVariant[variant]}
       {...stylesForHeight[height]}
     >

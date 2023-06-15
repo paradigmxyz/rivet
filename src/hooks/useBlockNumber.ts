@@ -1,9 +1,12 @@
 import { useQuery } from '@tanstack/react-query'
 
+import { useNetwork } from '~/zustand'
+
 import { useNetworkStatus } from './useNetworkStatus'
 import { usePublicClient } from './usePublicClient'
 
 export function useBlockNumberQueryOptions() {
+  const { network } = useNetwork()
   const { data: chainId } = useNetworkStatus()
   const publicClient = usePublicClient()
   return {
@@ -13,8 +16,7 @@ export function useBlockNumberQueryOptions() {
       return (await publicClient.getBlockNumber({ maxAge: 0 })) || null
     },
     gcTime: 0,
-    // TODO: configure based on interval mining config.
-    refetchInterval: 1_000,
+    refetchInterval: network.blockTime * 1_000 || 4_000,
   }
 }
 

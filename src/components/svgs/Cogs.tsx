@@ -10,7 +10,7 @@ export function Cogs({ size }: { size: string }) {
       viewBox='0 0 244 263'
       style={{
         height: size,
-        width: size,
+        maxWidth: size,
       }}
     >
       <Box

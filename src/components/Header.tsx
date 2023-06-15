@@ -1,6 +1,7 @@
 import { type ReactNode, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 
+import { BrandIcon } from '~/components/svgs'
 import {
   Box,
   Column,
@@ -16,7 +17,6 @@ import {
 import { useBlockNumber, useHost, useNetworkStatus } from '~/hooks'
 import { useAccount, useNetwork, useSessions } from '~/zustand'
 
-import { BrandIcon } from '../components/icons/BrandIcon'
 import { getMessenger } from '../messengers'
 
 const contentMessenger = getMessenger({ connection: 'wallet <> contentScript' })

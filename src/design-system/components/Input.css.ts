@@ -1,6 +1,6 @@
 import { style, styleVariants } from '@vanilla-extract/css'
 
-import { inheritedColorVars } from '../styles/theme.css'
+import { backgroundColorVars, inheritedColorVars } from '../styles/theme.css'
 
 export const backgroundStyle = style({
   transition: 'border-color 100ms ease',
@@ -26,5 +26,13 @@ export const heightStyles = styleVariants(inputHeights, (height) => [
 export const placeholderStyle = style({
   '::placeholder': {
     color: `rgb(${inheritedColorVars.text} / 0.2)`,
+  },
+})
+
+export const invalidStyle = style({
+  selectors: {
+    '&[data-invalid="true"]': {
+      borderColor: `rgb(${backgroundColorVars['surface/red']})`,
+    },
   },
 })

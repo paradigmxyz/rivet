@@ -356,6 +356,27 @@ function DesignSystem() {
                 </Button>
               </Box>
             </Stack>
+            <Stack gap='16px'>
+              <Text weight='medium' size='18px'>
+                Disabled
+              </Text>
+              <Box display='flex' gap='8px'>
+                <Button disabled height='44px' width='fit'>
+                  Button
+                </Button>
+                <Button
+                  disabled
+                  variant='stroked invert'
+                  height='44px'
+                  width='fit'
+                >
+                  Button
+                </Button>
+                <Button disabled variant='tint green' height='44px' width='fit'>
+                  Button
+                </Button>
+              </Box>
+            </Stack>
           </Stack>
         </Box>
         <Box
@@ -469,6 +490,11 @@ function DesignSystem() {
               Input
             </Text>
             <Input placeholder='Enter your email...' />
+            <Input
+              data-invalid
+              defaultValue='invalid value'
+              placeholder='Enter your email...'
+            />
           </Stack>
         </Box>
         <Box

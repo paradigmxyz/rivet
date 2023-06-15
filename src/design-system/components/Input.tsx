@@ -8,6 +8,7 @@ import {
   type InputVariant,
   backgroundStyle,
   heightStyles,
+  invalidStyle,
   placeholderStyle,
 } from './Input.css'
 import { type TextStyles, textStyles } from './Text.css'
@@ -78,10 +79,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         className={[
           backgroundStyle,
           heightStyles[height],
+          invalidStyle,
+          placeholderStyle,
           textStyles({
             ...textStylesForHeight[height],
           }),
-          placeholderStyle,
         ]}
         placeholder={placeholder}
         testId={testId}

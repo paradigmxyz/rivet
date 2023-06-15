@@ -8,7 +8,6 @@ import {
   Rows,
   SFSymbol,
   Separator,
-  Stack,
   Text,
 } from '~/design-system'
 import type { RowProps } from '~/design-system/components/Rows'
@@ -31,42 +30,46 @@ export function Container({
   return (
     <Rows fit={fit}>
       <Row alignVertical={alignVertical} style={{ overflowY: 'scroll' }}>
-        <Stack>
+        <Rows>
           {header && (
             <>
-              <Box
-                alignItems='center'
-                backgroundColor='surface/primary/elevated'
-                display='flex'
-                paddingHorizontal='12px'
-                width='full'
-                style={{ minHeight: '44px' }}
-              >
-                <Inline
-                  alignVertical='center'
-                  alignHorizontal='justify'
-                  wrap={false}
+              <Row height='content'>
+                <Box
+                  alignItems='center'
+                  backgroundColor='surface/primary/elevated'
+                  display='flex'
+                  paddingHorizontal='12px'
+                  width='full'
+                  style={{ minHeight: '44px' }}
                 >
-                  {typeof header === 'string' ? (
-                    <Text size='16px'>{header}</Text>
-                  ) : (
-                    header
-                  )}
-                  {dismissable && (
-                    <Link to='..'>
-                      <SFSymbol
-                        color='text/tertiary'
-                        size='12px'
-                        symbol='xmark'
-                        weight='medium'
-                      />
-                    </Link>
-                  )}
-                </Inline>
-              </Box>
-              <Inset horizontal='12px'>
-                <Separator />
-              </Inset>
+                  <Inline
+                    alignVertical='center'
+                    alignHorizontal='justify'
+                    wrap={false}
+                  >
+                    {typeof header === 'string' ? (
+                      <Text size='16px'>{header}</Text>
+                    ) : (
+                      header
+                    )}
+                    {dismissable && (
+                      <Link to='..'>
+                        <SFSymbol
+                          color='text/tertiary'
+                          size='12px'
+                          symbol='xmark'
+                          weight='medium'
+                        />
+                      </Link>
+                    )}
+                  </Inline>
+                </Box>
+              </Row>
+              <Row height='content'>
+                <Inset horizontal='12px'>
+                  <Separator />
+                </Inset>
+              </Row>
             </>
           )}
           <Box
@@ -77,7 +80,7 @@ export function Container({
           >
             {children}
           </Box>
-        </Stack>
+        </Rows>
       </Row>
       {footer && (
         <Row height='content'>

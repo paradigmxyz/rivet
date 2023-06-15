@@ -22,7 +22,8 @@
   "devDependencies": {
     "@capsizecss/core": "^3.1.0",
     "@capsizecss/vanilla-extract": "^1.0.0",
-    "@radix-ui/colors": "^0.1.8",
+    "@radix-ui/react-checkbox": "^1.0.4",
+    "@radix-ui/react-form": "^0.0.3",
     "@radix-ui/react-polymorphic": "^0.0.14",
     "@samrum/vite-plugin-web-extension": "^4.1.0",
     "@tanstack/query-async-storage-persister": "5.0.0-alpha.42",

@@ -28,6 +28,8 @@ export default function OnboardingDeployHosted() {
       ).json()
       return res
     },
+    retry: 3,
+    retryDelay: 1_000,
   })
 
   const [created, setCreated] = useState(false)
@@ -35,6 +37,7 @@ export default function OnboardingDeployHosted() {
     if (data) {
       upsertNetwork({
         network: {
+          blockTime: Number(params.blockTime),
           chainId: Number(params.chainId),
           name: 'Ethereum',
           rpcUrl: data.url,
@@ -46,6 +49,7 @@ export default function OnboardingDeployHosted() {
 
   const { data: online } = useNetworkStatus({
     enabled: Boolean(created),
+    retryDelay: 2_000,
   })
 
   useEffect(() => {
@@ -58,7 +62,7 @@ export default function OnboardingDeployHosted() {
   return (
     <Container
       header={
-        <Inset vertical='20px'>
+        <Inset vertical='16px'>
           <Stack gap='12px'>
             <Text color='text/tertiary' size='14px'>
               Setup

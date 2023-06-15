@@ -6,7 +6,15 @@ import { usePublicClient } from './usePublicClient'
 
 export function useNetworkStatus({
   enabled = true,
-}: { enabled?: boolean } = {}) {
+  refetchInterval = 4_000,
+  retry = 5,
+  retryDelay,
+}: {
+  enabled?: boolean
+  refetchInterval?: number
+  retry?: number
+  retryDelay?: number
+} = {}) {
   const { network, upsertNetwork } = useNetwork()
   const publicClient = usePublicClient()
 
@@ -23,7 +31,8 @@ export function useNetworkStatus({
         return false
       }
     },
-    refetchInterval: publicClient.pollingInterval,
-    retry: 5,
+    refetchInterval,
+    retry,
+    retryDelay,
   })
 }
