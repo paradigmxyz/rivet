@@ -134,6 +134,7 @@ const boxBaseProperties = defineProperties({
     marginTop: { auto: 'auto', ...negatedSpacing },
     maxWidth: viewports,
     opacity: opacities,
+    overflow: ['hidden', 'visible'],
     paddingBottom: spacing,
     paddingLeft: spacing,
     paddingRight: spacing,

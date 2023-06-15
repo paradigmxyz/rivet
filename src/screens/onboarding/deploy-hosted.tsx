@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Cog } from '../../components/svgs'
 import { useNetworkStatus } from '../../hooks'
-import { Container } from '~/components'
+import { Container, Progress } from '~/components'
 import { Box, Inset, Row, Rows, Stack, Text } from '~/design-system'
 import { useNetwork } from '~/zustand'
 
@@ -128,7 +128,8 @@ export default function OnboardingDeployHosted() {
   useEffect(() => {
     if (online) {
       setOnboarded(true)
-      navigate('/')
+      setProgress(100)
+      setTimeout(() => navigate('/'), 500)
     }
   }, [online])
 
@@ -157,9 +158,17 @@ export default function OnboardingDeployHosted() {
           <Stack alignHorizontal='center' gap='20px'>
             <Stack alignHorizontal='center' gap='12px'>
               <Cog size='60px' />
-              <Text size='20px'>Creating deployment...</Text>
+              <Text size='20px'>Creating deployment</Text>
             </Stack>
-            <Text color='text/tertiary'>{progress}% complete</Text>
+            <Text color='text/tertiary'>Spinning up your Anvil instance.</Text>
+            <Stack alignHorizontal='center' gap='12px'>
+              <Box style={{ width: 200 }}>
+                <Progress height={10} progress={progress} />
+              </Box>
+              <Text size='12px' color='text/quarternary'>
+                {progress}% complete
+              </Text>
+            </Stack>
           </Stack>
         </Row>
       </Rows>

@@ -74,7 +74,9 @@ export function setupRpcHandler() {
     const isInpage = !meta.sender.frameId || meta.sender.frameId === 0
     const rpcClient = getRpcClient({ rpcUrl })
 
-    if (!rpcUrl)
+    const hasOnboarded = isInpage ? networkStore.getState().onboarded : rpcUrl
+
+    if (!hasOnboarded)
       return {
         id: request.id,
         jsonrpc: '2.0',
