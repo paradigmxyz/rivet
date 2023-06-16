@@ -1,4 +1,3 @@
-import * as Form2 from '@radix-ui/react-form'
 import { humanId } from 'human-id'
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
@@ -6,15 +5,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { OnboardingContainer } from '~/components'
 import * as Form from '~/components/form'
-import {
-  Box,
-  Button,
-  Inline,
-  Inset,
-  Separator,
-  Stack,
-  Text,
-} from '~/design-system'
+import { Button, Separator, Stack, Text } from '~/design-system'
 
 export default function OnboardingCreateHosted() {
   const defaultName = useMemo(
@@ -102,20 +93,10 @@ export default function OnboardingCreateHosted() {
           <Stack gap='16px'>
             <Text>Configure Blocks</Text>
             <Separator />
-            <Form2.Field name={register.name}>
-              <Inset bottom='2px'>
-                <Inline alignVertical='center' gap='4px'>
-                  <Form2.Control asChild {...register('autoMine')}>
-                    <Box as='input' type='checkbox' />
-                  </Form2.Control>
-                  <Form2.Label>
-                    <Text color='text/tertiary' size='12px'>
-                      Auto-mine transactions
-                    </Text>
-                  </Form2.Label>
-                </Inline>
-              </Inset>
-            </Form2.Field>
+            <Form.CheckboxField
+              label='Auto-mine transactions'
+              register={register('autoMine')}
+            />
             <Form.InputField
               label='Block Time (sec)'
               min={0}
