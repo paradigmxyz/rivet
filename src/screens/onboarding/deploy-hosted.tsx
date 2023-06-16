@@ -1,19 +1,22 @@
 import { useQuery } from '@tanstack/react-query'
-import qs from 'qs'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { Cog } from '../../components/svgs'
-import { useNetworkStatus } from '../../hooks'
-import { Container, Progress } from '~/components'
-import { Box, Inset, Row, Rows, Stack, Text } from '~/design-system'
+import { OnboardingContainer, Progress } from '~/components'
+import { Cog } from '~/components/svgs'
+import { Box, Row, Rows, Stack, Text } from '~/design-system'
+import { useNetworkStatus } from '~/hooks'
 import { useNetwork } from '~/zustand'
 
 export default function OnboardingDeployHosted() {
   const navigate = useNavigate()
   const { setOnboarded, upsertNetwork } = useNetwork()
 
-  const params = qs.parse(window.location.hash.split('?')[1]) || {}
+  const searchParams = new URLSearchParams(window.location.hash.split('?')[1])
+  const params = Array.from(searchParams.entries()).reduce(
+    (acc, [key, value]) => ({ ...acc, [key]: value }),
+    {},
+  ) as Record<string, string>
 
   const { data: instance, isSuccess: isInstanceSuccess } = useQuery<any>({
     queryKey: ['instances', params.name],
@@ -134,25 +137,7 @@ export default function OnboardingDeployHosted() {
   }, [online])
 
   return (
-    <Container
-      header={
-        <Inset vertical='16px'>
-          <Stack gap='12px'>
-            <Text color='text/tertiary' size='14px'>
-              Setup
-            </Text>
-            <Text>Deploy Node</Text>
-          </Stack>
-        </Inset>
-      }
-      footer={
-        <Stack gap='16px'>
-          <Box paddingTop='4px' paddingBottom='12px'>
-            <Text color='text/tertiary'>Cancel setup</Text>
-          </Box>
-        </Stack>
-      }
-    >
+    <OnboardingContainer title='Deploy Node'>
       <Rows>
         <Row alignHorizontal='center' alignVertical='center'>
           <Stack alignHorizontal='center' gap='20px'>
@@ -172,6 +157,6 @@ export default function OnboardingDeployHosted() {
           </Stack>
         </Row>
       </Rows>
-    </Container>
+    </OnboardingContainer>
   )
 }

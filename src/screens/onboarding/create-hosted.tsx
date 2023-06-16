@@ -4,7 +4,7 @@ import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 
-import { Container } from '~/components'
+import { OnboardingContainer } from '~/components'
 import * as Form from '~/components/form'
 import {
   Box,
@@ -65,25 +65,9 @@ export default function OnboardingCreateHosted() {
 
   return (
     <Form.Root onSubmit={submit} style={{ height: '100%' }}>
-      <Container
-        header={
-          <Inset vertical='16px'>
-            <Stack gap='12px'>
-              <Text color='text/tertiary' size='14px'>
-                Setup
-              </Text>
-              <Text>Configure Options</Text>
-            </Stack>
-          </Inset>
-        }
-        footer={
-          <Stack gap='16px'>
-            <Button height='44px'>Deploy node</Button>
-            <Box paddingTop='4px' paddingBottom='12px'>
-              <Text color='text/tertiary'>Cancel setup</Text>
-            </Box>
-          </Stack>
-        }
+      <OnboardingContainer
+        title='Configure Options'
+        footer={<Button height='44px'>Deploy node</Button>}
       >
         <Stack gap='24px'>
           <Form.InputField
@@ -158,7 +142,7 @@ export default function OnboardingCreateHosted() {
             />
           </Stack>
         </Stack>
-      </Container>
+      </OnboardingContainer>
     </Form.Root>
   )
 }

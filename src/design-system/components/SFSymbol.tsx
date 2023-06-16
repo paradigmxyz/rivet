@@ -1,9 +1,6 @@
-import symbols from '../../design-system/symbols/generated'
-import type {
-  FontSize,
-  FontWeight,
-  SymbolName,
-} from '../../design-system/tokens'
+import symbols from '../symbols/generated'
+import type { FontSize, FontWeight, SymbolName } from '../tokens'
+
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
 

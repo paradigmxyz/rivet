@@ -1,6 +1,5 @@
 import { getMessenger } from '~/messengers'
-
-import { windowStorage } from '../../storage'
+import { windowStorage } from '~/storage'
 
 const backgroundMessenger = getMessenger({
   connection: 'background <> contentScript',
