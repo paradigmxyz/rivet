@@ -1,3 +1,5 @@
+import { createStyleObject as capsize } from '@capsizecss/core'
+
 export type Theme = 'light' | 'dark'
 export type ColorScheme = 'light' | 'dark'
 
@@ -392,6 +394,45 @@ export const defaultInheritedColor = {
 } as const satisfies Record<string, DefaultInheritedColorValue>
 export type InheritedColor = keyof typeof defaultInheritedColor
 
+const fontMetrics = {
+  capHeight: 1443,
+  ascent: 1950,
+  descent: -494,
+  lineGap: 0,
+  unitsPerEm: 2048,
+}
+
+function defineType(
+  fontSize: number,
+  lineHeight: number | `${number}%`,
+  letterSpacing: number,
+) {
+  const leading =
+    typeof lineHeight === 'number'
+      ? lineHeight
+      : (fontSize * parseInt(lineHeight)) / 100
+
+  return {
+    ...capsize({ fontMetrics, fontSize, leading }),
+    letterSpacing,
+  }
+}
+
+export const fontSize = {
+  '9px': defineType(9, 11, 0.56),
+  '11px': defineType(11, 13, 0.56),
+  '12px': defineType(12, 15, 0.52),
+  '14px': defineType(14, 19, 0.48),
+  '15px': defineType(15, 21, 0.35),
+  '16px': defineType(16, 21, 0.35),
+  '18px': defineType(18, 23, 0.36),
+  '20px': defineType(20, 25, 0.36),
+  '22px': defineType(22, 29, 0.35),
+  '26px': defineType(26, 32, 0.36),
+  '32px': defineType(32, 40, 0.41),
+} as const
+export type FontSize = keyof typeof fontSize
+
 export const fontWeight = {
   light: '300',
   regular: '400',
@@ -401,25 +442,6 @@ export const fontWeight = {
   heavy: '800',
 } as const
 export type FontWeight = keyof typeof fontWeight
-
-export const fontSize = {
-  '12px': { fontSize: '0.75rem', lineHeight: '1rem' },
-  '14px': { fontSize: '0.875rem', lineHeight: '1.25rem' },
-  '16px': { fontSize: '1rem', lineHeight: '1.5rem' },
-  '18px': { fontSize: '1.125rem', lineHeight: '1.75rem' },
-  '20px': { fontSize: '1.25rem', lineHeight: '1.75rem' },
-  '22px': { fontSize: '1.375rem', lineHeight: '1.825rem' },
-  '24px': { fontSize: '1.5rem', lineHeight: '2rem' },
-  '28px': { fontSize: '1.75rem', lineHeight: '2rem' },
-  '32px': { fontSize: '2rem', lineHeight: '2.25rem' },
-  '36px': { fontSize: '2.25rem', lineHeight: '2.5rem' },
-  '40px': { fontSize: '2.5rem', lineHeight: '2.75rem' },
-  '48px': { fontSize: '3rem', lineHeight: '1' },
-  '64px': { fontSize: '4rem', lineHeight: '1' },
-  '72px': { fontSize: '4.5rem', lineHeight: '1' },
-  '96px': { fontSize: '6rem', lineHeight: '1' },
-} as const
-export type FontSize = keyof typeof fontSize
 
 export const spacing = {
   '0px': '0px',
@@ -523,6 +545,7 @@ export type StrokeWeight = keyof typeof strokeWeights
 
 // Note: Don't forget to generate the symbols with `pnpm symbols`!
 export const symbolNames = [
+  'arrow.clockwise',
   'wallet.pass',
   'person.circle',
   'chevron.down',

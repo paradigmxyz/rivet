@@ -167,60 +167,73 @@ export function Header() {
             borderBottomWidth='1px'
             width='full'
           >
-            <Link to='network' style={{ height: '100%' }}>
-              <Box
-                backgroundColor={{
-                  hover: 'surface/fill/quarternary',
-                }}
-                height='full'
-                paddingLeft='12px'
-                style={{ cursor: 'default' }}
-              >
-                <Columns>
-                  <Column>
-                    <Columns gap='16px'>
-                      <Column alignVertical='center' width='1/3'>
-                        <HeaderItem label='RPC URL'>
-                          <Inline gap='4px' wrap={false}>
-                            <Box
-                              backgroundColor={
-                                status === 'pending'
-                                  ? 'surface/invert@0.5'
-                                  : listening
-                                  ? 'surface/green'
-                                  : 'surface/red'
-                              }
-                              borderWidth='1px'
-                              borderRadius='round'
-                              style={{ minWidth: 8, minHeight: 8 }}
-                            />
-                            <Text size='12px' wrap={false} width='full'>
-                              {network.rpcUrl.replace(/https?:\/\//, '')}
-                            </Text>
-                          </Inline>
-                        </HeaderItem>
-                      </Column>
-                      <Column alignVertical='center' width='1/3'>
-                        <HeaderItem label='Chain'>
-                          <Text size='12px' wrap={false} width='full'>
-                            {network.chainId}: {network.name}
-                          </Text>
-                        </HeaderItem>
-                      </Column>
-                      <Column alignVertical='center' width='1/3'>
-                        <Inset left='12px' right='8px'>
-                          <Box style={{ width: '80px' }}>
-                            <HeaderItem label='Block'>
-                              <Text size='12px'>{blockNumber?.toString()}</Text>
+            <Columns>
+              <Column>
+                <Link to='network' style={{ height: '100%' }}>
+                  <Box
+                    alignItems='center'
+                    backgroundColor={{
+                      hover: 'surface/fill/quarternary',
+                    }}
+                    display='flex'
+                    height='full'
+                    width='full'
+                    style={{ cursor: 'default' }}
+                  >
+                    <Inset horizontal='8px'>
+                      <Columns gap='12px'>
+                        <Column alignVertical='center' width='1/2'>
+                          <HeaderItem label='RPC URL'>
+                            <Inline gap='4px' wrap={false}>
+                              <Box
+                                backgroundColor={
+                                  status === 'pending'
+                                    ? 'surface/invert@0.5'
+                                    : listening
+                                    ? 'surface/green'
+                                    : 'surface/red'
+                                }
+                                borderWidth='1px'
+                                borderRadius='round'
+                                style={{ minWidth: 8, minHeight: 8 }}
+                              />
+                              <Text size='12px' wrap={false} width='full'>
+                                {network.rpcUrl.replace(/https?:\/\//, '')}
+                              </Text>
+                            </Inline>
+                          </HeaderItem>
+                        </Column>
+                        <Column alignVertical='center' width='1/2'>
+                          <Inset left='8px'>
+                            <HeaderItem label='Chain'>
+                              <Text size='12px' wrap={false} width='full'>
+                                {network.chainId}: {network.name}
+                              </Text>
                             </HeaderItem>
-                          </Box>
-                        </Inset>
-                      </Column>
-                    </Columns>
-                  </Column>
-                </Columns>
-              </Box>
-            </Link>
+                          </Inset>
+                        </Column>
+                      </Columns>
+                    </Inset>
+                  </Box>
+                </Link>
+              </Column>
+              <Column width='content'>
+                <Box
+                  backgroundColor='separator/tertiary'
+                  height='full'
+                  style={{ width: '1px' }}
+                />
+              </Column>
+              <Column alignVertical='center' width='content'>
+                <Inset horizontal='8px'>
+                  <Box style={{ width: '60px' }}>
+                    <HeaderItem label='Block'>
+                      <Text size='12px'>{blockNumber?.toString()}</Text>
+                    </HeaderItem>
+                  </Box>
+                </Inset>
+              </Column>
+            </Columns>
           </Box>
         </Row>
       </Rows>

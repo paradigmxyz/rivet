@@ -573,8 +573,8 @@ function DesignSystem() {
               SFSymbol
             </Text>
             <Box display='flex' gap='8px'>
-              <SFSymbol symbol='person.circle' size='40px' />
-              <SFSymbol symbol='wallet.pass' size='40px' />
+              <SFSymbol symbol='person.circle' size='32px' />
+              <SFSymbol symbol='wallet.pass' size='32px' />
             </Box>
           </Stack>
         </Box>
