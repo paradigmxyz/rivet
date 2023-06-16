@@ -394,6 +394,12 @@ export const defaultInheritedColor = {
 } as const satisfies Record<string, DefaultInheritedColorValue>
 export type InheritedColor = keyof typeof defaultInheritedColor
 
+export const fontFamily = {
+  default:
+    "'SFPro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
+  mono: "'SFMono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Lucida Console', Monaco, monospace",
+}
+
 const fontMetrics = {
   capHeight: 1443,
   ascent: 1950,
@@ -546,6 +552,7 @@ export type StrokeWeight = keyof typeof strokeWeights
 // Note: Don't forget to generate the symbols with `pnpm symbols`!
 export const symbolNames = [
   'arrow.clockwise',
+  'doc.on.doc',
   'wallet.pass',
   'person.circle',
   'chevron.down',

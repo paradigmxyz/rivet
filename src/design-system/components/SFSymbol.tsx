@@ -19,20 +19,18 @@ export function SFSymbol({
 }: SFSymbolProps) {
   const symbol = symbols[name as keyof typeof symbols][weight]
   return (
-    <Box>
-      <Box
-        as='svg'
-        viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
-        fill='none'
-        color={color}
-        style={{
-          width: size,
-          height: size,
-        }}
-        xmlns='http://www.w3.org/2000/svg'
-      >
-        <path d={symbol.path} fill='currentColor' />
-      </Box>
+    <Box
+      as='svg'
+      viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
+      fill='none'
+      color={color}
+      style={{
+        width: size,
+        height: size,
+      }}
+      xmlns='http://www.w3.org/2000/svg'
+    >
+      <path d={symbol.path} fill='currentColor' />
     </Box>
   )
 }

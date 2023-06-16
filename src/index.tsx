@@ -23,8 +23,10 @@ import Layout from './screens/_layout.tsx'
 import Accounts from './screens/accounts.tsx'
 import Index from './screens/index'
 import Network from './screens/network.tsx'
-import OnboardingCreateHosted from './screens/onboarding/create-hosted.tsx'
-import OnboardingDeployHosted from './screens/onboarding/deploy-hosted.tsx'
+import OnboardingConfigure from './screens/onboarding/configure.tsx'
+import OnboardingDeploy from './screens/onboarding/deploy.tsx'
+import OnboardingDownload from './screens/onboarding/download.tsx'
+import OnboardingRun from './screens/onboarding/run.tsx'
 import OnboardingStart from './screens/onboarding/start.tsx'
 import Session from './screens/session.tsx'
 
@@ -59,12 +61,20 @@ const router = createHashRouter([
             element: <OnboardingStart />,
           },
           {
-            path: 'create-hosted',
-            element: <OnboardingCreateHosted />,
+            path: 'download',
+            element: <OnboardingDownload />,
           },
           {
-            path: 'deploy-hosted',
-            element: <OnboardingDeployHosted />,
+            path: 'configure',
+            element: <OnboardingConfigure />,
+          },
+          {
+            path: 'deploy',
+            element: <OnboardingDeploy />,
+          },
+          {
+            path: 'run',
+            element: <OnboardingRun />,
           },
         ],
       },

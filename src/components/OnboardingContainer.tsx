@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Container } from '~/components'
 import { Box, Inset, Stack, Text } from '~/design-system'
 
@@ -8,6 +8,7 @@ export function OnboardingContainer({
   footer,
   title,
 }: { children: ReactNode; footer?: ReactNode; title: string }) {
+  const navigate = useNavigate()
   return (
     <Container
       header={
@@ -23,11 +24,15 @@ export function OnboardingContainer({
       footer={
         <Stack gap='16px'>
           {footer}
-          <Link to='/'>
-            <Box paddingTop='4px' paddingBottom='12px'>
-              <Text color='text/tertiary'>Cancel setup</Text>
-            </Box>
-          </Link>
+          <Box
+            as='button'
+            display='flex'
+            onClick={() => navigate(-1)}
+            paddingTop='4px'
+            paddingBottom='12px'
+          >
+            <Text color='text/tertiary'>Back</Text>
+          </Box>
         </Stack>
       }
     >

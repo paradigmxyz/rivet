@@ -217,6 +217,7 @@ const boxInteractiveProperties = defineProperties({
     },
     transform: {
       shrink: 'scale(0.98)',
+      shrink95: 'scale(0.95)',
     },
   },
 })

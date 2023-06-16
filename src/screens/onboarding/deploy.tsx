@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { OnboardingContainer, Progress } from '~/components'
 import { Cog } from '~/components/svgs'
@@ -8,11 +8,11 @@ import { Box, Row, Rows, Stack, Text } from '~/design-system'
 import { useNetworkStatus } from '~/hooks'
 import { useNetwork } from '~/zustand'
 
-export default function OnboardingDeployHosted() {
+export default function OnboardingDeploy() {
   const navigate = useNavigate()
   const { setOnboarded, upsertNetwork } = useNetwork()
 
-  const searchParams = new URLSearchParams(window.location.hash.split('?')[1])
+  const [searchParams] = useSearchParams()
   const params = Array.from(searchParams.entries()).reduce(
     (acc, [key, value]) => ({ ...acc, [key]: value }),
     {},
@@ -115,7 +115,7 @@ export default function OnboardingDeployHosted() {
         network: {
           blockTime: Number(params.blockTime),
           chainId: Number(params.chainId),
-          name: 'Ethereum',
+          name: params.networkName,
           rpcUrl: machine?.url,
         },
       })

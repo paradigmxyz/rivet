@@ -1,4 +1,5 @@
 import * as Form from '@radix-ui/react-form'
+import { useRef } from 'react'
 import type { UseFormRegister } from 'react-hook-form'
 
 import { Box, Input, Stack, Text } from '~/design-system'
@@ -6,6 +7,7 @@ import type { InputProps } from '~/design-system/components/Input'
 
 export type InputFieldProps = {
   defaultValue?: InputProps['defaultValue']
+  innerLeft?: React.ReactElement
   innerRight?: React.ReactElement
   label: string
   min?: number
@@ -16,6 +18,7 @@ export type InputFieldProps = {
 
 export function InputField({
   defaultValue,
+  innerLeft,
   innerRight,
   label,
   min,
@@ -23,6 +26,12 @@ export function InputField({
   required,
   type,
 }: InputFieldProps) {
+  const innerRightRef = useRef<HTMLDivElement>(null)
+  const innerRightWidth = innerRightRef.current?.clientWidth
+
+  const innerLeftRef = useRef<HTMLDivElement>(null)
+  const innerLeftWidth = innerLeftRef.current?.clientWidth
+
   return (
     <Form.Field name={register.name}>
       <Stack gap='12px'>
@@ -30,6 +39,15 @@ export function InputField({
           <Form.Label>{label}</Form.Label>
         </Text>
         <Box alignItems='center' display='flex' position='relative'>
+          {innerLeft && (
+            <Box
+              ref={innerLeftRef}
+              left='12px'
+              style={{ position: 'absolute' }}
+            >
+              {innerLeft}
+            </Box>
+          )}
           <Form.Control
             asChild
             {...register}
@@ -38,10 +56,19 @@ export function InputField({
             required={required}
             type={type}
           >
-            <Input />
+            <Input
+              style={{
+                paddingLeft: (innerLeftWidth || 0) + 12,
+                paddingRight: (innerRightWidth || 0) + 12,
+              }}
+            />
           </Form.Control>
           {innerRight && (
-            <Box right='12px' style={{ position: 'absolute' }}>
+            <Box
+              ref={innerRightRef}
+              right='12px'
+              style={{ position: 'absolute' }}
+            >
               {innerRight}
             </Box>
           )}

@@ -104,12 +104,14 @@ export default function OnboardingStart() {
               </Inline>
             </Stack>
             <Stack gap='12px'>
-              <Link to='/onboarding/create-hosted'>
+              <Link to='/onboarding/configure?type=hosted'>
                 <Button height='44px'>Create hosted chain</Button>
               </Link>
-              <Button height='44px' variant='stroked fill'>
-                Use local chain
-              </Button>
+              <Link to='/onboarding/download'>
+                <Button height='44px' variant='stroked fill'>
+                  Use local chain
+                </Button>
+              </Link>
             </Stack>
           </Stack>
         </Row>
