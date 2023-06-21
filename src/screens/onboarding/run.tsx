@@ -25,7 +25,7 @@ export default function OnboardingRun() {
     if (params.get('blockBaseFeePerGas'))
       command += `--block-base-fee-per-gas ${params.get(
         'blockBaseFeePerGas',
-      )}\\\n`
+      )} \\\n`
     if (params.get('blockTime'))
       command += `--block-time ${params.get('blockTime')} \\\n`
     if (params.get('gasLimit'))
@@ -68,6 +68,7 @@ export default function OnboardingRun() {
           <Text as='code' size='12px'>
             {command}
           </Text>
+          {/* TODO: Extract into `IconButton` */}
           <Box
             as='button'
             alignItems='center'

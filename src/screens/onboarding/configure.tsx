@@ -2,11 +2,12 @@ import { humanId } from 'human-id'
 import { useEffect, useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import { gweiUnits } from 'viem'
 
-import { useNetwork } from '../../zustand'
 import { OnboardingContainer } from '~/components'
 import * as Form from '~/components/form'
 import { Button, Separator, Stack, Text } from '~/design-system'
+import { useNetwork } from '~/zustand'
 
 export default function OnboardingConfigure() {
   const [params] = useSearchParams()
@@ -57,6 +58,12 @@ export default function OnboardingConfigure() {
     const values = {
       ...values_,
       autoMine: String(values_.autoMine),
+      blockBaseFeePerGas: values_.blockBaseFeePerGas
+        ? String(Number(values_.blockBaseFeePerGas) ** gweiUnits.wei)
+        : '',
+      gasPrice: values_.gasPrice
+        ? String(Number(values_.gasPrice) ** gweiUnits.wei)
+        : '',
     }
 
     if (type === 'local')
@@ -161,16 +168,16 @@ export default function OnboardingConfigure() {
               register={register('blockBaseFeePerGas')}
             />
             <Form.InputField
-              label='Gas Limit (gwei)'
-              min={0}
-              type='number'
-              register={register('gasLimit')}
-            />
-            <Form.InputField
               label='Gas Price (gwei)'
               min={0}
               type='number'
               register={register('gasPrice')}
+            />
+            <Form.InputField
+              label='Gas Limit'
+              min={0}
+              type='number'
+              register={register('gasLimit')}
             />
           </Stack>
         </Stack>

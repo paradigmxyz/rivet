@@ -35,6 +35,7 @@ export default function OnboardingDownload() {
           <Text as='code' size='12px'>
             curl -L https://foundry.paradigm.xyz | bash
           </Text>
+          {/* TODO: Extract into `IconButton` */}
           <Box
             as='button'
             alignItems='center'

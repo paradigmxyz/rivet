@@ -6,7 +6,7 @@ import { numberToHex } from 'viem'
 
 import { getTheme, setTheme } from '~/design-system'
 import '~/design-system/styles/global.css'
-import { useBlockNumber, useNetworkStatus, useWalletClient } from '~/hooks'
+import { useBlock, useNetworkStatus, useWalletClient } from '~/hooks'
 import { getMessenger } from '~/messengers'
 import { QueryClientProvider } from '~/react-query'
 import { deepEqual } from '~/utils'
@@ -21,8 +21,9 @@ import {
 
 import Layout from './screens/_layout.tsx'
 import Accounts from './screens/accounts.tsx'
+import BlockConfig from './screens/block-config.tsx'
 import Index from './screens/index'
-import Network from './screens/network.tsx'
+import NetworkConfig from './screens/network-config.tsx'
 import OnboardingConfigure from './screens/onboarding/configure.tsx'
 import OnboardingDeploy from './screens/onboarding/deploy.tsx'
 import OnboardingDownload from './screens/onboarding/download.tsx'
@@ -46,8 +47,12 @@ const router = createHashRouter([
         element: <Accounts />,
       },
       {
-        path: 'network',
-        element: <Network />,
+        path: 'block-config',
+        element: <BlockConfig />,
+      },
+      {
+        path: 'network-config',
+        element: <NetworkConfig />,
       },
       {
         path: 'session',
@@ -160,7 +165,7 @@ function NetworkChangedEmitter() {
 
 /** Keeps block number in sync. */
 function SyncBlockNumber() {
-  useBlockNumber()
+  useBlock()
   return null
 }
 

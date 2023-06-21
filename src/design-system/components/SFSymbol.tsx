@@ -1,10 +1,12 @@
 import symbols from '../symbols/generated'
 import type { FontSize, FontWeight, SymbolName } from '../tokens'
+import type { ClassValue } from 'clsx'
 
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
 
 export type SFSymbolProps = {
+  className?: ClassValue
   color?: BoxStyles['color']
   symbol: SymbolName
   weight?: FontWeight
@@ -12,6 +14,7 @@ export type SFSymbolProps = {
 }
 
 export function SFSymbol({
+  className,
   color = 'text',
   symbol: name,
   weight = 'regular',
@@ -21,6 +24,7 @@ export function SFSymbol({
   return (
     <Box
       as='svg'
+      className={className}
       viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
       fill='none'
       color={color}

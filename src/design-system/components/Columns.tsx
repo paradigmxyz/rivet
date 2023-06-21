@@ -25,6 +25,7 @@ type ColumnsProps = {
   alignVertical?: AlignVertical
   children: ReactNode
   gap?: Spacing
+  width?: 'full'
 }
 
 export function Columns({
@@ -32,6 +33,7 @@ export function Columns({
   alignVertical,
   children,
   gap = '0px',
+  width,
 }: ColumnsProps) {
   return (
     <Box
@@ -43,6 +45,7 @@ export function Columns({
       justifyContent={
         alignHorizontal && alignHorizontalToJustifyContent[alignHorizontal]
       }
+      width={width}
     >
       {flattenChildren(children).map((child, index) => {
         const columnProps = getColumnProps(child)

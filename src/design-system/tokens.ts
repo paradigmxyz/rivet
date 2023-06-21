@@ -553,6 +553,7 @@ export type StrokeWeight = keyof typeof strokeWeights
 export const symbolNames = [
   'arrow.clockwise',
   'doc.on.doc',
+  'hammer.fill',
   'wallet.pass',
   'person.circle',
   'chevron.down',

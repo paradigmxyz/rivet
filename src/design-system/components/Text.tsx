@@ -22,6 +22,7 @@ export type TextProps = {
   color?: TextStyles['color']
   size?: TextStyles['fontSize']
   style?: React.CSSProperties
+  tabular?: boolean
   weight?: TextStyles['fontWeight']
   width?: BoxStyles['width']
   wrap?: boolean
@@ -35,6 +36,7 @@ export function Text({
   color = 'text',
   size = '15px',
   style,
+  tabular = false,
   weight = 'regular',
   wrap = true,
   testId,
@@ -54,16 +56,22 @@ export function Text({
     >
       <Box
         as='span'
-        style={
-          wrap
-            ? undefined
+        style={{
+          ...(tabular
+            ? {
+                fontVariant: 'tabular-nums',
+                letterSpacing: '0px',
+              }
+            : {}),
+          ...(wrap
+            ? {}
             : {
                 display: 'block',
                 textOverflow: 'ellipsis',
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
-              }
-        }
+              }),
+        }}
       >
         {children}
       </Box>
