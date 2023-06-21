@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, forwardRef } from 'react'
 
 import type { Spacing } from '../tokens'
 import { Box } from './Box'
@@ -19,14 +19,13 @@ export type StackProps = {
   width?: BoxStyles['width']
 }
 
-export function Stack({
-  alignHorizontal,
-  children,
-  gap,
-  width = 'full',
-}: StackProps) {
+export const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack(
+  { alignHorizontal, children, gap, width = 'full' }: StackProps,
+  ref,
+) {
   return (
     <Box
+      ref={ref}
       alignItems={
         alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
       }
@@ -38,4 +37,4 @@ export function Stack({
       {children}
     </Box>
   )
-}
+})

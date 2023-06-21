@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, forwardRef } from 'react'
 import flattenChildren from 'react-flatten-children'
 
 import type { Spacing } from '../tokens'
@@ -28,38 +28,44 @@ type ColumnsProps = {
   width?: 'full'
 }
 
-export function Columns({
-  alignHorizontal,
-  alignVertical,
-  children,
-  gap = '0px',
-  width,
-}: ColumnsProps) {
-  return (
-    <Box
-      display='flex'
-      flexDirection='row'
-      height='full'
-      gap={gap}
-      alignItems={alignVertical && alignVerticalToAlignItems[alignVertical]}
-      justifyContent={
-        alignHorizontal && alignHorizontalToJustifyContent[alignHorizontal]
-      }
-      width={width}
-    >
-      {flattenChildren(children).map((child, index) => {
-        const columnProps = getColumnProps(child)
+export const Columns = forwardRef<HTMLDivElement, ColumnsProps>(
+  (
+    {
+      alignHorizontal,
+      alignVertical,
+      children,
+      gap = '0px',
+      width,
+    }: ColumnsProps,
+    ref,
+  ) => {
+    return (
+      <Box
+        ref={ref}
+        display='flex'
+        flexDirection='row'
+        height='full'
+        gap={gap}
+        alignItems={alignVertical && alignVerticalToAlignItems[alignVertical]}
+        justifyContent={
+          alignHorizontal && alignHorizontalToJustifyContent[alignHorizontal]
+        }
+        width={width}
+      >
+        {flattenChildren(children).map((child, index) => {
+          const columnProps = getColumnProps(child)
 
-        return columnProps ? (
-          // eslint-disable-next-line react/jsx-props-no-spreading
-          <PrivateColumn key={index} {...columnProps} />
-        ) : (
-          <PrivateColumn key={index}>{child}</PrivateColumn>
-        )
-      })}
-    </Box>
-  )
-}
+          return columnProps ? (
+            // eslint-disable-next-line react/jsx-props-no-spreading
+            <PrivateColumn key={index} {...columnProps} />
+          ) : (
+            <PrivateColumn key={index}>{child}</PrivateColumn>
+          )
+        })}
+      </Box>
+    )
+  },
+)
 
 type ColumnProps = {
   alignVertical?: AlignVertical

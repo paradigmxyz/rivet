@@ -1,7 +1,7 @@
 // TODO: cleanup
 
 import * as Tabs from '@radix-ui/react-tabs'
-import type { ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import { type Address, formatEther, hexToBigInt } from 'viem'
 
 import { Container } from '~/components'
@@ -46,8 +46,8 @@ export default function Index() {
           <Stack gap='16px'>
             {accounts.map((account) => {
               return (
-                <>
-                  <Box key={account.address}>
+                <Fragment key={account.address}>
+                  <Box>
                     <Stack gap='16px'>
                       <HeaderItem label='Address'>
                         <Text size='12px'>{account.address}</Text>
@@ -59,7 +59,7 @@ export default function Index() {
                     </Stack>
                   </Box>
                   <Separator />
-                </>
+                </Fragment>
               )
             })}
           </Stack>
@@ -111,7 +111,7 @@ function Txpool() {
                 <HeaderItem label='Transactions'>
                   <Stack gap='12px'>
                     {transactions.map((transaction) => (
-                      <Inline alignHorizontal='justify'>
+                      <Inline key={transaction.hash} alignHorizontal='justify'>
                         <Text size='12px'>
                           {truncateAddress(transaction.hash)}
                         </Text>

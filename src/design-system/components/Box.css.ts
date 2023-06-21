@@ -1,4 +1,4 @@
-import { createVar, fallbackVar } from '@vanilla-extract/css'
+import { createVar } from '@vanilla-extract/css'
 import { createSprinkles, defineProperties } from '@vanilla-extract/sprinkles'
 import { mapKeys, mapValues } from 'remeda'
 
@@ -65,7 +65,7 @@ const backgroundColorsWithOpacities = getColorOpacityVariants(
   opacities,
 )
 
-export const gapVar = fallbackVar('0px')
+export const gapVar = createVar()
 
 const brightnessVar = createVar()
 const contrastVar = createVar()
@@ -236,9 +236,9 @@ const boxHoverProperties = defineProperties({
   },
 })
 
-export const boxStyles = createSprinkles(
+export const box = createSprinkles(
   boxBaseProperties,
   boxInteractiveProperties,
   boxHoverProperties,
 )
-export type BoxStyles = Parameters<typeof boxStyles>[0]
+export type BoxStyles = Parameters<typeof box>[0]

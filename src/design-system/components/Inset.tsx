@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, forwardRef } from 'react'
 
 import type { Spacing } from '../tokens'
 import { Box } from './Box'
@@ -16,27 +16,33 @@ type InsetProps = {
   vertical?: Spacing
 }
 
-export function Inset({
-  bottom,
-  children,
-  height,
-  horizontal,
-  left,
-  right,
-  space,
-  top,
-  vertical,
-}: InsetProps) {
-  return (
-    <Box
-      height={height}
-      paddingTop={top ?? vertical ?? space}
-      paddingBottom={bottom ?? vertical ?? space}
-      paddingLeft={left ?? horizontal ?? space}
-      paddingRight={right ?? horizontal ?? space}
-      width='full'
-    >
-      {children}
-    </Box>
-  )
-}
+export const Inset = forwardRef<HTMLDivElement, InsetProps>(
+  (
+    {
+      bottom,
+      children,
+      height,
+      horizontal,
+      left,
+      right,
+      space,
+      top,
+      vertical,
+    }: InsetProps,
+    ref,
+  ) => {
+    return (
+      <Box
+        ref={ref}
+        height={height}
+        paddingTop={top ?? vertical ?? space}
+        paddingBottom={bottom ?? vertical ?? space}
+        paddingLeft={left ?? horizontal ?? space}
+        paddingRight={right ?? horizontal ?? space}
+        width='full'
+      >
+        {children}
+      </Box>
+    )
+  },
+)

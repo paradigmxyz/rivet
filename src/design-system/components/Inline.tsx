@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, forwardRef } from 'react'
 
 import type { Spacing } from '../tokens'
 import { Box } from './Box'
@@ -28,26 +28,32 @@ type InlineProps = {
   wrap?: boolean
 }
 
-export function Inline({
-  alignHorizontal = 'left',
-  alignVertical,
-  children,
-  gap,
-  height,
-  wrap = true,
-}: InlineProps) {
-  return (
-    <Box
-      display='flex'
-      flexDirection='row'
-      flexGrow='1'
-      height={height}
-      alignItems={alignVertical && alignVerticalToAlignItems[alignVertical]}
-      justifyContent={alignHorizontalToJustifyContent[alignHorizontal]}
-      flexWrap={wrap ? 'wrap' : undefined}
-      gap={gap}
-    >
-      {children}
-    </Box>
-  )
-}
+export const Inline = forwardRef<HTMLDivElement, InlineProps>(
+  (
+    {
+      alignHorizontal = 'left',
+      alignVertical,
+      children,
+      gap,
+      height,
+      wrap = true,
+    },
+    ref,
+  ) => {
+    return (
+      <Box
+        ref={ref}
+        display='flex'
+        flexDirection='row'
+        flexGrow='1'
+        height={height}
+        alignItems={alignVertical && alignVerticalToAlignItems[alignVertical]}
+        justifyContent={alignHorizontalToJustifyContent[alignHorizontal]}
+        flexWrap={wrap ? 'wrap' : undefined}
+        gap={gap}
+      >
+        {children}
+      </Box>
+    )
+  },
+)

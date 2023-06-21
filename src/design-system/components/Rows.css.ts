@@ -1,4 +1,4 @@
-import { styleVariants } from '@vanilla-extract/css'
+import { fallbackVar, styleVariants } from '@vanilla-extract/css'
 import { calc } from '@vanilla-extract/css-utils'
 
 import { gapVar } from './Box.css'
@@ -17,8 +17,8 @@ const rowHeights = {
 
 export const height = styleVariants(rowHeights, ([numerator, denominator]) => {
   const gapOffset = calc.subtract(
-    gapVar,
-    calc(gapVar).divide(denominator).multiply(numerator),
+    fallbackVar(gapVar, '0px'),
+    calc(fallbackVar(gapVar, '0px')).divide(denominator).multiply(numerator),
   )
 
   return {

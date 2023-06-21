@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { type ReactNode, forwardRef } from 'react'
 
 import type { NegatedSpacing } from '../tokens'
 import { Box } from './Box'
@@ -14,18 +14,22 @@ type BleedProps = {
   vertical?: NegatedSpacing
 }
 
-export function Bleed({
-  bottom,
-  children,
-  horizontal,
-  left,
-  right,
-  space,
-  top,
-  vertical,
-}: BleedProps) {
+export const Bleed = forwardRef<HTMLDivElement, BleedProps>(function Bleed(
+  {
+    bottom,
+    children,
+    horizontal,
+    left,
+    right,
+    space,
+    top,
+    vertical,
+  }: BleedProps,
+  ref,
+) {
   return (
     <Box
+      ref={ref}
       marginTop={top ?? vertical ?? space}
       marginBottom={bottom ?? vertical ?? space}
       marginLeft={left ?? horizontal ?? space}
@@ -34,4 +38,4 @@ export function Bleed({
       {children}
     </Box>
   )
-}
+})

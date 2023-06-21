@@ -1,6 +1,10 @@
-import { type StrokeWeight, strokeWeights } from '../tokens'
+import { forwardRef } from 'react'
+
+import { type StrokeWeight } from '../tokens'
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
+import * as styles from './Separator.css'
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 export type SeparatorProps = {
   color?: BoxStyles['backgroundColor']
@@ -8,24 +12,25 @@ export type SeparatorProps = {
   strokeWeight?: StrokeWeight
 }
 
-export function Separator({
-  color = 'separator/tertiary',
-  orientation = 'horizontal',
-  strokeWeight = '1px',
-}: SeparatorProps) {
-  return (
-    <Box
-      borderRadius='round'
-      backgroundColor={color}
-      {...(orientation === 'horizontal'
-        ? {
-            style: { height: strokeWeights[strokeWeight] },
-            width: 'full',
-          }
-        : {
-            style: { width: strokeWeights[strokeWeight] },
-            height: 'full',
-          })}
-    />
-  )
-}
+export const Separator = forwardRef<HTMLDivElement, SeparatorProps>(
+  (
+    {
+      color = 'separator/tertiary',
+      orientation = 'horizontal',
+      strokeWeight = '1px',
+    }: SeparatorProps,
+    ref,
+  ) => {
+    return (
+      <Box
+        ref={ref}
+        borderRadius='round'
+        backgroundColor={color}
+        className={styles.orientation[orientation]}
+        style={assignInlineVars({
+          [styles.strokeWeightVar]: strokeWeight,
+        })}
+      />
+    )
+  },
+)

@@ -10,7 +10,8 @@ import {
   type BackgroundColor,
   backgroundColor as backgroundColors,
 } from '../tokens'
-import { type BoxStyles, boxStyles } from './Box.css'
+import { type BoxStyles } from './Box.css'
+import * as styles from './Box.css'
 
 type PolymorphicBox = Polymorphic.ForwardRefComponent<
   'div',
@@ -34,7 +35,7 @@ export const Box = forwardRef(
     const restProps: Record<string, unknown> = {}
 
     for (const key in props) {
-      if (boxStyles.properties.has(key as keyof BoxStyles)) {
+      if (styles.box.properties.has(key as keyof BoxStyles)) {
         boxStyleProps[key] = props[key as keyof typeof props]
       } else {
         restProps[key] = props[key as keyof typeof props]
@@ -98,7 +99,7 @@ export const Box = forwardRef(
             ? resetElements[Component as keyof typeof resetElements]
             : undefined,
           applyColorScheme && colorSchemeClasses,
-          boxStyles(boxStyleProps),
+          styles.box(boxStyleProps),
           className,
         )}
         data-testid={testId}

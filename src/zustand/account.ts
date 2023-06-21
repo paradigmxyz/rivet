@@ -16,7 +16,10 @@ export type AccountState = {
   accounts: readonly Account[]
 }
 export type AccountActions = {
-  accountsForRpcUrl({ rpcUrl }: { rpcUrl: string }): readonly Account[]
+  accountsForRpcUrl({
+    activeFirst,
+    rpcUrl,
+  }: { activeFirst?: boolean; rpcUrl: string }): readonly Account[]
   setAccount({ account }: { account: Account }): void
   setJsonRpcAccounts({
     addresses,
@@ -30,9 +33,17 @@ export const accountStore = createStore<AccountStore>(
     account: undefined,
     accounts: [],
 
-    accountsForRpcUrl({ rpcUrl }) {
-      const { accounts } = get()
-      return accounts.filter((x) => !x.rpcUrl || x.rpcUrl === rpcUrl)
+    accountsForRpcUrl({ activeFirst = false, rpcUrl }) {
+      const { account, accounts } = get()
+      let accounts_ = accounts.filter((x) => !x.rpcUrl || x.rpcUrl === rpcUrl)
+      if (activeFirst)
+        accounts_ = [
+          ...(account ? [account] : []),
+          ...accounts.filter((x) =>
+            account ? x.address !== account.address : true,
+          ),
+        ]
+      return accounts_
     },
     setAccount({ account }) {
       set((state) => {
@@ -55,7 +66,7 @@ export const accountStore = createStore<AccountStore>(
       set((state) => {
         return {
           ...state,
-          account: accounts[0],
+          account: get().account || accounts[0],
           accounts: [
             ...state.accounts.filter((x) => x.rpcUrl !== rpcUrl),
             ...accounts,

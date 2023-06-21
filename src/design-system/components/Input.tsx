@@ -11,7 +11,8 @@ import {
   invalidStyle,
   placeholderStyle,
 } from './Input.css'
-import { type TextStyles, textStyles } from './Text.css'
+import { type TextStyles } from './Text.css'
+import * as styles from './Text.css'
 
 export type InputProps = Omit<
   InputHTMLAttributes<HTMLInputElement>,
@@ -81,7 +82,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           heightStyles[height],
           invalidStyle,
           placeholderStyle,
-          textStyles({
+          styles.text({
             ...textStylesForHeight[height],
           }),
         ]}

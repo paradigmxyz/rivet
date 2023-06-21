@@ -137,7 +137,11 @@ export function setupRpcHandler() {
     if (isInpage && request.method === 'eth_requestAccounts') {
       const { accountsForRpcUrl } = accountStore.getState()
       const { network } = networkStore.getState()
-      const accounts = accountsForRpcUrl({ rpcUrl: network.rpcUrl })
+
+      const accounts = accountsForRpcUrl({
+        activeFirst: true,
+        rpcUrl: network.rpcUrl,
+      })
 
       const host = new URL(meta.sender.url || '').host
       const addresses = accounts.map((x) => x.address) as Address[]
@@ -156,7 +160,11 @@ export function setupRpcHandler() {
     if (isInpage && request.method === 'eth_accounts') {
       const { accountsForRpcUrl } = accountStore.getState()
       const { network } = networkStore.getState()
-      const accounts = accountsForRpcUrl({ rpcUrl: network.rpcUrl })
+
+      const accounts = accountsForRpcUrl({
+        activeFirst: true,
+        rpcUrl: network.rpcUrl,
+      })
 
       const host = new URL(meta.sender.url || '').host
 

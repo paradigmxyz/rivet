@@ -62,8 +62,8 @@ function AccountsChanged() {
         accountsChanged
       </Text>
       <Stack gap='8px'>
-        {accounts.map((x) => (
-          <Text>{JSON.stringify(x)}</Text>
+        {accounts.map((x, i) => (
+          <Text key={i}>{JSON.stringify(x)}</Text>
         ))}
       </Stack>
     </Stack>
@@ -123,7 +123,7 @@ function RequestAccounts() {
         eth_requestAccounts
       </Text>
       {accounts?.map((account) => (
-        <Text>{account}</Text>
+        <Text key={account}>{account}</Text>
       ))}
       <Button onClick={requestAccounts} width='fit'>
         Request
@@ -150,7 +150,7 @@ function Accounts() {
         eth_accounts
       </Text>
       {accounts?.map((account) => (
-        <Text>{account}</Text>
+        <Text key={account}>{account}</Text>
       ))}
     </Stack>
   )
@@ -209,11 +209,14 @@ function SendTransaction() {
 
     setHash(undefined)
     try {
+      const [account] = await window.ethereum!.request({
+        method: 'eth_accounts',
+      })
       const hash = await window.ethereum?.request({
         method: 'eth_sendTransaction',
         params: [
           {
-            from: '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266',
+            from: account,
             to,
             value: numberToHex(parseEther(value)),
           },

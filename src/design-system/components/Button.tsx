@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { forwardRef } from 'react'
 
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
@@ -141,43 +141,52 @@ const textStylesForVariant = {
   'tint red': {},
 } satisfies Record<ButtonVariant, { color?: TextProps['color'] }>
 
-export function Button({
-  as = 'button',
-  children,
-  disabled,
-  height = '36px',
-  href,
-  onClick,
-  variant = 'solid invert',
-  width = 'full',
-}: ButtonProps) {
-  return (
-    <Box
-      as={as}
-      href={href}
-      onClick={onClick}
-      disabled={disabled}
-      className={buttonHeightStyles[height]}
-      cursor={disabled ? 'not-allowed' : 'pointer'}
-      display='flex'
-      alignItems='center'
-      justifyContent='center'
-      hoverable={!disabled}
-      opacity={disabled ? '0.5' : undefined}
-      width={width}
-      transform={
-        disabled
-          ? {}
-          : {
-              hoveractive: 'shrink',
-            }
-      }
-      {...stylesForVariant[variant]}
-      {...stylesForHeight[height]}
-    >
-      <Text {...textStylesForVariant[variant]} {...textStylesForHeight[height]}>
-        {children}
-      </Text>
-    </Box>
-  )
-}
+export const Button = forwardRef<HTMLDivElement, ButtonProps>(
+  (
+    {
+      as = 'button',
+      children,
+      disabled,
+      height = '36px',
+      href,
+      onClick,
+      variant = 'solid invert',
+      width = 'full',
+    }: ButtonProps,
+    ref,
+  ) => {
+    return (
+      <Box
+        ref={ref as any}
+        as={as}
+        href={href}
+        onClick={onClick}
+        disabled={disabled}
+        className={buttonHeightStyles[height]}
+        cursor={disabled ? 'not-allowed' : 'pointer'}
+        display='flex'
+        alignItems='center'
+        justifyContent='center'
+        hoverable={!disabled}
+        opacity={disabled ? '0.5' : undefined}
+        width={width}
+        transform={
+          disabled
+            ? {}
+            : {
+                hoveractive: 'shrink',
+              }
+        }
+        {...stylesForVariant[variant]}
+        {...stylesForHeight[height]}
+      >
+        <Text
+          {...textStylesForVariant[variant]}
+          {...textStylesForHeight[height]}
+        >
+          {children}
+        </Text>
+      </Box>
+    )
+  },
+)

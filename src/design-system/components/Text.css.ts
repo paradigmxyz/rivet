@@ -7,6 +7,7 @@ import {
   inheritedColorVars,
 } from '../styles/theme.css'
 import { fontSize, fontWeight } from '../tokens'
+import { style } from '@vanilla-extract/css'
 
 const textProperties = defineProperties({
   properties: {
@@ -23,5 +24,17 @@ const textProperties = defineProperties({
   },
 })
 
-export const textStyles = createSprinkles(textProperties)
-export type TextStyles = Parameters<typeof textStyles>[0]
+export const text = createSprinkles(textProperties)
+export type TextStyles = Parameters<typeof text>[0]
+
+export const tabular = style({
+  fontVariant: 'tabular-nums',
+  letterSpacing: '0px',
+})
+
+export const nowrap = style({
+  display: 'block',
+  textOverflow: 'ellipsis',
+  overflow: 'hidden',
+  whiteSpace: 'nowrap',
+})

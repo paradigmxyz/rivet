@@ -1,4 +1,4 @@
-import { type ReactNode, createContext, useContext } from 'react'
+import { type ReactNode, createContext, forwardRef, useContext } from 'react'
 import flattenChildren from 'react-flatten-children'
 
 import type { Spacing } from '../tokens'
@@ -30,15 +30,13 @@ export type RowsProps = {
 
 const RowsContext = createContext<{ fit?: boolean }>({ fit: false })
 
-export function Rows({
-  alignHorizontal,
-  alignVertical,
-  children,
-  gap,
-  fit,
-}: RowsProps) {
+export const Rows = forwardRef<HTMLDivElement, RowsProps>(function Rows(
+  { alignHorizontal, alignVertical, children, gap, fit }: RowsProps,
+  ref,
+) {
   return (
     <Box
+      ref={ref}
       display='flex'
       flexDirection='column'
       flexGrow='1'
@@ -66,7 +64,7 @@ export function Rows({
       </RowsContext.Provider>
     </Box>
   )
-}
+})
 
 export type RowProps = {
   alignHorizontal?: AlignHorizontal
