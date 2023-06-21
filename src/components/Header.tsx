@@ -22,16 +22,13 @@ import {
   useMine,
   useNetworkStatus,
 } from '~/hooks'
+import { truncateAddress } from '~/utils'
 import { useAccount, useNetwork, useSessions } from '~/zustand'
 
 import { getMessenger } from '../messengers'
 import * as styles from './Header.css'
 
 const contentMessenger = getMessenger({ connection: 'wallet <> contentScript' })
-
-function truncateAddress(address: string) {
-  return `${address.slice(0, 8)}\u2026${address.slice(-6)}`
-}
 
 export function Header() {
   return (
@@ -310,30 +307,37 @@ function Block() {
 function BlockNumber() {
   const { data: block } = useBlock()
   return (
-    <Inline wrap={false}>
-      <HeaderItem label='Block'>
-        <Text size='12px' tabular>
-          {block?.number?.toString()}
-        </Text>
-      </HeaderItem>
-      <Inset horizontal='2px'>
-        <MineButton />
-      </Inset>
-    </Inline>
+    <Box position='relative'>
+      <Inline wrap={false}>
+        <HeaderItem label='Block'>
+          <Text size='12px' tabular>
+            {block?.number?.toString() ?? '‎'}
+          </Text>
+        </HeaderItem>
+        {block && (
+          <Inset horizontal='2px'>
+            <MineButton />
+          </Inset>
+        )}
+      </Inline>
+    </Box>
   )
 }
 
 function MiningStatus() {
+  const { data: block } = useBlock()
   const { data: automining } = useGetAutomine()
   const { network } = useNetwork()
   return (
     <HeaderItem label='Mining Status'>
       <Text size='12px'>
-        {automining
-          ? 'Automine'
-          : network.blockTime
-          ? `Interval: ${network.blockTime}s`
-          : 'On Demand'}
+        {block
+          ? automining
+            ? 'Automine'
+            : network.blockTime
+            ? `Interval: ${network.blockTime}s`
+            : 'On Demand'
+          : '‎'}
       </Text>
     </HeaderItem>
   )
@@ -343,7 +347,7 @@ function BaseFee() {
   const { data: block } = useBlock()
   return (
     <HeaderItem label='Base Fee'>
-      <Text size='12px'>{block?.baseFeePerGas?.toString()}</Text>
+      <Text size='12px'>{block?.baseFeePerGas?.toString() ?? '‎'}</Text>
     </HeaderItem>
   )
 }

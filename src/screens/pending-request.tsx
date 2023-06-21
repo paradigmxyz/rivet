@@ -5,6 +5,8 @@ import {
   hexToString,
 } from 'viem'
 
+import { useBlockQueryOptions } from '../hooks'
+import { queryClient } from '../react-query'
 import { Container } from '~/components'
 import { Button, Inline, Stack, Text } from '~/design-system'
 import { getMessenger } from '~/messengers'
@@ -15,11 +17,15 @@ const backgroundMessenger = getMessenger({
 })
 
 export default function PendingRequest({ request }: { request: RpcRequest }) {
+  const blockQueryOptions = useBlockQueryOptions()
+
   const handleApprove = async () => {
     await backgroundMessenger.send('pendingRequest', {
       request,
       status: 'approved',
     })
+    if (request.method === 'eth_sendTransaction')
+      queryClient.invalidateQueries(blockQueryOptions)
   }
 
   const handleReject = async () => {

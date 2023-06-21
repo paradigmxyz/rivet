@@ -15,11 +15,13 @@ export function useMine() {
         blocks,
         interval,
       })
-      if (Number(interval) === 0)
+      if (Number(interval) === 0) {
         queryClient.setQueryData(queryKey, (prev: Block | undefined) => ({
           ...prev!,
           number: (prev!.number ?? 0n) + BigInt(blocks),
         }))
+        queryClient.invalidateQueries({ queryKey })
+      }
     },
   })
 }
