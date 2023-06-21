@@ -15,13 +15,8 @@ import {
   Stack,
   Text,
 } from '~/design-system'
-import {
-  useBlock,
-  useGetAutomine,
-  useHost,
-  useMine,
-  useNetworkStatus,
-} from '~/hooks'
+import { useBlock, useGetAutomine, useHost, useNetworkStatus } from '~/hooks'
+import { useMine } from '~/hooks/useMine'
 import { truncateAddress } from '~/utils'
 import { useAccount, useNetwork, useSessions } from '~/zustand'
 
