@@ -15,12 +15,13 @@ import {
   Stack,
   Text,
 } from '~/design-system'
-import { useBlock, useGetAutomine, useHost, useNetworkStatus } from '~/hooks'
+import { useGetAutomine, useHost, useNetworkStatus } from '~/hooks'
+import { useBlock } from '~/hooks/useBlock'
 import { useMine } from '~/hooks/useMine'
+import { getMessenger } from '~/messengers'
 import { truncateAddress } from '~/utils'
 import { useAccount, useNetwork, useSessions } from '~/zustand'
 
-import { getMessenger } from '../messengers'
 import * as styles from './Header.css'
 
 const contentMessenger = getMessenger({ connection: 'wallet <> contentScript' })

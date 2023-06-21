@@ -1,9 +1,14 @@
+// TODO: cleanup
+
+import * as Tabs from '@radix-ui/react-tabs'
 import type { ReactNode } from 'react'
-import { type Address, formatEther } from 'viem'
+import { type Address, formatEther, hexToBigInt } from 'viem'
 
 import { Container } from '~/components'
-import { Box, Columns, Separator, Stack, Text } from '~/design-system'
+import { Box, Columns, Inline, Separator, Stack, Text } from '~/design-system'
 import { useBalance, useNonce } from '~/hooks'
+import { useTxpool } from '~/hooks/useTxpool'
+import { truncateAddress } from '~/utils'
 import { useAccount, useNetwork } from '~/zustand'
 
 import OnboardingStart from './onboarding/start'
@@ -18,30 +23,52 @@ export default function Index() {
 
   if (!onboarded) return <OnboardingStart />
   return (
-    <>
-      <Container header='Accounts'>
-        <Stack gap='16px'>
-          {accounts.map((account) => {
-            return (
-              <>
-                <Box key={account.address}>
-                  <Stack gap='16px'>
-                    <HeaderItem label='Address'>
-                      <Text size='12px'>{account.address}</Text>
-                    </HeaderItem>
-                    <Columns>
-                      <Balance address={account.address} />
-                      <Nonce address={account.address} />
-                    </Columns>
-                  </Stack>
+    <Tabs.Root defaultValue='accounts' asChild>
+      <Container
+        header={
+          <Tabs.List asChild>
+            <Inline gap='12px'>
+              <Tabs.Trigger asChild value='accounts'>
+                <Box cursor='pointer'>
+                  <Text size='16px'>Accounts</Text>
                 </Box>
-                <Separator />
-              </>
-            )
-          })}
-        </Stack>
+              </Tabs.Trigger>
+              <Tabs.Trigger asChild value='txpool'>
+                <Box cursor='pointer'>
+                  <Text size='16px'>Txpool</Text>
+                </Box>
+              </Tabs.Trigger>
+            </Inline>
+          </Tabs.List>
+        }
+      >
+        <Tabs.Content value='accounts'>
+          <Stack gap='16px'>
+            {accounts.map((account) => {
+              return (
+                <>
+                  <Box key={account.address}>
+                    <Stack gap='16px'>
+                      <HeaderItem label='Address'>
+                        <Text size='12px'>{account.address}</Text>
+                      </HeaderItem>
+                      <Columns>
+                        <Balance address={account.address} />
+                        <Nonce address={account.address} />
+                      </Columns>
+                    </Stack>
+                  </Box>
+                  <Separator />
+                </>
+              )
+            })}
+          </Stack>
+        </Tabs.Content>
+        <Tabs.Content value='txpool'>
+          <Txpool />
+        </Tabs.Content>
       </Container>
-    </>
+    </Tabs.Root>
   )
 }
 
@@ -62,6 +89,46 @@ function Nonce({ address }: { address?: Address }) {
     <HeaderItem label='Nonce'>
       {nonce ? <Text size='12px'>{nonce ?? 0}</Text> : null}
     </HeaderItem>
+  )
+}
+
+function Txpool() {
+  const { data: txpool } = useTxpool()
+
+  return (
+    <Stack gap='16px'>
+      {txpool?.pending.length === 0 && (
+        <Text color='text/tertiary'>Txpool is empty</Text>
+      )}
+      {txpool?.pending.map(([account, transactions]) => {
+        return (
+          <>
+            <Box key={account}>
+              <Stack gap='16px'>
+                <HeaderItem label='Account'>
+                  <Text size='12px'>{account}</Text>
+                </HeaderItem>
+                <HeaderItem label='Transactions'>
+                  <Stack gap='12px'>
+                    {transactions.map((transaction) => (
+                      <Inline alignHorizontal='justify'>
+                        <Text size='12px'>
+                          {truncateAddress(transaction.hash)}
+                        </Text>
+                        <Text size='12px'>
+                          {formatEther(hexToBigInt(transaction.value))} ETH
+                        </Text>
+                      </Inline>
+                    ))}
+                  </Stack>
+                </HeaderItem>
+              </Stack>
+            </Box>
+            <Separator />
+          </>
+        )
+      })}
+    </Stack>
   )
 }
 

@@ -5,12 +5,13 @@ import {
   hexToString,
 } from 'viem'
 
-import { useBlockQueryOptions } from '../hooks'
-import { queryClient } from '../react-query'
+import { useTxpoolQueryOptions } from '../hooks/useTxpool'
 import { Container } from '~/components'
 import { Button, Inline, Stack, Text } from '~/design-system'
+import { useBlockQueryOptions } from '~/hooks/useBlock'
 import { getMessenger } from '~/messengers'
 import type { RpcRequest } from '~/messengers/schema'
+import { queryClient } from '~/react-query'
 
 const backgroundMessenger = getMessenger({
   connection: 'background <> wallet',
@@ -18,14 +19,17 @@ const backgroundMessenger = getMessenger({
 
 export default function PendingRequest({ request }: { request: RpcRequest }) {
   const blockQueryOptions = useBlockQueryOptions()
+  const txpoolQueryOptions = useTxpoolQueryOptions()
 
   const handleApprove = async () => {
     await backgroundMessenger.send('pendingRequest', {
       request,
       status: 'approved',
     })
-    if (request.method === 'eth_sendTransaction')
+    if (request.method === 'eth_sendTransaction') {
       queryClient.invalidateQueries(blockQueryOptions)
+      queryClient.invalidateQueries(txpoolQueryOptions)
+    }
   }
 
   const handleReject = async () => {

@@ -1,5 +1,4 @@
 export { useBalance, useBalanceQueryOptions } from './useBalance'
-export { useBlock, useBlockQueryOptions } from './useBlock'
 export { useDebounce } from './useDebounce'
 export { useGetAutomine, useGetAutomineQueryOptions } from './useGetAutomine'
 export { useHost } from './useHost'

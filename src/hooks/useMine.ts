@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
-import type { Block, MineParameters } from 'viem'
+import type { MineParameters } from 'viem'
 
 import { queryClient } from '../react-query'
 import { useBlockQueryOptions } from './useBlock'
@@ -15,13 +15,7 @@ export function useMine() {
         blocks,
         interval,
       })
-      if (Number(interval) === 0) {
-        queryClient.setQueryData(queryKey, (prev: Block | undefined) => ({
-          ...prev!,
-          number: (prev!.number ?? 0n) + BigInt(blocks),
-        }))
-        queryClient.invalidateQueries({ queryKey })
-      }
+      if (Number(interval) === 0) queryClient.invalidateQueries({ queryKey })
     },
   })
 }

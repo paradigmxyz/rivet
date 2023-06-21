@@ -31,11 +31,17 @@ export default function Layout() {
         )}
         <Row>
           <Box style={{ overflowY: 'scroll' }} width='full'>
-            {pendingRequests.length > 0 ? (
+            {pendingRequests.length > 0 && (
               <PendingRequest request={pendingRequest} />
-            ) : (
-              <Outlet />
             )}
+            <Box
+              height='full'
+              style={{
+                visibility: pendingRequests.length > 0 ? 'hidden' : 'visible',
+              }}
+            >
+              <Outlet />
+            </Box>
           </Box>
         </Row>
       </Rows>
