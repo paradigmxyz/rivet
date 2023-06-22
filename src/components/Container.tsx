@@ -17,6 +17,7 @@ export function Container({
   children,
   dismissable,
   header,
+  verticalInset = true,
   fit,
   footer,
 }: {
@@ -24,6 +25,7 @@ export function Container({
   children: ReactNode
   dismissable?: boolean
   header?: string | ReactNode
+  verticalInset?: boolean
   fit?: boolean
   footer?: ReactNode
 }) {
@@ -74,7 +76,7 @@ export function Container({
           )}
           <Box
             paddingHorizontal='12px'
-            paddingVertical={header ? '16px' : '12px'}
+            paddingVertical={verticalInset ? (header ? '16px' : '12px') : '0px'}
             height='full'
             width='full'
           >

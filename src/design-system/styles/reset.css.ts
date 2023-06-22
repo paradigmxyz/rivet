@@ -17,7 +17,6 @@ export const resetBase = style({
       fontSize: '100%',
       font: 'inherit',
       verticalAlign: 'baseline',
-      transition: '0.1s ease',
     },
   },
 })

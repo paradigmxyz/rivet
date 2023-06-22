@@ -36,7 +36,7 @@ export const Text = forwardRef<HTMLDivElement, TextProps>(
       align,
       as = 'div',
       children,
-      color = 'text',
+      color,
       size = '15px',
       style,
       tabular = false,

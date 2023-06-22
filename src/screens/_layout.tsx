@@ -35,10 +35,8 @@ export default function Layout() {
               <PendingRequest request={pendingRequest} />
             )}
             <Box
+              display={pendingRequests.length > 0 ? 'none' : 'block'}
               height='full'
-              style={{
-                visibility: pendingRequests.length > 0 ? 'hidden' : 'visible',
-              }}
             >
               <Outlet />
             </Box>

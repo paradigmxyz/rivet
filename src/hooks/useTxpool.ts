@@ -1,3 +1,4 @@
+import { deepmerge } from '@fastify/deepmerge'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { mapValues } from 'remeda'
 
@@ -14,14 +15,29 @@ export function useTxpoolQueryOptions() {
       return (await testClient.getTxpoolContent()) || null
     },
     select(data) {
-      return {
-        pending: Object.entries(
-          mapValues(data.pending, (x) => Object.values(x).reverse()),
-        ),
-        queued: Object.entries(
-          mapValues(data.queued, (x) => Object.values(x).reverse()),
-        ),
-      }
+      const pending = mapValues(data.pending, (x) =>
+        Object.values(x)
+          .reverse()
+          .map(
+            (transaction) =>
+              ({
+                transaction,
+                type: 'pending',
+              }) as const,
+          ),
+      )
+      const queued = mapValues(data.queued, (x) =>
+        Object.values(x)
+          .reverse()
+          .map(
+            (transaction) =>
+              ({
+                transaction,
+                type: 'queued',
+              }) as const,
+          ),
+      )
+      return Object.entries(deepmerge()(pending, queued))
     },
   })
 }

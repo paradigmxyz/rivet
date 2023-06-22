@@ -1,116 +1,222 @@
-// TODO: cleanup
-
 import * as Tabs from '@radix-ui/react-tabs'
-import { Fragment, type ReactNode } from 'react'
-import { type Address, formatEther, hexToBigInt } from 'viem'
+import { Fragment, type ReactNode, useEffect, useMemo, useState } from 'react'
+import { type Address, formatEther, hexToBigInt, parseEther } from 'viem'
 
-import { Container } from '~/components'
-import { Box, Columns, Inline, Separator, Stack, Text } from '~/design-system'
+import { Container, TabsContent, TabsList } from '~/components'
+import {
+  Bleed,
+  Box,
+  Columns,
+  Inline,
+  Input,
+  SFSymbol,
+  Separator,
+  Stack,
+  Text,
+} from '~/design-system'
 import { useBalance, useNonce } from '~/hooks'
 import { useTxpool } from '~/hooks/useTxpool'
 import { truncateAddress } from '~/utils'
 import { useAccount, useNetwork } from '~/zustand'
 
+import { useSetBalance } from '../hooks/useSetBalance'
+import { useSetNonce } from '../hooks/useSetNonce'
 import OnboardingStart from './onboarding/start'
 
 export default function Index() {
   const { onboarded } = useNetwork()
+  if (!onboarded) return <OnboardingStart />
+  return (
+    <Container verticalInset={false}>
+      <Tabs.Root defaultValue='accounts'>
+        <TabsList
+          items={[
+            { label: 'Accounts', value: 'accounts' },
+            { label: 'Txpool', value: 'txpool' },
+          ]}
+        />
+        <TabsContent inset={false} value='accounts'>
+          <Accounts />
+        </TabsContent>
+        <TabsContent value='txpool'>
+          <Txpool />
+        </TabsContent>
+      </Tabs.Root>
+    </Container>
+  )
+}
+
+////////////////////////////////////////////////////////////////////////
+// Accounts
+
+function Accounts() {
   const {
     network: { rpcUrl },
   } = useNetwork()
-  const { accountsForRpcUrl } = useAccount()
-  const accounts = accountsForRpcUrl({ rpcUrl })
+  const { account: activeAccount, accountsForRpcUrl, setAccount } = useAccount()
+  const accounts = useMemo(
+    () => accountsForRpcUrl({ rpcUrl }),
+    [accountsForRpcUrl, rpcUrl],
+  )
 
-  if (!onboarded) return <OnboardingStart />
   return (
-    <Tabs.Root defaultValue='accounts' asChild>
-      <Container
-        header={
-          <Tabs.List asChild>
-            <Inline gap='12px'>
-              <Tabs.Trigger asChild value='accounts'>
-                <Box cursor='pointer'>
-                  <Text size='16px'>Accounts</Text>
+    <>
+      {accounts.map((account, i) => {
+        const active = activeAccount?.address === account.address
+        return (
+          <Fragment key={i}>
+            <Box
+              backgroundColor={active ? 'surface/fill/tertiary' : undefined}
+              marginHorizontal='-12px'
+              paddingHorizontal='12px'
+              paddingVertical='16px'
+              position='relative'
+            >
+              {active && (
+                <Text
+                  color='text/secondary'
+                  weight='medium'
+                  size='9px'
+                  style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                  }}
+                >
+                  ACTIVE
+                </Text>
+              )}
+              <Stack gap='16px'>
+                <LabelledContent label='Address'>
+                  <Text size='12px'>{account.address}</Text>
+                </LabelledContent>
+                <Columns gap='4px'>
+                  <Balance address={account.address} />
+                  <Nonce address={account.address} />
+                </Columns>
+              </Stack>
+              {!active && (
+                <Box
+                  position='absolute'
+                  style={{ bottom: '12px', right: '12px' }}
+                >
+                  <SwitchButton onClick={() => setAccount({ account })} />
                 </Box>
-              </Tabs.Trigger>
-              <Tabs.Trigger asChild value='txpool'>
-                <Box cursor='pointer'>
-                  <Text size='16px'>Txpool</Text>
-                </Box>
-              </Tabs.Trigger>
-            </Inline>
-          </Tabs.List>
-        }
-      >
-        <Tabs.Content value='accounts'>
-          <Stack gap='16px'>
-            {accounts.map((account) => {
-              return (
-                <Fragment key={account.address}>
-                  <Box>
-                    <Stack gap='16px'>
-                      <HeaderItem label='Address'>
-                        <Text size='12px'>{account.address}</Text>
-                      </HeaderItem>
-                      <Columns>
-                        <Balance address={account.address} />
-                        <Nonce address={account.address} />
-                      </Columns>
-                    </Stack>
-                  </Box>
-                  <Separator />
-                </Fragment>
-              )
-            })}
-          </Stack>
-        </Tabs.Content>
-        <Tabs.Content value='txpool'>
-          <Txpool />
-        </Tabs.Content>
-      </Container>
-    </Tabs.Root>
+              )}
+            </Box>
+            <Box marginHorizontal='-12px'>
+              <Separator />
+            </Box>
+          </Fragment>
+        )
+      })}
+    </>
   )
 }
 
-function Balance({ address }: { address?: Address }) {
+function SwitchButton({ onClick }: { onClick: () => void }) {
+  return (
+    /* TODO: Extract into `IconButton` */
+    <Box
+      as='button'
+      backgroundColor={{
+        hover: 'surface/fill/secondary',
+      }}
+      borderRadius='3px'
+      onClick={onClick}
+      style={{
+        width: '20px',
+        height: '20px',
+      }}
+      transform={{ hoveractive: 'shrink95' }}
+    >
+      <SFSymbol size='11px' symbol='arrow.left.arrow.right' weight='semibold' />
+    </Box>
+  )
+}
+
+function Balance({ address }: { address: Address }) {
   const { data: balance } = useBalance({ address })
+  const { mutate } = useSetBalance()
+
+  const [value, setValue] = useState(balance ? formatEther(balance) : '')
+  useEffect(() => {
+    if (balance) setValue(formatEther(balance))
+  }, [balance])
+
   return (
-    <HeaderItem label='Balance'>
+    <LabelledContent label='Balance (ETH)'>
       {balance ? (
-        <Text size='12px'>{Number(formatEther(balance)).toFixed(5)} ETH</Text>
+        <Bleed top='-2px'>
+          <Input
+            onChange={(e) => setValue(e.target.value)}
+            value={value}
+            onBlur={(e) =>
+              mutate({
+                address,
+                value: parseEther(e.target.value as `${number}`),
+              })
+            }
+            height='20px'
+          />
+        </Bleed>
       ) : null}
-    </HeaderItem>
+    </LabelledContent>
   )
 }
 
-function Nonce({ address }: { address?: Address }) {
+function Nonce({ address }: { address: Address }) {
   const { data: nonce } = useNonce({ address })
+  const { mutate } = useSetNonce()
+
+  const [value, setValue] = useState(nonce ?? '0')
+  useEffect(() => {
+    if (nonce) setValue(nonce ?? '0')
+  }, [nonce])
+
   return (
-    <HeaderItem label='Nonce'>
-      {nonce ? <Text size='12px'>{nonce ?? 0}</Text> : null}
-    </HeaderItem>
+    <LabelledContent label='Nonce'>
+      {nonce ? (
+        <Bleed top='-2px'>
+          <Input
+            onChange={(e) => setValue(e.target.value)}
+            value={value}
+            onBlur={(e) =>
+              mutate({
+                address,
+                nonce: Number(e.target.value),
+              })
+            }
+            height='20px'
+          />
+        </Bleed>
+      ) : null}
+    </LabelledContent>
   )
 }
+
+////////////////////////////////////////////////////////////////////////
+// Txpool
 
 function Txpool() {
   const { data: txpool } = useTxpool()
 
   return (
     <Stack gap='16px'>
-      {txpool?.pending.length === 0 && (
+      {txpool?.length === 0 && (
         <Text color='text/tertiary'>Txpool is empty</Text>
       )}
-      {txpool?.pending.map(([account, transactions]) => {
+      {txpool?.map(([account, transactions]) => {
         return (
           <>
             <Box key={account}>
               <Stack gap='16px'>
-                <HeaderItem label='Account'>
+                <LabelledContent label='Account'>
                   <Text size='12px'>{account}</Text>
-                </HeaderItem>
-                <HeaderItem label='Transactions'>
+                </LabelledContent>
+                <LabelledContent label='Transactions'>
                   <Stack gap='12px'>
-                    {transactions.map((transaction) => (
+                    {transactions.map(({ transaction }) => (
                       <Inline key={transaction.hash} alignHorizontal='justify'>
                         <Text size='12px'>
                           {truncateAddress(transaction.hash)}
@@ -121,7 +227,7 @@ function Txpool() {
                       </Inline>
                     ))}
                   </Stack>
-                </HeaderItem>
+                </LabelledContent>
               </Stack>
             </Box>
             <Separator />
@@ -132,7 +238,7 @@ function Txpool() {
   )
 }
 
-function HeaderItem({
+function LabelledContent({
   children,
   label,
 }: { children: ReactNode; label: string }) {

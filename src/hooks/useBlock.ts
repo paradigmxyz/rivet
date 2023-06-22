@@ -25,6 +25,7 @@ export function useBlockQueryOptions() {
         return prevBlock || null
 
       queryClient.invalidateQueries({ queryKey: ['balance'] })
+      queryClient.invalidateQueries({ queryKey: ['nonce'] })
       queryClient.invalidateQueries({ queryKey: ['txpool'] })
       return (await publicClient.getBlock({ blockNumber })) || null
     },

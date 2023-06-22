@@ -49,12 +49,18 @@ export const stylesForState = {
 } satisfies Record<InputState, BoxStyles>
 
 export const stylesForHeight = {
+  '20px': {
+    paddingHorizontal: '4px',
+  },
   '36px': {
     paddingHorizontal: '12px',
   },
 } satisfies Record<InputHeight, BoxStyles>
 
 export const textStylesForHeight = {
+  '20px': {
+    fontSize: '11px',
+  },
   '36px': {
     fontSize: '15px',
   },

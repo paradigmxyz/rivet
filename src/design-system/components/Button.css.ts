@@ -1,6 +1,7 @@
 import { styleVariants } from '@vanilla-extract/css'
 
 const buttonHeight = {
+  '20px': 20,
   '36px': 36,
   '44px': 44,
 } as const
