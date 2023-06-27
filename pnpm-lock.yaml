@@ -5,11 +5,6 @@ patchedDependencies:
     hash: blhk2ionup5caiiqs4b7rh47wy
     path: patches/@samrum__vite-plugin-web-extension@4.1.0.patch
 
-dependencies:
-  '@fastify/deepmerge':
-    specifier: ^1.3.0
-    version: 1.3.0
-
 devDependencies:
   '@capsizecss/core':
     specifier: ^3.1.0
@@ -17,6 +12,9 @@ devDependencies:
   '@capsizecss/vanilla-extract':
     specifier: ^1.0.0
     version: 1.0.0(@vanilla-extract/css@1.11.0)
+  '@fastify/deepmerge':
+    specifier: ^1.3.0
+    version: 1.3.0
   '@radix-ui/react-checkbox':
     specifier: ^1.0.4
     version: 1.0.4(@types/react-dom@18.0.11)(@types/react@18.0.32)(react-dom@18.2.0)(react@18.2.0)
@@ -917,7 +915,7 @@ packages:
 
   /@fastify/deepmerge@1.3.0:
     resolution: {integrity: sha512-J8TOSBq3SoZbDhM9+R/u77hP93gz/rajSA+K2kGyijPpORPWUXHUpTaleoj+92As0S9uPRP7Oi8IqMf0u+ro6A==}
-    dev: false
+    dev: true
 
   /@fluent/syntax@0.19.0:
     resolution: {integrity: sha512-5D2qVpZrgpjtqU4eNOcWGp1gnUCgjfM+vKGE2y03kKN6z5EBhtx0qdRFbg8QuNNj8wXNoX93KJoYb+NqoxswmQ==}
