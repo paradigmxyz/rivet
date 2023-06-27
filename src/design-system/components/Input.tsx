@@ -11,7 +11,7 @@ import {
   invalidStyle,
   placeholderStyle,
 } from './Input.css'
-import { type TextStyles } from './Text.css'
+import type { TextStyles } from './Text.css'
 import * as styles from './Text.css'
 
 export type InputProps = Omit<

@@ -10,7 +10,7 @@ import {
   type BackgroundColor,
   backgroundColor as backgroundColors,
 } from '../tokens'
-import { type BoxStyles } from './Box.css'
+import type { BoxStyles } from './Box.css'
 import * as styles from './Box.css'
 
 type PolymorphicBox = Polymorphic.ForwardRefComponent<

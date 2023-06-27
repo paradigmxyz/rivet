@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 
-import { type StrokeWeight } from '../tokens'
+import type { StrokeWeight } from '../tokens'
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
 import * as styles from './Separator.css'
