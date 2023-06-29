@@ -7,7 +7,9 @@ import { useNetwork } from '~/zustand'
 import { useNetworkStatus } from './useNetworkStatus'
 import { usePublicClient } from './usePublicClient'
 
-export function useBlockQueryOptions() {
+export function useBlockQueryOptions({
+  refetchInterval,
+}: { refetchInterval?: number } = {}) {
   const { network } = useNetwork()
   const { data: chainId } = useNetworkStatus()
   const publicClient = usePublicClient()
@@ -27,14 +29,26 @@ export function useBlockQueryOptions() {
       queryClient.invalidateQueries({ queryKey: ['balance'] })
       queryClient.invalidateQueries({ queryKey: ['nonce'] })
       queryClient.invalidateQueries({ queryKey: ['txpool'] })
-      return (await publicClient.getBlock({ blockNumber })) || null
+
+      const block = await publicClient.getBlock({ blockNumber })
+
+      queryClient.setQueryData(['blocks', publicClient.key], (data: any) => {
+        if (data?.pages?.[0]) {
+          data.pages[0].unshift(block)
+          return data
+        }
+      })
+
+      return block || null
     },
     gcTime: 0,
-    refetchInterval: network.blockTime * 1_000 || 4_000,
+    refetchInterval: refetchInterval ?? (network.blockTime * 1_000 || 4_000),
   }
 }
 
-export function useBlock() {
-  const queryOptions = useBlockQueryOptions()
+export function useBlock({
+  refetchInterval,
+}: { refetchInterval?: number } = {}) {
+  const queryOptions = useBlockQueryOptions({ refetchInterval })
   return useQuery(queryOptions)
 }

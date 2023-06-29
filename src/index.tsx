@@ -8,8 +8,9 @@ import { getTheme, setTheme } from '~/design-system'
 import '~/design-system/styles/global.css'
 import { useNetworkStatus, useWalletClient } from '~/hooks'
 import { useBlock } from '~/hooks/useBlock'
+import { usePrevious } from '~/hooks/usePrevious'
 import { getMessenger } from '~/messengers'
-import { QueryClientProvider } from '~/react-query'
+import { QueryClientProvider, queryClient } from '~/react-query'
 import { deepEqual } from '~/utils'
 import {
   type AccountState,
@@ -189,6 +190,15 @@ function SyncJsonRpcAccounts() {
 
 /** Keeps network in sync (+ ensure chain id is up-to-date). */
 function SyncNetwork() {
-  useNetworkStatus()
+  const { data: listening } = useNetworkStatus()
+
+  const prevListening = usePrevious(listening)
+  useEffect(() => {
+    // Reset blocks query when node comes back online.
+    if (!prevListening && listening) {
+      queryClient.resetQueries({ queryKey: ['blocks'] })
+    }
+  }, [prevListening, listening])
+
   return null
 }

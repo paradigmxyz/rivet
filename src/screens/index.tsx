@@ -1,26 +1,38 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { Fragment, type ReactNode, useEffect, useMemo, useState } from 'react'
-import { type Address, formatEther, hexToBigInt, parseEther } from 'viem'
+import {
+  type Address,
+  type Block,
+  formatEther,
+  hexToBigInt,
+  parseEther,
+} from 'viem'
 
 import { Container, TabsContent, TabsList } from '~/components'
 import {
   Bleed,
   Box,
+  Button,
   Columns,
   Inline,
   Input,
+  Inset,
   SFSymbol,
   Separator,
   Stack,
   Text,
 } from '~/design-system'
 import { useBalance, useNonce } from '~/hooks'
+import { useBlock } from '~/hooks/useBlock'
+import { useBlocks } from '~/hooks/useBlocks'
+import { usePrevious } from '~/hooks/usePrevious'
+import { useSetBalance } from '~/hooks/useSetBalance'
+import { useSetNonce } from '~/hooks/useSetNonce'
 import { useTxpool } from '~/hooks/useTxpool'
 import { truncateAddress } from '~/utils'
 import { useAccount, useNetwork } from '~/zustand'
 
-import { useSetBalance } from '../hooks/useSetBalance'
-import { useSetNonce } from '../hooks/useSetNonce'
+import * as styles from './index.css'
 import OnboardingStart from './onboarding/start'
 
 export default function Index() {
@@ -32,11 +44,15 @@ export default function Index() {
         <TabsList
           items={[
             { label: 'Accounts', value: 'accounts' },
+            { label: 'Blocks', value: 'blocks' },
             { label: 'Txpool', value: 'txpool' },
           ]}
         />
         <TabsContent inset={false} value='accounts'>
           <Accounts />
+        </TabsContent>
+        <TabsContent inset={false} value='blocks'>
+          <Blocks />
         </TabsContent>
         <TabsContent value='txpool'>
           <Txpool />
@@ -199,6 +215,105 @@ function Nonce({ address }: { address: Address }) {
 }
 
 ////////////////////////////////////////////////////////////////////////
+// Accounts
+
+function Blocks() {
+  const { data: block } = useBlock()
+  const prevBlock = usePrevious(block)
+
+  const { data: infiniteBlocks, fetchNextPage } = useBlocks()
+  const blocks = useMemo(
+    () => infiniteBlocks?.pages.flat() as Block[] | undefined,
+    [infiniteBlocks],
+  )
+
+  const { data: txpool } = useTxpool()
+  const txpoolTransactions = useMemo(
+    () =>
+      txpool?.reduce((acc, [_, transactions]) => acc + transactions.length, 0),
+    [txpool],
+  )
+
+  return (
+    <>
+      <Box
+        marginHorizontal='-12px'
+        paddingHorizontal='12px'
+        paddingVertical='12px'
+        position='relative'
+      >
+        <Inline wrap={false}>
+          <LabelledContent label='Block'>
+            <Box style={{ width: '80px' }}>
+              {Boolean(block?.number) && (
+                <Text size='12px'>{(block?.number! + 1n).toString()}</Text>
+              )}
+            </Box>
+          </LabelledContent>
+          <LabelledContent label='Timestamp'>
+            <Box style={{ width: '148px' }}>
+              <Text color='text/tertiary' size='12px'>
+                Pending
+              </Text>
+            </Box>
+          </LabelledContent>
+          <LabelledContent label='Transactions'>
+            <Text size='12px'>{txpoolTransactions}</Text>
+          </LabelledContent>
+        </Inline>
+      </Box>
+      <Box marginHorizontal='-12px'>
+        <Separator />
+      </Box>
+      {blocks?.map((block, i) => (
+        <Fragment key={block.number!.toString()}>
+          <Box
+            // TODO: fix flash
+            className={i === 0 && prevBlock && styles.mineBackground}
+            marginHorizontal='-12px'
+            paddingHorizontal='12px'
+            paddingVertical='12px'
+            position='relative'
+          >
+            <Inline wrap={false}>
+              <LabelledContent label='Block'>
+                <Box style={{ width: '80px' }}>
+                  <Text size='12px'>{block.number!.toString()}</Text>
+                </Box>
+              </LabelledContent>
+              <LabelledContent label='Timestamp'>
+                <Box style={{ width: '148px' }}>
+                  <Text size='12px'>
+                    {new Date(
+                      Number(block.timestamp! * 1000n),
+                    ).toLocaleString()}
+                  </Text>
+                </Box>
+              </LabelledContent>
+              <LabelledContent label='Transactions'>
+                <Text size='12px'>{block.transactions.length}</Text>
+              </LabelledContent>
+            </Inline>
+          </Box>
+          <Box marginHorizontal='-12px'>
+            <Separator />
+          </Box>
+        </Fragment>
+      ))}
+      <Inset vertical='12px'>
+        <Button
+          onClick={() => fetchNextPage()}
+          variant='stroked fill'
+          width='fit'
+        >
+          Load more
+        </Button>
+      </Inset>
+    </>
+  )
+}
+
+////////////////////////////////////////////////////////////////////////
 // Txpool
 
 function Txpool() {
@@ -246,7 +361,7 @@ function LabelledContent({
   label,
 }: { children: ReactNode; label: string }) {
   return (
-    <Stack gap='8px'>
+    <Stack gap='8px' width='fit'>
       <Text color='text/tertiary' size='9px' wrap={false}>
         {label.toUpperCase()}
       </Text>

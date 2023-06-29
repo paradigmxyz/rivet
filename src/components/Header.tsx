@@ -307,7 +307,7 @@ function BlockNumber() {
       <Inline wrap={false}>
         <HeaderItem label='Block'>
           <Text size='12px' tabular>
-            {block?.number?.toString() ?? '‎'}
+            {block?.number ? (block?.number + 1n).toString() : '‎'}
           </Text>
         </HeaderItem>
         {block && (
