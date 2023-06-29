@@ -21,6 +21,7 @@ export type Schema = {
     payload: { request: RpcRequest; status: 'approved' | 'rejected' },
     response: void,
   ]
+  ping: [payload: void, response: string]
   request: [
     payload: { request: RpcRequest; rpcUrl?: string },
     response: RpcResponse,

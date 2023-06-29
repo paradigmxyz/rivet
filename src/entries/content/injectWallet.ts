@@ -5,6 +5,11 @@ const backgroundMessenger = getMessenger({
   connection: 'background <> contentScript',
 })
 
+backgroundMessenger.send('ping', undefined)
+setInterval(() => {
+  backgroundMessenger.send('ping', undefined)
+}, 5000)
+
 export async function injectWallet() {
   const extensionId: string = await backgroundMessenger.send(
     'extensionId',

@@ -92,13 +92,15 @@ function Accounts() {
                 </LabelledContent>
                 <Columns gap='4px'>
                   <Balance address={account.address} />
-                  <Nonce address={account.address} />
+                  <Box style={{ width: '50px' }}>
+                    <Nonce address={account.address} />
+                  </Box>
                 </Columns>
               </Stack>
               {!active && (
                 <Box
                   position='absolute'
-                  style={{ bottom: '12px', right: '12px' }}
+                  style={{ bottom: '16px', right: '12px' }}
                 >
                   <SwitchButton onClick={() => setAccount({ account })} />
                 </Box>
@@ -120,9 +122,10 @@ function SwitchButton({ onClick }: { onClick: () => void }) {
     <Box
       as='button'
       backgroundColor={{
-        hover: 'surface/fill/secondary',
+        hover: 'surface/fill/tertiary',
       }}
-      borderRadius='3px'
+      borderColor='surface/invert@0.2'
+      borderWidth='1px'
       onClick={onClick}
       style={{
         width: '20px',
