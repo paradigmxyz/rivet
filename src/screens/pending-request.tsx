@@ -5,10 +5,11 @@ import {
   hexToString,
 } from 'viem'
 
-import { useTxpoolQueryOptions } from '../hooks/useTxpool'
 import { Container } from '~/components'
 import { Button, Inline, Stack, Text } from '~/design-system'
 import { useBlockQueryOptions } from '~/hooks/useBlock'
+import { useCurrentBlockQueryOptions } from '~/hooks/useCurrentBlock'
+import { useTxpoolQueryOptions } from '~/hooks/useTxpool'
 import { getMessenger } from '~/messengers'
 import type { RpcRequest } from '~/messengers/schema'
 import { queryClient } from '~/react-query'
@@ -18,7 +19,8 @@ const backgroundMessenger = getMessenger({
 })
 
 export default function PendingRequest({ request }: { request: RpcRequest }) {
-  const blockQueryOptions = useBlockQueryOptions()
+  const blockQueryOptions = useBlockQueryOptions({ blockTag: 'pending' })
+  const currentBlockQueryOptions = useCurrentBlockQueryOptions()
   const txpoolQueryOptions = useTxpoolQueryOptions()
 
   const handleApprove = async () => {
@@ -28,6 +30,7 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
     })
     if (request.method === 'eth_sendTransaction') {
       queryClient.invalidateQueries(blockQueryOptions)
+      queryClient.invalidateQueries(currentBlockQueryOptions)
       queryClient.invalidateQueries(txpoolQueryOptions)
     }
   }

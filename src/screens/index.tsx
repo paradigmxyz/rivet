@@ -25,6 +25,7 @@ import {
 import { useBalance, useNonce } from '~/hooks'
 import { useBlock } from '~/hooks/useBlock'
 import { useBlocks } from '~/hooks/useBlocks'
+import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { usePrevious } from '~/hooks/usePrevious'
 import { useSetBalance } from '~/hooks/useSetBalance'
 import { useSetNonce } from '~/hooks/useSetNonce'
@@ -218,21 +219,13 @@ function Nonce({ address }: { address: Address }) {
 // Accounts
 
 function Blocks() {
-  const { data: block } = useBlock()
+  const { data: block } = useCurrentBlock()
   const prevBlock = usePrevious(block)
 
   const { data: infiniteBlocks, fetchNextPage } = useBlocks()
-  const blocks = useMemo(
-    () => infiniteBlocks?.pages.flat() as Block[] | undefined,
-    [infiniteBlocks],
-  )
+  const blocks = infiniteBlocks?.pages.flat() as Block[] | undefined
 
-  const { data: txpool } = useTxpool()
-  const txpoolTransactions = useMemo(
-    () =>
-      txpool?.reduce((acc, [_, transactions]) => acc + transactions.length, 0),
-    [txpool],
-  )
+  const { data: pendingBlock } = useBlock({ blockTag: 'pending' })
 
   return (
     <>
@@ -245,8 +238,8 @@ function Blocks() {
         <Inline wrap={false}>
           <LabelledContent label='Block'>
             <Box style={{ width: '80px' }}>
-              {Boolean(block?.number) && (
-                <Text size='12px'>{(block?.number! + 1n).toString()}</Text>
+              {Boolean(pendingBlock?.number) && (
+                <Text size='12px'>{pendingBlock?.number?.toString()}</Text>
               )}
             </Box>
           </LabelledContent>
@@ -258,7 +251,7 @@ function Blocks() {
             </Box>
           </LabelledContent>
           <LabelledContent label='Transactions'>
-            <Text size='12px'>{txpoolTransactions}</Text>
+            <Text size='12px'>{pendingBlock?.transactions.length}</Text>
           </LabelledContent>
         </Inline>
       </Box>

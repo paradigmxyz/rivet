@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form'
 import { Container } from '~/components'
 import { Button, Inline, Input, Separator, Stack, Text } from '~/design-system'
 import { useGetAutomine, useTestClient } from '~/hooks'
-import { useBlock } from '~/hooks/useBlock'
+import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { useMine } from '~/hooks/useMine'
 import { useSetAutomine } from '~/hooks/useSetAutomine'
 import { useSetIntervalMining } from '~/hooks/useSetIntervalMining'
@@ -154,7 +154,7 @@ function Mine() {
 }
 
 function Reset() {
-  const { data: block } = useBlock()
+  const { data: block } = useCurrentBlock()
   const { network } = useNetwork()
 
   const testClient = useTestClient()

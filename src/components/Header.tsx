@@ -16,7 +16,7 @@ import {
   Text,
 } from '~/design-system'
 import { useGetAutomine, useHost, useNetworkStatus } from '~/hooks'
-import { useBlock } from '~/hooks/useBlock'
+import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { useMine } from '~/hooks/useMine'
 import { getMessenger } from '~/messengers'
 import { truncateAddress } from '~/utils'
@@ -301,7 +301,7 @@ function Block() {
 }
 
 function BlockNumber() {
-  const { data: block } = useBlock()
+  const { data: block } = useCurrentBlock()
   return (
     <Box position='relative'>
       <Inline wrap={false}>
@@ -321,7 +321,7 @@ function BlockNumber() {
 }
 
 function MiningStatus() {
-  const { data: block } = useBlock()
+  const { data: block } = useCurrentBlock()
   const { data: automining } = useGetAutomine()
   const { network } = useNetwork()
   return (
@@ -340,7 +340,7 @@ function MiningStatus() {
 }
 
 function BaseFee() {
-  const { data: block } = useBlock()
+  const { data: block } = useCurrentBlock()
   return (
     <HeaderItem label='Base Fee'>
       <Text size='12px'>{block?.baseFeePerGas?.toString() ?? '‎'}</Text>
@@ -349,7 +349,7 @@ function BaseFee() {
 }
 
 function MineButton() {
-  const { data: block } = useBlock()
+  const { data: block } = useCurrentBlock()
   const { mutateAsync: mine } = useMine()
 
   return (

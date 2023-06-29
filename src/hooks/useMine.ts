@@ -1,13 +1,14 @@
 import { useMutation } from '@tanstack/react-query'
 import type { MineParameters } from 'viem'
 
-import { queryClient } from '../react-query'
-import { useBlockQueryOptions } from './useBlock'
+import { queryClient } from '~/react-query'
+
+import { useCurrentBlockQueryOptions } from './useCurrentBlock'
 import { useTestClient } from './useTestClient'
 
 export function useMine() {
   const testClient = useTestClient()
-  const { queryKey } = useBlockQueryOptions()
+  const { queryKey } = useCurrentBlockQueryOptions()
 
   return useMutation({
     mutationFn: async ({ blocks, interval = 0 }: MineParameters) => {

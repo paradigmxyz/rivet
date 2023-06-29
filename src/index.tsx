@@ -7,7 +7,7 @@ import { numberToHex } from 'viem'
 import { getTheme, setTheme } from '~/design-system'
 import '~/design-system/styles/global.css'
 import { useNetworkStatus, useWalletClient } from '~/hooks'
-import { useBlock } from '~/hooks/useBlock'
+import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { usePrevious } from '~/hooks/usePrevious'
 import { getMessenger } from '~/messengers'
 import { QueryClientProvider, queryClient } from '~/react-query'
@@ -167,7 +167,7 @@ function NetworkChangedEmitter() {
 
 /** Keeps block number in sync. */
 function SyncBlockNumber() {
-  useBlock()
+  useCurrentBlock()
   return null
 }
 
