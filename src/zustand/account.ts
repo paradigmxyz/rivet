@@ -8,8 +8,11 @@ import { createStore } from './utils'
 // for Private Key/HD Accounts.
 type JsonRpcAccount = JsonRpcAccount_ & {
   rpcUrl: string
+  impersonate?: boolean
 }
-export type Account = JsonRpcAccount
+export type Account = JsonRpcAccount & {
+  displayName?: string
+}
 
 export type AccountState = {
   account?: Account
@@ -20,6 +23,8 @@ export type AccountActions = {
     activeFirst,
     rpcUrl,
   }: { activeFirst?: boolean; rpcUrl: string }): readonly Account[]
+  addAccount({ account }: { account: Account }): void
+  removeAccount({ account }: { account: Account }): void
   setAccount({ account }: { account: Account }): void
   setJsonRpcAccounts({
     addresses,
@@ -45,6 +50,35 @@ export const accountStore = createStore<AccountStore>(
         ]
       return accounts_
     },
+    addAccount({ account }) {
+      const { accounts } = get()
+      if (
+        accounts.some(
+          (x) => x.address === account.address && x.rpcUrl === account.rpcUrl,
+        )
+      )
+        return
+      set((state) => ({
+        accounts: [account, ...state.accounts],
+      }))
+    },
+    removeAccount({ account }) {
+      set((state) => {
+        const accounts = state.accounts.filter(
+          (x) => x.address !== account.address,
+        )
+        const account_ =
+          state.account?.address === account.address
+            ? accounts[0]
+            : state.account
+        console.log(account_, state.account?.address, account.address)
+        return {
+          ...state,
+          account: account_,
+          accounts,
+        }
+      })
+    },
     setAccount({ account }) {
       set((state) => {
         return {
@@ -68,7 +102,9 @@ export const accountStore = createStore<AccountStore>(
           ...state,
           account: get().account || accounts[0],
           accounts: [
-            ...state.accounts.filter((x) => x.rpcUrl !== rpcUrl),
+            ...state.accounts.filter(
+              (x) => x.rpcUrl !== rpcUrl || x.impersonate,
+            ),
             ...accounts,
           ],
         }
@@ -83,5 +119,5 @@ export const accountStore = createStore<AccountStore>(
   },
 )
 
-export const useAccount = () =>
+export const useAccountStore = () =>
   useSyncExternalStoreWithTracked(accountStore.subscribe, accountStore.getState)

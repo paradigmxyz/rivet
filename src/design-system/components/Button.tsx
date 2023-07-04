@@ -37,8 +37,8 @@ type ButtonProps = {
 )
 
 const stylesForHeight = {
-  '20px': {
-    paddingHorizontal: '8px',
+  '24px': {
+    paddingHorizontal: '6px',
   },
   '36px': {
     paddingHorizontal: '12px',
@@ -113,7 +113,7 @@ const stylesForVariant = {
 } satisfies Record<ButtonVariant, BoxStyles>
 
 const textStylesForHeight = {
-  '20px': {
+  '24px': {
     size: '11px',
   },
   '36px': {

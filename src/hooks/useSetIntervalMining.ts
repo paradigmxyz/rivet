@@ -1,13 +1,13 @@
 import { useMutation } from '@tanstack/react-query'
 import type { SetIntervalMiningParameters } from 'viem'
 
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 import { useSetAutomine } from './useSetAutomine'
 import { useTestClient } from './useTestClient'
 
 export function useSetIntervalMining() {
-  const { network, upsertNetwork } = useNetwork()
+  const { network, upsertNetwork } = useNetworkStore()
   const testClient = useTestClient()
   const { mutateAsync: setAutomine } = useSetAutomine()
 

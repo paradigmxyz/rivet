@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
 import { getTestClient } from '~/viem'
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 export function useTestClient() {
   const {
     network: { rpcUrl },
-  } = useNetwork()
+  } = useNetworkStore()
   return useMemo(() => getTestClient({ rpcUrl }), [rpcUrl])
 }

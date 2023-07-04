@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 import type { Block } from 'viem'
 
 import { queryClient } from '~/react-query'
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 import { useBlockQueryOptions } from './useBlock'
 import { useNetworkStatus } from './useNetworkStatus'
@@ -12,7 +12,7 @@ export function useCurrentBlockQueryOptions({
   refetchInterval,
 }: { refetchInterval?: number } = {}) {
   const pendingBlockQueryOptions = useBlockQueryOptions({ blockTag: 'pending' })
-  const { network } = useNetwork()
+  const { network } = useNetworkStore()
   const { data: chainId } = useNetworkStatus()
   const publicClient = usePublicClient()
 

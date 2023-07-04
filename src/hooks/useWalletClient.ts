@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
 import { getWalletClient } from '~/viem'
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 export function useWalletClient() {
   const {
     network: { rpcUrl },
-  } = useNetwork()
+  } = useNetworkStore()
   return useMemo(() => getWalletClient({ rpcUrl }), [rpcUrl])
 }

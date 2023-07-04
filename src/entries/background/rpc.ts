@@ -147,7 +147,7 @@ export function setupRpcHandler() {
       const addresses = accounts.map((x) => x.address) as Address[]
 
       const { addSession } = sessionsStore.getState()
-      addSession({ session: { host, addresses } })
+      addSession({ session: { host } })
       inpageMessenger.send('connect', { chainId: numberToHex(network.chainId) })
 
       return {

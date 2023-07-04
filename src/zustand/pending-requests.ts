@@ -38,7 +38,7 @@ export const pendingRequestsStore = createStore<PendingRequestsStore>(
   },
 )
 
-export const usePendingRequests = () =>
+export const usePendingRequestsStore = () =>
   useSyncExternalStoreWithTracked(
     pendingRequestsStore.subscribe,
     pendingRequestsStore.getState,

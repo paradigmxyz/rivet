@@ -454,6 +454,7 @@ export const spacing = {
   '1px': '1px',
   '2px': '0.125rem',
   '4px': '0.25rem',
+  '6px': '0.325rem',
   '8px': '0.5rem',
   '12px': '0.75rem',
   '16px': '1rem',
@@ -491,6 +492,7 @@ export const negatedSpacing = {
   '-1px': '-1px',
   '-2px': '-0.125rem',
   '-4px': '-0.25rem',
+  '-6px': '-0.325rem',
   '-8px': '-0.5rem',
   '-12px': '-0.75rem',
   '-16px': '-1rem',
@@ -559,6 +561,7 @@ export const symbolNames = [
   'person.circle',
   'chevron.down',
   'chevron.right.2',
+  'trash',
   'xmark',
 ] as const
 export type SymbolName = typeof symbolNames[number]

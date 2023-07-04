@@ -6,11 +6,11 @@ import { OnboardingContainer, Progress } from '~/components'
 import { Cog } from '~/components/svgs'
 import { Box, Row, Rows, Stack, Text } from '~/design-system'
 import { useNetworkStatus } from '~/hooks'
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 export default function OnboardingDeploy() {
   const navigate = useNavigate()
-  const { setOnboarded, upsertNetwork } = useNetwork()
+  const { setOnboarded, upsertNetwork } = useNetworkStore()
 
   const [searchParams] = useSearchParams()
   const params = Array.from(searchParams.entries()).reduce(

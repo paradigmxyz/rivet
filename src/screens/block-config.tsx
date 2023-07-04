@@ -8,12 +8,12 @@ import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { useMine } from '~/hooks/useMine'
 import { useSetAutomine } from '~/hooks/useSetAutomine'
 import { useSetIntervalMining } from '~/hooks/useSetIntervalMining'
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 import OnboardingStart from './onboarding/start'
 
 export default function Block() {
-  const { onboarded } = useNetwork()
+  const { onboarded } = useNetworkStore()
   if (!onboarded) return <OnboardingStart />
   return (
     <>
@@ -47,7 +47,7 @@ function AutoMining() {
 }
 
 function IntervalMining() {
-  const { network } = useNetwork()
+  const { network } = useNetworkStore()
   const { mutate: setIntervalMining, mutateAsync: setIntervalMiningAsync } =
     useSetIntervalMining()
 
@@ -155,7 +155,7 @@ function Mine() {
 
 function Reset() {
   const { data: block } = useCurrentBlock()
-  const { network } = useNetwork()
+  const { network } = useNetworkStore()
 
   const testClient = useTestClient()
   const { mutate: reset } = useMutation({

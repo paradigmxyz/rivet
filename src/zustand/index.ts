@@ -3,7 +3,7 @@ export {
   type AccountState,
   type AccountStore,
   accountStore,
-  useAccount,
+  useAccountStore,
 } from './account'
 
 export {
@@ -11,7 +11,7 @@ export {
   type NetworkState,
   type NetworkStore,
   networkStore,
-  useNetwork,
+  useNetworkStore,
 } from './network'
 
 export {
@@ -19,7 +19,7 @@ export {
   type PendingRequestsState,
   type PendingRequestsStore,
   pendingRequestsStore,
-  usePendingRequests,
+  usePendingRequestsStore,
 } from './pending-requests'
 
 export {
@@ -27,7 +27,7 @@ export {
   type SessionsState,
   type SessionsStore,
   sessionsStore,
-  useSessions,
+  useSessionsStore,
 } from './sessions'
 
 export { syncStores } from './utils'

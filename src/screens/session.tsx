@@ -3,13 +3,13 @@ import { Container } from '~/components'
 import { Box, Button } from '~/design-system'
 import { useHost } from '~/hooks'
 import { getMessenger } from '~/messengers'
-import { useSessions } from '~/zustand'
+import { useSessionsStore } from '~/zustand'
 
 const inpageMessenger = getMessenger({ connection: 'wallet <> inpage' })
 
 export default function Session() {
   const { data: host } = useHost()
-  const { sessions } = useSessions()
+  const { sessions } = useSessionsStore()
   const isConnected = Boolean(host && sessions[host])
 
   return (

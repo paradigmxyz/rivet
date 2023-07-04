@@ -1,6 +1,6 @@
 import * as Tabs_ from '@radix-ui/react-tabs'
 
-import { Box, Inline, Separator, Text } from '~/design-system'
+import { Bleed, Box, Inline, Separator, Text } from '~/design-system'
 
 import * as styles from './TabsList.css'
 
@@ -36,7 +36,9 @@ export function TabsList({ items }: TabsListProps) {
           ))}
         </Inline>
       </Tabs_.List>
-      <Separator />
+      <Bleed horizontal='-12px'>
+        <Separator />
+      </Bleed>
     </>
   )
 }

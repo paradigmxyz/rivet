@@ -20,7 +20,7 @@ import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { useMine } from '~/hooks/useMine'
 import { getMessenger } from '~/messengers'
 import { truncateAddress } from '~/utils'
-import { useAccount, useNetwork, useSessions } from '~/zustand'
+import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 
 import * as styles from './Header.css'
 
@@ -112,10 +112,10 @@ function HomeButton() {
 }
 
 function Account() {
-  const { account } = useAccount()
+  const { account } = useAccountStore()
   if (!account) return null
   return (
-    <Link to='accounts' style={{ height: '100%' }}>
+    <Link to='account-config' style={{ height: '100%' }}>
       <Box
         alignItems='center'
         backgroundColor={{
@@ -139,7 +139,7 @@ function Account() {
 
 function DappConnection() {
   const { data: host } = useHost()
-  const { sessions } = useSessions()
+  const { sessions } = useSessionsStore()
   const isConnected = Boolean(host && sessions[host])
 
   return (
@@ -224,7 +224,7 @@ function Network() {
 }
 
 function RpcUrl() {
-  const { network } = useNetwork()
+  const { network } = useNetworkStore()
   const { data: listening, status } = useNetworkStatus()
 
   return (
@@ -251,7 +251,7 @@ function RpcUrl() {
 }
 
 function Chain() {
-  const { network } = useNetwork()
+  const { network } = useNetworkStore()
 
   return (
     <HeaderItem label='Chain'>
@@ -323,7 +323,7 @@ function BlockNumber() {
 function MiningStatus() {
   const { data: block } = useCurrentBlock()
   const { data: automining } = useGetAutomine()
-  const { network } = useNetwork()
+  const { network } = useNetworkStore()
   return (
     <HeaderItem label='Mining Status'>
       <Text size='12px'>

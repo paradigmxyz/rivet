@@ -355,6 +355,17 @@ function DesignSystem() {
                   Button
                 </Button>
               </Box>
+              <Box display='flex' gap='8px'>
+                <Button height='24px' width='fit'>
+                  Button
+                </Button>
+                <Button variant='stroked invert' height='24px' width='fit'>
+                  Button
+                </Button>
+                <Button variant='tint green' height='24px' width='fit'>
+                  Button
+                </Button>
+              </Box>
             </Stack>
             <Stack gap='16px'>
               <Text weight='medium' size='18px'>

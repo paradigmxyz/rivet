@@ -4,12 +4,12 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { OnboardingContainer } from '~/components'
 import { Box, SFSymbol, Stack, Text } from '~/design-system'
 import { useNetworkStatus } from '~/hooks'
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 export default function OnboardingRun() {
   const [params] = useSearchParams()
   const navigate = useNavigate()
-  const { setOnboarded } = useNetwork()
+  const { setOnboarded } = useNetworkStore()
 
   const command = useMemo(() => {
     let command = 'anvil \\\n'

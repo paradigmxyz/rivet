@@ -7,7 +7,7 @@ export const backgroundStyle = style({
 })
 
 export const inputHeights = {
-  '20px': 20,
+  '24px': 24,
   '36px': 36,
 } as const
 export type InputHeight = keyof typeof inputHeights
@@ -26,7 +26,7 @@ export const heightStyles = styleVariants(inputHeights, (height) => [
 
 export const placeholderStyle = style({
   '::placeholder': {
-    color: `rgb(${inheritedColorVars.text} / 0.2)`,
+    color: `rgb(${inheritedColorVars.text} / 0.4)`,
   },
 })
 

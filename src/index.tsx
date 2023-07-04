@@ -16,13 +16,13 @@ import {
   type AccountState,
   type NetworkState,
   syncStores,
-  useAccount,
-  useNetwork,
-  useSessions,
+  useAccountStore,
+  useNetworkStore,
+  useSessionsStore,
 } from '~/zustand'
 
 import Layout from './screens/_layout.tsx'
-import Accounts from './screens/accounts.tsx'
+import AccountConfig from './screens/account-config.tsx'
 import BlockConfig from './screens/block-config.tsx'
 import Index from './screens/index'
 import NetworkConfig from './screens/network-config.tsx'
@@ -45,8 +45,8 @@ const router = createHashRouter([
         element: <Index />,
       },
       {
-        path: 'accounts',
-        element: <Accounts />,
+        path: 'account-config',
+        element: <AccountConfig />,
       },
       {
         path: 'block-config',
@@ -114,8 +114,8 @@ const inpageMessenger = getMessenger({ connection: 'wallet <> inpage' })
 
 /** Emits EIP-1193 `accountsChanged` Event */
 function AccountsChangedEmitter() {
-  const { account, accountsForRpcUrl } = useAccount()
-  const { sessions } = useSessions()
+  const { account, accountsForRpcUrl } = useAccountStore()
+  const { sessions } = useSessionsStore()
 
   const prevAccounts = useRef<AccountState['accounts']>()
   // rome-ignore lint/nursery/useExhaustiveDependencies:
@@ -145,8 +145,8 @@ function AccountsChangedEmitter() {
 
 /** Emits EIP-1193 `chainChanged` Event */
 function NetworkChangedEmitter() {
-  const { network } = useNetwork()
-  const { sessions } = useSessions()
+  const { network } = useNetworkStore()
+  const { sessions } = useSessionsStore()
 
   const prevNetwork = useRef<NetworkState['network']>()
   // rome-ignore lint/nursery/useExhaustiveDependencies:
@@ -175,7 +175,7 @@ function SyncBlockNumber() {
 function SyncJsonRpcAccounts() {
   const { data: chainId } = useNetworkStatus()
   const walletClient = useWalletClient()
-  const { accountsForRpcUrl, setJsonRpcAccounts } = useAccount()
+  const { accountsForRpcUrl, setJsonRpcAccounts } = useAccountStore()
 
   // rome-ignore lint/nursery/useExhaustiveDependencies: <explanation>
   useEffect(() => {

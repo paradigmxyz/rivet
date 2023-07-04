@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query'
 
 import { queryClient } from '~/react-query'
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 import { useGetAutomineQueryOptions } from './useGetAutomine'
 import { useTestClient } from './useTestClient'
 
 export function useSetAutomine() {
   const { queryKey } = useGetAutomineQueryOptions()
-  const { network, upsertNetwork } = useNetwork()
+  const { network, upsertNetwork } = useNetworkStore()
   const testClient = useTestClient()
 
   return useMutation({

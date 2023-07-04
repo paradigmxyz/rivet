@@ -100,5 +100,5 @@ export const networkStore = createStore<NetworkStore>(
   },
 )
 
-export const useNetwork = () =>
+export const useNetworkStore = () =>
   useSyncExternalStoreWithTracked(networkStore.subscribe, networkStore.getState)

@@ -7,10 +7,13 @@ import type { InputProps } from '~/design-system/components/Input'
 
 export type InputFieldProps = {
   defaultValue?: InputProps['defaultValue']
+  height?: InputProps['height']
+  hideLabel?: boolean
   innerLeft?: React.ReactElement
   innerRight?: React.ReactElement
   label: string
   min?: number
+  placeholder?: InputProps['placeholder']
   register: ReturnType<UseFormRegister<any>>
   required?: boolean
   type?: InputProps['type']
@@ -18,10 +21,13 @@ export type InputFieldProps = {
 
 export function InputField({
   defaultValue,
+  height,
+  hideLabel,
   innerLeft,
   innerRight,
   label,
   min,
+  placeholder,
   register,
   required,
   type,
@@ -33,11 +39,13 @@ export function InputField({
   const innerLeftWidth = innerLeftRef.current?.clientWidth
 
   return (
-    <Form.Field name={register.name}>
+    <Form.Field asChild name={register.name}>
       <Stack gap='12px'>
-        <Text color='text/tertiary' size='12px'>
-          <Form.Label>{label}</Form.Label>
-        </Text>
+        {!hideLabel && (
+          <Text color='text/tertiary' size='12px'>
+            <Form.Label>{label}</Form.Label>
+          </Text>
+        )}
         <Box alignItems='center' display='flex' position='relative'>
           {innerLeft && (
             <Box
@@ -57,9 +65,13 @@ export function InputField({
             type={type}
           >
             <Input
+              height={height}
+              placeholder={placeholder}
               style={{
-                paddingLeft: (innerLeftWidth || 0) + 12,
-                paddingRight: (innerRightWidth || 0) + 12,
+                paddingLeft: innerLeft ? (innerLeftWidth || 0) + 12 : undefined,
+                paddingRight: innerRight
+                  ? (innerRightWidth || 0) + 12
+                  : undefined,
               }}
             />
           </Form.Control>

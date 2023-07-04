@@ -1,14 +1,17 @@
 import * as Tabs from '@radix-ui/react-tabs'
-import { Fragment, type ReactNode, useEffect, useMemo, useState } from 'react'
+import { Fragment, type ReactNode, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import {
   type Address,
   type Block,
   formatEther,
   hexToBigInt,
+  isAddress,
   parseEther,
 } from 'viem'
 
 import { Container, TabsContent, TabsList } from '~/components'
+import * as Form from '~/components/form'
 import {
   Bleed,
   Box,
@@ -22,22 +25,25 @@ import {
   Stack,
   Text,
 } from '~/design-system'
-import { useBalance, useNonce } from '~/hooks'
+import { useBalance, useNonce, usePublicClient } from '~/hooks'
+import { useAccounts } from '~/hooks/useAccounts'
 import { useBlock } from '~/hooks/useBlock'
 import { useBlocks } from '~/hooks/useBlocks'
 import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { usePrevious } from '~/hooks/usePrevious'
 import { useSetBalance } from '~/hooks/useSetBalance'
 import { useSetNonce } from '~/hooks/useSetNonce'
+import { useSwitchAccount } from '~/hooks/useSwitchAccount'
 import { useTxpool } from '~/hooks/useTxpool'
 import { truncateAddress } from '~/utils'
-import { useAccount, useNetwork } from '~/zustand'
+import { useAccountStore, useNetworkStore } from '~/zustand'
+import type { Account } from '~/zustand/account'
 
 import * as styles from './index.css'
 import OnboardingStart from './onboarding/start'
 
 export default function Index() {
-  const { onboarded } = useNetwork()
+  const { onboarded } = useNetworkStore()
   if (!onboarded) return <OnboardingStart />
   return (
     <Container verticalInset={false}>
@@ -67,23 +73,30 @@ export default function Index() {
 // Accounts
 
 function Accounts() {
-  const {
-    network: { rpcUrl },
-  } = useNetwork()
-  const { account: activeAccount, accountsForRpcUrl, setAccount } = useAccount()
-  const accounts = useMemo(
-    () => accountsForRpcUrl({ rpcUrl }),
-    [accountsForRpcUrl, rpcUrl],
-  )
+  const { account: activeAccount, removeAccount } = useAccountStore()
+  const accounts = useAccounts()
+  const { mutateAsync: switchAccount } = useSwitchAccount()
 
   return (
     <>
-      {accounts.map((account, i) => {
+      <Box alignItems='center' display='flex' style={{ height: '40px' }}>
+        <ImportAccount />
+      </Box>
+      {accounts.map((account) => {
         const active = activeAccount?.address === account.address
         return (
-          <Fragment key={i}>
+          <Fragment key={account.address}>
+            <Box marginHorizontal='-12px'>
+              <Separator />
+            </Box>
             <Box
-              backgroundColor={active ? 'surface/fill/tertiary' : undefined}
+              backgroundColor={
+                active
+                  ? 'surface/fill/tertiary'
+                  : { hover: 'surface/fill/quarternary' }
+              }
+              cursor='pointer'
+              onClick={() => switchAccount({ account })}
               marginHorizontal='-12px'
               paddingHorizontal='12px'
               paddingVertical='16px'
@@ -104,8 +117,18 @@ function Accounts() {
                 </Text>
               )}
               <Stack gap='16px'>
-                <LabelledContent label='Address'>
-                  <Text size='12px'>{account.address}</Text>
+                <LabelledContent label='Account'>
+                  <Inline gap='4px'>
+                    {account.displayName && (
+                      <Text size='12px'>{account.displayName}</Text>
+                    )}
+                    <Text
+                      color={account.displayName ? 'text/tertiary' : undefined}
+                      size='12px'
+                    >
+                      {truncateAddress(account.address)}
+                    </Text>
+                  </Inline>
                 </LabelledContent>
                 <Columns gap='4px'>
                   <Balance address={account.address} />
@@ -114,17 +137,21 @@ function Accounts() {
                   </Box>
                 </Columns>
               </Stack>
-              {!active && (
-                <Box
-                  position='absolute'
-                  style={{ bottom: '16px', right: '12px' }}
-                >
-                  <SwitchButton onClick={() => setAccount({ account })} />
-                </Box>
-              )}
-            </Box>
-            <Box marginHorizontal='-12px'>
-              <Separator />
+              <Box
+                position='absolute'
+                style={{ bottom: '16px', right: '12px' }}
+              >
+                <Inline gap='4px' wrap={false}>
+                  {account.impersonate && (
+                    <RemoveButton
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        removeAccount({ account })
+                      }}
+                    />
+                  )}
+                </Inline>
+              </Box>
             </Box>
           </Fragment>
         )
@@ -133,15 +160,75 @@ function Accounts() {
   )
 }
 
-function SwitchButton({ onClick }: { onClick: () => void }) {
+function ImportAccount() {
+  const { addAccount } = useAccountStore()
+  const {
+    network: { rpcUrl },
+  } = useNetworkStore()
+  const publicClient = usePublicClient()
+  const { mutateAsync: switchAccount } = useSwitchAccount()
+
+  const { handleSubmit, register, reset } = useForm<{ addressOrEns: string }>({
+    defaultValues: {
+      addressOrEns: '',
+    },
+  })
+
+  const submit = handleSubmit(async ({ addressOrEns }) => {
+    try {
+      const address = isAddress(addressOrEns)
+        ? addressOrEns
+        : await publicClient.getEnsAddress({ name: addressOrEns })
+      const displayName = !isAddress(addressOrEns) ? addressOrEns : undefined
+
+      if (!address) {
+        reset()
+        return
+      }
+
+      const account: Account = {
+        address,
+        displayName,
+        impersonate: true,
+        rpcUrl,
+        type: 'json-rpc',
+      }
+      addAccount({
+        account,
+      })
+      switchAccount({ account })
+    } finally {
+      reset()
+    }
+  })
+
+  return (
+    <Form.Root onSubmit={submit} style={{ width: '100%' }}>
+      <Inline gap='4px' wrap={false}>
+        <Form.InputField
+          height='24px'
+          hideLabel
+          label='Import address'
+          placeholder='Import address or ENS name...'
+          register={register('addressOrEns')}
+        />
+        <Button height='24px' variant='stroked fill' width='fit'>
+          Import
+        </Button>
+      </Inline>
+    </Form.Root>
+  )
+}
+
+function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
   return (
     /* TODO: Extract into `IconButton` */
     <Box
       as='button'
       backgroundColor={{
-        hover: 'surface/fill/tertiary',
+        hover: 'surface/red@0.1',
       }}
-      borderColor='surface/invert@0.2'
+      borderColor='surface/red@0.4'
       borderWidth='1px'
       onClick={onClick}
       style={{
@@ -150,13 +237,18 @@ function SwitchButton({ onClick }: { onClick: () => void }) {
       }}
       transform={{ hoveractive: 'shrink95' }}
     >
-      <SFSymbol size='11px' symbol='arrow.left.arrow.right' weight='semibold' />
+      <SFSymbol
+        color='surface/red'
+        size='11px'
+        symbol='trash'
+        weight='semibold'
+      />
     </Box>
   )
 }
 
 function Balance({ address }: { address: Address }) {
-  const { data: balance } = useBalance({ address })
+  const { data: balance, isSuccess } = useBalance({ address })
   const { mutate } = useSetBalance()
 
   const [value, setValue] = useState(balance ? formatEther(balance) : '')
@@ -166,18 +258,19 @@ function Balance({ address }: { address: Address }) {
 
   return (
     <LabelledContent label='Balance (ETH)'>
-      {balance ? (
+      {isSuccess ? (
         <Bleed top='-2px'>
           <Input
             onChange={(e) => setValue(e.target.value)}
-            value={value}
+            onClick={(e) => e.stopPropagation()}
             onBlur={(e) =>
               mutate({
                 address,
                 value: parseEther(e.target.value as `${number}`),
               })
             }
-            height='20px'
+            height='24px'
+            value={value}
           />
         </Bleed>
       ) : null}
@@ -186,20 +279,21 @@ function Balance({ address }: { address: Address }) {
 }
 
 function Nonce({ address }: { address: Address }) {
-  const { data: nonce } = useNonce({ address })
+  const { data: nonce, isSuccess } = useNonce({ address })
   const { mutate } = useSetNonce()
 
-  const [value, setValue] = useState(nonce ?? '0')
+  const [value, setValue] = useState(nonce?.toString() ?? '0')
   useEffect(() => {
-    if (nonce) setValue(nonce ?? '0')
+    if (nonce) setValue(nonce?.toString() ?? '0')
   }, [nonce])
 
   return (
     <LabelledContent label='Nonce'>
-      {nonce ? (
+      {isSuccess ? (
         <Bleed top='-2px'>
           <Input
             onChange={(e) => setValue(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
             value={value}
             onBlur={(e) =>
               mutate({
@@ -207,7 +301,7 @@ function Nonce({ address }: { address: Address }) {
                 nonce: Number(e.target.value),
               })
             }
-            height='20px'
+            height='24px'
           />
         </Bleed>
       ) : null}

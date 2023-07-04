@@ -19,7 +19,7 @@ export function useNonceQueryOptions({ address }: { address?: Address }) {
     queryKey: useNonceQueryKey({ address, publicClient }),
     async queryFn() {
       return (
-        (await publicClient.getTransactionCount({ address: address! })) || null
+        (await publicClient.getTransactionCount({ address: address! })) ?? 0
       )
     },
   }

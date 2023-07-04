@@ -1,11 +1,9 @@
-import type { Address } from 'viem'
-
 import { useSyncExternalStoreWithTracked } from '~/hooks'
 
 import { createStore } from './utils'
 
 type Host = string
-type Session = { addresses: Address[]; host: Host }
+type Session = { host: Host }
 
 export type SessionsState = {
   sessions: Record<Host, Session>
@@ -50,7 +48,7 @@ export const sessionsStore = createStore<SessionsStore>(
   },
 )
 
-export const useSessions = () =>
+export const useSessionsStore = () =>
   useSyncExternalStoreWithTracked(
     sessionsStore.subscribe,
     sessionsStore.getState,

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 import { usePublicClient } from './usePublicClient'
 
@@ -15,7 +15,7 @@ export function useNetworkStatus({
   retry?: number
   retryDelay?: number
 } = {}) {
-  const { network, upsertNetwork } = useNetwork()
+  const { network, upsertNetwork } = useNetworkStore()
   const publicClient = usePublicClient()
 
   return useQuery({

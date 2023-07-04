@@ -1,15 +1,15 @@
 import { Outlet } from 'react-router-dom'
 
 import { Box, Row, Rows } from '~/design-system'
-import { useNetwork, usePendingRequests } from '~/zustand'
+import { useNetworkStore, usePendingRequestsStore } from '~/zustand'
 
 import { Header } from '~/components'
 
 import PendingRequest from './pending-request'
 
 export default function Layout() {
-  const { onboarded } = useNetwork()
-  const { pendingRequests } = usePendingRequests()
+  const { onboarded } = useNetworkStore()
+  const { pendingRequests } = usePendingRequestsStore()
   const pendingRequest = pendingRequests[pendingRequests.length - 1]
 
   return (

@@ -7,7 +7,7 @@ import { gweiUnits } from 'viem'
 import { OnboardingContainer } from '~/components'
 import * as Form from '~/components/form'
 import { Button, Separator, Stack, Text } from '~/design-system'
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 export default function OnboardingConfigure() {
   const [params] = useSearchParams()
@@ -53,7 +53,7 @@ export default function OnboardingConfigure() {
 
   const navigate = useNavigate()
 
-  const { upsertNetwork } = useNetwork()
+  const { upsertNetwork } = useNetworkStore()
   const submit = handleSubmit((values_) => {
     const values = {
       ...values_,

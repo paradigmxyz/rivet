@@ -8,10 +8,10 @@ import { getPublicClient } from '../viem'
 import { Container } from '~/components'
 import { Button, Input, Stack, Text } from '~/design-system'
 import { useDebounce } from '~/hooks'
-import { useNetwork } from '~/zustand'
+import { useNetworkStore } from '~/zustand'
 
 export default function Network() {
-  const { network, upsertNetwork, switchNetwork } = useNetwork()
+  const { network, upsertNetwork, switchNetwork } = useNetworkStore()
 
   type FormValues = {
     name: string
