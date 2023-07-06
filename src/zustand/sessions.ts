@@ -1,4 +1,4 @@
-import { useSyncExternalStoreWithTracked } from '~/hooks'
+import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
 
 import { createStore } from './utils'
 

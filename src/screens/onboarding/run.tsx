@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { OnboardingContainer } from '~/components'
 import { Box, SFSymbol, Stack, Text } from '~/design-system'
-import { useNetworkStatus } from '~/hooks'
+import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import { useNetworkStore } from '~/zustand'
 
 export default function OnboardingRun() {

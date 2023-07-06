@@ -5,7 +5,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { OnboardingContainer, Progress } from '~/components'
 import { Cog } from '~/components/svgs'
 import { Box, Row, Rows, Stack, Text } from '~/design-system'
-import { useNetworkStatus } from '~/hooks'
+import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import { useNetworkStore } from '~/zustand'
 
 export default function OnboardingDeploy() {

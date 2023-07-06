@@ -6,7 +6,7 @@ import * as chains from 'viem/chains'
 
 import { Container } from '~/components'
 import { Button, Input, Stack, Text } from '~/design-system'
-import { useDebounce } from '~/hooks'
+import { useDebounce } from '~/hooks/useDebounce'
 import { getClient } from '~/viem'
 import { useNetworkStore } from '~/zustand'
 

@@ -1,6 +1,6 @@
 import type { Address, JsonRpcAccount as JsonRpcAccount_ } from 'viem'
 
-import { useSyncExternalStoreWithTracked } from '~/hooks'
+import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
 
 import { createStore } from './utils'
 

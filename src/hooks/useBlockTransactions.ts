@@ -6,7 +6,7 @@ import { queryClient } from '~/react-query'
 import { useBlock } from './useBlock'
 import { useClient } from './useClient'
 
-export function useTransactionsQueryOptions() {
+export function useBlockTransactionsQueryOptions() {
   const { data: block } = useBlock()
   const client = useClient()
   const limit = 10
@@ -44,7 +44,7 @@ export function useTransactionsQueryOptions() {
   }
 }
 
-export function useTransactions() {
-  const queryOptions = useTransactionsQueryOptions()
+export function useBlockTransactions() {
+  const queryOptions = useBlockTransactionsQueryOptions()
   return useInfiniteQuery(queryOptions)
 }

@@ -27,16 +27,17 @@ import {
   Stack,
   Text,
 } from '~/design-system'
-import { useBalance, useNonce } from '~/hooks'
 import { useAccounts } from '~/hooks/useAccounts'
+import { useBalance } from '~/hooks/useBalance'
+import { useBlockTransactions } from '~/hooks/useBlockTransactions'
 import { useBlocks } from '~/hooks/useBlocks'
 import { useClient } from '~/hooks/useClient'
+import { useNonce } from '~/hooks/useNonce'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { usePendingTransactions } from '~/hooks/usePendingTransactions'
 import { useSetBalance } from '~/hooks/useSetBalance'
 import { useSetNonce } from '~/hooks/useSetNonce'
 import { useSwitchAccount } from '~/hooks/useSwitchAccount'
-import { useTransactions } from '~/hooks/useTransactions'
 import { truncate } from '~/utils'
 import { useAccountStore, useNetworkStore } from '~/zustand'
 import type { Account } from '~/zustand/account'
@@ -414,7 +415,7 @@ function Blocks() {
 
 function Transactions() {
   const { data: pendingTransactions } = usePendingTransactions()
-  const { data: infiniteTransactions, fetchNextPage } = useTransactions()
+  const { data: infiniteTransactions, fetchNextPage } = useBlockTransactions()
   const transactions = [
     ...(pendingTransactions?.map((transaction) => ({
       transaction,

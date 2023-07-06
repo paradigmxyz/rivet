@@ -1,7 +1,7 @@
 import { connect, disconnect } from '~/actions'
 import { Container } from '~/components'
 import { Box, Button } from '~/design-system'
-import { useHost } from '~/hooks'
+import { useHost } from '~/hooks/useHost'
 import { getMessenger } from '~/messengers'
 import { useSessionsStore } from '~/zustand'
 

@@ -1,6 +1,6 @@
-import { useSyncExternalStoreWithTracked } from '~/hooks'
+import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
+import { defaultChain, getClient } from '~/viem'
 
-import { defaultChain, getClient } from '../viem'
 import { createStore } from './utils'
 
 type RpcUrl = string

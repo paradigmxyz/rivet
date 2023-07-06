@@ -15,8 +15,10 @@ import {
   Stack,
   Text,
 } from '~/design-system'
-import { useGetAutomine, useHost, useNetworkStatus } from '~/hooks'
+import { useGetAutomine } from '~/hooks/useGetAutomine'
+import { useHost } from '~/hooks/useHost'
 import { useMine } from '~/hooks/useMine'
+import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { getMessenger } from '~/messengers'
 import { truncate } from '~/utils'
