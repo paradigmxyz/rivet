@@ -4,7 +4,7 @@ import type { SetNonceParameters } from 'viem'
 import { queryClient } from '~/react-query'
 
 import { useClient } from './useClient'
-import { useNonceQueryKey } from './useNonce'
+import { getNonceQueryKey } from './useNonce'
 
 export function useSetNonce() {
   const client = useClient()
@@ -13,7 +13,7 @@ export function useSetNonce() {
     async mutationFn({ address, nonce }: SetNonceParameters) {
       await client.setNonce({ address, nonce })
       queryClient.invalidateQueries({
-        queryKey: useNonceQueryKey({ address, client }),
+        queryKey: getNonceQueryKey({ address, client }),
       })
     },
   })

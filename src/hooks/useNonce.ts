@@ -4,7 +4,7 @@ import type { Address } from 'viem'
 import { useClient } from './useClient'
 import type { Client } from '~/viem'
 
-export const useNonceQueryKey = ({
+export const getNonceQueryKey = ({
   address,
   client,
 }: { client: Client; address?: Address }) => ['nonce', client.key, address]
@@ -13,7 +13,7 @@ export function useNonceQueryOptions({ address }: { address?: Address }) {
   const client = useClient()
   return {
     enabled: Boolean(address),
-    queryKey: useNonceQueryKey({ address, client }),
+    queryKey: getNonceQueryKey({ address, client }),
     async queryFn() {
       return (await client.getTransactionCount({ address: address! })) ?? 0
     },
