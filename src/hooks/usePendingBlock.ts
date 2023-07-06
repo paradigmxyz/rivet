@@ -28,7 +28,12 @@ export function usePendingBlockQueryOptions({
         client.key,
       ]) as Block
 
-      if (block && prevBlock && prevBlock.number === block.number)
+      if (
+        block &&
+        prevBlock &&
+        prevBlock.number === block.number &&
+        prevBlock.transactions.length === block.transactions.length
+      )
         return prevBlock || null
 
       queryClient.invalidateQueries({ queryKey: ['balance'] })
@@ -41,8 +46,10 @@ export function usePendingBlockQueryOptions({
         includeTransactions: true,
       })
       queryClient.setQueryData(['blocks', client.key], (data: any) => {
-        if (data?.pages?.[0]) data.pages[0].unshift(latestBlock)
-        return data
+        return {
+          ...data,
+          pages: [[latestBlock], ...data.pages],
+        }
       })
       queryClient.setQueryData(['transactions', client.key], (data: any) => {
         const [first, ...pages] = data.pages

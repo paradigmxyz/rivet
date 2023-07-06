@@ -29,7 +29,6 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
       status: 'approved',
     })
     if (request.method === 'eth_sendTransaction') {
-      console.log('ok')
       queryClient.invalidateQueries(pendingBlockQueryOptions)
       queryClient.invalidateQueries(pendingTransactionsQueryOptions)
       queryClient.invalidateQueries(txpoolQueryOptions)

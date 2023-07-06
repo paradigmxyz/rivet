@@ -1,10 +1,11 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { useVirtualizer } from '@tanstack/react-virtual'
+import { format } from 'd3-format'
 import { Fragment, type ReactNode, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useInView } from 'react-intersection-observer'
 import {
   type Address,
-  type Block,
   type Transaction,
   formatEther,
   isAddress,
@@ -32,7 +33,6 @@ import { useBlocks } from '~/hooks/useBlocks'
 import { useClient } from '~/hooks/useClient'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { usePendingTransactions } from '~/hooks/usePendingTransactions'
-import { usePrevious } from '~/hooks/usePrevious'
 import { useSetBalance } from '~/hooks/useSetBalance'
 import { useSetNonce } from '~/hooks/useSetNonce'
 import { useSwitchAccount } from '~/hooks/useSwitchAccount'
@@ -41,7 +41,6 @@ import { truncate } from '~/utils'
 import { useAccountStore, useNetworkStore } from '~/zustand'
 import type { Account } from '~/zustand/account'
 
-import * as styles from './index.css'
 import OnboardingStart from './onboarding/start'
 
 export default function Index() {
@@ -318,87 +317,95 @@ function Nonce({ address }: { address: Address }) {
 
 function Blocks() {
   const { data: pendingBlock } = usePendingBlock()
-  const prevBlock = usePrevious(pendingBlock)
-
   const { data: infiniteBlocks, fetchNextPage } = useBlocks()
-  const blocks = infiniteBlocks?.pages.flat() as Block[] | undefined
+  const blocks = [
+    { block: pendingBlock, status: 'pending' },
+    ...(infiniteBlocks?.pages
+      .flat()
+      ?.map((block) => ({ block, status: 'mined' })) || []),
+  ]
+
+  const parentRef = useRef(null)
+  const virtualizer = useVirtualizer({
+    count: blocks.length,
+    getScrollElement: () => parentRef.current!,
+    estimateSize: () => 40,
+  })
+
+  const { ref, inView } = useInView()
+  useEffect(() => {
+    if (inView) fetchNextPage()
+  }, [fetchNextPage, inView])
 
   return (
-    <>
+    <Box
+      ref={parentRef}
+      marginHorizontal='-12px'
+      style={{ height: '100%', overflowY: 'scroll' }}
+    >
       <Box
-        marginHorizontal='-12px'
-        paddingHorizontal='12px'
-        paddingVertical='8px'
         position='relative'
+        width='full'
+        style={{
+          height: `${virtualizer.getTotalSize()}px`,
+        }}
       >
-        <Inline wrap={false}>
-          <LabelledContent label='Block'>
-            <Box style={{ width: '80px' }}>
-              {Boolean(pendingBlock?.number) && (
-                <Text size='12px'>{pendingBlock?.number?.toString()}</Text>
-              )}
+        {virtualizer.getVirtualItems().map(({ key, index, size, start }) => {
+          const { block, status } = blocks[index] || {}
+          if (!block) return
+          return (
+            <Box
+              key={key}
+              backgroundColor={{ hover: 'surface/fill/quarternary' }}
+              position='absolute'
+              top='0px'
+              left='0px'
+              width='full'
+              style={{
+                height: `${size}px`,
+                transform: `translateY(${start}px)`,
+              }}
+            >
+              <Box paddingHorizontal='12px' paddingVertical='8px'>
+                <Inline wrap={false}>
+                  <LabelledContent label='Block'>
+                    <Box style={{ width: '80px' }}>
+                      <Text size='12px'>{block.number!.toString()}</Text>
+                    </Box>
+                  </LabelledContent>
+                  <LabelledContent label='Timestamp'>
+                    <Box style={{ width: '148px' }}>
+                      {status === 'pending' ? (
+                        <Text color='text/tertiary' size='12px'>
+                          Pending
+                        </Text>
+                      ) : (
+                        <Text size='12px'>
+                          {new Date(
+                            Number(block.timestamp! * 1000n),
+                          ).toLocaleString()}
+                        </Text>
+                      )}
+                    </Box>
+                  </LabelledContent>
+                  <LabelledContent label='Transactions'>
+                    <Text size='12px'>{block.transactions.length}</Text>
+                  </LabelledContent>
+                </Inline>
+              </Box>
+              <Box marginHorizontal='-12px'>
+                <Separator />
+              </Box>
             </Box>
-          </LabelledContent>
-          <LabelledContent label='Timestamp'>
-            <Box style={{ width: '148px' }}>
-              <Text color='text/tertiary' size='12px'>
-                Pending
-              </Text>
-            </Box>
-          </LabelledContent>
-          <LabelledContent label='Transactions'>
-            <Text size='12px'>{pendingBlock?.transactions.length}</Text>
-          </LabelledContent>
-        </Inline>
+          )
+        })}
       </Box>
-      <Box marginHorizontal='-12px'>
-        <Separator />
-      </Box>
-      {blocks?.map((block, i) => (
-        <Fragment key={block.number!.toString()}>
-          <Box
-            // TODO: fix flash
-            className={i === 0 && prevBlock && styles.mineBackground}
-            marginHorizontal='-12px'
-            paddingHorizontal='12px'
-            paddingVertical='8px'
-            position='relative'
-          >
-            <Inline wrap={false}>
-              <LabelledContent label='Block'>
-                <Box style={{ width: '80px' }}>
-                  <Text size='12px'>{block.number!.toString()}</Text>
-                </Box>
-              </LabelledContent>
-              <LabelledContent label='Timestamp'>
-                <Box style={{ width: '148px' }}>
-                  <Text size='12px'>
-                    {new Date(
-                      Number(block.timestamp! * 1000n),
-                    ).toLocaleString()}
-                  </Text>
-                </Box>
-              </LabelledContent>
-              <LabelledContent label='Transactions'>
-                <Text size='12px'>{block.transactions.length}</Text>
-              </LabelledContent>
-            </Inline>
-          </Box>
-          <Box marginHorizontal='-12px'>
-            <Separator />
-          </Box>
-        </Fragment>
-      ))}
-      <Inset vertical='12px'>
-        <Button
-          onClick={() => fetchNextPage()}
-          variant='stroked fill'
-          width='fit'
-        >
-          Load more
-        </Button>
+      <Inset space='12px'>
+        <Box ref={ref}>
+          <Text color='text/tertiary'>Loading...</Text>
+        </Box>
       </Inset>
-    </>
+    </Box>
   )
 }
 
@@ -407,7 +414,6 @@ function Blocks() {
 
 function Transactions() {
   const { data: pendingTransactions } = usePendingTransactions()
-
   const { data: infiniteTransactions, fetchNextPage } = useTransactions()
   const transactions = [
     ...(pendingTransactions?.map((transaction) => ({
@@ -425,6 +431,11 @@ function Transactions() {
     getScrollElement: () => parentRef.current!,
     estimateSize: () => 40,
   })
+
+  const { ref, inView } = useInView()
+  useEffect(() => {
+    if (inView) fetchNextPage()
+  }, [fetchNextPage, inView])
 
   return (
     <Box
@@ -445,6 +456,7 @@ function Transactions() {
           return (
             <Box
               key={key}
+              backgroundColor={{ hover: 'surface/fill/quarternary' }}
               position='absolute'
               top='0px'
               left='0px'
@@ -455,7 +467,7 @@ function Transactions() {
               }}
             >
               <Box paddingHorizontal='12px' paddingVertical='8px'>
-                <Columns>
+                <Columns alignVertical='center'>
                   <LabelledContent label='Block'>
                     <Inline alignVertical='center' gap='4px' wrap={false}>
                       <Text size='12px'>
@@ -482,6 +494,12 @@ function Transactions() {
                         truncate(transaction.to, { start: 6, end: 4 })}
                     </Text>
                   </LabelledContent>
+                  <LabelledContent label='Value'>
+                    <Text wrap={false} size='12px'>
+                      {format('.3')(parseFloat(formatEther(transaction.value)))}{' '}
+                      ETH
+                    </Text>
+                  </LabelledContent>
                 </Columns>
               </Box>
               <Box marginHorizontal='-12px'>
@@ -492,13 +510,9 @@ function Transactions() {
         })}
       </Box>
       <Inset space='12px'>
-        <Button
-          onClick={() => fetchNextPage()}
-          variant='stroked fill'
-          width='fit'
-        >
-          Load more
-        </Button>
+        <Box ref={ref}>
+          <Text color='text/tertiary'>Loading...</Text>
+        </Box>
       </Inset>
     </Box>
   )

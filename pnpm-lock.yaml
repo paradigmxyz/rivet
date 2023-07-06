@@ -51,6 +51,9 @@ devDependencies:
   '@types/chrome':
     specifier: ^0.0.227
     version: 0.0.227
+  '@types/d3-format':
+    specifier: ^3.0.1
+    version: 3.0.1
   '@types/fs-extra':
     specifier: ^11.0.1
     version: 11.0.1
@@ -105,6 +108,9 @@ devDependencies:
   clsx:
     specifier: ^1.2.1
     version: 1.2.1
+  d3-format:
+    specifier: ^3.1.0
+    version: 3.1.0
   esbuild:
     specifier: ^0.17.17
     version: 0.17.17
@@ -138,6 +144,9 @@ devDependencies:
   react-hook-form:
     specifier: ^7.44.2
     version: 7.44.2(react@18.2.0)
+  react-intersection-observer:
+    specifier: ^9.5.2
+    version: 9.5.2(react@18.2.0)
   react-router:
     specifier: ^6.10.0
     version: 6.10.0(react@18.2.0)
@@ -1651,6 +1660,10 @@ packages:
       '@types/har-format': 1.2.10
     dev: true
 
+  /@types/d3-format@3.0.1:
+    resolution: {integrity: sha512-5KY70ifCCzorkLuIkDe0Z9YTf9RR2CjBX1iaJG+rgM/cPP+sO+q9YdQ9WdhQcgPj1EQiJ2/0+yUkkziTG6Lubg==}
+    dev: true
+
   /@types/etag@1.8.1:
     resolution: {integrity: sha512-bsKkeSqN7HYyYntFRAmzcwx/dKW4Wa+KVMTInANlI72PWLQmOpZu96j0OqHZGArW4VQwCmJPteQlXaUDeOB0WQ==}
     dependencies:
@@ -2488,6 +2501,11 @@ packages:
 
   /csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
+    dev: true
+
+  /d3-format@3.1.0:
+    resolution: {integrity: sha512-YyUI6AEuY/Wpt8KWLgZHsIU86atmikuoOmCfommt0LYHiQSPjvX2AcFc38PX0CBpr2RCyZhjex+NS/LPOv6YqA==}
+    engines: {node: '>=12'}
     dev: true
 
   /dashdash@1.14.1:
@@ -4486,6 +4504,14 @@ packages:
     engines: {node: '>=12.22.0'}
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18
+    dependencies:
+      react: 18.2.0
+    dev: true
+
+  /react-intersection-observer@9.5.2(react@18.2.0):
+    resolution: {integrity: sha512-EmoV66/yvksJcGa1rdW0nDNc4I1RifDWkT50gXSFnPLYQ4xUptuDD4V7k+Rj1OgVAlww628KLGcxPXFlOkkU/Q==}
+    peerDependencies:
+      react: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.2.0
     dev: true
