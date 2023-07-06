@@ -1,5 +1,6 @@
-import { type ReactNode, useCallback } from 'react'
+import { type ReactNode, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
+import { formatGwei } from 'viem'
 
 import { BrandIcon } from '~/components/svgs'
 import {
@@ -341,9 +342,19 @@ function MiningStatus() {
 
 function BaseFee() {
   const { data: block } = usePendingBlock()
+  const intl = useMemo(
+    () =>
+      new Intl.NumberFormat('en-US', {
+        maximumSignificantDigits: 6,
+      }),
+    [],
+  )
+  if (!block) return null
   return (
     <HeaderItem label='Base Fee'>
-      <Text size='12px'>{block?.baseFeePerGas?.toString() ?? '‎'}</Text>
+      <Text size='12px'>
+        {intl.format(Number(formatGwei(block.baseFeePerGas!)))} gwei
+      </Text>
     </HeaderItem>
   )
 }

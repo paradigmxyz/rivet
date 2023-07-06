@@ -124,7 +124,7 @@ function setupToggleListeners({
     } else {
       container.style.width = '400px'
       handle.style.display = 'block'
-      handle.style.right = '352px'
+      handle.style.right = '392px'
     }
 
     if (typeof args?.open === 'undefined')

@@ -22,17 +22,18 @@ import {
   useSessionsStore,
 } from '~/zustand'
 
-import Layout from './screens/_layout.tsx'
-import AccountConfig from './screens/account-config.tsx'
-import BlockConfig from './screens/block-config.tsx'
+import Layout from './screens/_layout'
+import AccountConfig from './screens/account-config'
+import BlockConfig from './screens/block-config'
+import BlockDetails from './screens/block-details'
 import Index from './screens/index'
-import NetworkConfig from './screens/network-config.tsx'
-import OnboardingConfigure from './screens/onboarding/configure.tsx'
-import OnboardingDeploy from './screens/onboarding/deploy.tsx'
-import OnboardingDownload from './screens/onboarding/download.tsx'
-import OnboardingRun from './screens/onboarding/run.tsx'
-import OnboardingStart from './screens/onboarding/start.tsx'
-import Session from './screens/session.tsx'
+import NetworkConfig from './screens/network-config'
+import OnboardingConfigure from './screens/onboarding/configure'
+import OnboardingDeploy from './screens/onboarding/deploy'
+import OnboardingDownload from './screens/onboarding/download'
+import OnboardingRun from './screens/onboarding/run'
+import OnboardingStart from './screens/onboarding/start'
+import Session from './screens/session'
 
 syncStores()
 
@@ -52,6 +53,10 @@ const router = createHashRouter([
       {
         path: 'block-config',
         element: <BlockConfig />,
+      },
+      {
+        path: 'block/:blockNumber',
+        element: <BlockDetails />,
       },
       {
         path: 'network-config',

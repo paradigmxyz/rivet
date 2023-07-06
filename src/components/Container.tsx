@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
 import {
   Box,
   Inline,
@@ -60,14 +59,14 @@ export function Container({
                       header
                     )}
                     {dismissable && (
-                      <Link to='..'>
+                      <Box cursor='pointer' onClick={() => history.back()}>
                         <SFSymbol
                           color='text/tertiary'
                           size='12px'
                           symbol='xmark'
                           weight='medium'
                         />
-                      </Link>
+                      </Box>
                     )}
                   </Inline>
                 </Box>

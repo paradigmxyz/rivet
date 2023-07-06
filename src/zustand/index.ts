@@ -23,6 +23,14 @@ export {
 } from './pending-requests'
 
 export {
+  type ScrollPositionActions,
+  type ScrollPositionState,
+  type ScrollPositionStore,
+  scrollPositionStore,
+  useScrollPositionStore,
+} from './scroll-position'
+
+export {
   type SessionsActions,
   type SessionsState,
   type SessionsStore,

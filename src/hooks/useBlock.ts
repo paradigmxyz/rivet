@@ -8,7 +8,10 @@ export function useBlockQueryOptions(args: GetBlockParameters = {}) {
   return queryOptions({
     queryKey: [
       'block',
-      args.blockHash || args.blockNumber || args.blockTag || 'latest',
+      args.blockHash ||
+        args.blockNumber?.toString() ||
+        args.blockTag ||
+        'latest',
       client.key,
       stringify(args),
     ],

@@ -4,14 +4,14 @@ import { Bleed, Box, Inline, Separator, Text } from '~/design-system'
 
 import * as styles from './TabsList.css'
 
+type TabItem = { label: string; value: string }
+
 type TabsListProps = {
-  items: {
-    label: string
-    value: string
-  }[]
+  items: TabItem[]
+  onSelect?: (item: TabItem) => void
 }
 
-export function TabsList({ items }: TabsListProps) {
+export function TabsList({ items, onSelect }: TabsListProps) {
   return (
     <>
       <Tabs_.List asChild>
@@ -28,6 +28,7 @@ export function TabsList({ items }: TabsListProps) {
                 justifyContent='center'
                 cursor='pointer'
                 display='flex'
+                onClick={() => onSelect?.(item)}
                 style={{ height: '36px' }}
               >
                 <Text size='14px'>{item.label}</Text>

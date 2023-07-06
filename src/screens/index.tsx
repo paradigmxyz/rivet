@@ -1,9 +1,9 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { format } from 'd3-format'
-import { Fragment, type ReactNode, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useInView } from 'react-intersection-observer'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   type Address,
   type Transaction,
@@ -12,7 +12,7 @@ import {
   parseEther,
 } from 'viem'
 
-import { Container, TabsContent, TabsList } from '~/components'
+import { Container, LabelledContent, TabsContent, TabsList } from '~/components'
 import * as Form from '~/components/form'
 import {
   Bleed,
@@ -39,17 +39,23 @@ import { useSetBalance } from '~/hooks/useSetBalance'
 import { useSetNonce } from '~/hooks/useSetNonce'
 import { useSwitchAccount } from '~/hooks/useSwitchAccount'
 import { truncate } from '~/utils'
-import { useAccountStore, useNetworkStore } from '~/zustand'
+import {
+  useAccountStore,
+  useNetworkStore,
+  useScrollPositionStore,
+} from '~/zustand'
 import type { Account } from '~/zustand/account'
 
 import OnboardingStart from './onboarding/start'
 
 export default function Index() {
+  const { setPosition } = useScrollPositionStore()
+  const [params, setParams] = useSearchParams({ tab: 'accounts' })
   const { onboarded } = useNetworkStore()
   if (!onboarded) return <OnboardingStart />
   return (
     <Container scrollable={false} verticalInset={false}>
-      <Tabs.Root asChild defaultValue='accounts'>
+      <Tabs.Root asChild value={params.get('tab')!}>
         <Box display='flex' flexDirection='column' height='full'>
           <TabsList
             items={[
@@ -57,6 +63,10 @@ export default function Index() {
               { label: 'Blocks', value: 'blocks' },
               { label: 'Transactions', value: 'transactions' },
             ]}
+            onSelect={(item) => {
+              setParams({ tab: item.value })
+              setPosition(0)
+            }}
           />
           <TabsContent inset={false} value='accounts'>
             <Accounts />
@@ -326,12 +336,17 @@ function Blocks() {
       ?.map((block) => ({ block, status: 'mined' })) || []),
   ]
 
-  const parentRef = useRef(null)
+  const parentRef = useRef<HTMLDivElement>(null)
   const virtualizer = useVirtualizer({
     count: blocks.length,
     getScrollElement: () => parentRef.current!,
     estimateSize: () => 40,
   })
+
+  const { position, setPosition } = useScrollPositionStore()
+  useEffect(() => {
+    parentRef.current?.scrollTo({ top: position })
+  }, [position])
 
   const { ref, inView } = useInView()
   useEffect(() => {
@@ -355,49 +370,54 @@ function Blocks() {
           const { block, status } = blocks[index] || {}
           if (!block) return
           return (
-            <Box
+            <Link
+              onClick={() => setPosition(parentRef.current?.scrollTop!)}
+              to={`block/${block.number}`}
               key={key}
-              backgroundColor={{ hover: 'surface/fill/quarternary' }}
-              position='absolute'
-              top='0px'
-              left='0px'
-              width='full'
-              style={{
-                height: `${size}px`,
-                transform: `translateY(${start}px)`,
-              }}
             >
-              <Box paddingHorizontal='12px' paddingVertical='8px'>
-                <Inline wrap={false}>
-                  <LabelledContent label='Block'>
-                    <Box style={{ width: '80px' }}>
-                      <Text size='12px'>{block.number!.toString()}</Text>
-                    </Box>
-                  </LabelledContent>
-                  <LabelledContent label='Timestamp'>
-                    <Box style={{ width: '148px' }}>
-                      {status === 'pending' ? (
-                        <Text color='text/tertiary' size='12px'>
-                          Pending
-                        </Text>
-                      ) : (
-                        <Text size='12px'>
-                          {new Date(
-                            Number(block.timestamp! * 1000n),
-                          ).toLocaleString()}
-                        </Text>
-                      )}
-                    </Box>
-                  </LabelledContent>
-                  <LabelledContent label='Transactions'>
-                    <Text size='12px'>{block.transactions.length}</Text>
-                  </LabelledContent>
-                </Inline>
+              <Box
+                backgroundColor={{ hover: 'surface/fill/quarternary' }}
+                position='absolute'
+                top='0px'
+                left='0px'
+                width='full'
+                style={{
+                  height: `${size}px`,
+                  transform: `translateY(${start}px)`,
+                }}
+              >
+                <Box paddingHorizontal='12px' paddingVertical='8px'>
+                  <Inline wrap={false}>
+                    <LabelledContent label='Block'>
+                      <Box style={{ width: '80px' }}>
+                        <Text size='12px'>{block.number!.toString()}</Text>
+                      </Box>
+                    </LabelledContent>
+                    <LabelledContent label='Timestamp'>
+                      <Box style={{ width: '148px' }}>
+                        {status === 'pending' ? (
+                          <Text color='text/tertiary' size='12px'>
+                            Pending
+                          </Text>
+                        ) : (
+                          <Text size='12px'>
+                            {new Date(
+                              Number(block.timestamp! * 1000n),
+                            ).toLocaleString()}
+                          </Text>
+                        )}
+                      </Box>
+                    </LabelledContent>
+                    <LabelledContent label='Transactions'>
+                      <Text size='12px'>{block.transactions.length}</Text>
+                    </LabelledContent>
+                  </Inline>
+                </Box>
+                <Box marginHorizontal='-12px'>
+                  <Separator />
+                </Box>
               </Box>
-              <Box marginHorizontal='-12px'>
-                <Separator />
-              </Box>
-            </Box>
+            </Link>
           )
         })}
       </Box>
@@ -412,6 +432,10 @@ function Blocks() {
 
 ////////////////////////////////////////////////////////////////////////
 // Transactions
+
+const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
+  maximumSignificantDigits: 4,
+})
 
 function Transactions() {
   const { data: pendingTransactions } = usePendingTransactions()
@@ -497,7 +521,9 @@ function Transactions() {
                   </LabelledContent>
                   <LabelledContent label='Value'>
                     <Text wrap={false} size='12px'>
-                      {format('.3')(parseFloat(formatEther(transaction.value)))}{' '}
+                      {numberIntl4SigFigs.format(
+                        Number(formatEther(transaction.value!)),
+                      )}{' '}
                       ETH
                     </Text>
                   </LabelledContent>
@@ -516,19 +542,5 @@ function Transactions() {
         </Box>
       </Inset>
     </Box>
-  )
-}
-
-function LabelledContent({
-  children,
-  label,
-}: { children: ReactNode; label: string }) {
-  return (
-    <Stack gap='8px'>
-      <Text color='text/tertiary' size='9px' wrap={false}>
-        {label.toUpperCase()}
-      </Text>
-      <Box>{children}</Box>
-    </Stack>
   )
 }
