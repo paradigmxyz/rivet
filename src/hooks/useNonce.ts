@@ -1,26 +1,21 @@
 import { useQuery } from '@tanstack/react-query'
-import type { Address, PublicClient } from 'viem'
+import type { Address } from 'viem'
 
-import { usePublicClient } from './usePublicClient'
+import { useClient } from './useClient'
+import type { Client } from '~/viem'
 
 export const useNonceQueryKey = ({
   address,
-  publicClient,
-}: { publicClient: PublicClient; address?: Address }) => [
-  'nonce',
-  publicClient.key,
-  address,
-]
+  client,
+}: { client: Client; address?: Address }) => ['nonce', client.key, address]
 
 export function useNonceQueryOptions({ address }: { address?: Address }) {
-  const publicClient = usePublicClient()
+  const client = useClient()
   return {
     enabled: Boolean(address),
-    queryKey: useNonceQueryKey({ address, publicClient }),
+    queryKey: useNonceQueryKey({ address, client }),
     async queryFn() {
-      return (
-        (await publicClient.getTransactionCount({ address: address! })) ?? 0
-      )
+      return (await client.getTransactionCount({ address: address! })) ?? 0
     },
   }
 }

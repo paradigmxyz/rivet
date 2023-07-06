@@ -1,19 +1,19 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { type GetBlockParameters, stringify } from 'viem'
 
-import { usePublicClient } from './usePublicClient'
+import { useClient } from './useClient'
 
 export function useBlockQueryOptions(args: GetBlockParameters = {}) {
-  const publicClient = usePublicClient()
+  const client = useClient()
   return queryOptions({
     queryKey: [
       'block',
       args.blockHash || args.blockNumber || args.blockTag || 'latest',
-      publicClient.key,
+      client.key,
       stringify(args),
     ],
     async queryFn() {
-      return (await publicClient.getBlock(args)) || null
+      return (await client.getBlock(args)) || null
     },
   })
 }

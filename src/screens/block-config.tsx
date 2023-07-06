@@ -3,7 +3,8 @@ import { useForm } from 'react-hook-form'
 
 import { Container } from '~/components'
 import { Button, Inline, Input, Separator, Stack, Text } from '~/design-system'
-import { useGetAutomine, useTestClient } from '~/hooks'
+import { useGetAutomine } from '~/hooks'
+import { useClient } from '~/hooks/useClient'
 import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { useMine } from '~/hooks/useMine'
 import { useSetAutomine } from '~/hooks/useSetAutomine'
@@ -157,10 +158,10 @@ function Reset() {
   const { data: block } = useCurrentBlock()
   const { network } = useNetworkStore()
 
-  const testClient = useTestClient()
+  const client = useClient()
   const { mutate: reset } = useMutation({
     async mutationFn() {
-      await testClient.reset({
+      await client.reset({
         // TODO: use initial block number specified by user in network setup.
         blockNumber: block?.number!,
         jsonRpcUrl: network.rpcUrl,

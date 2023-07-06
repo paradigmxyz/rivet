@@ -5,9 +5,9 @@ import { queryClient } from '~/react-query'
 import { useNetworkStore } from '~/zustand'
 
 import { useBlockQueryOptions } from './useBlock'
+import { useClient } from './useClient'
 import { useNetworkStatus } from './useNetworkStatus'
 import { usePendingTransactionsQueryOptions } from './usePendingTransactions'
-import { usePublicClient } from './usePublicClient'
 
 export function useCurrentBlockQueryOptions({
   refetchInterval,
@@ -16,16 +16,16 @@ export function useCurrentBlockQueryOptions({
   const pendingTransactionsQueryOptions = usePendingTransactionsQueryOptions()
   const { network } = useNetworkStore()
   const { data: chainId } = useNetworkStatus()
-  const publicClient = usePublicClient()
+  const client = useClient()
 
   return {
     enabled: Boolean(chainId),
-    queryKey: ['current-block', publicClient.key],
+    queryKey: ['current-block', client.key],
     async queryFn() {
-      const blockNumber = await publicClient.getBlockNumber({ maxAge: 0 })
+      const blockNumber = await client.getBlockNumber({ maxAge: 0 })
       const prevBlock = queryClient.getQueryData([
         'current-block',
-        publicClient.key,
+        client.key,
       ]) as Block
 
       if (blockNumber && prevBlock && prevBlock.number === blockNumber)
@@ -37,22 +37,19 @@ export function useCurrentBlockQueryOptions({
       queryClient.invalidateQueries(pendingBlockQueryOptions)
       queryClient.invalidateQueries(pendingTransactionsQueryOptions)
 
-      const block = await publicClient.getBlock({
+      const block = await client.getBlock({
         blockNumber,
         includeTransactions: true,
       })
 
-      queryClient.setQueryData(['blocks', publicClient.key], (data: any) => {
+      queryClient.setQueryData(['blocks', client.key], (data: any) => {
         if (data?.pages?.[0]) data.pages[0].unshift(block)
         return data
       })
-      queryClient.setQueryData(
-        ['transactions', publicClient.key],
-        (data: any) => {
-          if (data?.pages?.[0]) data.pages[0].unshift(...block.transactions)
-          return data
-        },
-      )
+      queryClient.setQueryData(['transactions', client.key], (data: any) => {
+        if (data?.pages?.[0]) data.pages[0].unshift(...block.transactions)
+        return data
+      })
 
       return block || null
     },

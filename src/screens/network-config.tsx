@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import * as chains from 'viem/chains'
 
-import { getPublicClient } from '../viem'
 import { Container } from '~/components'
 import { Button, Input, Stack, Text } from '~/design-system'
 import { useDebounce } from '~/hooks'
+import { getClient } from '~/viem'
 import { useNetworkStore } from '~/zustand'
 
 export default function Network() {
@@ -27,7 +27,7 @@ export default function Network() {
     enabled: Boolean(debouncedRpcUrl),
     queryKey: ['chainId', debouncedRpcUrl],
     async queryFn() {
-      const publicClient = getPublicClient({ rpcUrl: debouncedRpcUrl })
+      const publicClient = getClient({ rpcUrl: debouncedRpcUrl })
       return publicClient.getChainId()
     },
   })

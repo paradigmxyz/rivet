@@ -3,19 +3,17 @@ import type { SetBalanceParameters } from 'viem'
 
 import { queryClient } from '~/react-query'
 
-import { useBalanceQueryKey } from './useBalance'
-import { usePublicClient } from './usePublicClient'
-import { useTestClient } from './useTestClient'
+import { getBalanceQueryKey } from './useBalance'
+import { useClient } from './useClient'
 
 export function useSetBalance() {
-  const publicClient = usePublicClient()
-  const testClient = useTestClient()
+  const client = useClient()
 
   return useMutation({
     async mutationFn({ address, value }: SetBalanceParameters) {
-      await testClient.setBalance({ address, value })
+      await client.setBalance({ address, value })
       queryClient.invalidateQueries({
-        queryKey: useBalanceQueryKey({ address, publicClient }),
+        queryKey: getBalanceQueryKey({ address, client }),
       })
     },
   })

@@ -3,25 +3,25 @@ import type { Transaction } from 'viem'
 
 import { queryClient } from '~/react-query'
 
+import { useClient } from './useClient'
 import { useCurrentBlock } from './useCurrentBlock'
-import { usePublicClient } from './usePublicClient'
 
 export function useTransactionsQueryOptions() {
   const { data: block } = useCurrentBlock({ refetchInterval: 0 })
-  const publicClient = usePublicClient()
+  const client = useClient()
   const limit = 10
 
   return {
     enabled: Boolean(block?.number),
     defaultPageParam: 0,
     getNextPageParam: (_1: unknown, _2: unknown, prev: number) => prev + 1,
-    queryKey: ['transactions', publicClient.key],
+    queryKey: ['transactions', client.key],
     async queryFn({ pageParam }: { pageParam: number }) {
       let blockNumber = block?.number!
       if (pageParam > 0) {
         const prevInfiniteTransactions = queryClient.getQueryData([
           'transactions',
-          publicClient.key,
+          client.key,
         ]) as InfiniteData<Transaction[]>
         const transactions = prevInfiniteTransactions.pages[pageParam - 1]
         blockNumber = transactions[transactions.length - 1].blockNumber! - 1n
@@ -29,7 +29,7 @@ export function useTransactionsQueryOptions() {
 
       let transactions: Transaction[] = []
       while (transactions.length < limit && blockNumber > 0n) {
-        const block_ = await publicClient.getBlock({
+        const block_ = await client.getBlock({
           blockNumber,
           includeTransactions: true,
         })

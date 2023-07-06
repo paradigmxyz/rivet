@@ -1,12 +1,15 @@
 import {
-  type PublicClient,
-  type TestClient,
+  type Client as Client_Base,
+  type EIP1474Methods,
+  type PublicActions,
+  type TestActions,
   type Transport,
-  type WalletClient,
-  createPublicClient,
-  createTestClient,
-  createWalletClient,
+  type WalletActions,
+  createClient,
   custom,
+  publicActions,
+  testActions,
+  walletActions,
 } from 'viem'
 import { type Chain, foundry, mainnet } from 'viem/chains'
 
@@ -34,14 +37,20 @@ export function buildChain({ rpcUrl }: { rpcUrl: string }): Chain {
   }
 }
 
-const publicClientCache = new Map()
-export function getPublicClient({
-  rpcUrl,
-}: { rpcUrl: string }): PublicClient<Transport, Chain> {
-  const cachedClient = publicClientCache.get(rpcUrl)
+export type Client = Client_Base<
+  Transport,
+  Chain,
+  undefined,
+  EIP1474Methods,
+  WalletActions & PublicActions & TestActions
+>
+
+const clientCache = new Map()
+export function getClient({ rpcUrl }: { rpcUrl: string }): Client {
+  const cachedClient = clientCache.get(rpcUrl)
   if (cachedClient) return cachedClient
 
-  const publicClient = createPublicClient({
+  const client = createClient({
     key: rpcUrl,
     chain: buildChain({ rpcUrl }),
     transport: custom(
@@ -52,51 +61,10 @@ export function getPublicClient({
       { retryCount: 0 },
     ),
   })
-  publicClientCache.set(rpcUrl, publicClient)
-  return publicClient
-}
-
-const testClientCache = new Map()
-export function getTestClient({
-  rpcUrl,
-}: { rpcUrl: string }): TestClient<'anvil', Transport, Chain> {
-  const cachedClient = testClientCache.get(rpcUrl)
-  if (cachedClient) return cachedClient
-
-  const testClient = createTestClient({
-    key: rpcUrl,
-    chain: buildChain({ rpcUrl }),
-    transport: custom(
-      getProvider({
-        messenger,
-        rpcUrl,
-      }),
-      { retryCount: 0 },
-    ),
-    mode: 'anvil',
-  })
-  testClientCache.set(rpcUrl, testClient)
-  return testClient
-}
-
-const walletClientCache = new Map()
-export function getWalletClient({
-  rpcUrl,
-}: { rpcUrl: string }): WalletClient<Transport, Chain, undefined> {
-  const cachedClient = walletClientCache.get(rpcUrl)
-  if (cachedClient) return cachedClient
-
-  const walletClient = createWalletClient({
-    key: rpcUrl,
-    chain: buildChain({ rpcUrl }),
-    transport: custom(
-      getProvider({
-        messenger,
-        rpcUrl,
-      }),
-      { retryCount: 0 },
-    ),
-  })
-  walletClientCache.set(rpcUrl, walletClient)
-  return walletClient
+    .extend(() => ({ mode: 'anvil' }))
+    .extend(testActions({ mode: 'anvil' }))
+    .extend(publicActions)
+    .extend(walletActions)
+  clientCache.set(rpcUrl, client)
+  return client
 }

@@ -3,17 +3,17 @@ import type { SetIntervalMiningParameters } from 'viem'
 
 import { useNetworkStore } from '~/zustand'
 
+import { useClient } from './useClient'
 import { useSetAutomine } from './useSetAutomine'
-import { useTestClient } from './useTestClient'
 
 export function useSetIntervalMining() {
   const { network, upsertNetwork } = useNetworkStore()
-  const testClient = useTestClient()
+  const client = useClient()
   const { mutateAsync: setAutomine } = useSetAutomine()
 
   return useMutation({
     mutationFn: async ({ interval }: SetIntervalMiningParameters) => {
-      await testClient.setIntervalMining({
+      await client.setIntervalMining({
         interval,
       })
       await upsertNetwork({

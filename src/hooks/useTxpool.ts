@@ -2,17 +2,17 @@ import { deepmerge } from '@fastify/deepmerge'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { mapValues } from 'remeda'
 
+import { useClient } from './useClient'
 import { useNetworkStatus } from './useNetworkStatus'
-import { useTestClient } from './useTestClient'
 
 export function useTxpoolQueryOptions() {
   const { data: chainId } = useNetworkStatus()
-  const testClient = useTestClient()
+  const client = useClient()
   return queryOptions({
     enabled: Boolean(chainId),
-    queryKey: ['txpool', testClient.key],
+    queryKey: ['txpool', client.key],
     async queryFn() {
-      return (await testClient.getTxpoolContent()) || null
+      return (await client.getTxpoolContent()) || null
     },
     select(data) {
       const pending = mapValues(data.pending, (x) =>

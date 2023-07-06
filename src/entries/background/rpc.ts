@@ -25,7 +25,7 @@ import {
 const clientCache = new Map()
 export function getRpcClient({
   rpcUrl: rpcUrl_,
-}: { rpcUrl?: string }): Client<Transport, undefined, Chain> {
+}: { rpcUrl?: string }): Client<Transport, Chain, undefined> {
   const rpcUrl = rpcUrl_ || networkStore.getState().network.rpcUrl
 
   const cachedClient = clientCache.get(rpcUrl)

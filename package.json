@@ -73,7 +73,7 @@
     "svg-path-commander": "^2.0.5",
     "typescript": "^5.0.4",
     "use-sync-external-store": "^1.2.0",
-    "viem": "0.0.0-main.20230604T221342",
+    "viem": "^1.2.9",
     "vite": "^4.3.0",
     "vite-plugin-crx-hot-reload": "^1.0.4",
     "vite-tsconfig-paths": "^4.2.0",

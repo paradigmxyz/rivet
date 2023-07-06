@@ -1,14 +1,14 @@
 import { useQuery } from '@tanstack/react-query'
 
-import { useTestClient } from './useTestClient'
+import { useClient } from './useClient'
 
 export function useGetAutomineQueryOptions() {
-  const testClient = useTestClient()
+  const client = useClient()
 
   return {
-    queryKey: ['automining', testClient.key],
+    queryKey: ['automining', client.key],
     async queryFn() {
-      return testClient.getAutomine()
+      return client.getAutomine()
     },
   }
 }

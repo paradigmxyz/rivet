@@ -6,7 +6,8 @@ import { numberToHex } from 'viem'
 
 import { getTheme, setTheme } from '~/design-system'
 import '~/design-system/styles/global.css'
-import { useNetworkStatus, useWalletClient } from '~/hooks'
+import { useNetworkStatus } from '~/hooks'
+import { useClient } from '~/hooks/useClient'
 import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { usePrevious } from '~/hooks/usePrevious'
 import { getMessenger } from '~/messengers'
@@ -174,16 +175,16 @@ function SyncBlockNumber() {
 /** Keeps accounts in sync with network. */
 function SyncJsonRpcAccounts() {
   const { data: chainId } = useNetworkStatus()
-  const walletClient = useWalletClient()
+  const client = useClient()
   const { accountsForRpcUrl, setJsonRpcAccounts } = useAccountStore()
 
   // rome-ignore lint/nursery/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     ;(async () => {
-      const addresses = await walletClient.getAddresses()
-      setJsonRpcAccounts({ addresses, rpcUrl: walletClient.key })
+      const addresses = await client.getAddresses()
+      setJsonRpcAccounts({ addresses, rpcUrl: client.key })
     })()
-  }, [accountsForRpcUrl, chainId, setJsonRpcAccounts, walletClient])
+  }, [accountsForRpcUrl, chainId, setJsonRpcAccounts, client])
 
   return null
 }

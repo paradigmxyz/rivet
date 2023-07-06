@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query'
 import type { StopImpersonatingAccountParameters } from 'viem'
 
-import { useTestClient } from './useTestClient'
+import { useClient } from './useClient'
 
 export function useStopImpersonate() {
-  const testClient = useTestClient()
+  const client = useClient()
 
   return useMutation({
     mutationFn: async ({ address }: StopImpersonatingAccountParameters) => {
-      await testClient.stopImpersonatingAccount({ address })
+      await client.stopImpersonatingAccount({ address })
     },
   })
 }

@@ -1,14 +1,14 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import type { Transaction } from 'viem'
 
-import { usePublicClient } from './usePublicClient'
+import { useClient } from './useClient'
 
 export function usePendingTransactionsQueryOptions() {
-  const publicClient = usePublicClient()
+  const client = useClient()
   return queryOptions({
-    queryKey: ['pending-transactions', publicClient.key],
+    queryKey: ['pending-transactions', client.key],
     async queryFn() {
-      const block = await publicClient.getBlock({
+      const block = await client.getBlock({
         blockTag: 'pending',
         includeTransactions: true,
       })

@@ -3,16 +3,16 @@ import type { MineParameters } from 'viem'
 
 import { queryClient } from '~/react-query'
 
+import { useClient } from './useClient'
 import { useCurrentBlockQueryOptions } from './useCurrentBlock'
-import { useTestClient } from './useTestClient'
 
 export function useMine() {
-  const testClient = useTestClient()
+  const client = useClient()
   const currentBlockQueryOptions = useCurrentBlockQueryOptions()
 
   return useMutation({
     mutationFn: async ({ blocks, interval = 0 }: MineParameters) => {
-      await testClient.mine({
+      await client.mine({
         blocks,
         interval,
       })

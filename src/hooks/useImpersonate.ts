@@ -1,14 +1,14 @@
 import { useMutation } from '@tanstack/react-query'
 import type { ImpersonateAccountParameters } from 'viem'
 
-import { useTestClient } from './useTestClient'
+import { useClient } from './useClient'
 
 export function useImpersonate() {
-  const testClient = useTestClient()
+  const client = useClient()
 
   return useMutation({
     mutationFn: async ({ address }: ImpersonateAccountParameters) => {
-      await testClient.impersonateAccount({ address })
+      await client.impersonateAccount({ address })
     },
   })
 }

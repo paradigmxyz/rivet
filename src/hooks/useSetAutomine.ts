@@ -3,17 +3,17 @@ import { useMutation } from '@tanstack/react-query'
 import { queryClient } from '~/react-query'
 import { useNetworkStore } from '~/zustand'
 
+import { useClient } from './useClient'
 import { useGetAutomineQueryOptions } from './useGetAutomine'
-import { useTestClient } from './useTestClient'
 
 export function useSetAutomine() {
   const { queryKey } = useGetAutomineQueryOptions()
   const { network, upsertNetwork } = useNetworkStore()
-  const testClient = useTestClient()
+  const client = useClient()
 
   return useMutation({
     mutationFn: async (nextAutomining: boolean) => {
-      await testClient.setAutomine(nextAutomining)
+      await client.setAutomine(nextAutomining)
       queryClient.setQueryData(queryKey, () => nextAutomining)
       if (nextAutomining) {
         await upsertNetwork({

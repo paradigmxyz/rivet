@@ -1,24 +1,22 @@
 import { useQuery } from '@tanstack/react-query'
+import type { Address } from 'viem'
 
-import { usePublicClient } from './usePublicClient'
-import type { Address, PublicClient } from 'viem'
+import type { Client } from '~/viem'
 
-export const useBalanceQueryKey = ({
+import { useClient } from './useClient'
+
+export const getBalanceQueryKey = ({
   address,
-  publicClient,
-}: { publicClient: PublicClient; address?: Address }) => [
-  'balance',
-  publicClient.key,
-  address,
-]
+  client,
+}: { client: Client; address?: Address }) => ['balance', client.key, address]
 
 export function useBalanceQueryOptions({ address }: { address?: Address }) {
-  const publicClient = usePublicClient()
+  const client = useClient()
   return {
     enabled: Boolean(address),
-    queryKey: useBalanceQueryKey({ address, publicClient }),
+    queryKey: getBalanceQueryKey({ address, client }),
     async queryFn() {
-      return (await publicClient.getBalance({ address: address! })) || null
+      return (await client.getBalance({ address: address! })) || null
     },
   }
 }

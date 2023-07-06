@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query'
 
 import { useNetworkStore } from '~/zustand'
 
-import { usePublicClient } from './usePublicClient'
+import { useClient } from './useClient'
 
 export function useNetworkStatus({
   enabled = true,
@@ -16,14 +16,14 @@ export function useNetworkStatus({
   retryDelay?: number
 } = {}) {
   const { network, upsertNetwork } = useNetworkStore()
-  const publicClient = usePublicClient()
+  const client = useClient()
 
   return useQuery({
     enabled,
-    queryKey: ['listening', publicClient.key],
+    queryKey: ['listening', client.key],
     async queryFn() {
       try {
-        const chainId = await publicClient.getChainId()
+        const chainId = await client.getChainId()
         if (network.chainId !== chainId)
           upsertNetwork({ rpcUrl: network.rpcUrl, network: { chainId } })
         return chainId

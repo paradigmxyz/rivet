@@ -1,6 +1,6 @@
 import { useSyncExternalStoreWithTracked } from '~/hooks'
 
-import { defaultChain, getPublicClient } from '../viem'
+import { defaultChain, getClient } from '../viem'
 import { createStore } from './utils'
 
 type RpcUrl = string
@@ -50,7 +50,7 @@ export const networkStore = createStore<NetworkStore>(
 
       if (!network.chainId) {
         try {
-          network.chainId = await getPublicClient({
+          network.chainId = await getClient({
             rpcUrl,
           }).getChainId()
         } catch {

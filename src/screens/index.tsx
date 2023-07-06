@@ -33,10 +33,11 @@ import {
   Stack,
   Text,
 } from '~/design-system'
-import { useBalance, useNonce, usePublicClient } from '~/hooks'
+import { useBalance, useNonce } from '~/hooks'
 import { useAccounts } from '~/hooks/useAccounts'
 import { useBlock } from '~/hooks/useBlock'
 import { useBlocks } from '~/hooks/useBlocks'
+import { useClient } from '~/hooks/useClient'
 import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { usePendingTransactions } from '~/hooks/usePendingTransactions'
 import { usePrevious } from '~/hooks/usePrevious'
@@ -176,7 +177,7 @@ function ImportAccount() {
   const {
     network: { rpcUrl },
   } = useNetworkStore()
-  const publicClient = usePublicClient()
+  const client = useClient()
   const { mutateAsync: switchAccount } = useSwitchAccount()
 
   const { handleSubmit, register, reset } = useForm<{ addressOrEns: string }>({
@@ -189,7 +190,7 @@ function ImportAccount() {
     try {
       const address = isAddress(addressOrEns)
         ? addressOrEns
-        : await publicClient.getEnsAddress({ name: addressOrEns })
+        : await client.getEnsAddress({ name: addressOrEns })
       const displayName = !isAddress(addressOrEns) ? addressOrEns : undefined
 
       if (!address) {
@@ -418,18 +419,15 @@ function Transactions() {
   const { data: pendingTransactions } = usePendingTransactions()
 
   const { data: infiniteTransactions, fetchNextPage } = useTransactions()
-  const transactions = useMemo(
-    () => [
-      ...(pendingTransactions?.map((transaction) => ({
-        transaction,
-        status: 'pending',
-      })) || []),
-      ...((infiniteTransactions?.pages.flat() as Transaction[])?.map(
-        (transaction) => ({ transaction, status: 'mined' }),
-      ) || []),
-    ],
-    [pendingTransactions, infiniteTransactions?.pages.flat()],
-  )
+  const transactions = [
+    ...(pendingTransactions?.map((transaction) => ({
+      transaction,
+      status: 'pending',
+    })) || []),
+    ...((infiniteTransactions?.pages.flat() as Transaction[])?.map(
+      (transaction) => ({ transaction, status: 'mined' }),
+    ) || []),
+  ]
 
   const parentRef = useRef(null)
   const virtualizer = useVirtualizer({
