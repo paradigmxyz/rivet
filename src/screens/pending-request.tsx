@@ -5,11 +5,10 @@ import {
   hexToString,
 } from 'viem'
 
-import { usePendingTransactionsQueryOptions } from '../hooks/usePendingTransactions'
 import { Container } from '~/components'
 import { Button, Inline, Stack, Text } from '~/design-system'
-import { useBlockQueryOptions } from '~/hooks/useBlock'
-import { useCurrentBlockQueryOptions } from '~/hooks/useCurrentBlock'
+import { usePendingBlockQueryOptions } from '~/hooks/usePendingBlock'
+import { usePendingTransactionsQueryOptions } from '~/hooks/usePendingTransactions'
 import { useTxpoolQueryOptions } from '~/hooks/useTxpool'
 import { getMessenger } from '~/messengers'
 import type { RpcRequest } from '~/messengers/schema'
@@ -20,8 +19,7 @@ const backgroundMessenger = getMessenger({
 })
 
 export default function PendingRequest({ request }: { request: RpcRequest }) {
-  const blockQueryOptions = useBlockQueryOptions({ blockTag: 'pending' })
-  const currentBlockQueryOptions = useCurrentBlockQueryOptions()
+  const pendingBlockQueryOptions = usePendingBlockQueryOptions()
   const pendingTransactionsQueryOptions = usePendingTransactionsQueryOptions()
   const txpoolQueryOptions = useTxpoolQueryOptions()
 
@@ -31,8 +29,8 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
       status: 'approved',
     })
     if (request.method === 'eth_sendTransaction') {
-      queryClient.invalidateQueries(blockQueryOptions)
-      queryClient.invalidateQueries(currentBlockQueryOptions)
+      console.log('ok')
+      queryClient.invalidateQueries(pendingBlockQueryOptions)
       queryClient.invalidateQueries(pendingTransactionsQueryOptions)
       queryClient.invalidateQueries(txpoolQueryOptions)
     }

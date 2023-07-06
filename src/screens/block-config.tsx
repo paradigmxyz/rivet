@@ -5,8 +5,8 @@ import { Container } from '~/components'
 import { Button, Inline, Input, Separator, Stack, Text } from '~/design-system'
 import { useGetAutomine } from '~/hooks'
 import { useClient } from '~/hooks/useClient'
-import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { useMine } from '~/hooks/useMine'
+import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { useSetAutomine } from '~/hooks/useSetAutomine'
 import { useSetIntervalMining } from '~/hooks/useSetIntervalMining'
 import { useNetworkStore } from '~/zustand'
@@ -155,7 +155,7 @@ function Mine() {
 }
 
 function Reset() {
-  const { data: block } = useCurrentBlock()
+  const { data: block } = usePendingBlock()
   const { network } = useNetworkStore()
 
   const client = useClient()

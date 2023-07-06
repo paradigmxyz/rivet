@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from '@tanstack/react-query'
 
+import { useBlock } from './useBlock'
 import { useClient } from './useClient'
-import { useCurrentBlock } from './useCurrentBlock'
 
 export function useBlocksQueryOptions({ limit = 10 }: { limit?: number } = {}) {
-  const { data: block } = useCurrentBlock({ refetchInterval: 0 })
+  const { data: block } = useBlock()
   const client = useClient()
   return {
     enabled: Boolean(block?.number),

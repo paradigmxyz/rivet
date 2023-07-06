@@ -4,11 +4,11 @@ import type { MineParameters } from 'viem'
 import { queryClient } from '~/react-query'
 
 import { useClient } from './useClient'
-import { useCurrentBlockQueryOptions } from './useCurrentBlock'
+import { usePendingBlockQueryOptions } from './usePendingBlock'
 
 export function useMine() {
   const client = useClient()
-  const currentBlockQueryOptions = useCurrentBlockQueryOptions()
+  const pendingBlockQueryOptions = usePendingBlockQueryOptions()
 
   return useMutation({
     mutationFn: async ({ blocks, interval = 0 }: MineParameters) => {
@@ -17,7 +17,7 @@ export function useMine() {
         interval,
       })
       if (Number(interval) === 0)
-        queryClient.invalidateQueries(currentBlockQueryOptions)
+        queryClient.invalidateQueries(pendingBlockQueryOptions)
     },
   })
 }

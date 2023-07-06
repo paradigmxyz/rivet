@@ -8,7 +8,7 @@ import { getTheme, setTheme } from '~/design-system'
 import '~/design-system/styles/global.css'
 import { useNetworkStatus } from '~/hooks'
 import { useClient } from '~/hooks/useClient'
-import { useCurrentBlock } from '~/hooks/useCurrentBlock'
+import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { usePrevious } from '~/hooks/usePrevious'
 import { getMessenger } from '~/messengers'
 import { QueryClientProvider, queryClient } from '~/react-query'
@@ -168,7 +168,7 @@ function NetworkChangedEmitter() {
 
 /** Keeps block number in sync. */
 function SyncBlockNumber() {
-  useCurrentBlock()
+  usePendingBlock()
   return null
 }
 

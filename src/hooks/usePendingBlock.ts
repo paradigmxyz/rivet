@@ -4,15 +4,13 @@ import type { Block } from 'viem'
 import { queryClient } from '~/react-query'
 import { useNetworkStore } from '~/zustand'
 
-import { useBlockQueryOptions } from './useBlock'
 import { useClient } from './useClient'
 import { useNetworkStatus } from './useNetworkStatus'
 import { usePendingTransactionsQueryOptions } from './usePendingTransactions'
 
-export function useCurrentBlockQueryOptions({
+export function usePendingBlockQueryOptions({
   refetchInterval,
 }: { refetchInterval?: number } = {}) {
-  const pendingBlockQueryOptions = useBlockQueryOptions({ blockTag: 'pending' })
   const pendingTransactionsQueryOptions = usePendingTransactionsQueryOptions()
   const { network } = useNetworkStore()
   const { data: chainId } = useNetworkStatus()
@@ -20,35 +18,38 @@ export function useCurrentBlockQueryOptions({
 
   return {
     enabled: Boolean(chainId),
-    queryKey: ['current-block', client.key],
+    queryKey: ['pending-block', client.key],
     async queryFn() {
-      const blockNumber = await client.getBlockNumber({ maxAge: 0 })
+      const block = await client.getBlock({
+        blockTag: 'pending',
+      })
       const prevBlock = queryClient.getQueryData([
-        'current-block',
+        'pending-block',
         client.key,
       ]) as Block
 
-      if (blockNumber && prevBlock && prevBlock.number === blockNumber)
+      if (block && prevBlock && prevBlock.number === block.number)
         return prevBlock || null
 
       queryClient.invalidateQueries({ queryKey: ['balance'] })
+      queryClient.invalidateQueries({ queryKey: ['block', 'latest'] })
       queryClient.invalidateQueries({ queryKey: ['nonce'] })
       queryClient.invalidateQueries({ queryKey: ['txpool'] })
-      queryClient.invalidateQueries(pendingBlockQueryOptions)
       queryClient.invalidateQueries(pendingTransactionsQueryOptions)
 
-      const block = await client.getBlock({
-        blockNumber,
+      const latestBlock = await client.getBlock({
         includeTransactions: true,
       })
-
       queryClient.setQueryData(['blocks', client.key], (data: any) => {
-        if (data?.pages?.[0]) data.pages[0].unshift(block)
+        if (data?.pages?.[0]) data.pages[0].unshift(latestBlock)
         return data
       })
       queryClient.setQueryData(['transactions', client.key], (data: any) => {
-        if (data?.pages?.[0]) data.pages[0].unshift(...block.transactions)
-        return data
+        const [first, ...pages] = data.pages
+        return {
+          ...data,
+          pages: [[...latestBlock.transactions, ...first], ...pages],
+        }
       })
 
       return block || null
@@ -58,9 +59,9 @@ export function useCurrentBlockQueryOptions({
   }
 }
 
-export function useCurrentBlock({
+export function usePendingBlock({
   refetchInterval,
 }: { refetchInterval?: number } = {}) {
-  const queryOptions = useCurrentBlockQueryOptions({ refetchInterval })
+  const queryOptions = usePendingBlockQueryOptions({ refetchInterval })
   return useQuery(queryOptions)
 }

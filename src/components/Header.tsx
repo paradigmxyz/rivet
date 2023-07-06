@@ -16,8 +16,8 @@ import {
   Text,
 } from '~/design-system'
 import { useGetAutomine, useHost, useNetworkStatus } from '~/hooks'
-import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { useMine } from '~/hooks/useMine'
+import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { getMessenger } from '~/messengers'
 import { truncate } from '~/utils'
 import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
@@ -299,13 +299,13 @@ function Block() {
 }
 
 function BlockNumber() {
-  const { data: block } = useCurrentBlock()
+  const { data: block } = usePendingBlock()
   return (
     <Box position='relative'>
       <Inline wrap={false}>
         <HeaderItem label='Block'>
           <Text size='12px' tabular>
-            {block?.number ? (block?.number + 1n).toString() : '‎'}
+            {block?.number ? block?.number.toString() : '‎'}
           </Text>
         </HeaderItem>
         {block && (
@@ -319,7 +319,7 @@ function BlockNumber() {
 }
 
 function MiningStatus() {
-  const { data: block } = useCurrentBlock()
+  const { data: block } = usePendingBlock()
   const { data: automining } = useGetAutomine()
   const { network } = useNetworkStore()
   return (
@@ -338,7 +338,7 @@ function MiningStatus() {
 }
 
 function BaseFee() {
-  const { data: block } = useCurrentBlock()
+  const { data: block } = usePendingBlock()
   return (
     <HeaderItem label='Base Fee'>
       <Text size='12px'>{block?.baseFeePerGas?.toString() ?? '‎'}</Text>
@@ -347,7 +347,7 @@ function BaseFee() {
 }
 
 function MineButton() {
-  const { data: block } = useCurrentBlock()
+  const { data: block } = usePendingBlock()
   const { mutateAsync: mine } = useMine()
 
   return (

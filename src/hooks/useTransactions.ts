@@ -3,11 +3,11 @@ import type { Transaction } from 'viem'
 
 import { queryClient } from '~/react-query'
 
+import { useBlock } from './useBlock'
 import { useClient } from './useClient'
-import { useCurrentBlock } from './useCurrentBlock'
 
 export function useTransactionsQueryOptions() {
-  const { data: block } = useCurrentBlock({ refetchInterval: 0 })
+  const { data: block } = useBlock()
   const client = useClient()
   const limit = 10
 

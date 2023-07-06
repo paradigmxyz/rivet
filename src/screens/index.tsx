@@ -1,13 +1,6 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import {
-  Fragment,
-  type ReactNode,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { Fragment, type ReactNode, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import {
   type Address,
@@ -35,10 +28,9 @@ import {
 } from '~/design-system'
 import { useBalance, useNonce } from '~/hooks'
 import { useAccounts } from '~/hooks/useAccounts'
-import { useBlock } from '~/hooks/useBlock'
 import { useBlocks } from '~/hooks/useBlocks'
 import { useClient } from '~/hooks/useClient'
-import { useCurrentBlock } from '~/hooks/useCurrentBlock'
+import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { usePendingTransactions } from '~/hooks/usePendingTransactions'
 import { usePrevious } from '~/hooks/usePrevious'
 import { useSetBalance } from '~/hooks/useSetBalance'
@@ -325,13 +317,11 @@ function Nonce({ address }: { address: Address }) {
 // Blocks
 
 function Blocks() {
-  const { data: block } = useCurrentBlock()
-  const prevBlock = usePrevious(block)
+  const { data: pendingBlock } = usePendingBlock()
+  const prevBlock = usePrevious(pendingBlock)
 
   const { data: infiniteBlocks, fetchNextPage } = useBlocks()
   const blocks = infiniteBlocks?.pages.flat() as Block[] | undefined
-
-  const { data: pendingBlock } = useBlock({ blockTag: 'pending' })
 
   return (
     <>
@@ -450,7 +440,7 @@ function Transactions() {
         }}
       >
         {virtualizer.getVirtualItems().map(({ key, index, size, start }) => {
-          const { transaction, status } = transactions[index]
+          const { transaction, status } = transactions[index] || {}
           if (!transaction || typeof transaction === 'string') return
           return (
             <Box
