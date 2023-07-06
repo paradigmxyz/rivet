@@ -47,6 +47,7 @@ export function getRpcClient({
             params,
             id,
           },
+          timeout: 5_000,
         })
         if ((response as { success?: boolean }).success === false)
           return {

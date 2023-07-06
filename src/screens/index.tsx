@@ -1,11 +1,19 @@
 import * as Tabs from '@radix-ui/react-tabs'
-import { Fragment, type ReactNode, useEffect, useState } from 'react'
+import { useVirtualizer } from '@tanstack/react-virtual'
+import {
+  Fragment,
+  type ReactNode,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { useForm } from 'react-hook-form'
 import {
   type Address,
   type Block,
+  type Transaction,
   formatEther,
-  hexToBigInt,
   isAddress,
   parseEther,
 } from 'viem'
@@ -30,12 +38,13 @@ import { useAccounts } from '~/hooks/useAccounts'
 import { useBlock } from '~/hooks/useBlock'
 import { useBlocks } from '~/hooks/useBlocks'
 import { useCurrentBlock } from '~/hooks/useCurrentBlock'
+import { usePendingTransactions } from '~/hooks/usePendingTransactions'
 import { usePrevious } from '~/hooks/usePrevious'
 import { useSetBalance } from '~/hooks/useSetBalance'
 import { useSetNonce } from '~/hooks/useSetNonce'
 import { useSwitchAccount } from '~/hooks/useSwitchAccount'
-import { useTxpool } from '~/hooks/useTxpool'
-import { truncateAddress } from '~/utils'
+import { useTransactions } from '~/hooks/useTransactions'
+import { truncate } from '~/utils'
 import { useAccountStore, useNetworkStore } from '~/zustand'
 import type { Account } from '~/zustand/account'
 
@@ -46,24 +55,26 @@ export default function Index() {
   const { onboarded } = useNetworkStore()
   if (!onboarded) return <OnboardingStart />
   return (
-    <Container verticalInset={false}>
-      <Tabs.Root defaultValue='accounts'>
-        <TabsList
-          items={[
-            { label: 'Accounts', value: 'accounts' },
-            { label: 'Blocks', value: 'blocks' },
-            { label: 'Txpool', value: 'txpool' },
-          ]}
-        />
-        <TabsContent inset={false} value='accounts'>
-          <Accounts />
-        </TabsContent>
-        <TabsContent inset={false} value='blocks'>
-          <Blocks />
-        </TabsContent>
-        <TabsContent value='txpool'>
-          <Txpool />
-        </TabsContent>
+    <Container scrollable={false} verticalInset={false}>
+      <Tabs.Root asChild defaultValue='accounts'>
+        <Box display='flex' flexDirection='column' height='full'>
+          <TabsList
+            items={[
+              { label: 'Accounts', value: 'accounts' },
+              { label: 'Blocks', value: 'blocks' },
+              { label: 'Transactions', value: 'transactions' },
+            ]}
+          />
+          <TabsContent inset={false} value='accounts'>
+            <Accounts />
+          </TabsContent>
+          <TabsContent inset={false} value='blocks'>
+            <Blocks />
+          </TabsContent>
+          <TabsContent inset={false} scrollable={false} value='transactions'>
+            <Transactions />
+          </TabsContent>
+        </Box>
       </Tabs.Root>
     </Container>
   )
@@ -126,7 +137,7 @@ function Accounts() {
                       color={account.displayName ? 'text/tertiary' : undefined}
                       size='12px'
                     >
-                      {truncateAddress(account.address)}
+                      {truncate(account.address)}
                     </Text>
                   </Inline>
                 </LabelledContent>
@@ -232,14 +243,14 @@ function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
       borderWidth='1px'
       onClick={onClick}
       style={{
-        width: '20px',
-        height: '20px',
+        width: '24px',
+        height: '24px',
       }}
       transform={{ hoveractive: 'shrink95' }}
     >
       <SFSymbol
         color='surface/red'
-        size='11px'
+        size='12px'
         symbol='trash'
         weight='semibold'
       />
@@ -310,7 +321,7 @@ function Nonce({ address }: { address: Address }) {
 }
 
 ////////////////////////////////////////////////////////////////////////
-// Accounts
+// Blocks
 
 function Blocks() {
   const { data: block } = useCurrentBlock()
@@ -326,7 +337,7 @@ function Blocks() {
       <Box
         marginHorizontal='-12px'
         paddingHorizontal='12px'
-        paddingVertical='12px'
+        paddingVertical='8px'
         position='relative'
       >
         <Inline wrap={false}>
@@ -359,7 +370,7 @@ function Blocks() {
             className={i === 0 && prevBlock && styles.mineBackground}
             marginHorizontal='-12px'
             paddingHorizontal='12px'
-            paddingVertical='12px'
+            paddingVertical='8px'
             position='relative'
           >
             <Inline wrap={false}>
@@ -401,45 +412,107 @@ function Blocks() {
 }
 
 ////////////////////////////////////////////////////////////////////////
-// Txpool
+// Transactions
 
-function Txpool() {
-  const { data: txpool } = useTxpool()
+function Transactions() {
+  const { data: pendingTransactions } = usePendingTransactions()
+
+  const { data: infiniteTransactions, fetchNextPage } = useTransactions()
+  const transactions = useMemo(
+    () => [
+      ...(pendingTransactions?.map((transaction) => ({
+        transaction,
+        status: 'pending',
+      })) || []),
+      ...((infiniteTransactions?.pages.flat() as Transaction[])?.map(
+        (transaction) => ({ transaction, status: 'mined' }),
+      ) || []),
+    ],
+    [pendingTransactions, infiniteTransactions?.pages.flat()],
+  )
+
+  const parentRef = useRef(null)
+  const virtualizer = useVirtualizer({
+    count: (pendingTransactions?.length ?? 0) + (transactions?.length ?? 0),
+    getScrollElement: () => parentRef.current!,
+    estimateSize: () => 40,
+  })
 
   return (
-    <Stack gap='16px'>
-      {txpool?.length === 0 && (
-        <Text color='text/tertiary'>Txpool is empty</Text>
-      )}
-      {txpool?.map(([account, transactions]) => {
-        return (
-          <>
-            <Box key={account}>
-              <Stack gap='16px'>
-                <LabelledContent label='Account'>
-                  <Text size='12px'>{account}</Text>
-                </LabelledContent>
-                <LabelledContent label='Transactions'>
-                  <Stack gap='12px'>
-                    {transactions.map(({ transaction }) => (
-                      <Inline key={transaction.hash} alignHorizontal='justify'>
-                        <Text size='12px'>
-                          {truncateAddress(transaction.hash)}
-                        </Text>
-                        <Text size='12px'>
-                          {formatEther(hexToBigInt(transaction.value))} ETH
-                        </Text>
-                      </Inline>
-                    ))}
-                  </Stack>
-                </LabelledContent>
-              </Stack>
+    <Box
+      ref={parentRef}
+      marginHorizontal='-12px'
+      style={{ height: '100%', overflowY: 'scroll' }}
+    >
+      <Box
+        position='relative'
+        width='full'
+        style={{
+          height: `${virtualizer.getTotalSize()}px`,
+        }}
+      >
+        {virtualizer.getVirtualItems().map(({ key, index, size, start }) => {
+          const { transaction, status } = transactions[index]
+          if (!transaction || typeof transaction === 'string') return
+          return (
+            <Box
+              key={key}
+              position='absolute'
+              top='0px'
+              left='0px'
+              width='full'
+              style={{
+                height: `${size}px`,
+                transform: `translateY(${start}px)`,
+              }}
+            >
+              <Box paddingHorizontal='12px' paddingVertical='8px'>
+                <Columns>
+                  <LabelledContent label='Block'>
+                    <Inline alignVertical='center' gap='4px' wrap={false}>
+                      <Text size='12px'>
+                        {transaction.blockNumber?.toString()}
+                      </Text>
+                      {status === 'pending' && (
+                        <SFSymbol
+                          color='text/tertiary'
+                          size='11px'
+                          symbol='clock'
+                          weight='semibold'
+                        />
+                      )}
+                    </Inline>
+                  </LabelledContent>
+                  <LabelledContent label='From'>
+                    <Text wrap={false} size='12px'>
+                      {truncate(transaction.from, { start: 6, end: 4 })}
+                    </Text>
+                  </LabelledContent>
+                  <LabelledContent label='To'>
+                    <Text wrap={false} size='12px'>
+                      {transaction.to &&
+                        truncate(transaction.to, { start: 6, end: 4 })}
+                    </Text>
+                  </LabelledContent>
+                </Columns>
+              </Box>
+              <Box marginHorizontal='-12px'>
+                <Separator />
+              </Box>
             </Box>
-            <Separator />
-          </>
-        )
-      })}
-    </Stack>
+          )
+        })}
+      </Box>
+      <Inset space='12px'>
+        <Button
+          onClick={() => fetchNextPage()}
+          variant='stroked fill'
+          width='fit'
+        >
+          Load more
+        </Button>
+      </Inset>
+    </Box>
   )
 }
 
@@ -448,7 +521,7 @@ function LabelledContent({
   label,
 }: { children: ReactNode; label: string }) {
   return (
-    <Stack gap='8px' width='fit'>
+    <Stack gap='8px'>
       <Text color='text/tertiary' size='9px' wrap={false}>
         {label.toUpperCase()}
       </Text>

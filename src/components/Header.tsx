@@ -19,7 +19,7 @@ import { useGetAutomine, useHost, useNetworkStatus } from '~/hooks'
 import { useCurrentBlock } from '~/hooks/useCurrentBlock'
 import { useMine } from '~/hooks/useMine'
 import { getMessenger } from '~/messengers'
-import { truncateAddress } from '~/utils'
+import { truncate } from '~/utils'
 import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 
 import * as styles from './Header.css'
@@ -28,50 +28,48 @@ const contentMessenger = getMessenger({ connection: 'wallet <> contentScript' })
 
 export function Header() {
   return (
-    <Box style={{ height: '120px' }} width='full'>
-      <Rows>
-        <Row>
-          <Columns width='full'>
-            <Column width='content'>
-              <HomeButton />
-            </Column>
-            <Column width='content'>
-              <Separator orientation='vertical' />
-            </Column>
-            <Column>
-              <Account />
-            </Column>
-            <Column width='content'>
-              <Separator orientation='vertical' />
-            </Column>
-            <Column>
-              <DappConnection />
-            </Column>
-            <Column width='content'>
-              <Separator orientation='vertical' />
-            </Column>
-            <Column width='content'>
-              <CollapseButton />
-            </Column>
-          </Columns>
-        </Row>
-        <Row height='content'>
-          <Separator />
-        </Row>
-        <Row>
-          <Network />
-        </Row>
-        <Row height='content'>
-          <Separator />
-        </Row>
-        <Row>
-          <Block />
-        </Row>
-        <Row height='content'>
-          <Separator />
-        </Row>
-      </Rows>
-    </Box>
+    <Rows>
+      <Row>
+        <Columns width='full'>
+          <Column width='content'>
+            <HomeButton />
+          </Column>
+          <Column width='content'>
+            <Separator orientation='vertical' />
+          </Column>
+          <Column>
+            <Account />
+          </Column>
+          <Column width='content'>
+            <Separator orientation='vertical' />
+          </Column>
+          <Column>
+            <DappConnection />
+          </Column>
+          <Column width='content'>
+            <Separator orientation='vertical' />
+          </Column>
+          <Column width='content'>
+            <CollapseButton />
+          </Column>
+        </Columns>
+      </Row>
+      <Row height='content'>
+        <Separator />
+      </Row>
+      <Row>
+        <Network />
+      </Row>
+      <Row height='content'>
+        <Separator />
+      </Row>
+      <Row>
+        <Block />
+      </Row>
+      <Row height='content'>
+        <Separator />
+      </Row>
+    </Rows>
   )
 }
 
@@ -128,7 +126,7 @@ function Account() {
         <Inset horizontal='8px'>
           {account && (
             <HeaderItem label='Account'>
-              <Text size='11px'>{truncateAddress(account.address)}</Text>
+              <Text size='11px'>{truncate(account.address)}</Text>
             </HeaderItem>
           )}
         </Inset>

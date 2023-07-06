@@ -42,6 +42,9 @@ devDependencies:
   '@tanstack/react-query-persist-client':
     specifier: 5.0.0-alpha.42
     version: 5.0.0-alpha.42(@tanstack/react-query@5.0.0-alpha.42)
+  '@tanstack/react-virtual':
+    specifier: 3.0.0-beta.54
+    version: 3.0.0-beta.54(react@18.2.0)
   '@types/chroma-js':
     specifier: ^2.4.0
     version: 2.4.0
@@ -1618,6 +1621,19 @@ packages:
       '@tanstack/query-core': 5.0.0-alpha.42
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
+    dev: true
+
+  /@tanstack/react-virtual@3.0.0-beta.54(react@18.2.0):
+    resolution: {integrity: sha512-D1mDMf4UPbrtHRZZriCly5bXTBMhylslm4dhcHqTtDJ6brQcgGmk8YD9JdWBGWfGSWPKoh2x1H3e7eh+hgPXtQ==}
+    peerDependencies:
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    dependencies:
+      '@tanstack/virtual-core': 3.0.0-beta.54
+      react: 18.2.0
+    dev: true
+
+  /@tanstack/virtual-core@3.0.0-beta.54:
+    resolution: {integrity: sha512-jtkwqdP2rY2iCCDVAFuaNBH3fiEi29aTn2RhtIoky8DTTiCdc48plpHHreLwmv1PICJ4AJUUESaq3xa8fZH8+g==}
     dev: true
 
   /@thednp/dommatrix@2.0.4:

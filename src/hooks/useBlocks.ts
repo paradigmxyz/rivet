@@ -10,7 +10,7 @@ export function useBlocksQueryOptions({ limit = 10 }: { limit?: number } = {}) {
     enabled: Boolean(block?.number),
     defaultPageParam: 0,
     // TODO: fix issue where mining blocks and fetching more shows mismatch
-    getNextPageParam: (_1: any, _2: any, prev: number) => prev + 1,
+    getNextPageParam: (_1: unknown, _2: unknown, prev: number) => prev + 1,
     queryKey: ['blocks', publicClient.key],
     async queryFn({ pageParam }: { pageParam: number }) {
       return Promise.all(

@@ -8,7 +8,7 @@ import { useTestClient } from './useTestClient'
 
 export function useMine() {
   const testClient = useTestClient()
-  const { queryKey } = useCurrentBlockQueryOptions()
+  const currentBlockQueryOptions = useCurrentBlockQueryOptions()
 
   return useMutation({
     mutationFn: async ({ blocks, interval = 0 }: MineParameters) => {
@@ -16,7 +16,8 @@ export function useMine() {
         blocks,
         interval,
       })
-      if (Number(interval) === 0) queryClient.invalidateQueries({ queryKey })
+      if (Number(interval) === 0)
+        queryClient.invalidateQueries(currentBlockQueryOptions)
     },
   })
 }

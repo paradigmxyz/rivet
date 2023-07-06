@@ -1,48 +1,52 @@
 import { Outlet } from 'react-router-dom'
 
-import { Box, Row, Rows } from '~/design-system'
+import { Box } from '~/design-system'
 import { useNetworkStore, usePendingRequestsStore } from '~/zustand'
 
 import { Header } from '~/components'
 
 import PendingRequest from './pending-request'
 
+const headerHeight = '120px'
+
 export default function Layout() {
   const { onboarded } = useNetworkStore()
   const { pendingRequests } = usePendingRequestsStore()
   const pendingRequest = pendingRequests[pendingRequests.length - 1]
+
+  const showHeader = onboarded
 
   return (
     <Box
       backgroundColor='surface/primary/elevated'
       borderLeftWidth='1px'
       display='flex'
+      flexDirection='column'
       style={{
         height: '100vh',
         width: '100%',
-        overflowX: 'hidden',
+        overflow: 'hidden',
       }}
     >
-      <Rows>
-        {onboarded && (
-          <Row height='content'>
-            <Header />
-          </Row>
+      {showHeader && (
+        <Box style={{ height: headerHeight }}>
+          <Header />
+        </Box>
+      )}
+      <Box
+        width='full'
+        style={{ height: showHeader ? `calc(100% - ${headerHeight})` : '100%' }}
+      >
+        {pendingRequests.length > 0 && (
+          <PendingRequest request={pendingRequest} />
         )}
-        <Row>
-          <Box style={{ overflowY: 'scroll' }} width='full'>
-            {pendingRequests.length > 0 && (
-              <PendingRequest request={pendingRequest} />
-            )}
-            <Box
-              display={pendingRequests.length > 0 ? 'none' : 'block'}
-              height='full'
-            >
-              <Outlet />
-            </Box>
-          </Box>
-        </Row>
-      </Rows>
+        <Box
+          display={pendingRequests.length > 0 ? 'none' : 'block'}
+          height='full'
+        >
+          <Outlet />
+        </Box>
+      </Box>
     </Box>
   )
 }

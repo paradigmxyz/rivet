@@ -28,9 +28,9 @@ export function TabsList({ items }: TabsListProps) {
                 justifyContent='center'
                 cursor='pointer'
                 display='flex'
-                style={{ height: '44px' }}
+                style={{ height: '36px' }}
               >
-                <Text size='16px'>{item.label}</Text>
+                <Text size='14px'>{item.label}</Text>
               </Box>
             </Tabs_.Trigger>
           ))}

@@ -6,12 +6,14 @@ import { useNetworkStore } from '~/zustand'
 
 import { useBlockQueryOptions } from './useBlock'
 import { useNetworkStatus } from './useNetworkStatus'
+import { usePendingTransactionsQueryOptions } from './usePendingTransactions'
 import { usePublicClient } from './usePublicClient'
 
 export function useCurrentBlockQueryOptions({
   refetchInterval,
 }: { refetchInterval?: number } = {}) {
   const pendingBlockQueryOptions = useBlockQueryOptions({ blockTag: 'pending' })
+  const pendingTransactionsQueryOptions = usePendingTransactionsQueryOptions()
   const { network } = useNetworkStore()
   const { data: chainId } = useNetworkStatus()
   const publicClient = usePublicClient()
@@ -30,18 +32,27 @@ export function useCurrentBlockQueryOptions({
         return prevBlock || null
 
       queryClient.invalidateQueries({ queryKey: ['balance'] })
-      queryClient.invalidateQueries({
-        queryKey: pendingBlockQueryOptions.queryKey,
-      })
       queryClient.invalidateQueries({ queryKey: ['nonce'] })
       queryClient.invalidateQueries({ queryKey: ['txpool'] })
+      queryClient.invalidateQueries(pendingBlockQueryOptions)
+      queryClient.invalidateQueries(pendingTransactionsQueryOptions)
 
-      const block = await publicClient.getBlock({ blockNumber })
+      const block = await publicClient.getBlock({
+        blockNumber,
+        includeTransactions: true,
+      })
 
       queryClient.setQueryData(['blocks', publicClient.key], (data: any) => {
         if (data?.pages?.[0]) data.pages[0].unshift(block)
         return data
       })
+      queryClient.setQueryData(
+        ['transactions', publicClient.key],
+        (data: any) => {
+          if (data?.pages?.[0]) data.pages[0].unshift(...block.transactions)
+          return data
+        },
+      )
 
       return block || null
     },

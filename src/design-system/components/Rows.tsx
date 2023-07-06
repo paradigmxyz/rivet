@@ -137,6 +137,7 @@ function PrivateRow({
       flexGrow='1'
       flexShrink='1'
       flexBasis={fit ? undefined : '0'}
+      height='full'
       width='full'
       style={style}
     >

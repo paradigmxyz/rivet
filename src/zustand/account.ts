@@ -71,7 +71,6 @@ export const accountStore = createStore<AccountStore>(
           state.account?.address === account.address
             ? accounts[0]
             : state.account
-        console.log(account_, state.account?.address, account.address)
         return {
           ...state,
           account: account_,

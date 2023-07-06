@@ -20,6 +20,7 @@ export function Container({
   verticalInset = true,
   fit,
   footer,
+  scrollable = true,
 }: {
   alignVertical?: RowProps['alignVertical']
   children: ReactNode
@@ -28,10 +29,14 @@ export function Container({
   verticalInset?: boolean
   fit?: boolean
   footer?: ReactNode
+  scrollable?: boolean
 }) {
   return (
     <Rows fit={fit}>
-      <Row alignVertical={alignVertical} style={{ overflowY: 'scroll' }}>
+      <Row
+        alignVertical={alignVertical}
+        style={{ overflowY: scrollable ? 'scroll' : undefined }}
+      >
         <Rows>
           {header && (
             <>
