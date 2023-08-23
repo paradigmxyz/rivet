@@ -12,9 +12,9 @@ export function OnboardingContainer({
   return (
     <Container
       header={
-        <Inset vertical='16px'>
-          <Stack gap='12px'>
-            <Text color='text/tertiary' size='14px'>
+        <Inset vertical="16px">
+          <Stack gap="12px">
+            <Text color="text/tertiary" size="14px">
               Setup
             </Text>
             <Text>{title}</Text>
@@ -22,16 +22,16 @@ export function OnboardingContainer({
         </Inset>
       }
       footer={
-        <Stack gap='16px'>
+        <Stack gap="16px">
           {footer}
           <Box
-            as='button'
-            display='flex'
+            as="button"
+            display="flex"
             onClick={() => navigate(-1)}
-            paddingTop='4px'
-            paddingBottom='12px'
+            paddingTop="4px"
+            paddingBottom="12px"
           >
-            <Text color='text/tertiary'>Back</Text>
+            <Text color="text/tertiary">Back</Text>
           </Box>
         </Stack>
       }

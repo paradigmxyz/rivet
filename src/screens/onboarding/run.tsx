@@ -33,7 +33,7 @@ export default function OnboardingRun() {
     if (params.get('gasPrice'))
       command += `--gas-price ${params.get('gasPrice')} \\\n`
     return command.replace(/ \\\n$/, '')
-  }, [])
+  }, [params])
 
   const { data: online } = useNetworkStatus({
     refetchInterval: 2_000,
@@ -44,51 +44,51 @@ export default function OnboardingRun() {
       setOnboarded(true)
       navigate('/')
     }
-  }, [online])
+  }, [online, navigate, setOnboarded])
 
   return (
-    <OnboardingContainer title='Run Anvil'>
-      <Stack gap='20px'>
-        <Text color='text/secondary' size='14px'>
+    <OnboardingContainer title="Run Anvil">
+      <Stack gap="20px">
+        <Text color="text/secondary" size="14px">
           Run the following command in your CLI to start a local chain with your
           configuration:
         </Text>
         <Box
-          as='pre'
-          alignItems='center'
-          backgroundColor='surface/fill/tertiary'
-          display='flex'
-          paddingVertical='16px'
-          paddingLeft='12px'
-          paddingRight='12px'
-          position='relative'
+          as="pre"
+          alignItems="center"
+          backgroundColor="surface/fill/tertiary"
+          display="flex"
+          paddingVertical="16px"
+          paddingLeft="12px"
+          paddingRight="12px"
+          position="relative"
           // @ts-expect-error
           style={{ textWrap: 'wrap' }}
         >
-          <Text as='code' size='12px'>
+          <Text as="code" size="12px">
             {command}
           </Text>
           {/* TODO: Extract into `IconButton` */}
           <Box
-            as='button'
-            alignItems='center'
-            display='flex'
+            as="button"
+            alignItems="center"
+            display="flex"
             backgroundColor={{
               hover: 'surface/fill/secondary',
             }}
-            borderRadius='3px'
+            borderRadius="3px"
             onClick={() => navigator.clipboard.writeText(command)}
-            justifyContent='center'
-            position='absolute'
-            top='4px'
-            right='4px'
+            justifyContent="center"
+            position="absolute"
+            top="4px"
+            right="4px"
             style={{ width: '24px', height: '24px' }}
             transform={{ hoveractive: 'shrink95' }}
           >
-            <SFSymbol symbol='doc.on.doc' size='16px' />
+            <SFSymbol symbol="doc.on.doc" size="16px" />
           </Box>
         </Box>
-        <Text color='text/secondary' size='14px'>
+        <Text color="text/secondary" size="14px">
           When Rivet detects the Anvil instance is running, we will redirect
           you.
         </Text>

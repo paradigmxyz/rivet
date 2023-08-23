@@ -29,18 +29,18 @@ export const SFSymbol = forwardRef<SVGSVGElement, SFSymbolProps>(
     return (
       <Box
         ref={ref}
-        as='svg'
+        as="svg"
         className={className}
         viewBox={`0 0 ${symbol.viewBox.width} ${symbol.viewBox.height}`}
-        fill='none'
+        fill="none"
         color={color}
         style={{
           width: size,
           height: size,
         }}
-        xmlns='http://www.w3.org/2000/svg'
+        xmlns="http://www.w3.org/2000/svg"
       >
-        <path d={symbol.path} fill='currentColor' />
+        <path d={symbol.path} fill="currentColor" />
       </Box>
     )
   },

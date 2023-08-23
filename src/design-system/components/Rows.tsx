@@ -37,11 +37,11 @@ export const Rows = forwardRef<HTMLDivElement, RowsProps>(function Rows(
   return (
     <Box
       ref={ref}
-      display='flex'
-      flexDirection='column'
-      flexGrow='1'
-      height='full'
-      width='full'
+      display="flex"
+      flexDirection="column"
+      flexGrow="1"
+      height="full"
+      width="full"
       gap={gap}
       alignItems={
         alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
@@ -116,10 +116,10 @@ function PrivateRow({
           alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
         }
         className={height !== 'content' ? styles.height[height] : undefined}
-        display='flex'
-        flexGrow='0'
-        flexShrink='0'
-        width='full'
+        display="flex"
+        flexGrow="0"
+        flexShrink="0"
+        width="full"
         style={style}
       >
         {children}
@@ -133,12 +133,12 @@ function PrivateRow({
       justifyContent={
         alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
       }
-      display='flex'
-      flexGrow='1'
-      flexShrink='1'
+      display="flex"
+      flexGrow="1"
+      flexShrink="1"
       flexBasis={fit ? undefined : '0'}
-      height='full'
-      width='full'
+      height="full"
+      width="full"
       style={style}
     >
       {children}

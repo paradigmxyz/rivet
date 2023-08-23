@@ -33,43 +33,43 @@ export function Header() {
   return (
     <Rows>
       <Row>
-        <Columns width='full'>
-          <Column width='content'>
+        <Columns width="full">
+          <Column width="content">
             <HomeButton />
           </Column>
-          <Column width='content'>
-            <Separator orientation='vertical' />
+          <Column width="content">
+            <Separator orientation="vertical" />
           </Column>
           <Column>
             <Account />
           </Column>
-          <Column width='content'>
-            <Separator orientation='vertical' />
+          <Column width="content">
+            <Separator orientation="vertical" />
           </Column>
           <Column>
             <DappConnection />
           </Column>
-          <Column width='content'>
-            <Separator orientation='vertical' />
+          <Column width="content">
+            <Separator orientation="vertical" />
           </Column>
-          <Column width='content'>
+          <Column width="content">
             <CollapseButton />
           </Column>
         </Columns>
       </Row>
-      <Row height='content'>
+      <Row height="content">
         <Separator />
       </Row>
       <Row>
         <Network />
       </Row>
-      <Row height='content'>
+      <Row height="content">
         <Separator />
       </Row>
       <Row>
         <Block />
       </Row>
-      <Row height='content'>
+      <Row height="content">
         <Separator />
       </Row>
     </Rows>
@@ -81,8 +81,8 @@ function HeaderItem({
   label,
 }: { children: ReactNode; label: string }) {
   return (
-    <Stack gap='8px'>
-      <Text color='text/tertiary' size='9px' wrap={false}>
+    <Stack gap="8px">
+      <Text color="text/tertiary" size="9px" wrap={false}>
         {label.toUpperCase()}
       </Text>
       <Box>{children}</Box>
@@ -95,18 +95,18 @@ function HeaderItem({
 
 function HomeButton() {
   return (
-    <Link to='/' style={{ height: '100%' }}>
+    <Link to="/" style={{ height: '100%' }}>
       <Box
-        alignItems='center'
+        alignItems="center"
         backgroundColor={{
           hover: 'surface/fill/quarternary',
         }}
-        display='flex'
-        justifyContent='center'
-        height='full'
+        display="flex"
+        justifyContent="center"
+        height="full"
         style={{ width: '36px' }}
       >
-        <BrandIcon size='22px' />
+        <BrandIcon size="22px" />
       </Box>
     </Link>
   )
@@ -116,20 +116,20 @@ function Account() {
   const { account } = useAccountStore()
   if (!account) return null
   return (
-    <Link to='account-config' style={{ height: '100%' }}>
+    <Link to="account-config" style={{ height: '100%' }}>
       <Box
-        alignItems='center'
+        alignItems="center"
         backgroundColor={{
           hover: 'surface/fill/quarternary',
         }}
-        display='flex'
-        height='full'
+        display="flex"
+        height="full"
         style={{ cursor: 'default' }}
       >
-        <Inset horizontal='8px'>
+        <Inset horizontal="8px">
           {account && (
-            <HeaderItem label='Account'>
-              <Text size='11px'>{truncate(account.address)}</Text>
+            <HeaderItem label="Account">
+              <Text size="11px">{truncate(account.address)}</Text>
             </HeaderItem>
           )}
         </Inset>
@@ -144,20 +144,20 @@ function DappConnection() {
   const isConnected = Boolean(host && sessions[host])
 
   return (
-    <Link to='session' style={{ height: '100%' }}>
+    <Link to="session" style={{ height: '100%' }}>
       <Box
-        alignItems='center'
+        alignItems="center"
         backgroundColor={{
           hover: 'surface/fill/quarternary',
         }}
-        display='flex'
-        height='full'
+        display="flex"
+        height="full"
         style={{ cursor: 'default' }}
       >
-        <Inset horizontal='8px'>
+        <Inset horizontal="8px">
           <HeaderItem label={host?.replace('www.', '') || ''}>
-            <Inline alignVertical='center' gap='4px' wrap={false}>
-              <Text size='12px' style={{ opacity: isConnected ? 1 : 0.5 }}>
+            <Inline alignVertical="center" gap="4px" wrap={false}>
+              <Text size="12px" style={{ opacity: isConnected ? 1 : 0.5 }}>
                 {isConnected ? 'Connected' : 'Disconnected'}
               </Text>
             </Inline>
@@ -175,18 +175,18 @@ function CollapseButton() {
 
   return (
     <Box
-      alignItems='center'
-      as='button'
+      alignItems="center"
+      as="button"
       backgroundColor={{
         hover: 'surface/fill/quarternary',
       }}
-      display='flex'
-      justifyContent='center'
-      height='full'
+      display="flex"
+      justifyContent="center"
+      height="full"
       onClick={handleClose}
       style={{ width: '28px' }}
     >
-      <SFSymbol size='12px' symbol='chevron.right.2' weight='medium' />
+      <SFSymbol size="12px" symbol="chevron.right.2" weight="medium" />
     </Box>
   )
 }
@@ -196,24 +196,24 @@ function CollapseButton() {
 
 function Network() {
   return (
-    <Link to='network-config' style={{ height: '100%', width: '100%' }}>
+    <Link to="network-config" style={{ height: '100%', width: '100%' }}>
       <Box
-        alignItems='center'
+        alignItems="center"
         backgroundColor={{
           hover: 'surface/fill/quarternary',
         }}
-        display='flex'
-        height='full'
-        width='full'
+        display="flex"
+        height="full"
+        width="full"
         style={{ cursor: 'default' }}
       >
-        <Inset horizontal='8px'>
-          <Columns gap='12px'>
-            <Column alignVertical='center' width='1/2'>
+        <Inset horizontal="8px">
+          <Columns gap="12px">
+            <Column alignVertical="center" width="1/2">
               <RpcUrl />
             </Column>
-            <Column alignVertical='center' width='1/2'>
-              <Inset left='8px'>
+            <Column alignVertical="center" width="1/2">
+              <Inset left="8px">
                 <Chain />
               </Inset>
             </Column>
@@ -229,8 +229,8 @@ function RpcUrl() {
   const { data: listening, status } = useNetworkStatus()
 
   return (
-    <HeaderItem label='RPC URL'>
-      <Inline gap='4px' wrap={false}>
+    <HeaderItem label="RPC URL">
+      <Inline gap="4px" wrap={false}>
         <Box
           backgroundColor={
             status === 'pending'
@@ -239,11 +239,11 @@ function RpcUrl() {
               ? 'surface/green'
               : 'surface/red'
           }
-          borderWidth='1px'
-          borderRadius='round'
+          borderWidth="1px"
+          borderRadius="round"
           style={{ minWidth: 8, minHeight: 8 }}
         />
-        <Text size='12px' wrap={false} width='full'>
+        <Text size="12px" wrap={false} width="full">
           {network.rpcUrl.replace(/https?:\/\//, '')}
         </Text>
       </Inline>
@@ -255,8 +255,8 @@ function Chain() {
   const { network } = useNetworkStore()
 
   return (
-    <HeaderItem label='Chain'>
-      <Text size='12px' wrap={false} width='full'>
+    <HeaderItem label="Chain">
+      <Text size="12px" wrap={false} width="full">
         {network.chainId}: {network.name}
       </Text>
     </HeaderItem>
@@ -268,30 +268,30 @@ function Chain() {
 
 function Block() {
   return (
-    <Link to='block-config' style={{ width: '100%' }}>
+    <Link to="block-config" style={{ width: '100%' }}>
       <Box
-        alignItems='center'
+        alignItems="center"
         backgroundColor={{
           hover: 'surface/fill/quarternary',
         }}
-        display='flex'
-        height='full'
-        width='full'
+        display="flex"
+        height="full"
+        width="full"
         style={{ cursor: 'default' }}
       >
-        <Columns width='full'>
-          <Column alignVertical='center'>
-            <Inset horizontal='8px'>
+        <Columns width="full">
+          <Column alignVertical="center">
+            <Inset horizontal="8px">
               <BlockNumber />
             </Inset>
           </Column>
-          <Column alignVertical='center'>
-            <Inset horizontal='8px'>
+          <Column alignVertical="center">
+            <Inset horizontal="8px">
               <MiningStatus />
             </Inset>
           </Column>
-          <Column alignVertical='center'>
-            <Inset horizontal='8px'>
+          <Column alignVertical="center">
+            <Inset horizontal="8px">
               <BaseFee />
             </Inset>
           </Column>
@@ -304,15 +304,15 @@ function Block() {
 function BlockNumber() {
   const { data: block } = usePendingBlock()
   return (
-    <Box position='relative'>
+    <Box position="relative">
       <Inline wrap={false}>
-        <HeaderItem label='Block'>
-          <Text size='12px' tabular>
+        <HeaderItem label="Block">
+          <Text size="12px" tabular>
             {block?.number ? block?.number.toString() : '‎'}
           </Text>
         </HeaderItem>
         {block && (
-          <Inset horizontal='2px'>
+          <Inset horizontal="2px">
             <MineButton />
           </Inset>
         )}
@@ -326,8 +326,8 @@ function MiningStatus() {
   const { data: automining } = useGetAutomine()
   const { network } = useNetworkStore()
   return (
-    <HeaderItem label='Mining Status'>
-      <Text size='12px'>
+    <HeaderItem label="Mining Status">
+      <Text size="12px">
         {block
           ? automining
             ? 'Automine'
@@ -351,8 +351,8 @@ function BaseFee() {
   )
   if (!block) return null
   return (
-    <HeaderItem label='Base Fee'>
-      <Text size='12px'>
+    <HeaderItem label="Base Fee">
+      <Text size="12px">
         {intl.format(Number(formatGwei(block.baseFeePerGas!)))} gwei
       </Text>
     </HeaderItem>
@@ -367,24 +367,24 @@ function MineButton() {
     // TODO: Extract into `IconButton`
     <Box
       key={block?.number?.toString()}
-      as='button'
+      as="button"
       backgroundColor={{
         hover: 'surface/fill/secondary',
       }}
-      borderRadius='3px'
+      borderRadius="3px"
       onClick={(e) => {
         e.preventDefault()
         mine({ blocks: 1 })
       }}
-      position='absolute'
+      position="absolute"
       style={{ marginTop: '8px', width: '20px', height: '20px' }}
       transform={{ hoveractive: 'shrink95' }}
     >
       <SFSymbol
         className={styles.mineSymbol}
-        color='text/tertiary'
-        symbol='hammer.fill'
-        size='12px'
+        color="text/tertiary"
+        symbol="hammer.fill"
+        size="12px"
       />
     </Box>
   )

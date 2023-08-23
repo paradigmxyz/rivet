@@ -121,7 +121,7 @@ export default function OnboardingDeploy() {
       })
       setCreated(true)
     }
-  }, [isWaitSuccess])
+  }, [isWaitSuccess, params, machine, upsertNetwork])
 
   const { data: online } = useNetworkStatus({
     enabled: Boolean(created),
@@ -134,23 +134,23 @@ export default function OnboardingDeploy() {
       setProgress(100)
       setTimeout(() => navigate('/'), 500)
     }
-  }, [online])
+  }, [online, navigate, setOnboarded])
 
   return (
-    <OnboardingContainer title='Deploy Node'>
+    <OnboardingContainer title="Deploy Node">
       <Rows>
-        <Row alignHorizontal='center' alignVertical='center'>
-          <Stack alignHorizontal='center' gap='20px'>
-            <Stack alignHorizontal='center' gap='12px'>
-              <Cog size='60px' />
-              <Text size='20px'>Creating deployment</Text>
+        <Row alignHorizontal="center" alignVertical="center">
+          <Stack alignHorizontal="center" gap="20px">
+            <Stack alignHorizontal="center" gap="12px">
+              <Cog size="60px" />
+              <Text size="20px">Creating deployment</Text>
             </Stack>
-            <Text color='text/tertiary'>Spinning up your Anvil instance.</Text>
-            <Stack alignHorizontal='center' gap='12px'>
+            <Text color="text/tertiary">Spinning up your Anvil instance.</Text>
+            <Stack alignHorizontal="center" gap="12px">
               <Box style={{ width: 200 }}>
                 <Progress height={10} progress={progress} />
               </Box>
-              <Text size='12px' color='text/quarternary'>
+              <Text size="12px" color="text/quarternary">
                 {progress}% complete
               </Text>
             </Stack>

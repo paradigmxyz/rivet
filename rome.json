@@ -17,9 +17,6 @@
       "nursery": {
         "useExhaustiveDependencies": "error"
       },
-      "complexity": {
-        "noExtraSemicolon": "off"
-      },
       "correctness": {
         "noUnusedVariables": "error"
       },

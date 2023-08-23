@@ -21,13 +21,13 @@ export default function Session() {
               onClick={() =>
                 host && disconnect({ host, messenger: inpageMessenger })
               }
-              variant='solid fill'
+              variant="solid fill"
             >
               Disconnect
             </Button>
           ) : (
             <Button
-              variant='solid fill'
+              variant="solid fill"
               onClick={() =>
                 host && connect({ host, messenger: inpageMessenger })
               }
@@ -38,7 +38,7 @@ export default function Session() {
         </Container>
       </Box>
       <Box>
-        <Container fit header='Sessions'>
+        <Container fit header="Sessions">
           TODO
         </Container>
       </Box>

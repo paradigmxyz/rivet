@@ -18,14 +18,14 @@ export default function Block() {
   if (!onboarded) return <OnboardingStart />
   return (
     <>
-      <Container dismissable fit header='Block Configuration'>
-        <Stack gap='16px'>
+      <Container dismissable fit header="Block Configuration">
+        <Stack gap="16px">
           <AutoMining />
-          <Separator color='separator/quarternary' />
+          <Separator color="separator/quarternary" />
           <IntervalMining />
-          <Separator color='separator/quarternary' />
+          <Separator color="separator/quarternary" />
           <Mine />
-          <Separator color='separator/quarternary' />
+          <Separator color="separator/quarternary" />
           <Reset />
         </Stack>
       </Container>
@@ -38,9 +38,9 @@ function AutoMining() {
   const { mutate: setAutomine } = useSetAutomine()
 
   return (
-    <Stack gap='16px'>
-      <Text color='text/tertiary'>Auto Mining</Text>
-      <Button onClick={() => setAutomine(!automining)} variant='solid fill'>
+    <Stack gap="16px">
+      <Text color="text/tertiary">Auto Mining</Text>
+      <Button onClick={() => setAutomine(!automining)} variant="solid fill">
         {automining ? 'Off' : 'On'}
       </Button>
     </Stack>
@@ -67,12 +67,12 @@ function IntervalMining() {
     setIntervalMining({ interval: network.blockTime > 0 ? 0 : 1 })
 
   return (
-    <Stack gap='16px'>
-      <Text color='text/tertiary'>Interval Mining</Text>
+    <Stack gap="16px">
+      <Text color="text/tertiary">Interval Mining</Text>
       <form onSubmit={submit}>
-        <Inline gap='8px' wrap={false}>
-          <Stack gap='12px' width='fit'>
-            <Text color='text/tertiary' size='11px'>
+        <Inline gap="8px" wrap={false}>
+          <Stack gap="12px" width="fit">
+            <Text color="text/tertiary" size="11px">
               Interval (s)
             </Text>
             <Input
@@ -80,18 +80,18 @@ function IntervalMining() {
               {...register('interval', { required: true })}
             />
           </Stack>
-          <Stack gap='12px' width='fit'>
+          <Stack gap="12px" width="fit">
             {/* TODO: don't do this lol */}
-            <Text color='text/tertiary' size='11px'>
+            <Text color="text/tertiary" size="11px">
               {'‎'}
             </Text>
-            <Button type='submit' width='fit' variant='solid fill'>
+            <Button type="submit" width="fit" variant="solid fill">
               Set
             </Button>
           </Stack>
         </Inline>
       </form>
-      <Button onClick={toggle} variant='solid fill'>
+      <Button onClick={toggle} variant="solid fill">
         {network.blockTime > 0 ? 'Pause' : 'Continue'}
       </Button>
     </Stack>
@@ -117,12 +117,12 @@ function Mine() {
   })
 
   return (
-    <Stack gap='16px'>
-      <Text color='text/tertiary'>Mine Blocks</Text>
+    <Stack gap="16px">
+      <Text color="text/tertiary">Mine Blocks</Text>
       <form onSubmit={submit}>
-        <Inline gap='8px' wrap={false}>
-          <Stack gap='12px' width='fit'>
-            <Text color='text/tertiary' size='11px'>
+        <Inline gap="8px" wrap={false}>
+          <Stack gap="12px" width="fit">
+            <Text color="text/tertiary" size="11px">
               Blocks
             </Text>
             <Input
@@ -130,8 +130,8 @@ function Mine() {
               {...register('blocks', { required: true })}
             />
           </Stack>
-          <Stack gap='12px' width='fit'>
-            <Text color='text/tertiary' size='11px'>
+          <Stack gap="12px" width="fit">
+            <Text color="text/tertiary" size="11px">
               Interval (s)
             </Text>
             <Input
@@ -139,12 +139,12 @@ function Mine() {
               {...register('interval', { required: true })}
             />
           </Stack>
-          <Stack gap='12px' width='fit'>
+          <Stack gap="12px" width="fit">
             {/* TODO: don't do this lol */}
-            <Text color='text/tertiary' size='11px'>
+            <Text color="text/tertiary" size="11px">
               {'‎'}
             </Text>
-            <Button type='submit' width='fit' variant='solid fill'>
+            <Button type="submit" width="fit" variant="solid fill">
               Mine
             </Button>
           </Stack>
@@ -170,7 +170,7 @@ function Reset() {
   })
 
   return (
-    <Button onClick={() => reset()} variant='solid fill'>
+    <Button onClick={() => reset()} variant="solid fill">
       Reset
     </Button>
   )

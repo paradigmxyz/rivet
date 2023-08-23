@@ -18,23 +18,23 @@ import { Box, Button, Inline, Input, Stack, Text } from '~/design-system'
 export default function App() {
   return (
     <Box
-      backgroundColor='surface/primary'
-      marginHorizontal='auto'
-      maxWidth='1152px'
-      paddingTop='40px'
-      paddingBottom='152px'
+      backgroundColor="surface/primary"
+      marginHorizontal="auto"
+      maxWidth="1152px"
+      paddingTop="40px"
+      paddingBottom="152px"
     >
-      <Stack gap='32px'>
-        <Text weight='semibold' size='32px'>
+      <Stack gap="32px">
+        <Text weight="semibold" size="32px">
           Test Dapp
         </Text>
-        <Text weight='semibold' size='22px'>
+        <Text weight="semibold" size="22px">
           Events
         </Text>
         <AccountsChanged />
         <ChainChanged />
         <Connect />
-        <Text weight='semibold' size='22px'>
+        <Text weight="semibold" size="22px">
           Methods
         </Text>
         <RequestAccounts />
@@ -57,11 +57,11 @@ function AccountsChanged() {
     })
   }, [])
   return (
-    <Stack gap='12px'>
-      <Text size='18px' weight='semibold'>
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
         accountsChanged
       </Text>
-      <Stack gap='8px'>
+      <Stack gap="8px">
         {accounts.map((x, i) => (
           <Text key={i}>{JSON.stringify(x)}</Text>
         ))}
@@ -78,8 +78,8 @@ function ChainChanged() {
     })
   }, [])
   return (
-    <Stack gap='12px'>
-      <Text size='18px' weight='semibold'>
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
         chainChanged
       </Text>
       <Text>{JSON.stringify(chainIds)}</Text>
@@ -98,8 +98,8 @@ function Connect() {
     })
   }, [])
   return (
-    <Stack gap='12px'>
-      <Text size='18px' weight='semibold'>
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
         connect/disconnect
       </Text>
       <Text>last event: {lastEvent}</Text>
@@ -118,14 +118,14 @@ function RequestAccounts() {
   }
 
   return (
-    <Stack gap='12px'>
-      <Text size='18px' weight='semibold'>
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
         eth_requestAccounts
       </Text>
       {accounts?.map((account) => (
         <Text key={account}>{account}</Text>
       ))}
-      <Button onClick={requestAccounts} width='fit'>
+      <Button onClick={requestAccounts} width="fit">
         Request
       </Button>
     </Stack>
@@ -145,8 +145,8 @@ function Accounts() {
   }, [])
 
   return (
-    <Stack gap='12px'>
-      <Text size='18px' weight='semibold'>
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
         eth_accounts
       </Text>
       {accounts?.map((account) => (
@@ -168,8 +168,8 @@ function BlockNumber() {
   }, [])
 
   return (
-    <Stack gap='12px'>
-      <Text size='18px' weight='semibold'>
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
         eth_blockNumber
       </Text>
       {blockNumber && <Text>{hexToNumber(blockNumber)}</Text>}
@@ -187,8 +187,8 @@ function ChainId() {
   }, [])
 
   return (
-    <Stack gap='12px'>
-      <Text size='18px' weight='semibold'>
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
         eth_chainId
       </Text>
       {chainId && <Text>{hexToNumber(chainId)}</Text>}
@@ -229,26 +229,26 @@ function SendTransaction() {
   }
 
   return (
-    <Stack gap='12px'>
-      <Text size='18px' weight='semibold'>
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
         eth_sendTransaction
       </Text>
-      <Inline wrap={false} gap='12px'>
+      <Inline wrap={false} gap="12px">
         <Box style={{ width: '500px' }}>
           <Input
             onChange={(e) => setTo(e.target.value as Address)}
             value={to}
-            placeholder='to'
+            placeholder="to"
           />
         </Box>
         <Box>
           <Input
             onChange={(e) => setValue(e.target.value as `${number}`)}
             value={value}
-            placeholder='value'
+            placeholder="value"
           />
         </Box>
-        <Button onClick={handleClickSend} width='fit'>
+        <Button onClick={handleClickSend} width="fit">
           Send
         </Button>
       </Inline>
@@ -282,19 +282,19 @@ function SignMessage() {
   }
 
   return (
-    <Stack gap='12px'>
-      <Text size='18px' weight='semibold'>
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
         eth_signMessage
       </Text>
-      <Inline wrap={false} gap='12px'>
+      <Inline wrap={false} gap="12px">
         <Box style={{ width: '500px' }}>
           <Input
             onChange={(e) => setMessage(e.target.value)}
             value={message}
-            placeholder='message'
+            placeholder="message"
           />
         </Box>
-        <Button onClick={handleClickSign} width='fit'>
+        <Button onClick={handleClickSign} width="fit">
           Sign
         </Button>
       </Inline>
@@ -356,12 +356,12 @@ function SignTypedData() {
   }
 
   return (
-    <Stack gap='12px'>
-      <Text size='18px' weight='semibold'>
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
         eth_signTypedData_v4
       </Text>
-      <Inline wrap={false} gap='12px'>
-        <Button onClick={handleClickSign} width='fit'>
+      <Inline wrap={false} gap="12px">
+        <Button onClick={handleClickSign} width="fit">
           Sign
         </Button>
       </Inline>

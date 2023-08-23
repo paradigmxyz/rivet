@@ -15,7 +15,7 @@ export function TabsList({ items, onSelect }: TabsListProps) {
   return (
     <>
       <Tabs_.List asChild>
-        <Inline gap='12px'>
+        <Inline gap="12px">
           {items.map((item) => (
             <Tabs_.Trigger
               asChild
@@ -24,20 +24,20 @@ export function TabsList({ items, onSelect }: TabsListProps) {
               value={item.value}
             >
               <Box
-                alignItems='center'
-                justifyContent='center'
-                cursor='pointer'
-                display='flex'
+                alignItems="center"
+                justifyContent="center"
+                cursor="pointer"
+                display="flex"
                 onClick={() => onSelect?.(item)}
                 style={{ height: '36px' }}
               >
-                <Text size='14px'>{item.label}</Text>
+                <Text size="14px">{item.label}</Text>
               </Box>
             </Tabs_.Trigger>
           ))}
         </Inline>
       </Tabs_.List>
-      <Bleed horizontal='-12px'>
+      <Bleed horizontal="-12px">
         <Separator />
       </Bleed>
     </>

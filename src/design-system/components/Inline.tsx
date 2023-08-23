@@ -43,9 +43,9 @@ export const Inline = forwardRef<HTMLDivElement, InlineProps>(
     return (
       <Box
         ref={ref}
-        display='flex'
-        flexDirection='row'
-        flexGrow='1'
+        display="flex"
+        flexDirection="row"
+        flexGrow="1"
         height={height}
         alignItems={alignVertical && alignVerticalToAlignItems[alignVertical]}
         justifyContent={alignHorizontalToJustifyContent[alignHorizontal]}

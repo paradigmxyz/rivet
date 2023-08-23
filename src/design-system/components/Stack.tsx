@@ -29,8 +29,8 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack(
       alignItems={
         alignHorizontal && alignHorizontalToAlignItems[alignHorizontal]
       }
-      display='flex'
-      flexDirection='column'
+      display="flex"
+      flexDirection="column"
       gap={gap}
       width={width}
     >

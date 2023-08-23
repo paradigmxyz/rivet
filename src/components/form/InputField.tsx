@@ -40,17 +40,17 @@ export function InputField({
 
   return (
     <Form.Field asChild name={register.name}>
-      <Stack gap='12px'>
+      <Stack gap="12px">
         {!hideLabel && (
-          <Text color='text/tertiary' size='12px'>
+          <Text color="text/tertiary" size="12px">
             <Form.Label>{label}</Form.Label>
           </Text>
         )}
-        <Box alignItems='center' display='flex' position='relative'>
+        <Box alignItems="center" display="flex" position="relative">
           {innerLeft && (
             <Box
               ref={innerLeftRef}
-              left='12px'
+              left="12px"
               style={{ position: 'absolute' }}
             >
               {innerLeft}
@@ -78,20 +78,20 @@ export function InputField({
           {innerRight && (
             <Box
               ref={innerRightRef}
-              right='12px'
+              right="12px"
               style={{ position: 'absolute' }}
             >
               {innerRight}
             </Box>
           )}
         </Box>
-        <Form.Message match='valueMissing'>
-          <Text color='surface/red' size='12px'>
+        <Form.Message match="valueMissing">
+          <Text color="surface/red" size="12px">
             {label} is required
           </Text>
         </Form.Message>
-        <Form.Message match='rangeUnderflow'>
-          <Text color='surface/red' size='12px'>
+        <Form.Message match="rangeUnderflow">
+          <Text color="surface/red" size="12px">
             {label} must be greater than {min}
           </Text>
         </Form.Message>

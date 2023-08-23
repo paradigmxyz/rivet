@@ -44,12 +44,12 @@ export default function OnboardingConfigure() {
   const watchAutoMine = watch('autoMine')
   useEffect(() => {
     if (watchAutoMine) setValue('blockTime', '')
-  }, [watchAutoMine])
+  }, [watchAutoMine, setValue])
 
   const watchBlockTime = watch('blockTime')
   useEffect(() => {
     if (watchBlockTime) setValue('autoMine', false)
-  }, [watchBlockTime])
+  }, [watchBlockTime, setValue])
 
   const navigate = useNavigate()
 
@@ -87,96 +87,96 @@ export default function OnboardingConfigure() {
   return (
     <Form.Root onSubmit={submit} style={{ height: '100%' }}>
       <OnboardingContainer
-        title='Configure Options'
+        title="Configure Options"
         footer={
           <>
-            {type === 'hosted' && <Button height='44px'>Deploy node</Button>}
-            {type === 'local' && <Button height='44px'>Continue</Button>}
+            {type === 'hosted' && <Button height="44px">Deploy node</Button>}
+            {type === 'local' && <Button height="44px">Continue</Button>}
           </>
         }
       >
-        <Stack gap='32px'>
-          <Stack gap='16px'>
+        <Stack gap="32px">
+          <Stack gap="16px">
             {type === 'local' && (
               <Form.InputField
                 defaultValue={defaultName}
                 innerLeft={
-                  <Text color='text/tertiary'>https://127.0.0.1:</Text>
+                  <Text color="text/tertiary">https://127.0.0.1:</Text>
                 }
-                label='Port'
+                label="Port"
                 min={1}
                 register={register('port')}
                 required
-                type='number'
+                type="number"
               />
             )}
             {type === 'hosted' && (
               <Form.InputField
                 defaultValue={defaultName}
-                innerRight={<Text color='text/tertiary'>.riv.et</Text>}
-                label='Name'
+                innerRight={<Text color="text/tertiary">.riv.et</Text>}
+                label="Name"
                 register={register('name')}
                 required
               />
             )}
             <Form.InputField
               defaultValue={1}
-              label='Chain ID'
+              label="Chain ID"
               min={1}
               register={register('chainId')}
-              type='number'
+              type="number"
             />
             <Form.InputField
-              defaultValue='Ethereum'
-              label='Network Name'
+              defaultValue="Ethereum"
+              label="Network Name"
               register={register('networkName')}
               required
             />
           </Stack>
-          <Stack gap='16px'>
+          <Stack gap="16px">
             <Text>Configure Fork</Text>
             <Separator />
             <Form.InputField
-              defaultValue='https://cloudflare-eth.com'
-              label='RPC URL'
+              defaultValue="https://cloudflare-eth.com"
+              label="RPC URL"
               register={register('forkUrl')}
             />
             <Form.InputField
-              label='Block Number'
+              label="Block Number"
               min={1}
-              type='number'
+              type="number"
               register={register('forkBlockNumber')}
             />
           </Stack>
-          <Stack gap='16px'>
+          <Stack gap="16px">
             <Text>Configure Blocks</Text>
             <Separator />
             <Form.CheckboxField
-              label='Auto-mine transactions'
+              label="Auto-mine transactions"
               register={register('autoMine')}
             />
             <Form.InputField
-              label='Block Time (sec)'
+              label="Block Time (sec)"
               min={0}
-              type='number'
+              type="number"
               register={register('blockTime')}
             />
             <Form.InputField
-              label='Base Fee (gwei)'
+              label="Base Fee (gwei)"
               min={0}
-              type='number'
+              type="number"
               register={register('blockBaseFeePerGas')}
             />
             <Form.InputField
-              label='Gas Price (gwei)'
+              label="Gas Price (gwei)"
               min={0}
-              type='number'
+              type="number"
               register={register('gasPrice')}
             />
             <Form.InputField
-              label='Gas Limit'
+              label="Gas Limit"
               min={0}
-              type='number'
+              type="number"
               register={register('gasLimit')}
             />
           </Stack>

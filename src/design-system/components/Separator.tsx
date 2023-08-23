@@ -24,7 +24,7 @@ export const Separator = forwardRef<HTMLDivElement, SeparatorProps>(
     return (
       <Box
         ref={ref}
-        borderRadius='round'
+        borderRadius="round"
         backgroundColor={color}
         className={styles.orientation[orientation]}
         style={assignInlineVars({

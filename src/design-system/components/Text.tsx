@@ -61,7 +61,7 @@ export const Text = forwardRef<HTMLDivElement, TextProps>(
         width={wrap ? undefined : 'full'}
       >
         <Box
-          as='span'
+          as="span"
           className={[tabular && styles.tabular, !wrap && styles.nowrap]}
         >
           {children}

@@ -39,7 +39,7 @@ export default function Network() {
       (chain) => chain.id === chainId,
     )?.name
     setValue('name', name || 'Ethereum')
-  }, [chainId])
+  }, [chainId, getFieldState, setValue])
 
   const navigate = useNavigate()
 
@@ -53,43 +53,43 @@ export default function Network() {
     <form onSubmit={onSubmit} style={{ height: '100%' }}>
       <Container
         dismissable
-        header='Network Configuration'
-        footer={<Button type='submit'>Update</Button>}
+        header="Network Configuration"
+        footer={<Button type="submit">Update</Button>}
       >
-        <Stack gap='20px'>
-          <Stack gap='12px'>
-            <Text color='text/tertiary' size='11px'>
+        <Stack gap="20px">
+          <Stack gap="12px">
+            <Text color="text/tertiary" size="11px">
               Chain ID
             </Text>
             <Input
               disabled
-              name='chainId'
-              placeholder='1'
+              name="chainId"
+              placeholder="1"
               value={chainId || network.chainId}
             />
           </Stack>
-          <Stack gap='8px'>
-            <Stack gap='12px'>
-              <Text color='text/tertiary' size='11px'>
+          <Stack gap="8px">
+            <Stack gap="12px">
+              <Text color="text/tertiary" size="11px">
                 RPC URL
               </Text>
               <Input
-                placeholder='http://localhost:8545'
+                placeholder="http://localhost:8545"
                 state={isOffline ? 'warning' : undefined}
                 {...register('rpcUrl', { required: true })}
               />
             </Stack>
             {isOffline && (
-              <Text color='surface/yellow' size='11px'>
+              <Text color="surface/yellow" size="11px">
                 Warning: Network is offline
               </Text>
             )}
           </Stack>
-          <Stack gap='12px'>
-            <Text color='text/tertiary' size='11px'>
+          <Stack gap="12px">
+            <Text color="text/tertiary" size="11px">
               Name
             </Text>
-            <Input placeholder='Ethereum' {...register('name')} />
+            <Input placeholder="Ethereum" {...register('name')} />
           </Stack>
         </Stack>
       </Container>

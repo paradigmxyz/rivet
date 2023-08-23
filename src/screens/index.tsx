@@ -56,7 +56,7 @@ export default function Index() {
   return (
     <Container scrollable={false} verticalInset={false}>
       <Tabs.Root asChild value={params.get('tab')!}>
-        <Box display='flex' flexDirection='column' height='full'>
+        <Box display="flex" flexDirection="column" height="full">
           <TabsList
             items={[
               { label: 'Accounts', value: 'accounts' },
@@ -68,13 +68,13 @@ export default function Index() {
               setPosition(0)
             }}
           />
-          <TabsContent inset={false} value='accounts'>
+          <TabsContent inset={false} value="accounts">
             <Accounts />
           </TabsContent>
-          <TabsContent inset={false} value='blocks'>
+          <TabsContent inset={false} value="blocks">
             <Blocks />
           </TabsContent>
-          <TabsContent inset={false} scrollable={false} value='transactions'>
+          <TabsContent inset={false} scrollable={false} value="transactions">
             <Transactions />
           </TabsContent>
         </Box>
@@ -93,14 +93,14 @@ function Accounts() {
 
   return (
     <>
-      <Box alignItems='center' display='flex' style={{ height: '40px' }}>
+      <Box alignItems="center" display="flex" style={{ height: '40px' }}>
         <ImportAccount />
       </Box>
       {accounts.map((account) => {
         const active = activeAccount?.address === account.address
         return (
           <Fragment key={account.address}>
-            <Box marginHorizontal='-12px'>
+            <Box marginHorizontal="-12px">
               <Separator />
             </Box>
             <Box
@@ -109,18 +109,18 @@ function Accounts() {
                   ? 'surface/fill/tertiary'
                   : { hover: 'surface/fill/quarternary' }
               }
-              cursor='pointer'
+              cursor="pointer"
               onClick={() => switchAccount({ account })}
-              marginHorizontal='-12px'
-              paddingHorizontal='12px'
-              paddingVertical='16px'
-              position='relative'
+              marginHorizontal="-12px"
+              paddingHorizontal="12px"
+              paddingVertical="16px"
+              position="relative"
             >
               {active && (
                 <Text
-                  color='text/secondary'
-                  weight='medium'
-                  size='9px'
+                  color="text/secondary"
+                  weight="medium"
+                  size="9px"
                   style={{
                     position: 'absolute',
                     top: '8px',
@@ -130,21 +130,21 @@ function Accounts() {
                   ACTIVE
                 </Text>
               )}
-              <Stack gap='16px'>
-                <LabelledContent label='Account'>
-                  <Inline gap='4px'>
+              <Stack gap="16px">
+                <LabelledContent label="Account">
+                  <Inline gap="4px">
                     {account.displayName && (
-                      <Text size='12px'>{account.displayName}</Text>
+                      <Text size="12px">{account.displayName}</Text>
                     )}
                     <Text
                       color={account.displayName ? 'text/tertiary' : undefined}
-                      size='12px'
+                      size="12px"
                     >
                       {truncate(account.address)}
                     </Text>
                   </Inline>
                 </LabelledContent>
-                <Columns gap='4px'>
+                <Columns gap="4px">
                   <Balance address={account.address} />
                   <Box style={{ width: '50px' }}>
                     <Nonce address={account.address} />
@@ -152,10 +152,10 @@ function Accounts() {
                 </Columns>
               </Stack>
               <Box
-                position='absolute'
+                position="absolute"
                 style={{ bottom: '16px', right: '12px' }}
               >
-                <Inline gap='4px' wrap={false}>
+                <Inline gap="4px" wrap={false}>
                   {account.impersonate && (
                     <RemoveButton
                       onClick={(e) => {
@@ -218,15 +218,15 @@ function ImportAccount() {
 
   return (
     <Form.Root onSubmit={submit} style={{ width: '100%' }}>
-      <Inline gap='4px' wrap={false}>
+      <Inline gap="4px" wrap={false}>
         <Form.InputField
-          height='24px'
+          height="24px"
           hideLabel
-          label='Import address'
-          placeholder='Import address or ENS name...'
+          label="Import address"
+          placeholder="Import address or ENS name..."
           register={register('addressOrEns')}
         />
-        <Button height='24px' variant='stroked fill' width='fit'>
+        <Button height="24px" variant="stroked fill" width="fit">
           Import
         </Button>
       </Inline>
@@ -238,12 +238,12 @@ function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
   return (
     /* TODO: Extract into `IconButton` */
     <Box
-      as='button'
+      as="button"
       backgroundColor={{
         hover: 'surface/red@0.1',
       }}
-      borderColor='surface/red@0.4'
-      borderWidth='1px'
+      borderColor="surface/red@0.4"
+      borderWidth="1px"
       onClick={onClick}
       style={{
         width: '24px',
@@ -252,10 +252,10 @@ function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
       transform={{ hoveractive: 'shrink95' }}
     >
       <SFSymbol
-        color='surface/red'
-        size='12px'
-        symbol='trash'
-        weight='semibold'
+        color="surface/red"
+        size="12px"
+        symbol="trash"
+        weight="semibold"
       />
     </Box>
   )
@@ -271,9 +271,9 @@ function Balance({ address }: { address: Address }) {
   }, [balance])
 
   return (
-    <LabelledContent label='Balance (ETH)'>
+    <LabelledContent label="Balance (ETH)">
       {isSuccess ? (
-        <Bleed top='-2px'>
+        <Bleed top="-2px">
           <Input
             onChange={(e) => setValue(e.target.value)}
             onClick={(e) => e.stopPropagation()}
@@ -283,7 +283,7 @@ function Balance({ address }: { address: Address }) {
                 value: parseEther(e.target.value as `${number}`),
               })
             }
-            height='24px'
+            height="24px"
             value={value}
           />
         </Bleed>
@@ -302,9 +302,9 @@ function Nonce({ address }: { address: Address }) {
   }, [nonce])
 
   return (
-    <LabelledContent label='Nonce'>
+    <LabelledContent label="Nonce">
       {isSuccess ? (
-        <Bleed top='-2px'>
+        <Bleed top="-2px">
           <Input
             onChange={(e) => setValue(e.target.value)}
             onClick={(e) => e.stopPropagation()}
@@ -315,7 +315,7 @@ function Nonce({ address }: { address: Address }) {
                 nonce: Number(e.target.value),
               })
             }
-            height='24px'
+            height="24px"
           />
         </Bleed>
       ) : null}
@@ -356,12 +356,12 @@ function Blocks() {
   return (
     <Box
       ref={parentRef}
-      marginHorizontal='-12px'
+      marginHorizontal="-12px"
       style={{ height: '100%', overflowY: 'scroll' }}
     >
       <Box
-        position='relative'
-        width='full'
+        position="relative"
+        width="full"
         style={{
           height: `${virtualizer.getTotalSize()}px`,
         }}
@@ -377,30 +377,30 @@ function Blocks() {
             >
               <Box
                 backgroundColor={{ hover: 'surface/fill/quarternary' }}
-                position='absolute'
-                top='0px'
-                left='0px'
-                width='full'
+                position="absolute"
+                top="0px"
+                left="0px"
+                width="full"
                 style={{
                   height: `${size}px`,
                   transform: `translateY(${start}px)`,
                 }}
               >
-                <Box paddingHorizontal='12px' paddingVertical='8px'>
+                <Box paddingHorizontal="12px" paddingVertical="8px">
                   <Inline wrap={false}>
-                    <LabelledContent label='Block'>
+                    <LabelledContent label="Block">
                       <Box style={{ width: '80px' }}>
-                        <Text size='12px'>{block.number!.toString()}</Text>
+                        <Text size="12px">{block.number!.toString()}</Text>
                       </Box>
                     </LabelledContent>
-                    <LabelledContent label='Timestamp'>
+                    <LabelledContent label="Timestamp">
                       <Box style={{ width: '148px' }}>
                         {status === 'pending' ? (
-                          <Text color='text/tertiary' size='12px'>
+                          <Text color="text/tertiary" size="12px">
                             Pending
                           </Text>
                         ) : (
-                          <Text size='12px'>
+                          <Text size="12px">
                             {new Date(
                               Number(block.timestamp! * 1000n),
                             ).toLocaleString()}
@@ -408,12 +408,12 @@ function Blocks() {
                         )}
                       </Box>
                     </LabelledContent>
-                    <LabelledContent label='Transactions'>
-                      <Text size='12px'>{block.transactions.length}</Text>
+                    <LabelledContent label="Transactions">
+                      <Text size="12px">{block.transactions.length}</Text>
                     </LabelledContent>
                   </Inline>
                 </Box>
-                <Box marginHorizontal='-12px'>
+                <Box marginHorizontal="-12px">
                   <Separator />
                 </Box>
               </Box>
@@ -421,9 +421,9 @@ function Blocks() {
           )
         })}
       </Box>
-      <Inset space='12px'>
+      <Inset space="12px">
         <Box ref={ref}>
-          <Text color='text/tertiary'>Loading...</Text>
+          <Text color="text/tertiary">Loading...</Text>
         </Box>
       </Inset>
     </Box>
@@ -465,12 +465,12 @@ function Transactions() {
   return (
     <Box
       ref={parentRef}
-      marginHorizontal='-12px'
+      marginHorizontal="-12px"
       style={{ height: '100%', overflowY: 'scroll' }}
     >
       <Box
-        position='relative'
-        width='full'
+        position="relative"
+        width="full"
         style={{
           height: `${virtualizer.getTotalSize()}px`,
         }}
@@ -482,45 +482,45 @@ function Transactions() {
             <Box
               key={key}
               backgroundColor={{ hover: 'surface/fill/quarternary' }}
-              position='absolute'
-              top='0px'
-              left='0px'
-              width='full'
+              position="absolute"
+              top="0px"
+              left="0px"
+              width="full"
               style={{
                 height: `${size}px`,
                 transform: `translateY(${start}px)`,
               }}
             >
-              <Box paddingHorizontal='12px' paddingVertical='8px'>
-                <Columns alignVertical='center'>
-                  <LabelledContent label='Block'>
-                    <Inline alignVertical='center' gap='4px' wrap={false}>
-                      <Text size='12px'>
+              <Box paddingHorizontal="12px" paddingVertical="8px">
+                <Columns alignVertical="center">
+                  <LabelledContent label="Block">
+                    <Inline alignVertical="center" gap="4px" wrap={false}>
+                      <Text size="12px">
                         {transaction.blockNumber?.toString()}
                       </Text>
                       {status === 'pending' && (
                         <SFSymbol
-                          color='text/tertiary'
-                          size='11px'
-                          symbol='clock'
-                          weight='semibold'
+                          color="text/tertiary"
+                          size="11px"
+                          symbol="clock"
+                          weight="semibold"
                         />
                       )}
                     </Inline>
                   </LabelledContent>
-                  <LabelledContent label='From'>
-                    <Text wrap={false} size='12px'>
+                  <LabelledContent label="From">
+                    <Text wrap={false} size="12px">
                       {truncate(transaction.from, { start: 6, end: 4 })}
                     </Text>
                   </LabelledContent>
-                  <LabelledContent label='To'>
-                    <Text wrap={false} size='12px'>
+                  <LabelledContent label="To">
+                    <Text wrap={false} size="12px">
                       {transaction.to &&
                         truncate(transaction.to, { start: 6, end: 4 })}
                     </Text>
                   </LabelledContent>
-                  <LabelledContent label='Value'>
-                    <Text wrap={false} size='12px'>
+                  <LabelledContent label="Value">
+                    <Text wrap={false} size="12px">
                       {numberIntl4SigFigs.format(
                         Number(formatEther(transaction.value!)),
                       )}{' '}
@@ -529,16 +529,16 @@ function Transactions() {
                   </LabelledContent>
                 </Columns>
               </Box>
-              <Box marginHorizontal='-12px'>
+              <Box marginHorizontal="-12px">
                 <Separator />
               </Box>
             </Box>
           )
         })}
       </Box>
-      <Inset space='12px'>
+      <Inset space="12px">
         <Box ref={ref}>
-          <Text color='text/tertiary'>Loading...</Text>
+          <Text color="text/tertiary">Loading...</Text>
         </Box>
       </Inset>
     </Box>

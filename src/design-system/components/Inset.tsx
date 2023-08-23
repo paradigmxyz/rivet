@@ -39,7 +39,7 @@ export const Inset = forwardRef<HTMLDivElement, InsetProps>(
         paddingBottom={bottom ?? vertical ?? space}
         paddingLeft={left ?? horizontal ?? space}
         paddingRight={right ?? horizontal ?? space}
-        width='full'
+        width="full"
       >
         {children}
       </Box>

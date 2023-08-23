@@ -11,13 +11,13 @@ export type CheckboxFieldProps = {
 export function CheckboxField({ label, register }: CheckboxFieldProps) {
   return (
     <Form.Field name={register.name}>
-      <Inset bottom='2px'>
-        <Inline alignVertical='center' gap='4px'>
+      <Inset bottom="2px">
+        <Inline alignVertical="center" gap="4px">
           <Form.Control asChild {...register}>
-            <Box as='input' type='checkbox' />
+            <Box as="input" type="checkbox" />
           </Form.Control>
           <Form.Label>
-            <Text color='text/tertiary' size='12px'>
+            <Text color="text/tertiary" size="12px">
               {label}
             </Text>
           </Form.Label>

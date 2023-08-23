@@ -81,8 +81,8 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <Box
         {...inputProps}
-        as='input'
-        borderWidth='1px'
+        as="input"
+        borderWidth="1px"
         className={[
           backgroundStyle,
           heightStyles[height],
@@ -94,7 +94,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         ]}
         placeholder={placeholder}
         testId={testId}
-        width='full'
+        width="full"
         {...stylesForVariant[variant]}
         {...stylesForHeight[height]}
         {...(state && stylesForState[state])}

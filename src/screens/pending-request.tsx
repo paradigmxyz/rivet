@@ -44,19 +44,19 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
 
   return (
     <Container
-      header='Pending Request'
+      header="Pending Request"
       footer={
-        <Inline gap='12px' wrap={false}>
-          <Button onClick={handleReject} variant='tint red'>
+        <Inline gap="12px" wrap={false}>
+          <Button onClick={handleReject} variant="tint red">
             Reject
           </Button>
-          <Button onClick={handleApprove} variant='tint green'>
+          <Button onClick={handleApprove} variant="tint green">
             Approve
           </Button>
         </Inline>
       }
     >
-      <Stack gap='32px'>
+      <Stack gap="32px">
         {request.method === 'eth_sendTransaction' && (
           <SendTransactionDetails params={request.params} />
         )}
@@ -86,10 +86,10 @@ function SendTransactionDetails({
 }) {
   const [{ from, to, value }] = params
   return (
-    <Stack gap='12px'>
-      <Text size='12px'>From: {from}</Text>
-      <Text size='12px'>To: {to}</Text>
-      <Text size='12px'>Value: {formatEther(hexToBigInt(value ?? '0x0'))}</Text>
+    <Stack gap="12px">
+      <Text size="12px">From: {from}</Text>
+      <Text size="12px">To: {to}</Text>
+      <Text size="12px">Value: {formatEther(hexToBigInt(value ?? '0x0'))}</Text>
     </Stack>
   )
 }
@@ -101,9 +101,9 @@ function SignMessageDetails({
 }) {
   const [data, address] = params
   return (
-    <Stack gap='12px'>
-      <Text size='12px'>Message: {hexToString(data)}</Text>
-      <Text size='12px'>Address: {address}</Text>
+    <Stack gap="12px">
+      <Text size="12px">Message: {hexToString(data)}</Text>
+      <Text size="12px">Address: {address}</Text>
     </Stack>
   )
 }
@@ -115,12 +115,12 @@ function SignTypedData({
 }) {
   const [address, data] = params
   return (
-    <Stack gap='12px'>
-      <Text size='12px'>Message:</Text>
-      <Text as='pre' size='12px'>
+    <Stack gap="12px">
+      <Text size="12px">Message:</Text>
+      <Text as="pre" size="12px">
         {JSON.stringify(JSON.parse(data), null, 2)}
       </Text>
-      <Text size='12px'>Address: {address}</Text>
+      <Text size="12px">Address: {address}</Text>
     </Stack>
   )
 }

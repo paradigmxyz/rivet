@@ -42,9 +42,9 @@ export const Columns = forwardRef<HTMLDivElement, ColumnsProps>(
     return (
       <Box
         ref={ref}
-        display='flex'
-        flexDirection='row'
-        height='full'
+        display="flex"
+        flexDirection="row"
+        height="full"
         gap={gap}
         alignItems={alignVertical && alignVerticalToAlignItems[alignVertical]}
         justifyContent={
@@ -101,11 +101,11 @@ function PrivateColumn({ alignVertical, children, width }: ColumnProps) {
     return (
       <Box
         className={width !== 'content' ? styles.width[width] : undefined}
-        display='flex'
-        flexDirection='column'
-        flexGrow='0'
-        flexShrink='0'
-        height='full'
+        display="flex"
+        flexDirection="column"
+        flexGrow="0"
+        flexShrink="0"
+        height="full"
         justifyContent={
           alignVertical && alignVerticalToAlignItems[alignVertical]
         }
@@ -118,13 +118,13 @@ function PrivateColumn({ alignVertical, children, width }: ColumnProps) {
   return (
     <Box
       className={styles.width['0']}
-      display='flex'
-      flexDirection='column'
-      flexGrow='1'
-      flexShrink='1'
-      flexBasis='0'
+      display="flex"
+      flexDirection="column"
+      flexGrow="1"
+      flexShrink="1"
+      flexBasis="0"
       justifyContent={alignVertical && alignVerticalToAlignItems[alignVertical]}
-      height='full'
+      height="full"
     >
       {children}
     </Box>

@@ -18,10 +18,10 @@ export default function Layout() {
 
   return (
     <Box
-      backgroundColor='surface/primary/elevated'
-      borderLeftWidth='1px'
-      display='flex'
-      flexDirection='column'
+      backgroundColor="surface/primary/elevated"
+      borderLeftWidth="1px"
+      display="flex"
+      flexDirection="column"
       style={{
         height: '100vh',
         width: '100%',
@@ -34,7 +34,7 @@ export default function Layout() {
         </Box>
       )}
       <Box
-        width='full'
+        width="full"
         style={{ height: showHeader ? `calc(100% - ${headerHeight})` : '100%' }}
       >
         {pendingRequests.length > 0 && (
@@ -42,7 +42,7 @@ export default function Layout() {
         )}
         <Box
           display={pendingRequests.length > 0 ? 'none' : 'block'}
-          height='full'
+          height="full"
         >
           <Outlet />
         </Box>
