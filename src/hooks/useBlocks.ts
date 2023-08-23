@@ -1,4 +1,6 @@
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { type InfiniteData, useInfiniteQuery } from '@tanstack/react-query'
+import type { Block } from 'viem'
+import { queryClient } from '~/react-query'
 
 import { useBlock } from './useBlock'
 import { useClient } from './useClient'
@@ -9,19 +11,24 @@ export function useBlocksQueryOptions({ limit = 10 }: { limit?: number } = {}) {
   return {
     enabled: Boolean(block?.number),
     defaultPageParam: 0,
-    // TODO: fix issue where mining blocks and fetching more shows mismatch
-    getNextPageParam: (_1: unknown, _2: unknown, prev: number) =>
-      (prev || 0) + 1,
+    getNextPageParam: (_: unknown, pages: unknown[]) => pages.length,
     queryKey: ['blocks', client.key],
     async queryFn({ pageParam }: { pageParam: number }) {
+      let blockNumber = block?.number!
+      if (pageParam > 0) {
+        const prevInfiniteBlocks = queryClient.getQueryData([
+          'blocks',
+          client.key,
+        ]) as InfiniteData<Block[]>
+        const block = prevInfiniteBlocks.pages[pageParam - 1]
+        blockNumber = block[block.length - 1].number! - 1n
+      }
+
       return (
         await Promise.all(
-          [...Array(limit)].map(async (_, i) => {
-            if (typeof block?.number !== 'bigint') return null
-            const blockNumber =
-              block.number - BigInt(pageParam) * BigInt(limit) - BigInt(i)
-            return client.getBlock({ blockNumber })
-          }),
+          [...Array(limit)].map(async (_, i) =>
+            client.getBlock({ blockNumber: blockNumber - BigInt(i) }),
+          ),
         )
       ).filter(Boolean)
     },

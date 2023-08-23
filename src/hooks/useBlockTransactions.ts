@@ -14,7 +14,7 @@ export function useBlockTransactionsQueryOptions() {
   return {
     enabled: Boolean(block?.number),
     defaultPageParam: 0,
-    getNextPageParam: (_1: unknown, _2: unknown, prev: number) => prev + 1,
+    getNextPageParam: (_: unknown, pages: unknown[]) => pages.length,
     queryKey: ['transactions', client.key],
     async queryFn({ pageParam }: { pageParam: number }) {
       let blockNumber = block?.number!
