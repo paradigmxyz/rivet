@@ -6,7 +6,7 @@ import { useClient } from './useClient'
 
 export function useNetworkStatus({
   enabled = true,
-  refetchInterval = 4_000,
+  refetchInterval,
   retry = 5,
   retryDelay,
 }: {
@@ -31,7 +31,7 @@ export function useNetworkStatus({
         return false
       }
     },
-    refetchInterval,
+    refetchInterval: refetchInterval ?? client.pollingInterval,
     retry,
     retryDelay,
   })

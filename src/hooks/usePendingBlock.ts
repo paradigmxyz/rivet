@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query'
-import type { Block } from 'viem'
+import { type InfiniteData, useQuery } from '@tanstack/react-query'
+import type { Block, Transaction } from 'viem'
 
 import { queryClient } from '~/react-query'
 import { useNetworkStore } from '~/zustand'
@@ -45,24 +45,34 @@ export function usePendingBlockQueryOptions({
       const latestBlock = await client.getBlock({
         includeTransactions: true,
       })
-      queryClient.setQueryData(['blocks', client.key], (data: any) => {
-        return {
-          ...data,
-          pages: [[latestBlock], ...data.pages],
-        }
-      })
-      queryClient.setQueryData(['transactions', client.key], (data: any) => {
-        const [first, ...pages] = data.pages
-        return {
-          ...data,
-          pages: [[...latestBlock.transactions, ...first], ...pages],
-        }
-      })
+      queryClient.setQueryData<InfiniteData<Block[]>>(
+        ['blocks', client.key],
+        (data) => {
+          if (!data) return
+          const [first, ...pages] = data.pages
+          return {
+            ...data,
+            pages: [[latestBlock, ...first], ...pages],
+          }
+        },
+      )
+      queryClient.setQueryData<InfiniteData<Transaction[]>>(
+        ['transactions', client.key],
+        (data: any) => {
+          if (!data) return
+          const [first, ...pages] = data.pages
+          return {
+            ...data,
+            pages: [[...latestBlock.transactions, ...first], ...pages],
+          }
+        },
+      )
 
       return block || null
     },
     gcTime: 0,
-    refetchInterval: refetchInterval ?? (network.blockTime * 1_000 || 4_000),
+    refetchInterval:
+      refetchInterval ?? network.blockTime * 1_000 ?? client.pollingInterval,
   }
 }
 

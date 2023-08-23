@@ -328,7 +328,11 @@ function Nonce({ address }: { address: Address }) {
 
 function Blocks() {
   const { data: pendingBlock } = usePendingBlock()
-  const { data: infiniteBlocks, fetchNextPage } = useBlocks()
+  const {
+    data: infiniteBlocks,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useBlocks()
   const blocks = [
     { block: pendingBlock, status: 'pending' },
     ...(infiniteBlocks?.pages
@@ -350,8 +354,9 @@ function Blocks() {
 
   const { ref, inView } = useInView()
   useEffect(() => {
+    if (isFetchingNextPage) return
     if (inView) fetchNextPage()
-  }, [fetchNextPage, inView])
+  }, [fetchNextPage, inView, isFetchingNextPage])
 
   return (
     <Box
@@ -439,7 +444,11 @@ const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
 
 function Transactions() {
   const { data: pendingTransactions } = usePendingTransactions()
-  const { data: infiniteTransactions, fetchNextPage } = useBlockTransactions()
+  const {
+    data: infiniteTransactions,
+    fetchNextPage,
+    isFetchingNextPage,
+  } = useBlockTransactions()
   const transactions = [
     ...(pendingTransactions?.map((transaction) => ({
       transaction,
@@ -459,8 +468,9 @@ function Transactions() {
 
   const { ref, inView } = useInView()
   useEffect(() => {
+    if (isFetchingNextPage) return
     if (inView) fetchNextPage()
-  }, [fetchNextPage, inView])
+  }, [fetchNextPage, inView, isFetchingNextPage])
 
   return (
     <Box
