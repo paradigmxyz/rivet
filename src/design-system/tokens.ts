@@ -412,32 +412,35 @@ function defineType(
   fontSize: number,
   lineHeight: number | `${number}%`,
   letterSpacing: number,
+  inline: boolean,
 ) {
   const leading =
     typeof lineHeight === 'number'
       ? lineHeight
       : (fontSize * parseInt(lineHeight)) / 100
 
+  if (inline) return { fontSize, letterSpacing }
   return {
     ...capsize({ fontMetrics, fontSize, leading }),
     letterSpacing,
   }
 }
 
-export const fontSize = {
-  '9px': defineType(9, 11, 0.56),
-  '11px': defineType(11, 13, 0.56),
-  '12px': defineType(12, 15, 0.52),
-  '14px': defineType(14, 19, 0.48),
-  '15px': defineType(15, 21, 0.35),
-  '16px': defineType(16, 21, 0.35),
-  '18px': defineType(18, 23, 0.36),
-  '20px': defineType(20, 25, 0.36),
-  '22px': defineType(22, 29, 0.35),
-  '26px': defineType(26, 32, 0.36),
-  '32px': defineType(32, 40, 0.41),
-} as const
-export type FontSize = keyof typeof fontSize
+export const fontSize = (inline: boolean) =>
+  ({
+    '9px': defineType(9, 11, 0.56, inline),
+    '11px': defineType(11, 13, 0.56, inline),
+    '12px': defineType(12, 15, 0.52, inline),
+    '14px': defineType(14, 19, 0.48, inline),
+    '15px': defineType(15, 21, 0.35, inline),
+    '16px': defineType(16, 21, 0.35, inline),
+    '18px': defineType(18, 23, 0.36, inline),
+    '20px': defineType(20, 25, 0.36, inline),
+    '22px': defineType(22, 29, 0.35, inline),
+    '26px': defineType(26, 32, 0.36, inline),
+    '32px': defineType(32, 40, 0.41, inline),
+  }) as const
+export type FontSize = keyof ReturnType<typeof fontSize>
 
 export const fontWeight = {
   light: '300',

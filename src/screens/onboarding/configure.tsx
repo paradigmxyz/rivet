@@ -77,11 +77,7 @@ export default function OnboardingConfigure() {
       })
 
     const search = new URLSearchParams(values)
-    navigate(
-      `/onboarding/${
-        type === 'hosted' ? 'deploy' : 'run'
-      }?${search.toString()}`,
-    )
+    navigate(`/onboarding/run?${search.toString()}`)
   })
 
   return (

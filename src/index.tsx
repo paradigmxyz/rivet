@@ -1,4 +1,5 @@
 import './hmr'
+
 import { useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom/client'
 import { RouterProvider, createHashRouter } from 'react-router-dom'
@@ -29,7 +30,6 @@ import BlockDetails from './screens/block-details'
 import Index from './screens/index'
 import NetworkConfig from './screens/network-config'
 import OnboardingConfigure from './screens/onboarding/configure'
-import OnboardingDeploy from './screens/onboarding/deploy'
 import OnboardingDownload from './screens/onboarding/download'
 import OnboardingRun from './screens/onboarding/run'
 import OnboardingStart from './screens/onboarding/start'
@@ -74,16 +74,12 @@ const router = createHashRouter([
             element: <OnboardingStart />,
           },
           {
-            path: 'download',
-            element: <OnboardingDownload />,
-          },
-          {
             path: 'configure',
             element: <OnboardingConfigure />,
           },
           {
-            path: 'deploy',
-            element: <OnboardingDeploy />,
+            path: 'download',
+            element: <OnboardingDownload />,
           },
           {
             path: 'run',

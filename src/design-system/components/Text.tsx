@@ -1,4 +1,4 @@
-import { forwardRef } from 'react'
+import { createContext, forwardRef, useContext } from 'react'
 
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
@@ -30,14 +30,16 @@ export type TextProps = {
   testId?: string
 }
 
+export const TextContext = createContext({ root: true })
+
 export const Text = forwardRef<HTMLDivElement, TextProps>(
   (
     {
       align,
-      as = 'div',
+      as: as_,
       children,
       color,
-      size = '15px',
+      size: size_,
       style,
       tabular = false,
       weight = 'regular',
@@ -46,27 +48,34 @@ export const Text = forwardRef<HTMLDivElement, TextProps>(
     }: TextProps,
     ref,
   ) => {
+    const { root } = useContext(TextContext)
+    const inline = !root
+    const as = as_ || (inline ? 'span' : 'div')
+    const size = size_ || (inline ? undefined : '15px')
+    const textStyle = inline ? styles.inlineText : styles.capsizedText
     return (
-      <Box
-        ref={ref as any}
-        as={as}
-        className={styles.text({
-          color,
-          fontSize: size,
-          fontWeight: weight,
-          textAlign: align,
-        })}
-        testId={testId}
-        style={style}
-        width={wrap ? undefined : 'full'}
-      >
+      <TextContext.Provider value={{ root: false }}>
         <Box
-          as="span"
-          className={[tabular && styles.tabular, !wrap && styles.nowrap]}
+          ref={ref as any}
+          as={as}
+          className={textStyle({
+            color,
+            fontSize: size,
+            fontWeight: weight,
+            textAlign: align,
+          })}
+          testId={testId}
+          style={style}
+          width={wrap ? undefined : 'full'}
         >
-          {children}
+          <Box
+            as="span"
+            className={[tabular && styles.tabular, !wrap && styles.nowrap]}
+          >
+            {children}
+          </Box>
         </Box>
-      </Box>
+      </TextContext.Provider>
     )
   },
 )

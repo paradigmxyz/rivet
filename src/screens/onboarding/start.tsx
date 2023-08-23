@@ -21,14 +21,15 @@ export default function OnboardingStart() {
             <Cogs size="100%" />
           </Box>
         </Row>
-        <Row alignVertical="bottom" height="content">
+        <Row alignVertical="center">
           <Stack gap="32px">
             <Stack gap="20px">
               <Text size="32px" weight="medium">
                 Rivet
               </Text>
               <Text color="text/tertiary" size="18px" weight="light">
-                An open-source wallet with a powerful set of developer tools.
+                Developer Wallet & DevTools for Anvil designed to supercharge
+                your Ethereum development workflow.
               </Text>
             </Stack>
             <Stack gap="24px">
@@ -103,17 +104,12 @@ export default function OnboardingStart() {
                 </Stack>
               </Inline>
             </Stack>
-            <Stack gap="12px">
-              <Link to="/onboarding/configure?type=hosted">
-                <Button height="44px">Create hosted chain</Button>
-              </Link>
-              <Link to="/onboarding/download">
-                <Button height="44px" variant="stroked fill">
-                  Use local chain
-                </Button>
-              </Link>
-            </Stack>
           </Stack>
+        </Row>
+        <Row alignVertical="bottom" height="content">
+          <Link to="/onboarding/download" style={{ width: '100%' }}>
+            <Button height="44px">Create Anvil instance</Button>
+          </Link>
         </Row>
       </Rows>
     </Inset>

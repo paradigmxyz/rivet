@@ -88,7 +88,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           heightStyles[height],
           invalidStyle,
           placeholderStyle,
-          styles.text({
+          styles.inlineText({
             ...textStylesForHeight[height],
           }),
         ]}
