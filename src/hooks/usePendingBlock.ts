@@ -49,21 +49,19 @@ export function usePendingBlockQueryOptions({
         ['blocks', client.key],
         (data) => {
           if (!data) return
-          const [first, ...pages] = data.pages
           return {
             ...data,
-            pages: [[latestBlock, ...first], ...pages],
+            pages: [[latestBlock], ...data.pages],
           }
         },
       )
       queryClient.setQueryData<InfiniteData<Transaction[]>>(
         ['transactions', client.key],
-        (data: any) => {
+        (data) => {
           if (!data) return
-          const [first, ...pages] = data.pages
           return {
             ...data,
-            pages: [[...latestBlock.transactions, ...first], ...pages],
+            pages: [[...latestBlock.transactions], ...data.pages],
           }
         },
       )

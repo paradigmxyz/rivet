@@ -7,7 +7,7 @@ import { useBlock } from './useBlock'
 import { useClient } from './useClient'
 
 export function useBlockTransactionsQueryOptions() {
-  const { data: block } = useBlock()
+  const { data: block } = useBlock({ gcTime: 0 })
   const client = useClient()
   const limit = 10
 
@@ -33,10 +33,7 @@ export function useBlockTransactionsQueryOptions() {
           blockNumber,
           includeTransactions: true,
         })
-        transactions = [
-          ...transactions,
-          ...(block_.transactions as Transaction[]),
-        ]
+        transactions = [...transactions, ...block_.transactions]
         blockNumber--
       }
       return transactions

@@ -4,7 +4,7 @@ import { useBlock } from './useBlock'
 import { useClient } from './useClient'
 
 export function useBlocksQueryOptions({ limit = 10 }: { limit?: number } = {}) {
-  const { data: block } = useBlock()
+  const { data: block } = useBlock({ gcTime: 0 })
   const client = useClient()
   return {
     enabled: Boolean(block?.number),
