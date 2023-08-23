@@ -1,24 +1,36 @@
 import { type InfiniteData, useQuery } from '@tanstack/react-query'
-import type { Block, Transaction } from 'viem'
+import type { Block, Client, Transaction } from 'viem'
 
-import { queryClient } from '~/react-query'
+import { createQueryKey, queryClient } from '~/react-query'
 import { useNetworkStore } from '~/zustand'
 
+import { getBalanceQueryKey } from './useBalance'
+import { getBlockQueryKey } from './useBlock'
+import { getBlockTransactionsQueryKey } from './useBlockTransactions'
+import { getBlocksQueryKey } from './useBlocks'
 import { useClient } from './useClient'
 import { useNetworkStatus } from './useNetworkStatus'
-import { usePendingTransactionsQueryOptions } from './usePendingTransactions'
+import { getNonceQueryKey } from './useNonce'
+import { getPendingTransactionsQueryKey } from './usePendingTransactions'
+import { getTxpoolQueryKey } from './useTxpool'
+
+type UsePendingBlockParameters = { refetchInterval?: number }
+
+export const getPendingBlockQueryKey = createQueryKey<
+  'pending-block',
+  [key: Client['key']]
+>('pending-block')
 
 export function usePendingBlockQueryOptions({
   refetchInterval,
-}: { refetchInterval?: number } = {}) {
-  const pendingTransactionsQueryOptions = usePendingTransactionsQueryOptions()
+}: UsePendingBlockParameters = {}) {
   const { network } = useNetworkStore()
   const { data: chainId } = useNetworkStatus()
   const client = useClient()
 
   return {
     enabled: Boolean(chainId),
-    queryKey: ['pending-block', client.key],
+    queryKey: getPendingBlockQueryKey([client.key]),
     async queryFn() {
       const block = await client.getBlock({
         blockTag: 'pending',
@@ -36,17 +48,27 @@ export function usePendingBlockQueryOptions({
       )
         return prevBlock || null
 
-      queryClient.invalidateQueries({ queryKey: ['balance'] })
-      queryClient.invalidateQueries({ queryKey: ['block', 'latest'] })
-      queryClient.invalidateQueries({ queryKey: ['nonce'] })
-      queryClient.invalidateQueries({ queryKey: ['txpool'] })
-      queryClient.invalidateQueries(pendingTransactionsQueryOptions)
+      queryClient.invalidateQueries({
+        queryKey: getBalanceQueryKey([client.key]),
+      })
+      queryClient.invalidateQueries({
+        queryKey: getBlockQueryKey([client.key, 'latest']),
+      })
+      queryClient.invalidateQueries({
+        queryKey: getNonceQueryKey([client.key]),
+      })
+      queryClient.invalidateQueries({
+        queryKey: getPendingTransactionsQueryKey([client.key]),
+      })
+      queryClient.invalidateQueries({
+        queryKey: getTxpoolQueryKey([client.key]),
+      })
 
       const latestBlock = await client.getBlock({
         includeTransactions: true,
       })
       queryClient.setQueryData<InfiniteData<Block[]>>(
-        ['blocks', client.key],
+        getBlocksQueryKey([client.key]),
         (data) => {
           if (!data) return
           return {
@@ -56,7 +78,7 @@ export function usePendingBlockQueryOptions({
         },
       )
       queryClient.setQueryData<InfiniteData<Transaction[]>>(
-        ['transactions', client.key],
+        getBlockTransactionsQueryKey([client.key]),
         (data) => {
           if (!data) return
           return {
@@ -76,7 +98,7 @@ export function usePendingBlockQueryOptions({
 
 export function usePendingBlock({
   refetchInterval,
-}: { refetchInterval?: number } = {}) {
+}: UsePendingBlockParameters = {}) {
   const queryOptions = usePendingBlockQueryOptions({ refetchInterval })
   return useQuery(queryOptions)
 }

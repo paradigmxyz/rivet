@@ -1,16 +1,23 @@
 import { deepmerge } from '@fastify/deepmerge'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { mapValues } from 'remeda'
+import type { Client } from 'viem'
+
+import { createQueryKey } from '~/react-query'
 
 import { useClient } from './useClient'
 import { useNetworkStatus } from './useNetworkStatus'
+
+export const getTxpoolQueryKey = createQueryKey<'txpool', [key: Client['key']]>(
+  'txpool',
+)
 
 export function useTxpoolQueryOptions() {
   const { data: chainId } = useNetworkStatus()
   const client = useClient()
   return queryOptions({
     enabled: Boolean(chainId),
-    queryKey: ['txpool', client.key],
+    queryKey: getTxpoolQueryKey([client.key]),
     async queryFn() {
       return (await client.getTxpoolContent()) || null
     },

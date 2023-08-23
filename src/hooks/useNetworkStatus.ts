@@ -1,26 +1,35 @@
 import { useQuery } from '@tanstack/react-query'
+import type { Client } from 'viem'
 
+import { createQueryKey } from '~/react-query'
 import { useNetworkStore } from '~/zustand'
 
 import { useClient } from './useClient'
+
+type UseNetworkStatusParameters = {
+  enabled?: boolean
+  refetchInterval?: number
+  retry?: number
+  retryDelay?: number
+}
+
+export const getNetworkStatusQueryKey = createQueryKey<
+  'listening',
+  [key: Client['key']]
+>('listening')
 
 export function useNetworkStatus({
   enabled = true,
   refetchInterval,
   retry = 5,
   retryDelay,
-}: {
-  enabled?: boolean
-  refetchInterval?: number
-  retry?: number
-  retryDelay?: number
-} = {}) {
+}: UseNetworkStatusParameters = {}) {
   const { network, upsertNetwork } = useNetworkStore()
   const client = useClient()
 
   return useQuery({
     enabled,
-    queryKey: ['listening', client.key],
+    queryKey: getNetworkStatusQueryKey([client.key]),
     async queryFn() {
       try {
         const chainId = await client.getChainId()

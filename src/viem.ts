@@ -42,7 +42,9 @@ export type Client = Client_Base<
   Chain,
   undefined,
   EIP1474Methods,
-  WalletActions & PublicActions & TestActions
+  WalletActions &
+    PublicActions &
+    TestActions & { mode: 'anvil'; rpcUrl: string }
 >
 
 const clientCache = new Map()
@@ -61,7 +63,7 @@ export function getClient({ rpcUrl }: { rpcUrl: string }): Client {
       { retryCount: 0 },
     ),
   })
-    .extend(() => ({ mode: 'anvil' }))
+    .extend(() => ({ mode: 'anvil', rpcUrl }))
     .extend(testActions({ mode: 'anvil' }))
     .extend(publicActions)
     .extend(walletActions)

@@ -1,28 +1,41 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
-import { type BlockTag, type GetBlockParameters, stringify } from 'viem'
+import { type BlockTag, type Client, type GetBlockParameters } from 'viem'
+
+import { createQueryKey } from '~/react-query'
 
 import { useClient } from './useClient'
+
+type UseBlockParameters<
+  TIncludeTransactions extends boolean = false,
+  TBlockTag extends BlockTag = 'latest',
+> = GetBlockParameters<TIncludeTransactions, TBlockTag> & {
+  gcTime?: number
+}
+
+export const getBlockQueryKey = createQueryKey<
+  'block',
+  [
+    key: Client['key'],
+    block: BlockTag | (string & {}),
+    deps: GetBlockParameters<boolean, BlockTag>,
+  ]
+>('block')
 
 export function useBlockQueryOptions<
   TIncludeTransactions extends boolean = false,
   TBlockTag extends BlockTag = 'latest',
->(
-  args: GetBlockParameters<TIncludeTransactions, TBlockTag> & {
-    gcTime?: number
-  } = {},
-) {
+>(args: UseBlockParameters<TIncludeTransactions, TBlockTag> = {}) {
   const client = useClient()
   return queryOptions({
     gcTime: args.gcTime,
-    queryKey: [
-      'block',
+    queryKey: getBlockQueryKey([
+      client.key,
       args.blockHash ||
         args.blockNumber?.toString() ||
         args.blockTag ||
         'latest',
-      client.key,
-      stringify(args),
-    ],
+      args,
+    ]),
     async queryFn() {
       return (await client.getBlock(args)) || null
     },
@@ -32,11 +45,7 @@ export function useBlockQueryOptions<
 export function useBlock<
   TIncludeTransactions extends boolean = false,
   TBlockTag extends BlockTag = 'latest',
->(
-  args: GetBlockParameters<TIncludeTransactions, TBlockTag> & {
-    gcTime?: number
-  } = {},
-) {
+>(args: UseBlockParameters<TIncludeTransactions, TBlockTag> = {}) {
   const queryOptions = useBlockQueryOptions(args)
   return useQuery(queryOptions)
 }

@@ -1,10 +1,15 @@
 import { type InfiniteData, useInfiniteQuery } from '@tanstack/react-query'
-import type { Transaction } from 'viem'
+import type { Client, Transaction } from 'viem'
 
-import { queryClient } from '~/react-query'
+import { createQueryKey, queryClient } from '~/react-query'
 
 import { useBlock } from './useBlock'
 import { useClient } from './useClient'
+
+export const getBlockTransactionsQueryKey = createQueryKey<
+  'block-transactions',
+  [key: Client['key']]
+>('block-transactions')
 
 export function useBlockTransactionsQueryOptions() {
   const { data: block } = useBlock({ gcTime: 0 })
@@ -15,7 +20,7 @@ export function useBlockTransactionsQueryOptions() {
     enabled: Boolean(block?.number),
     defaultPageParam: 0,
     getNextPageParam: (_: unknown, pages: unknown[]) => pages.length,
-    queryKey: ['transactions', client.key],
+    queryKey: getBlockTransactionsQueryKey([client.key]),
     async queryFn({ pageParam }: { pageParam: number }) {
       let blockNumber = block?.number!
       if (pageParam > 0) {

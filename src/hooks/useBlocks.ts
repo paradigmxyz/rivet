@@ -1,9 +1,13 @@
 import { type InfiniteData, useInfiniteQuery } from '@tanstack/react-query'
-import type { Block } from 'viem'
-import { queryClient } from '~/react-query'
+import type { Block, Client } from 'viem'
+import { createQueryKey, queryClient } from '~/react-query'
 
 import { useBlock } from './useBlock'
 import { useClient } from './useClient'
+
+export const getBlocksQueryKey = createQueryKey<'blocks', [key: Client['key']]>(
+  'blocks',
+)
 
 export function useBlocksQueryOptions({ limit = 10 }: { limit?: number } = {}) {
   const { data: block } = useBlock({ gcTime: 0 })
@@ -12,7 +16,7 @@ export function useBlocksQueryOptions({ limit = 10 }: { limit?: number } = {}) {
     enabled: Boolean(block?.number),
     defaultPageParam: 0,
     getNextPageParam: (_: unknown, pages: unknown[]) => pages.length,
-    queryKey: ['blocks', client.key],
+    queryKey: getBlocksQueryKey([client.key]),
     async queryFn({ pageParam }: { pageParam: number }) {
       let blockNumber = block?.number!
       if (pageParam > 0) {

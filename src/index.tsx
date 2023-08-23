@@ -7,6 +7,7 @@ import { numberToHex } from 'viem'
 
 import { getTheme, setTheme } from '~/design-system'
 import '~/design-system/styles/global.css'
+import { getBlocksQueryKey } from '~/hooks/useBlocks'
 import { useClient } from '~/hooks/useClient'
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
@@ -183,7 +184,7 @@ function SyncJsonRpcAccounts() {
   useEffect(() => {
     ;(async () => {
       const addresses = await client.getAddresses()
-      setJsonRpcAccounts({ addresses, rpcUrl: client.key })
+      setJsonRpcAccounts({ addresses, rpcUrl: client.rpcUrl })
     })()
   }, [accountsForRpcUrl, chainId, setJsonRpcAccounts, client])
 
@@ -198,7 +199,7 @@ function SyncNetwork() {
   useEffect(() => {
     // Reset blocks query when node comes back online.
     if (!prevListening && listening) {
-      queryClient.resetQueries({ queryKey: ['blocks'] })
+      queryClient.resetQueries({ queryKey: getBlocksQueryKey() })
     }
   }, [prevListening, listening])
 

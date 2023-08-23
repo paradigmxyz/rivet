@@ -1,8 +1,12 @@
 # Rivet
 
-## Overview
+> Developer Wallet & DevTools for Anvil
+
+## What is Rivet?
 
 Rivet is a developer Wallet & DevTools for Anvil. It is a Browser Extension that enables developers to inspect, debug, modify, and manipulate the state of Ethereum (accounts, blocks, contracts & the node itself). Rivet is also compatible with any production Dapp, meaning you can simulate any type of action from either an Account attached on the Anvil instance, or by "impersonating" another Account on the network.
+
+Rivet is currently a **work-in-progress prototype**, and aimed to be **contributor first & friendly**. If you would like to contribute, check out the [Contributing Guide](/.github/CONTRIBUTING.md) and [good first issues](https://github.com/paradigmxyz/rivet/labels/good%20first%20issue).
 
 ## Features
 

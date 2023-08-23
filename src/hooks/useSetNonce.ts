@@ -13,7 +13,7 @@ export function useSetNonce() {
     async mutationFn({ address, nonce }: SetNonceParameters) {
       await client.setNonce({ address, nonce })
       queryClient.invalidateQueries({
-        queryKey: getNonceQueryKey({ address, client }),
+        queryKey: getNonceQueryKey([client.key, { address }]),
       })
     },
   })

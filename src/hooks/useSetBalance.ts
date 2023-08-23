@@ -13,7 +13,7 @@ export function useSetBalance() {
     async mutationFn({ address, value }: SetBalanceParameters) {
       await client.setBalance({ address, value })
       queryClient.invalidateQueries({
-        queryKey: getBalanceQueryKey({ address, client }),
+        queryKey: getBalanceQueryKey([client.key, { address }]),
       })
     },
   })
