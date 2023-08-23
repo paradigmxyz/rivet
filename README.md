@@ -1,10 +1,37 @@
-# Dev Wallet
+# Rivet
 
 ## Overview
 
-The Dev Wallet is a Web Extension that enables consumers to inspect, modify, and manipulate the state of Ethereum using a local forked node such as Anvil. The Dev Wallet is compatible with any dapp (i.e. perform simulated swaps on uniswap.org), and comes with the tools to inspect and manipulate the state of an account (balances, nonces, etc) and the local forked node (blocks, contracts, time travel, transactions). 
+Rivet is a developer Wallet & DevTools for Anvil. It is a Browser Extension that enables developers to inspect, debug, modify, and manipulate the state of Ethereum (accounts, blocks, contracts & the node itself). Rivet is also compatible with any production Dapp, meaning you can simulate any type of action from either an Account attached on the Anvil instance, or by "impersonating" another Account on the network.
 
-It is "god mode" for Ethereum – you can do anything you want, but only on your forked instance.
+## Features
+
+- **Anvil Node**
+  - Configure fork settings (block number, RPC URL, chain ID, etc)
+  - Configure block config (base fee, gas limit, timestamp interval, etc)
+  - Automatic sync with Anvil instance
+- **Accounts**
+  - List Anvil-attached and impersonated accounts
+  - View balances, nonces, and other account details
+  - Inspect, connect, and manage accounts
+  - Impersonate accounts
+  - Set balances & nonces
+- **Block**
+  - Infinite scroll through previous blocks
+  - View block details & transactions
+  - Toggle between "click-to-mine", interval mining, and auto-mining
+  - Time-travelling (rewind & replay)
+- **Contract**
+  - Read & write interactions with intuitive UI to represent ABI data structures
+  - Inspect & set storage slots
+  - Inspect & set bytecode
+- **Transaction**
+  - Infinite scroll through previous & pending transactions
+  - Filter transactions by block, account, and status
+- **Dapp Connections**
+  - Connect to Dapps with your Anvil (and impersonated) account(s)
+  - Account authorization & "Instant Connect" mode
+  - Send transactions, sign messages & typed data, etc
 
 ## Getting Started
 
