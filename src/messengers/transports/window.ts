@@ -13,9 +13,11 @@ import { isValidReply, isValidSend } from './utils'
  * - ❌ Background <-> Content Script
  * - ✅ Content Script <-> Inpage
  */
-export const windowTransport = {
+export const createWindowTransport = <TConnection extends string>(
+  connection: TConnection,
+): Transport<TConnection> => ({
   available: typeof window !== 'undefined',
-  name: 'windowTransport',
+  connection,
   async send(topic, payload, { id } = {}) {
     // Since the window messenger cannot reply asynchronously, we must include the direction in our message ('> {topic}')...
     window.postMessage({ topic: `> ${topic}`, payload, id }, '*')
@@ -63,4 +65,4 @@ export const windowTransport = {
     window.addEventListener('message', listener, false)
     return () => window.removeEventListener('message', listener)
   },
-} as const satisfies Transport
+})

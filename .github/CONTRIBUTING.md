@@ -18,14 +18,14 @@ The Dev Wallet has four isolated contexts:
 
 - **Wallet** app:
   - A Single Page Application (SPA).
-  - The main UI of the Dev Wallet (a React app). 
+  - The main UI of the Dev Wallet (a React app).
   - It is exposed to the global [Web Extension APIs](https://developer.chrome.com/docs/extensions/reference/) (ie. `chrome.runtime`).
-- **Background** service worker: 
-  - A service worker that runs in isolation in the background. The **Background** context is responsible for: handling RPC requests, external network requests, initializing the extension context menu, registering content scripts, etc. 
+- **Background** service worker:
+  - A service worker that runs in isolation in the background. The **Background** context is responsible for: handling RPC requests, external network requests, initializing the extension context menu, registering content scripts, etc.
   - It is also exposed to the global [Web Extension APIs](https://developer.chrome.com/docs/extensions/reference/) (ie. `chrome.runtime`).
-- **Content Script**: 
-  - Executes JavaScript in the context of the current webpage. The **Content Script** context is mainly responsible for injecting the **Wallet** app into the current webpage. 
-  - It is exposed to **only a subset** of the global [Web Extension APIs](https://developer.chrome.com/docs/extensions/reference/) (ie. `chrome.runtime`). 
+- **Content Script**:
+  - Executes JavaScript in the context of the current webpage. The **Content Script** context is mainly responsible for injecting the **Wallet** app into the current webpage.
+  - It is exposed to **only a subset** of the global [Web Extension APIs](https://developer.chrome.com/docs/extensions/reference/) (ie. `chrome.runtime`).
   - Its [`window` instance](https://developer.mozilla.org/en-US/docs/Web/API/Window) is **not the same** as the current webpage's `window` instance.
 - **Inpage**:
   - Similar to the **Content Script** and executes JavaScript in the context of the current webpage. The **Inpage** context is mainly responsible for injecting the `window.ethereum` provider into the current webpage.
@@ -69,7 +69,7 @@ To make this communication easier, we have created a ["Messenger" abstraction](.
 ```tsx
 import { getMessenger } from '~/messengers';
 
-const messenger = getMessenger({ connection: 'background <> wallet' });
+const messenger = getMessenger('background:wallet');
 
 async function example() {
   const result = await messenger.send('ping', { foo: 'bar' });
@@ -82,7 +82,7 @@ async function example() {
 ```tsx
 import { getMessenger } from '~/messengers';
 
-const messenger = getMessenger({ connection: 'background <> wallet' });
+const messenger = getMessenger('background:wallet');
 
 messenger.reply('ping', (args) => {
   return `pong and ${args.foo}`;

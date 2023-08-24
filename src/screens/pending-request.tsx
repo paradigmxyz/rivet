@@ -14,9 +14,7 @@ import { getMessenger } from '~/messengers'
 import type { RpcRequest } from '~/messengers/schema'
 import { queryClient } from '~/react-query'
 
-const backgroundMessenger = getMessenger({
-  connection: 'background <> wallet',
-})
+const backgroundMessenger = getMessenger('background:wallet')
 
 export default function PendingRequest({ request }: { request: RpcRequest }) {
   const pendingBlockQueryOptions = usePendingBlockQueryOptions()

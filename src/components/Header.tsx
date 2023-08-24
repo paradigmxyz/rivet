@@ -27,7 +27,7 @@ import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 
 import * as styles from './Header.css'
 
-const contentMessenger = getMessenger({ connection: 'wallet <> contentScript' })
+const contentMessenger = getMessenger('wallet:contentScript')
 
 export function Header() {
   return (

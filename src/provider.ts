@@ -16,7 +16,7 @@ export function getProvider({
   rpcUrl,
 }: { host?: string; messenger: Messenger; rpcUrl?: string }): EIP1193Provider {
   const cachedProvider = rpcUrl
-    ? providerCache.get(`${messenger.name}.${rpcUrl}`)
+    ? providerCache.get(`${messenger.connection}.${rpcUrl}`)
     : undefined
   if (cachedProvider) return cachedProvider
 
@@ -74,6 +74,6 @@ export function getProvider({
       return result
     },
   }
-  if (rpcUrl) providerCache.set(rpcUrl, provider)
+  if (rpcUrl) providerCache.set(`${messenger.connection}.${rpcUrl}`, provider)
   return provider
 }

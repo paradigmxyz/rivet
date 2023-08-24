@@ -93,7 +93,7 @@ const router = createHashRouter([
 ])
 
 // Handle requests from background to toggle the theme.
-const backgroundMessenger = getMessenger({ connection: 'background <> wallet' })
+const backgroundMessenger = getMessenger('background:wallet')
 backgroundMessenger.reply('toggleTheme', async () => {
   const { storageTheme, systemTheme } = getTheme()
   const theme = storageTheme || systemTheme
@@ -113,7 +113,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
 
 ////////////////////////////////////////////////////////////////////////////
 
-const inpageMessenger = getMessenger({ connection: 'wallet <> inpage' })
+const inpageMessenger = getMessenger('wallet:inpage')
 
 /** Emits EIP-1193 `accountsChanged` Event */
 function AccountsChangedEmitter() {

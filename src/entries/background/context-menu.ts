@@ -1,8 +1,6 @@
 import { getMessenger } from '~/messengers'
 
-const inpageMessenger = getMessenger({
-  connection: 'background <> inpage',
-})
+const inpageMessenger = getMessenger('background:inpage')
 
 export function setupContextMenu() {
   chrome.action.onClicked.addListener(() => {

@@ -63,12 +63,8 @@ export function getRpcClient({
   return client
 }
 
-const inpageMessenger = getMessenger({
-  connection: 'background <> inpage',
-})
-const walletMessenger = getMessenger({
-  connection: 'background <> wallet',
-})
+const inpageMessenger = getMessenger('background:inpage')
+const walletMessenger = getMessenger('background:wallet')
 
 export function setupRpcHandler() {
   inpageMessenger.reply('request', async ({ request, rpcUrl }, meta) => {

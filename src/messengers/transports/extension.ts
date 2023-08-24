@@ -18,9 +18,11 @@ import { isValidReply, isValidSend } from './utils'
  * - ✅ Background <-> Content Script
  * - ❌ Content Script <-> Inpage
  */
-export const extensionTransport = {
+export const createExtensionTransport = <TConnection extends string>(
+  connection: TConnection,
+): Transport<TConnection> => ({
   available: Boolean(typeof chrome !== 'undefined' && chrome.runtime?.id),
-  name: 'extensionTransport',
+  connection,
   async send<TPayload, TResponse>(
     topic: string,
     payload: TPayload,
@@ -87,4 +89,4 @@ export const extensionTransport = {
     chrome.runtime.onMessage.addListener(listener)
     return () => chrome.runtime.onMessage.removeListener(listener)
   },
-} as const satisfies Transport
+})

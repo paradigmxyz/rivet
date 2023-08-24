@@ -1,8 +1,11 @@
 import { detectScriptType } from '~/utils'
 
-import { tabTransport } from './tab'
+import { createTabTransport } from './tab'
 import type { Transport } from './types'
-import { windowTransport } from './window'
+import { createWindowTransport } from './window'
+
+const windowTransport = createWindowTransport('contentScript:inpage')
+const tabTransport = createTabTransport('background:contentScript')
 
 const transport = tabTransport.available ? tabTransport : windowTransport
 
@@ -18,16 +21,18 @@ const transport = tabTransport.available ? tabTransport : windowTransport
  * - ❌ Background <-> Content Script
  * - ❌ Content Script <-> Inpage
  */
-export const bridgeTransport = {
+export const createBridgeTransport = <TConnection extends string>(
+  connection: TConnection,
+): Transport<TConnection> => ({
   available: transport.available,
-  name: 'bridgeTransport',
+  connection,
   async send(topic, payload, { id } = {}) {
     return transport.send(topic, payload, { id })
   },
   reply(topic, callback) {
     return transport.reply(topic, callback)
   },
-} as const satisfies Transport
+})
 
 export function setupBridgeTransportRelay() {
   if (detectScriptType() !== 'contentScript') {

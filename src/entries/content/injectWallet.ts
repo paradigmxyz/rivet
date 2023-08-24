@@ -1,9 +1,7 @@
 import { getMessenger } from '~/messengers'
 import { windowStorage } from '~/storage'
 
-const backgroundMessenger = getMessenger({
-  connection: 'background <> contentScript',
-})
+const backgroundMessenger = getMessenger('background:contentScript')
 
 backgroundMessenger.send('ping', undefined)
 setInterval(() => {

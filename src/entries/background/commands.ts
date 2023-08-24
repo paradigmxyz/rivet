@@ -1,8 +1,6 @@
 import { getMessenger } from '~/messengers'
 
-const walletMessenger = getMessenger({
-  connection: 'background <> wallet',
-})
+const walletMessenger = getMessenger('background:wallet')
 
 export function handleCommands() {
   chrome.commands.onCommand.addListener((command) => {

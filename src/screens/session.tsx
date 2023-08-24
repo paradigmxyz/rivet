@@ -5,7 +5,7 @@ import { useHost } from '~/hooks/useHost'
 import { getMessenger } from '~/messengers'
 import { useSessionsStore } from '~/zustand'
 
-const inpageMessenger = getMessenger({ connection: 'wallet <> inpage' })
+const inpageMessenger = getMessenger('wallet:inpage')
 
 export default function Session() {
   const { data: host } = useHost()

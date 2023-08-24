@@ -37,11 +37,13 @@ function sendMessage<TPayload>(
  * - ❌ Background <-> Content Script
  * - ❌ Content Script <-> Inpage
  */
-export const tabTransport = {
+export const createTabTransport = <TConnection extends string>(
+  connection: TConnection,
+): Transport<TConnection> => ({
   available: Boolean(
     typeof chrome !== 'undefined' && chrome.runtime?.id && chrome.tabs,
   ),
-  name: 'tabTransport',
+  connection,
   async send(topic, payload, { id } = {}) {
     return new Promise((resolve, reject) => {
       const listener = (message: ReplyMessage<any>) => {
@@ -109,4 +111,4 @@ export const tabTransport = {
     chrome.runtime.onMessage.addListener(listener)
     return () => chrome.runtime.onMessage.removeListener(listener)
   },
-} as const satisfies Transport
+})

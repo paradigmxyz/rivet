@@ -21,7 +21,7 @@ export const defaultChain = {
   rpcUrls: foundry.rpcUrls,
 } as const satisfies Chain
 
-const messenger = getMessenger({ connection: 'background <> wallet' })
+const messenger = getMessenger('background:wallet')
 
 export function buildChain({ rpcUrl }: { rpcUrl: string }): Chain {
   return {

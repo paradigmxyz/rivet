@@ -16,11 +16,14 @@ export type Source = 'background' | 'content' | 'inpage' | 'popup'
 
 export type TransportSchema = Record<string, [unknown, unknown]>
 
-export type Transport<TSchema extends TransportSchema = TransportSchema> = {
+export type Transport<
+  TConnection extends string,
+  TSchema extends TransportSchema = TransportSchema,
+> = {
   /** Whether or not the transport is available in the context. */
   available: boolean
-  /** Name of the transport */
-  name: string
+  /** Connection type. */
+  connection: TConnection
   /** Sends a message to the `reply` handler. */
   send: <TTopic extends keyof TSchema>(
     /** A scoped topic that the `reply` will listen for. */
