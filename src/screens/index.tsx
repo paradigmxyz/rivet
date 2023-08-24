@@ -29,9 +29,9 @@ import {
 } from '~/design-system'
 import { useAccounts } from '~/hooks/useAccounts'
 import { useBalance } from '~/hooks/useBalance'
-import { useBlockTransactions } from '~/hooks/useBlockTransactions'
-import { useBlocks } from '~/hooks/useBlocks'
 import { useClient } from '~/hooks/useClient'
+import { useInfiniteBlockTransactions } from '~/hooks/useInfiniteBlockTransactions'
+import { useInfiniteBlocks } from '~/hooks/useInfiniteBlocks'
 import { useNonce } from '~/hooks/useNonce'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { usePendingTransactions } from '~/hooks/usePendingTransactions'
@@ -331,8 +331,9 @@ function Blocks() {
   const {
     data: infiniteBlocks,
     fetchNextPage,
+    isFetching,
     isFetchingNextPage,
-  } = useBlocks()
+  } = useInfiniteBlocks()
   const blocks = [
     { block: pendingBlock, status: 'pending' },
     ...(infiniteBlocks?.pages
@@ -354,9 +355,10 @@ function Blocks() {
 
   const { ref, inView } = useInView()
   useEffect(() => {
+    if (isFetching) return
     if (isFetchingNextPage) return
     if (inView) fetchNextPage()
-  }, [fetchNextPage, inView, isFetchingNextPage])
+  }, [fetchNextPage, inView, isFetching, isFetchingNextPage])
 
   return (
     <Box
@@ -447,8 +449,9 @@ function Transactions() {
   const {
     data: infiniteTransactions,
     fetchNextPage,
+    isFetching,
     isFetchingNextPage,
-  } = useBlockTransactions()
+  } = useInfiniteBlockTransactions()
   const transactions = [
     ...(pendingTransactions?.map((transaction) => ({
       transaction,
@@ -468,9 +471,13 @@ function Transactions() {
 
   const { ref, inView } = useInView()
   useEffect(() => {
+    if (isFetching) return
     if (isFetchingNextPage) return
-    if (inView) fetchNextPage()
-  }, [fetchNextPage, inView, isFetchingNextPage])
+    if (inView) {
+      console.log('test')
+      fetchNextPage()
+    }
+  }, [fetchNextPage, inView, isFetching, isFetchingNextPage])
 
   return (
     <Box
@@ -547,6 +554,7 @@ function Transactions() {
         })}
       </Box>
       <Inset space="12px">
+        <Box onClick={() => fetchNextPage()}>more</Box>
         <Box ref={ref}>
           <Text color="text/tertiary">Loading...</Text>
         </Box>

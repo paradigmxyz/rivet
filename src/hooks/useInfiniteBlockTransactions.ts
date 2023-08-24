@@ -6,30 +6,36 @@ import { createQueryKey, queryClient } from '~/react-query'
 import { useBlock } from './useBlock'
 import { useClient } from './useClient'
 
-export const getBlockTransactionsQueryKey = createQueryKey<
+export const getInfiniteBlockTransactionsQueryKey = createQueryKey<
   'block-transactions',
   [key: Client['key']]
 >('block-transactions')
 
-export function useBlockTransactionsQueryOptions() {
+export function useInfiniteBlockTransactionsQueryOptions() {
   const { data: block } = useBlock({ gcTime: 0 })
   const client = useClient()
-  const limit = 10
+  const limit_ = 10
 
   return {
     enabled: Boolean(block?.number),
     defaultPageParam: 0,
     getNextPageParam: (_: unknown, pages: unknown[]) => pages.length,
-    queryKey: getBlockTransactionsQueryKey([client.key]),
+    queryKey: getInfiniteBlockTransactionsQueryKey([client.key]),
     async queryFn({ pageParam }: { pageParam: number }) {
       let blockNumber = block?.number!
-      if (pageParam > 0) {
-        const prevInfiniteTransactions = queryClient.getQueryData([
-          'transactions',
-          client.key,
-        ]) as InfiniteData<Transaction[]>
-        const transactions = prevInfiniteTransactions.pages[pageParam - 1]
-        blockNumber = transactions[transactions.length - 1].blockNumber! - 1n
+      let limit = limit_
+
+      const prevInfiniteTransactions = queryClient.getQueryData([
+        'block-transactions',
+        client.key,
+      ]) as InfiniteData<Transaction[]>
+      if (prevInfiniteTransactions) {
+        if (pageParam > 0) {
+          const transactions = prevInfiniteTransactions.pages[pageParam - 1]
+          blockNumber = transactions[transactions.length - 1].blockNumber! - 1n
+        } else {
+          limit = prevInfiniteTransactions.pages[0].length || limit
+        }
       }
 
       let transactions: Transaction[] = []
@@ -46,7 +52,7 @@ export function useBlockTransactionsQueryOptions() {
   }
 }
 
-export function useBlockTransactions() {
-  const queryOptions = useBlockTransactionsQueryOptions()
+export function useInfiniteBlockTransactions() {
+  const queryOptions = useInfiniteBlockTransactionsQueryOptions()
   return useInfiniteQuery(queryOptions)
 }

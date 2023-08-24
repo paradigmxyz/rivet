@@ -1,5 +1,5 @@
 import { createAsyncStoragePersister } from '@tanstack/query-async-storage-persister'
-import { QueryClient } from '@tanstack/react-query'
+import { type InfiniteData, QueryClient } from '@tanstack/react-query'
 import {
   PersistQueryClientProvider,
   type PersistedClient,
@@ -7,21 +7,6 @@ import {
 import type { ReactNode } from 'react'
 
 import { webextStorage } from './storage'
-
-type RecursiveDeps<deps extends readonly unknown[]> = deps extends [
-  infer dep,
-  ...infer rest,
-]
-  ? [dep] | [dep, ...RecursiveDeps<rest>]
-  : []
-
-export function createQueryKey<
-  key extends string,
-  deps extends readonly unknown[],
->(id: key) {
-  return (deps?: RecursiveDeps<deps>) =>
-    [id, ...(deps ? deps : [])] as unknown as [key, ...deps]
-}
 
 export const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,4 +48,39 @@ export function QueryClientProvider({ children }: { children: ReactNode }) {
       {children}
     </PersistQueryClientProvider>
   )
+}
+
+////////////////////////////////////////////////////////////////////////
+// Utils
+
+type RecursiveDeps<deps extends readonly unknown[]> = deps extends [
+  infer dep,
+  ...infer rest,
+]
+  ? [dep] | [dep, ...RecursiveDeps<rest>]
+  : []
+
+export function createQueryKey<
+  key extends string,
+  deps extends readonly unknown[],
+>(id: key) {
+  return (deps?: RecursiveDeps<deps>) =>
+    [id, ...(deps ? deps : [])] as unknown as [key, ...deps]
+}
+
+export function updateInfiniteQueryData<data extends unknown[]>(data: data) {
+  return (prev: InfiniteData<data> | undefined) => {
+    if (!prev) return
+    const [first, ...rest] = prev.pages
+    if (first.length > rest?.[rest.length - 1]?.length)
+      return {
+        ...prev,
+        pageParams: [...prev.pageParams, prev.pageParams.length],
+        pages: [data, first, ...rest],
+      }
+    return {
+      ...prev,
+      pages: [[...data, ...first], ...rest],
+    }
+  }
 }

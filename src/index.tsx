@@ -7,8 +7,8 @@ import { numberToHex } from 'viem'
 
 import { getTheme, setTheme } from '~/design-system'
 import '~/design-system/styles/global.css'
-import { getBlocksQueryKey } from '~/hooks/useBlocks'
 import { useClient } from '~/hooks/useClient'
+import { getInfiniteBlocksQueryKey } from '~/hooks/useInfiniteBlocks'
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { usePrevious } from '~/hooks/usePrevious'
@@ -199,7 +199,7 @@ function SyncNetwork() {
   useEffect(() => {
     // Reset blocks query when node comes back online.
     if (!prevListening && listening) {
-      queryClient.resetQueries({ queryKey: getBlocksQueryKey() })
+      queryClient.resetQueries({ queryKey: getInfiniteBlocksQueryKey() })
     }
   }, [prevListening, listening])
 

@@ -1,14 +1,18 @@
 import { type InfiniteData, useQuery } from '@tanstack/react-query'
 import type { Block, Client, Transaction } from 'viem'
 
-import { createQueryKey, queryClient } from '~/react-query'
+import {
+  createQueryKey,
+  queryClient,
+  updateInfiniteQueryData,
+} from '~/react-query'
 import { useNetworkStore } from '~/zustand'
 
 import { getBalanceQueryKey } from './useBalance'
 import { getBlockQueryKey } from './useBlock'
-import { getBlockTransactionsQueryKey } from './useBlockTransactions'
-import { getBlocksQueryKey } from './useBlocks'
 import { useClient } from './useClient'
+import { getInfiniteBlockTransactionsQueryKey } from './useInfiniteBlockTransactions'
+import { getInfiniteBlocksQueryKey } from './useInfiniteBlocks'
 import { useNetworkStatus } from './useNetworkStatus'
 import { getNonceQueryKey } from './useNonce'
 import { getPendingTransactionsQueryKey } from './usePendingTransactions'
@@ -68,24 +72,12 @@ export function usePendingBlockQueryOptions({
         includeTransactions: true,
       })
       queryClient.setQueryData<InfiniteData<Block[]>>(
-        getBlocksQueryKey([client.key]),
-        (data) => {
-          if (!data) return
-          return {
-            ...data,
-            pages: [[latestBlock], ...data.pages],
-          }
-        },
+        getInfiniteBlocksQueryKey([client.key]),
+        updateInfiniteQueryData<Block[]>([latestBlock]),
       )
       queryClient.setQueryData<InfiniteData<Transaction[]>>(
-        getBlockTransactionsQueryKey([client.key]),
-        (data) => {
-          if (!data) return
-          return {
-            ...data,
-            pages: [[...latestBlock.transactions], ...data.pages],
-          }
-        },
+        getInfiniteBlockTransactionsQueryKey([client.key]),
+        updateInfiniteQueryData<Transaction[]>([...latestBlock.transactions]),
       )
 
       return block || null
