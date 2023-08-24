@@ -1,6 +1,14 @@
-import { useEffect, useState } from 'react'
+import { createStore } from 'mipd'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useSyncExternalStore,
+} from 'react'
 import {
   type Address,
+  type EIP1193Provider,
   type Hash,
   type Hex,
   hexToNumber,
@@ -15,44 +23,59 @@ import '~/design-system/styles/global.css'
 
 import { Box, Button, Inline, Input, Stack, Text } from '~/design-system'
 
+const store = createStore()
+
+const ProviderContext = createContext({} as EIP1193Provider)
+
 export default function App() {
+  const providerDetails = useSyncExternalStore(
+    store.subscribe,
+    store.getProviders,
+  )
+  if (providerDetails.length === 0) return null
+
+  const [{ provider }] = providerDetails
   return (
-    <Box
-      backgroundColor="surface/primary"
-      marginHorizontal="auto"
-      maxWidth="1152px"
-      paddingTop="40px"
-      paddingBottom="152px"
-    >
-      <Stack gap="32px">
-        <Text weight="semibold" size="32px">
-          Test Dapp
-        </Text>
-        <Text weight="semibold" size="22px">
-          Events
-        </Text>
-        <AccountsChanged />
-        <ChainChanged />
-        <Connect />
-        <Text weight="semibold" size="22px">
-          Methods
-        </Text>
-        <RequestAccounts />
-        <Accounts />
-        <BlockNumber />
-        <ChainId />
-        <SendTransaction />
-        <SignMessage />
-        <SignTypedData />
-      </Stack>
-    </Box>
+    <ProviderContext.Provider value={provider}>
+      <Box
+        backgroundColor="surface/primary"
+        marginHorizontal="auto"
+        maxWidth="1152px"
+        paddingTop="40px"
+        paddingBottom="152px"
+      >
+        <Stack gap="32px">
+          <Text weight="semibold" size="32px">
+            Test Dapp
+          </Text>
+          <Text weight="semibold" size="22px">
+            Events
+          </Text>
+          <AccountsChanged />
+          <ChainChanged />
+          <Connect />
+          <Text weight="semibold" size="22px">
+            Methods
+          </Text>
+          <RequestAccounts />
+          <Accounts />
+          <BlockNumber />
+          <ChainId />
+          <SendTransaction />
+          <SignMessage />
+          <SignTypedData />
+        </Stack>
+      </Box>
+    </ProviderContext.Provider>
   )
 }
 
 function AccountsChanged() {
+  const provider = useContext(ProviderContext)
+
   const [accounts, setAccounts] = useState<Address[][]>([])
   useEffect(() => {
-    window.ethereum?.on('accountsChanged', (accounts) => {
+    provider.on('accountsChanged', (accounts) => {
       setAccounts((x) => [...x, accounts as Address[]])
     })
   }, [])
@@ -71,9 +94,11 @@ function AccountsChanged() {
 }
 
 function ChainChanged() {
+  const provider = useContext(ProviderContext)
+
   const [chainIds, setChainIds] = useState<number[]>([])
   useEffect(() => {
-    window.ethereum?.on('chainChanged', (chainId) => {
+    provider.on('chainChanged', (chainId) => {
       setChainIds((chainIds) => [...chainIds, hexToNumber(chainId as Hex)])
     })
   }, [])
@@ -88,12 +113,14 @@ function ChainChanged() {
 }
 
 function Connect() {
+  const provider = useContext(ProviderContext)
+
   const [lastEvent, setLastEvent] = useState<string>('')
   useEffect(() => {
-    window.ethereum?.on('connect', () => {
+    provider.on('connect', () => {
       setLastEvent('connect')
     })
-    window.ethereum?.on('disconnect', () => {
+    provider.on('disconnect', () => {
       setLastEvent('disconnect')
     })
   }, [])
@@ -108,10 +135,12 @@ function Connect() {
 }
 
 function RequestAccounts() {
+  const provider = useContext(ProviderContext)
+
   const [accounts, setAccounts] = useState<Address[]>()
 
   const requestAccounts = async () => {
-    const accounts = await window.ethereum?.request({
+    const accounts = await provider.request({
       method: 'eth_requestAccounts',
     })
     setAccounts(accounts)
@@ -133,11 +162,12 @@ function RequestAccounts() {
 }
 
 function Accounts() {
+  const provider = useContext(ProviderContext)
   const [accounts, setAccounts] = useState<Address[]>()
 
   useEffect(() => {
     ;(async () => {
-      const accounts = await window.ethereum?.request({
+      const accounts = await provider.request({
         method: 'eth_accounts',
       })
       setAccounts(accounts)
@@ -157,13 +187,12 @@ function Accounts() {
 }
 
 function BlockNumber() {
+  const provider = useContext(ProviderContext)
   const [blockNumber, setBlockNumber] = useState<Hex>()
 
   useEffect(() => {
     ;(async () => {
-      setBlockNumber(
-        await window.ethereum?.request({ method: 'eth_blockNumber' }),
-      )
+      setBlockNumber(await provider.request({ method: 'eth_blockNumber' }))
     })()
   }, [])
 
@@ -178,11 +207,12 @@ function BlockNumber() {
 }
 
 function ChainId() {
+  const provider = useContext(ProviderContext)
   const [chainId, setChainId] = useState<Hex>()
 
   useEffect(() => {
     ;(async () => {
-      setChainId(await window.ethereum?.request({ method: 'eth_chainId' }))
+      setChainId(await provider.request({ method: 'eth_chainId' }))
     })()
   }, [])
 
@@ -197,6 +227,8 @@ function ChainId() {
 }
 
 function SendTransaction() {
+  const provider = useContext(ProviderContext)
+
   const [to, setTo] = useState<Address>()
   const [value, setValue] = useState<`${number}`>()
 
@@ -212,7 +244,7 @@ function SendTransaction() {
       const [account] = await window.ethereum!.request({
         method: 'eth_accounts',
       })
-      const hash = await window.ethereum?.request({
+      const hash = await provider.request({
         method: 'eth_sendTransaction',
         params: [
           {
@@ -259,6 +291,8 @@ function SendTransaction() {
 }
 
 function SignMessage() {
+  const provider = useContext(ProviderContext)
+
   const [message, setMessage] = useState('')
   const [signature, setSignature] = useState<Hex | undefined>()
   const [error, setError] = useState<Error>()
@@ -268,7 +302,7 @@ function SignMessage() {
 
     setSignature(undefined)
     try {
-      const signature = await window.ethereum?.request({
+      const signature = await provider.request({
         method: 'personal_sign',
         params: [
           stringToHex(message),
@@ -305,6 +339,8 @@ function SignMessage() {
 }
 
 function SignTypedData() {
+  const provider = useContext(ProviderContext)
+
   const [signature, setSignature] = useState<Hex | undefined>()
   const [error, setError] = useState<Error>()
 
@@ -345,7 +381,7 @@ function SignTypedData() {
         },
         (_, value) => (isHex(value) ? value.toLowerCase() : value),
       )
-      const signature = await window.ethereum?.request({
+      const signature = await provider.request({
         method: 'eth_signTypedData_v4',
         params: ['0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266', typedData],
       })
