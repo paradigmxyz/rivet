@@ -1,10 +1,10 @@
 # Contributing
 
-Thanks for your interest in contributing to Dev Wallet! Please take a moment to review this document **before submitting a pull request.** If you want to contribute, but aren't sure where to start, you can create a [new discussion](https://github.com/wagmi-dev/wallet/discussions).
+Thanks for your interest in contributing to Dev Wallet! Please take a moment to review this document **before submitting a pull request.** If you want to contribute, but aren't sure where to start, you can create a [new discussion](https://github.com/paradigmxyz/rivet/discussions).
 
 > **Note** **Please ask first before starting work on any significant new features.**
 >
-> It's never a fun experience to have your pull request declined after investing time and effort into a new feature. To avoid this from happening, we request that contributors create a [feature request](https://github.com/wagmi-dev/wallet/discussions/new?category=ideas) to first discuss any API changes or significant new ideas.
+> It's never a fun experience to have your pull request declined after investing time and effort into a new feature. To avoid this from happening, we request that contributors create a [feature request](https://github.com/paradigmxyz/rivet/discussions/new?category=ideas) to first discuss any API changes or significant new ideas.
 
 <br>
 
@@ -110,13 +110,13 @@ This guide is intended to help you get started with contributing. By following t
 To start contributing to the project, clone it to your local machine using git:
 
 ```bash
-git clone https://github.com/wagmi-dev/wallet.git
+git clone https://github.com/paradigmxyz/rivet.git
 ```
 
 Or the [GitHub CLI](https://cli.github.com):
 
 ```bash
-gh repo clone wagmi-dev/wallet
+gh repo clone paradigmxyz/rivet
 ```
 
 <div align="right">
@@ -174,7 +174,6 @@ pnpm install
 After you have installed dependencies, you are ready to run the Web Extension. To do so, run the following:
 
 ```bash
-pnpm anvil # start Anvil instance
 pnpm dev # start dev server
 ```
 
