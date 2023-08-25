@@ -1,6 +1,8 @@
+![image](https://github.com/paradigmxyz/rivet/assets/1936207/e87b19a5-658c-4871-9235-21abb38cb1d6)
+
 # Rivet
 
-> Developer Wallet & DevTools for Anvil
+> Developer wallet & DevTools for Anvil
 
 ## What is Rivet?
 
