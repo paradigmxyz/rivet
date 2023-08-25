@@ -90,9 +90,9 @@ Once in the project's root directory, run the following command to install the p
 pnpm install
 ```
 
-### 4. Run the Web Extension
+### 4. Run the dev server
 
-After you have installed dependencies, you are ready to run the Web Extension. To do so, run the following:
+After you have installed dependencies, you are ready to run the dev server for the Extension. To do so, run the following:
 
 ```bash
 pnpm dev 
