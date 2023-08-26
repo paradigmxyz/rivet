@@ -473,10 +473,7 @@ function Transactions() {
   useEffect(() => {
     if (isFetching) return
     if (isFetchingNextPage) return
-    if (inView) {
-      console.log('test')
-      fetchNextPage()
-    }
+    if (inView) fetchNextPage()
   }, [fetchNextPage, inView, isFetching, isFetchingNextPage])
 
   return (
@@ -554,7 +551,6 @@ function Transactions() {
         })}
       </Box>
       <Inset space="12px">
-        <Box onClick={() => fetchNextPage()}>more</Box>
         <Box ref={ref}>
           <Text color="text/tertiary">Loading...</Text>
         </Box>
