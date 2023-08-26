@@ -1,6 +1,15 @@
 ![cover](https://github.com/paradigmxyz/rivet/assets/1936207/5a8ddb02-c8cd-42ea-8af3-3d6e7201a29a)
 
-> Developer wallet & DevTools for Anvil
+<p align="center">Developer wallet & DevTools for Anvil</p>
+
+<div align="center">
+  <a href="https://github.com/paradigmxyz/rivet/actions/workflows/on-push-to-main.yml">
+    <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/paradigmxyz/rivet/on-push-to-main.yml">
+  </a>
+  <a href="https://github.com/paradigmxyz/rivet/blob/main/LICENSE">
+    <img alt="GitHub" src="https://img.shields.io/github/license/paradigmxyz/rivet">
+  </a>
+</div>
 
 ## What is Rivet?
 
