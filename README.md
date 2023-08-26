@@ -109,7 +109,7 @@ Once you have your dev server running, you can install the Web Extension in your
 1. Open your browser's Extensions page
 2. Enable "Developer mode" in the top right corner
 3. Click "Load unpacked" in the top left corner
-4. Select the `dist/dev` folder in the Dev Wallet's root directory
+4. Select the `dist/dev` folder in Rivet's root directory
 5. You're good to go! Don't forget to pin the Extension to your browser's toolbar for easy access. 🎉
 
 ## Contributing
