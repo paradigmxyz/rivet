@@ -10,6 +10,8 @@ By integrating [EIP-6963: Multi Injected Provider Discovery](https://eips.ethere
 
 Rivet is currently a **work-in-progress prototype**, and aimed to be **contributor first & friendly**. If you would like to contribute, check out the [Contributing Guide](/.github/CONTRIBUTING.md) and [good first issues](https://github.com/paradigmxyz/rivet/labels/good%20first%20issue).
 
+![screenshots](https://github.com/paradigmxyz/rivet/assets/7336481/7eb57ff3-1f47-486d-b433-6a3346ac3e4b)
+
 ## Features
 
 - **Onboarding**
