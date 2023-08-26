@@ -9,14 +9,6 @@ import { isValidReply, isValidSend } from './utils'
 /**
  * Creates an "extension transport" that can be used to communicate between
  * scripts where `chrome.runtime` is defined.
- *
- * Compatible connections:
- * - ❌ Wallet <-> Inpage
- * - ❌ Background <-> Inpage
- * - ✅ Background <-> Wallet
- * - ✅ Wallet <-> Content Script
- * - ✅ Background <-> Content Script
- * - ❌ Content Script <-> Inpage
  */
 export const createExtensionTransport = <TConnection extends string>(
   connection: TConnection,

@@ -4,14 +4,6 @@ import { isValidReply, isValidSend } from './utils'
 /**
  * Creates a "window transport" that can be used to communicate between
  * scripts where `window` is defined.
- *
- * Compatible connections:
- * - ❌ Wallet <-> Inpage
- * - ❌ Background <-> Inpage
- * - ❌ Background <-> Wallet
- * - ❌ Wallet <-> Content Script
- * - ❌ Background <-> Content Script
- * - ✅ Content Script <-> Inpage
  */
 export const createWindowTransport = <TConnection extends string>(
   connection: TConnection,
@@ -19,9 +11,7 @@ export const createWindowTransport = <TConnection extends string>(
   available: typeof window !== 'undefined',
   connection,
   async send(topic, payload, { id } = {}) {
-    // Since the window messenger cannot reply asynchronously, we must include the direction in our message ('> {topic}')...
     window.postMessage({ topic: `> ${topic}`, payload, id }, '*')
-    // ... and also set up an event listener to listen for the response ('< {topic}').
     return new Promise((resolve, reject) => {
       const listener = (event: MessageEvent) => {
         if (!isValidReply({ id, message: event.data, topic })) return
