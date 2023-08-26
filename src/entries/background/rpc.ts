@@ -79,7 +79,7 @@ export function setupRpcHandler() {
         jsonrpc: '2.0',
         error: {
           code: UnsupportedProviderMethodError.code,
-          message: 'Dev Wallet has not been onboarded.',
+          message: 'Rivet has not been onboarded.',
         },
       } as RpcResponse
 

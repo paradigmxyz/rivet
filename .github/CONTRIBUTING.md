@@ -1,6 +1,6 @@
 # Contributing
 
-Thanks for your interest in contributing to Dev Wallet! Please take a moment to review this document **before submitting a pull request.** If you want to contribute, but aren't sure where to start, you can create a [new discussion](https://github.com/paradigmxyz/rivet/discussions).
+Thanks for your interest in contributing to Rivet! Please take a moment to review this document **before submitting a pull request.** If you want to contribute, but aren't sure where to start, you can create a [new discussion](https://github.com/paradigmxyz/rivet/discussions).
 
 > **Note** **Please ask first before starting work on any significant new features.**
 >
@@ -14,11 +14,11 @@ Here is a [great primer](https://developer.chrome.com/docs/extensions/mv3/getsta
 
 ### Contexts
 
-The Dev Wallet has four isolated contexts:
+Rivet has four isolated contexts:
 
 - **Wallet** app:
   - A Single Page Application (SPA).
-  - The main UI of the Dev Wallet (a React app).
+  - The main UI of Rivet (a React app).
   - It is exposed to the global [Web Extension APIs](https://developer.chrome.com/docs/extensions/reference/) (ie. `chrome.runtime`).
 - **Background** service worker:
   - A service worker that runs in isolation in the background. The **Background** context is responsible for: handling RPC requests, external network requests, initializing the extension context menu, registering content scripts, etc.
@@ -125,7 +125,7 @@ gh repo clone paradigmxyz/rivet
 
 ### Installing Node.js and pnpm
 
-The Dev Wallet uses [pnpm](https://pnpm.io/workspaces). You need to install **Node.js v18 or higher** and **pnpm v8 or higher**.
+Rivet uses [pnpm](https://pnpm.io/workspaces). You need to install **Node.js v18 or higher** and **pnpm v8 or higher**.
 
 You can run the following commands in your terminal to check your local Node.js and pnpm versions:
 
@@ -145,7 +145,7 @@ If the versions are not correct or you don't have Node.js or pnpm installed, dow
 
 ### Installing Anvil
 
-The Dev Wallet uses [Anvil](https://book.getfoundry.sh/anvil/) to spin up a forked Ethereum node.
+Rivet uses [Anvil](https://book.getfoundry.sh/anvil/) to spin up a forked Ethereum node.
 
 Install Anvil using the following command:
 
@@ -190,7 +190,7 @@ Once you have your dev server running, you can install the Web Extension in your
 1. Open your browser's Extensions page
 2. Enable "Developer mode" in the top right corner
 3. Click "Load unpacked" in the top left corner
-4. Select the `dist/dev` folder in the Dev Wallet's root directory
+4. Select the `dist/dev` folder in Rivet's root directory
 5. You're good to go! Don't forget to pin the Extension to your browser's toolbar for easy access. 🎉
 
 <div align="right">
@@ -215,7 +215,7 @@ When you submit a pull request, GitHub will automatically lint, build, and test 
 ---
 
 <div align="center">
-  ✅ Now you're ready to contribute to the Dev Wallet!
+  ✅ Now you're ready to contribute to Rivet!
 </div>
 
 ---
