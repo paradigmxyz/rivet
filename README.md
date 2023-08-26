@@ -1,6 +1,6 @@
 ![cover](https://github.com/paradigmxyz/rivet/assets/1936207/5a8ddb02-c8cd-42ea-8af3-3d6e7201a29a)
 
-<p align="center">Developer wallet & DevTools for Anvil</p>
+<p align="center"><strong>Developer wallet & DevTools for Anvil</strong></p>
 
 <div align="center">
   <a href="https://github.com/paradigmxyz/rivet/actions/workflows/on-push-to-main.yml">
