@@ -1,4 +1,4 @@
-![Uploading cover.png…]()
+![cover](https://github.com/paradigmxyz/rivet/assets/1936207/5a8ddb02-c8cd-42ea-8af3-3d6e7201a29a)
 
 # Rivet
 
