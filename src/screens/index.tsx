@@ -382,6 +382,7 @@ function Blocks() {
               onClick={() => setPosition(parentRef.current?.scrollTop!)}
               to={`block/${block.number}`}
               key={key}
+              style={{ pointerEvents: isPending ? 'none' : undefined }}
             >
               <Box
                 backgroundColor={{ hover: 'surface/fill/quarternary' }}
@@ -393,7 +394,6 @@ function Blocks() {
                   height: `${size}px`,
                   transform: `translateY(${start}px)`,
                 }}
-                cursor={isPending ? 'not-allowed' : 'pointer'}
               >
                 <Box paddingHorizontal="12px" paddingVertical="8px">
                   <Inline wrap={false}>
