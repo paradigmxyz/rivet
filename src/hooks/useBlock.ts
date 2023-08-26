@@ -1,5 +1,10 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
-import { type BlockTag, type Client, type GetBlockParameters } from 'viem'
+import {
+  type BlockTag,
+  type Client,
+  type GetBlockParameters,
+  stringify,
+} from 'viem'
 
 import { createQueryKey } from '~/react-query'
 
@@ -14,11 +19,7 @@ type UseBlockParameters<
 
 export const getBlockQueryKey = createQueryKey<
   'block',
-  [
-    key: Client['key'],
-    block: BlockTag | (string & {}),
-    deps: GetBlockParameters<boolean, BlockTag>,
-  ]
+  [key: Client['key'], block: BlockTag | (string & {}), deps: string]
 >('block')
 
 export function useBlockQueryOptions<
@@ -34,7 +35,7 @@ export function useBlockQueryOptions<
         args.blockNumber?.toString() ||
         args.blockTag ||
         'latest',
-      args,
+      stringify(args),
     ]),
     async queryFn() {
       return (await client.getBlock(args)) || null
