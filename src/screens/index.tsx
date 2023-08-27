@@ -35,9 +35,9 @@ import { useInfiniteBlocks } from '~/hooks/useInfiniteBlocks'
 import { useNonce } from '~/hooks/useNonce'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { usePendingTransactions } from '~/hooks/usePendingTransactions'
+import { useSetAccount } from '~/hooks/useSetAccount'
 import { useSetBalance } from '~/hooks/useSetBalance'
 import { useSetNonce } from '~/hooks/useSetNonce'
-import { useSwitchAccount } from '~/hooks/useSwitchAccount'
 import { truncate } from '~/utils'
 import {
   useAccountStore,
@@ -89,7 +89,7 @@ export default function Index() {
 function Accounts() {
   const { account: activeAccount, removeAccount } = useAccountStore()
   const accounts = useAccounts()
-  const { mutateAsync: switchAccount } = useSwitchAccount()
+  const { mutateAsync: setAccount } = useSetAccount()
 
   return (
     <>
@@ -110,7 +110,7 @@ function Accounts() {
                   : { hover: 'surface/fill/quarternary' }
               }
               cursor="pointer"
-              onClick={() => switchAccount({ account })}
+              onClick={() => setAccount({ account })}
               marginHorizontal="-12px"
               paddingHorizontal="12px"
               paddingVertical="16px"
@@ -175,12 +175,11 @@ function Accounts() {
 }
 
 function ImportAccount() {
-  const { addAccount } = useAccountStore()
   const {
     network: { rpcUrl },
   } = useNetworkStore()
   const client = useClient()
-  const { mutateAsync: switchAccount } = useSwitchAccount()
+  const { mutateAsync: setAccount } = useSetAccount()
 
   const { handleSubmit, register, reset } = useForm<{ addressOrEns: string }>({
     defaultValues: {
@@ -207,10 +206,7 @@ function ImportAccount() {
         rpcUrl,
         type: 'json-rpc',
       }
-      addAccount({
-        account,
-      })
-      switchAccount({ account })
+      setAccount({ account })
     } finally {
       reset()
     }

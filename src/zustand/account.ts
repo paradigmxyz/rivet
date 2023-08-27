@@ -23,13 +23,12 @@ export type AccountActions = {
     activeFirst,
     rpcUrl,
   }: { activeFirst?: boolean; rpcUrl: string }): readonly Account[]
-  addAccount({ account }: { account: Account }): void
   removeAccount({ account }: { account: Account }): void
-  setAccount({ account }: { account: Account }): void
   setJsonRpcAccounts({
     addresses,
     rpcUrl,
   }: { addresses: Address[]; rpcUrl: string }): void
+  upsertAccount({ account }: { account: Account }): void
 }
 export type AccountStore = AccountState & AccountActions
 
@@ -50,18 +49,6 @@ export const accountStore = createStore<AccountStore>(
         ]
       return accounts_
     },
-    addAccount({ account }) {
-      const { accounts } = get()
-      if (
-        accounts.some(
-          (x) => x.address === account.address && x.rpcUrl === account.rpcUrl,
-        )
-      )
-        return
-      set((state) => ({
-        accounts: [account, ...state.accounts],
-      }))
-    },
     removeAccount({ account }) {
       set((state) => {
         const accounts = state.accounts.filter(
@@ -75,14 +62,6 @@ export const accountStore = createStore<AccountStore>(
           ...state,
           account: account_,
           accounts,
-        }
-      })
-    },
-    setAccount({ account }) {
-      set((state) => {
-        return {
-          ...state,
-          account,
         }
       })
     },
@@ -106,6 +85,19 @@ export const accountStore = createStore<AccountStore>(
             ),
             ...accounts,
           ],
+        }
+      })
+    },
+    upsertAccount({ account }) {
+      const exists = get().accounts.some(
+        (x) => x.address === account.address && x.rpcUrl === account.rpcUrl,
+      )
+
+      set((state) => {
+        return {
+          ...state,
+          account,
+          accounts: exists ? state.accounts : [account, ...state.accounts],
         }
       })
     },

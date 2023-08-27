@@ -1,11 +1,12 @@
 import { useMutation } from '@tanstack/react-query'
 
-import { useImpersonate } from './useImpersonate'
-import { useStopImpersonate } from './useStopImpersonate'
 import { type Account, useAccountStore } from '~/zustand/account'
 
-export function useSwitchAccount() {
-  const { account: activeAccount, setAccount } = useAccountStore()
+import { useImpersonate } from './useImpersonate'
+import { useStopImpersonate } from './useStopImpersonate'
+
+export function useSetAccount() {
+  const { account: activeAccount, upsertAccount } = useAccountStore()
   const { mutateAsync: stopImpersonate } = useStopImpersonate()
   const { mutateAsync: impersonate } = useImpersonate()
 
@@ -15,7 +16,7 @@ export function useSwitchAccount() {
         await stopImpersonate({
           address: activeAccount.address,
         })
-      setAccount({ account })
+      upsertAccount({ account })
       if (account.impersonate) await impersonate({ address: account.address })
     },
   })
