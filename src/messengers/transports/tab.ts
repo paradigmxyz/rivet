@@ -72,7 +72,6 @@ export const createTabTransport = <TConnection extends string>(
             )
           })
       })
-      return true
     }
     chrome.runtime.onMessage.addListener(listener)
     return () => chrome.runtime.onMessage.removeListener(listener)

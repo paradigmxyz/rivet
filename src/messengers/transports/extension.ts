@@ -76,7 +76,6 @@ export const createExtensionTransport = <TConnection extends string>(
             id: message.id,
           })
         })
-      return true
     }
     chrome.runtime.onMessage.addListener(listener)
     return () => chrome.runtime.onMessage.removeListener(listener)
