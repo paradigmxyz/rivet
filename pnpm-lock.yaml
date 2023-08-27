@@ -102,15 +102,15 @@ devDependencies:
   '@vitejs/plugin-react':
     specifier: ^4.0.0-beta.0
     version: 4.0.0-beta.0(vite@4.3.0)
-  bun:
-    specifier: ^0.5.9
-    version: 0.5.9
   chroma-js:
     specifier: ^2.4.2
     version: 2.4.2
   clsx:
     specifier: ^1.2.1
     version: 1.2.1
+  cross-env:
+    specifier: ^7.0.3
+    version: 7.0.3
   d3-format:
     specifier: ^3.1.0
     version: 3.1.0
@@ -1063,54 +1063,6 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
     dev: true
-
-  /@oven/bun-darwin-aarch64@0.5.9:
-    resolution: {integrity: sha512-4AfiEln+yA5FzR1mEpcd8816ziq0rPT9IQOFMmGbtMLXvYRfWul3ywaquI7nl8c8RU3Lzu5Itlwirx65DKJ19A==}
-    cpu: [arm64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@oven/bun-darwin-x64-baseline@0.5.9:
-    resolution: {integrity: sha512-hhsUtMHor9h4fQozPOzSy82P0smT8xaFJouumJv6ekxngZ5Xa13BWfUJZsdTcB+pBsdMUC8V8MRfNFyfiZZiog==}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@oven/bun-darwin-x64@0.5.9:
-    resolution: {integrity: sha512-YYYg9qIFcvwQqO4GKs7SkpOLCERxHUKpmrZ7yl0DWPAfZWm7xqoTOs1ceCgAUygkKZ9/eLcj5VD8qjhth4Ynyg==}
-    cpu: [x64]
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@oven/bun-linux-aarch64@0.5.9:
-    resolution: {integrity: sha512-D0kZM+VDLhxPKXnczG3d2LlrzWp+bv6LIhjIC/2UTUNdipjO5tFHoCbsQvcPpg+hJYsj0We43pdFPbIC7cL+dg==}
-    cpu: [arm64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@oven/bun-linux-x64-baseline@0.5.9:
-    resolution: {integrity: sha512-HO4HMmOMRz7SWEUR4P+iZe3RHDgkrYkNmW1clKIddgrVNf3pS+lKOZBW/GcX2cjjHMRp6vcjPvOxa9oXfqLuVA==}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
-
-  /@oven/bun-linux-x64@0.5.9:
-    resolution: {integrity: sha512-ORE/a3XpDZPZwL/2dvlkJOt3lBd637eonsluY49IcjhYci3eDXKA3S6A2x9H7MVTUhv8G7z6fDztRVh+W7Rz6A==}
-    cpu: [x64]
-    os: [linux]
-    requiresBuild: true
-    dev: true
-    optional: true
 
   /@pkgjs/parseargs@0.11.0:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
@@ -2218,21 +2170,6 @@ packages:
       ieee754: 1.2.1
     dev: true
 
-  /bun@0.5.9:
-    resolution: {integrity: sha512-gX4ped5KlWCf6HZId0O4lU2hcbfELeL3Sp6uKjbsTZR3Wu1/grOuXI/jrKd38aFiPdgMnWR0+mWcKuQuIbMUzw==}
-    cpu: [arm64, x64]
-    os: [darwin, linux]
-    hasBin: true
-    requiresBuild: true
-    optionalDependencies:
-      '@oven/bun-darwin-aarch64': 0.5.9
-      '@oven/bun-darwin-x64': 0.5.9
-      '@oven/bun-darwin-x64-baseline': 0.5.9
-      '@oven/bun-linux-aarch64': 0.5.9
-      '@oven/bun-linux-x64': 0.5.9
-      '@oven/bun-linux-x64-baseline': 0.5.9
-    dev: true
-
   /bunyan@1.8.15:
     resolution: {integrity: sha512-0tECWShh6wUysgucJcBAoYegf3JJoZWibxdqhTm7OHPeT42qdjkZ29QCMcKwbgU1kiH+auSIasNRXMLWXafXig==}
     engines: {'0': node >=0.10.0}
@@ -2492,6 +2429,14 @@ packages:
 
   /core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
+    dev: true
+
+  /cross-env@7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
+    hasBin: true
+    dependencies:
+      cross-spawn: 7.0.3
     dev: true
 
   /cross-spawn@7.0.3:
