@@ -13,6 +13,7 @@ import {
   Text,
 } from '~/design-system'
 import { useBlock } from '~/hooks/useBlock'
+import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { truncate } from '~/utils'
 
 const numberIntl = new Intl.NumberFormat()
@@ -25,8 +26,12 @@ const numberIntl6SigFigs = new Intl.NumberFormat('en-US', {
 
 export default function BlockDetails() {
   const { blockNumber } = useParams()
+  const { data: pendingBlock } = usePendingBlock()
+  const isPending = pendingBlock?.number === BigInt(blockNumber!)
   const { data: block } = useBlock({
-    blockNumber: BigInt(blockNumber!),
+    ...(isPending
+    ? { blockTag: "pending" }
+    : { blockNumber: BigInt(blockNumber!) }),
     includeTransactions: true,
   })
   if (!block) return null
@@ -37,11 +42,11 @@ export default function BlockDetails() {
           <Columns gap="12px">
             <Column width="1/4">
               <LabelledContent label="Block">
-                <Text size="12px">{block.number!.toString()}</Text>
+                <Text size="12px">{blockNumber}</Text>
               </LabelledContent>
             </Column>
             <LabelledContent label="Timestamp">
-              {status === 'pending' ? (
+              {isPending ? (
                 <Text color="text/tertiary" size="12px">
                   Pending
                 </Text>

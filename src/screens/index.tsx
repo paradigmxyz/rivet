@@ -375,14 +375,12 @@ function Blocks() {
       >
         {virtualizer.getVirtualItems().map(({ key, index, size, start }) => {
           const { block, status } = blocks[index] || {}
-          const isPending = status === 'pending'
           if (!block) return
           return (
             <Link
               onClick={() => setPosition(parentRef.current?.scrollTop!)}
               to={`block/${block.number}`}
               key={key}
-              style={{ pointerEvents: isPending ? 'none' : undefined }}
             >
               <Box
                 backgroundColor={{ hover: 'surface/fill/quarternary' }}
@@ -404,7 +402,7 @@ function Blocks() {
                     </LabelledContent>
                     <LabelledContent label="Timestamp">
                       <Box style={{ width: '148px' }}>
-                        {isPending ? (
+                        {status === 'pending' ? (
                           <Text color="text/tertiary" size="12px">
                             Pending
                           </Text>
