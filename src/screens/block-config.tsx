@@ -103,7 +103,11 @@ function Mine() {
     blocks: string
     interval: string
   }
-  const { register, handleSubmit } = useForm<FormValues>({
+  const {
+    register,
+    handleSubmit,
+    formState: { isValid },
+  } = useForm<FormValues>({
     defaultValues: { blocks: '1', interval: '0' },
   })
 
@@ -127,7 +131,7 @@ function Mine() {
             </Text>
             <Input
               style={{ width: '70px' }}
-              {...register('blocks', { required: true })}
+              {...register('blocks', { required: true, min: 1 })}
             />
           </Stack>
           <Stack gap="12px" width="fit">
@@ -144,7 +148,12 @@ function Mine() {
             <Text color="text/tertiary" size="11px">
               {'‎'}
             </Text>
-            <Button type="submit" width="fit" variant="solid fill">
+            <Button
+              disabled={!isValid}
+              type="submit"
+              width="fit"
+              variant="solid fill"
+            >
               Mine
             </Button>
           </Stack>
