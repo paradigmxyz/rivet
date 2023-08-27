@@ -6,7 +6,7 @@ export function useHost() {
     async queryFn() {
       const [tab] = await chrome.tabs.query({
         active: true,
-        lastFocusedWindow: true
+        lastFocusedWindow: true,
       })
       if (!tab.url) return null
       return new URL(tab.url).host
