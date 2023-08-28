@@ -83,9 +83,10 @@ function SendTransactionDetails({
 }: {
   params: ExtractParams<'eth_sendTransaction'>
 }) {
-  const [{ from, to, value }] = params
+  const [{ from, to, value, gas, data }] = params
   return (
     <Stack gap="12px">
+      <Text size="14px">Send Transaction</Text>
       <Columns gap="12px">
         <Column width="1/4">
           <LabelledContent label="From">
@@ -97,7 +98,7 @@ function SendTransactionDetails({
             </Text>
           </LabelledContent>
         </Column>
-        <Column>
+        <Column width="1/4">
           <LabelledContent label="To">
             <Text wrap={false} size="12px">
               {to &&
@@ -108,14 +109,34 @@ function SendTransactionDetails({
             </Text>
           </LabelledContent>
         </Column>
-      </Columns>
-      <Columns gap="12px">
-        <Column width="1/4">
+        <Column>
           <LabelledContent label="Value">
-            <Text size="12px">{formatEther(hexToBigInt(value ?? '0x0'))}</Text>
+            <Text size="12px">
+              {formatEther(hexToBigInt(value ?? '0x0'))} ETH
+            </Text>
           </LabelledContent>
         </Column>
       </Columns>
+      {gas && (
+        <Columns gap="12px">
+          <Column width="1/4">
+            <LabelledContent label="Gas">
+              <Text size="12px">{Number(hexToBigInt(gas ?? '0x0'))}</Text>
+            </LabelledContent>
+          </Column>
+        </Columns>
+      )}
+      {data && (
+        <Columns gap="12px">
+          <Column>
+            <LabelledContent label="Data">
+              <Text size="12px" style={{ overflowWrap: 'break-word' }}>
+                {data}
+              </Text>
+            </LabelledContent>
+          </Column>
+        </Columns>
+      )}
     </Stack>
   )
 }
@@ -128,6 +149,7 @@ function SignMessageDetails({
   const [data, address] = params
   return (
     <Stack gap="12px">
+      <Text size="14px">Sign Message</Text>
       <Columns gap="12px">
         <Column width="1/4">
           <LabelledContent label="Address">
@@ -159,6 +181,7 @@ function SignTypedData({
   const [address, data] = params
   return (
     <Stack gap="12px">
+      <Text size="14px">Sign Data</Text>
       <Columns gap="12px">
         <Column width="1/4">
           <LabelledContent label="Address">
