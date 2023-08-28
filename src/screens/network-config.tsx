@@ -7,11 +7,13 @@ import * as chains from 'viem/chains'
 import { Container } from '~/components'
 import { Button, Input, Stack, Text } from '~/design-system'
 import { useDebounce } from '~/hooks/useDebounce'
+import { useReset } from '~/hooks/useReset'
 import { getClient } from '~/viem'
 import { useNetworkStore } from '~/zustand'
 
 export default function Network() {
   const { network, upsertNetwork, switchNetwork } = useNetworkStore()
+  const { mutate: reset } = useReset()
 
   type FormValues = {
     name: string
@@ -49,12 +51,23 @@ export default function Network() {
     navigate('/')
   })
 
+  const handleResetFork = async () => {
+    await reset({})
+  }
+
   return (
     <form onSubmit={onSubmit} style={{ height: '100%' }}>
       <Container
         dismissable
         header="Network Configuration"
-        footer={<Button type="submit">Update</Button>}
+        footer={
+          <Stack gap="2px">
+            <Button type="submit" onClick={handleResetFork}>
+              Reset fork
+            </Button>
+            <Button type="submit">Update</Button>
+          </Stack>
+        }
       >
         <Stack gap="20px">
           <Stack gap="12px">
