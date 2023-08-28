@@ -62,9 +62,7 @@ export default function Network() {
         header="Network Configuration"
         footer={
           <Stack gap="2px">
-            <Button type="submit" onClick={handleResetFork}>
-              Reset fork
-            </Button>
+            <Button onClick={handleResetFork}>Reset fork</Button>
             <Button type="submit">Update</Button>
           </Stack>
         }

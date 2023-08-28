@@ -1,9 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import type { Client, ResetParameters } from 'viem'
-import { createQueryKey, queryClient } from '~/react-query'
+import { createQueryKey } from '~/react-query'
 import { useClient } from './useClient'
-import { getInfiniteBlocksQueryKey } from './useInfiniteBlocks'
-// import { getInfiniteBlocksQueryKey } from './useInfiniteBlocks'
 
 export const getAutomineQueryKey = createQueryKey<
   'reset',
@@ -16,9 +14,6 @@ export function useReset() {
   return useMutation({
     mutationFn: async (args?: ResetParameters) => {
       await client.reset(args)
-      //   await queryClient.invalidateQueries()
-      await queryClient.resetQueries({ queryKey: getInfiniteBlocksQueryKey() })
-      //   await queryClient.resetQueries({ queryKey: getInfiniteBlocksQueryKey() })
     },
   })
 }
