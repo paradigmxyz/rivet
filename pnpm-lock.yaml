@@ -52,8 +52,8 @@ devDependencies:
     specifier: ^2.4.0
     version: 2.4.0
   '@types/chrome':
-    specifier: ^0.0.227
-    version: 0.0.227
+    specifier: ^0.0.244
+    version: 0.0.244
   '@types/d3-format':
     specifier: ^3.0.1
     version: 3.0.1
@@ -1636,6 +1636,13 @@ packages:
 
   /@types/chrome@0.0.227:
     resolution: {integrity: sha512-l1sVnf/1wZ/oNPw5X7OJMZjQlqVf3tPO50aE/aETHQRbrYhlHZkwv7lcuOWCimRSkFdHvAW4M+RIBAZACblXng==}
+    dependencies:
+      '@types/filesystem': 0.0.32
+      '@types/har-format': 1.2.10
+    dev: true
+
+  /@types/chrome@0.0.244:
+    resolution: {integrity: sha512-pC8kBWuUqGhG6S5d3E44a2f1TA2XHX/sXfCIrrDpA4K65Ozzw3mYQjuvMOTdSUCx4HjJhp4zuZh6fKOH3UdA1g==}
     dependencies:
       '@types/filesystem': 0.0.32
       '@types/har-format': 1.2.10

@@ -35,7 +35,7 @@
     "@tanstack/react-query-persist-client": "5.0.0-alpha.42",
     "@tanstack/react-virtual": "3.0.0-beta.54",
     "@types/chroma-js": "^2.4.0",
-    "@types/chrome": "^0.0.227",
+    "@types/chrome": "^0.0.244",
     "@types/d3-format": "^3.0.1",
     "@types/fs-extra": "^11.0.1",
     "@types/node": "^18.15.11",

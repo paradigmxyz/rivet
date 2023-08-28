@@ -23,6 +23,7 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
       'alarms',
       'contextMenus',
       'clipboardWrite',
+      'declarativeNetRequest',
       'notifications',
       'scripting',
       'storage',
