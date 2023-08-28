@@ -5,14 +5,15 @@ import {
   hexToString,
 } from 'viem'
 
-import { Container } from '~/components'
-import { Button, Inline, Stack, Text } from '~/design-system'
+import { Container, LabelledContent } from '~/components'
+import { Button, Column, Columns, Inline, Stack, Text } from '~/design-system'
 import { usePendingBlockQueryOptions } from '~/hooks/usePendingBlock'
 import { usePendingTransactionsQueryOptions } from '~/hooks/usePendingTransactions'
 import { useTxpoolQueryOptions } from '~/hooks/useTxpool'
 import { getMessenger } from '~/messengers'
 import type { RpcRequest } from '~/messengers/schema'
 import { queryClient } from '~/react-query'
+import { truncate } from '~/utils'
 
 const backgroundMessenger = getMessenger('background:wallet')
 
@@ -85,9 +86,36 @@ function SendTransactionDetails({
   const [{ from, to, value }] = params
   return (
     <Stack gap="12px">
-      <Text size="12px">From: {from}</Text>
-      <Text size="12px">To: {to}</Text>
-      <Text size="12px">Value: {formatEther(hexToBigInt(value ?? '0x0'))}</Text>
+      <Columns gap="12px">
+        <Column width="1/4">
+          <LabelledContent label="From">
+            <Text wrap={false} size="12px">
+              {truncate(from, {
+                start: 6,
+                end: 4,
+              })}
+            </Text>
+          </LabelledContent>
+        </Column>
+        <Column>
+          <LabelledContent label="To">
+            <Text wrap={false} size="12px">
+              {to &&
+                truncate(to, {
+                  start: 6,
+                  end: 4,
+                })}
+            </Text>
+          </LabelledContent>
+        </Column>
+      </Columns>
+      <Columns gap="12px">
+        <Column width="1/4">
+          <LabelledContent label="Value">
+            <Text size="12px">{formatEther(hexToBigInt(value ?? '0x0'))}</Text>
+          </LabelledContent>
+        </Column>
+      </Columns>
     </Stack>
   )
 }
@@ -100,8 +128,25 @@ function SignMessageDetails({
   const [data, address] = params
   return (
     <Stack gap="12px">
-      <Text size="12px">Message: {hexToString(data)}</Text>
-      <Text size="12px">Address: {address}</Text>
+      <Columns gap="12px">
+        <Column width="1/4">
+          <LabelledContent label="Address">
+            <Text wrap={false} size="12px">
+              {truncate(address, {
+                start: 6,
+                end: 4,
+              })}
+            </Text>
+          </LabelledContent>
+        </Column>
+      </Columns>
+      <Columns gap="12px">
+        <Column>
+          <LabelledContent label="Message">
+            <Text size="12px">{hexToString(data)}</Text>
+          </LabelledContent>
+        </Column>
+      </Columns>
     </Stack>
   )
 }
@@ -114,11 +159,27 @@ function SignTypedData({
   const [address, data] = params
   return (
     <Stack gap="12px">
-      <Text size="12px">Message:</Text>
-      <Text as="pre" size="12px">
-        {JSON.stringify(JSON.parse(data), null, 2)}
-      </Text>
-      <Text size="12px">Address: {address}</Text>
+      <Columns gap="12px">
+        <Column width="1/4">
+          <LabelledContent label="Address">
+            <Text wrap={false} size="12px">
+              {truncate(address, {
+                start: 6,
+                end: 4,
+              })}
+            </Text>
+          </LabelledContent>
+        </Column>
+      </Columns>
+      <Columns gap="12px">
+        <Column>
+          <LabelledContent label="Message">
+            <Text as="pre" size="12px">
+              {JSON.stringify(JSON.parse(data), null, 2)}
+            </Text>
+          </LabelledContent>
+        </Column>
+      </Columns>
     </Stack>
   )
 }
