@@ -503,64 +503,66 @@ function Transactions() {
           const { transaction, status } = transactions[index] || {}
           if (!transaction || typeof transaction === 'string') return
           return (
-            <Box
-              key={key}
-              backgroundColor={{ hover: 'surface/fill/quarternary' }}
-              position="absolute"
-              top="0px"
-              left="0px"
-              width="full"
-              style={{
-                height: `${size}px`,
-                transform: `translateY(${start}px)`,
-              }}
-            >
-              <Box paddingHorizontal="12px" paddingVertical="8px">
-                <Columns alignVertical="center">
-                  <LabelledContent label="Block">
-                    <Inline alignVertical="center" gap="4px" wrap={false}>
-                      <Text size="12px">
-                        {transaction.blockNumber?.toString()}
-                      </Text>
-                      {status === 'pending' && (
-                        <SFSymbol
-                          color="text/tertiary"
-                          size="11px"
-                          symbol="clock"
-                          weight="semibold"
-                        />
-                      )}
-                    </Inline>
-                  </LabelledContent>
-                  <LabelledContent label="From">
-                    <Tooltip label={transaction.from}>
+            <Link to={`transaction/${transaction.hash}`}>
+              <Box
+                key={key}
+                backgroundColor={{ hover: 'surface/fill/quarternary' }}
+                position="absolute"
+                top="0px"
+                left="0px"
+                width="full"
+                style={{
+                  height: `${size}px`,
+                  transform: `translateY(${start}px)`,
+                }}
+              >
+                <Box paddingHorizontal="12px" paddingVertical="8px">
+                  <Columns alignVertical="center">
+                    <LabelledContent label="Block">
+                      <Inline alignVertical="center" gap="4px" wrap={false}>
+                        <Text size="12px">
+                          {transaction.blockNumber?.toString()}
+                        </Text>
+                        {status === 'pending' && (
+                          <SFSymbol
+                            color="text/tertiary"
+                            size="11px"
+                            symbol="clock"
+                            weight="semibold"
+                          />
+                        )}
+                      </Inline>
+                    </LabelledContent>
+                    <LabelledContent label="From">
+                      <Tooltip label={transaction.from}>
+                        <Text wrap={false} size="12px">
+                          {truncate(transaction.from, { start: 6, end: 4 })}
+                        </Text>
+                      </Tooltip>
+                    </LabelledContent>
+                    <LabelledContent label="To">
+                      <Tooltip label={transaction.to}>
+                        <Text wrap={false} size="12px">
+                          {transaction.to &&
+                            truncate(transaction.to, { start: 6, end: 4 })}
+                        </Text>
+                      </Tooltip>
+                    </LabelledContent>
+                    <LabelledContent label="Value">
                       <Text wrap={false} size="12px">
-                        {truncate(transaction.from, { start: 6, end: 4 })}
+                        {numberIntl4SigFigs.format(
+                          Number(formatEther(transaction.value!)),
+                        )}{' '}
+                        ETH
                       </Text>
-                    </Tooltip>
-                  </LabelledContent>
-                  <LabelledContent label="To">
-                    <Tooltip label={transaction.to}>
-                      <Text wrap={false} size="12px">
-                        {transaction.to &&
-                          truncate(transaction.to, { start: 6, end: 4 })}
-                      </Text>
-                    </Tooltip>
-                  </LabelledContent>
-                  <LabelledContent label="Value">
-                    <Text wrap={false} size="12px">
-                      {numberIntl4SigFigs.format(
-                        Number(formatEther(transaction.value!)),
-                      )}{' '}
-                      ETH
-                    </Text>
-                  </LabelledContent>
-                </Columns>
+                    </LabelledContent>
+                  </Columns>
+                </Box>
+                <Box marginHorizontal="-12px">
+                  <Separator />
+                </Box>
               </Box>
-              <Box marginHorizontal="-12px">
-                <Separator />
-              </Box>
-            </Box>
+            </Link>
           )
         })}
       </Box>
