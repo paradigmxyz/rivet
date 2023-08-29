@@ -192,7 +192,7 @@ function DesignSystem() {
               </Text>
               <Stack gap="16px">
                 <Text weight="medium" size="18px">
-                  Contextual Inheritence
+                  Contextual Inheritance
                 </Text>
                 <Box backgroundColor="surface/white" padding="8px">
                   <Text>White Context</Text>
