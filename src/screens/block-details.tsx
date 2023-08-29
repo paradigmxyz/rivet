@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 
 import { type Transaction, formatEther, formatGwei } from 'viem'
 import { Container, LabelledContent } from '~/components'
@@ -25,23 +25,31 @@ const numberIntl6SigFigs = new Intl.NumberFormat('en-US', {
 
 export default function BlockDetails() {
   const { blockNumber } = useParams()
+  const [params] = useSearchParams()
+
+  const status = params.get('status')
+  const isPending = status === 'pending'
+
   const { data: block } = useBlock({
-    blockNumber: BigInt(blockNumber!),
+    ...(isPending
+      ? { blockTag: 'pending' }
+      : { blockNumber: BigInt(blockNumber!) }),
     includeTransactions: true,
   })
+
   if (!block) return null
   return (
     <>
       <Container dismissable fit header={`Block ${blockNumber}`}>
         <Stack gap="20px">
-          <Columns gap="12px">
+          <Columns gap="8px">
             <Column width="1/4">
               <LabelledContent label="Block">
-                <Text size="12px">{block.number!.toString()}</Text>
+                <Text size="12px">{blockNumber}</Text>
               </LabelledContent>
             </Column>
             <LabelledContent label="Timestamp">
-              {status === 'pending' ? (
+              {isPending ? (
                 <Text color="text/tertiary" size="12px">
                   Pending
                 </Text>
@@ -57,7 +65,7 @@ export default function BlockDetails() {
               </LabelledContent>
             </Column>
           </Columns>
-          <Columns gap="12px">
+          <Columns gap="8px">
             {block.hash && (
               <Column width="1/4">
                 <LabelledContent label="Hash">
@@ -88,13 +96,13 @@ export default function BlockDetails() {
               </LabelledContent>
             </Column>
           </Columns>
-          <Columns gap="12px">
+          <Columns gap="8px">
             <Column width="1/4">
               <LabelledContent label="Fee Recipient">
                 <Text size="12px">{truncate(block.miner, { start: 4 })}</Text>
               </LabelledContent>
             </Column>
-            <Column>
+            <Column width="3/4">
               <LabelledContent label="Total Difficulty">
                 <Text size="12px">
                   {numberIntl.format(Number(block.totalDifficulty?.toString()))}
@@ -102,7 +110,7 @@ export default function BlockDetails() {
               </LabelledContent>
             </Column>
           </Columns>
-          <Columns gap="12px">
+          <Columns gap="8px">
             <Column width="1/4">
               <LabelledContent label="Size">
                 <Text size="12px">
@@ -117,7 +125,7 @@ export default function BlockDetails() {
           {block.transactions.length > 0 && (
             <>
               <Separator />
-              <Stack gap="12px">
+              <Stack gap="8px">
                 <Text color="text/tertiary">Transactions</Text>
                 <Box marginHorizontal="-12px">
                   {(block.transactions as Transaction[]).map(

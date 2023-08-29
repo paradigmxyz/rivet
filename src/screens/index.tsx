@@ -375,7 +375,7 @@ function Blocks() {
           return (
             <Link
               onClick={() => setPosition(parentRef.current?.scrollTop!)}
-              to={`block/${block.number}`}
+              to={`block/${block.number}?status=${status}`}
               key={key}
             >
               <Box
