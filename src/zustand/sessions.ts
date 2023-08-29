@@ -11,6 +11,7 @@ export type SessionsState = {
 export type SessionsActions = {
   addSession: ({ session }: { session: Session }) => void
   getSession: ({ host }: { host: Host }) => Session
+  getSessions: () => Session[]
   removeSession: ({ host }: { host: Host }) => void
 }
 export type SessionsStore = SessionsState & SessionsActions
@@ -29,6 +30,9 @@ export const sessionsStore = createStore<SessionsStore>(
     },
     getSession({ host }) {
       return get().sessions[host]
+    },
+    getSessions() {
+      return Object.values(get().sessions)
     },
     removeSession({ host }) {
       set((state) => {
