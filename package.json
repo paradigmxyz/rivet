@@ -94,5 +94,8 @@
     "patchedDependencies": {
       "@samrum/vite-plugin-web-extension@4.1.0": "patches/@samrum__vite-plugin-web-extension@4.1.0.patch"
     }
+  },
+  "dependencies": {
+    "@radix-ui/react-tooltip": "^1.0.6"
   }
 }

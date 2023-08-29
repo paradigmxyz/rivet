@@ -26,6 +26,7 @@ import { truncate } from '~/utils'
 import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 
 import * as styles from './Header.css'
+import { Tooltip } from './Tooltip'
 
 const contentMessenger = getMessenger('wallet:contentScript')
 
@@ -129,7 +130,9 @@ function Account() {
         <Inset horizontal="8px">
           {account && (
             <HeaderItem label="Account">
-              <Text size="11px">{truncate(account.address)}</Text>
+              <Tooltip label={account.address}>
+                <Text size="11px">{truncate(account.address)}</Text>
+              </Tooltip>
             </HeaderItem>
           )}
         </Inset>

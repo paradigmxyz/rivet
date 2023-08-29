@@ -1,3 +1,4 @@
+import { Provider as TooltipProvider } from '@radix-ui/react-tooltip'
 import { Outlet } from 'react-router-dom'
 
 import { Box } from '~/design-system'
@@ -44,7 +45,9 @@ export default function Layout() {
           display={pendingRequests.length > 0 ? 'none' : 'block'}
           height="full"
         >
-          <Outlet />
+          <TooltipProvider>
+            <Outlet />
+          </TooltipProvider>
         </Box>
       </Box>
     </Box>
