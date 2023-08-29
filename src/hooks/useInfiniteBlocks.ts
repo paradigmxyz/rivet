@@ -39,9 +39,11 @@ export function useInfiniteBlocksQueryOptions() {
 
       return (
         await Promise.all(
-          [...Array(limit)].map(async (_, i) =>
-            client.getBlock({ blockNumber: blockNumber - BigInt(i) }),
-          ),
+          [...Array(limit)].map(async (_, i) => {
+            const blockNumber_ = blockNumber - BigInt(i)
+            if (blockNumber_ < 0n) return
+            return client.getBlock({ blockNumber: blockNumber_ })
+          }),
         )
       ).filter(Boolean)
     },

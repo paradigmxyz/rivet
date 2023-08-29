@@ -426,7 +426,9 @@ function Blocks() {
       </Box>
       <Inset space="12px">
         <Box ref={ref}>
-          <Text color="text/tertiary">Loading...</Text>
+          {(isFetching || isFetchingNextPage) && (
+            <Text color="text/tertiary">Loading...</Text>
+          )}
         </Box>
       </Inset>
     </Box>
@@ -548,7 +550,9 @@ function Transactions() {
       </Box>
       <Inset space="12px">
         <Box ref={ref}>
-          <Text color="text/tertiary">Loading...</Text>
+          {(isFetching || isFetchingNextPage) && (
+            <Text color="text/tertiary">Loading...</Text>
+          )}
         </Box>
       </Inset>
     </Box>
