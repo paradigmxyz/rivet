@@ -308,7 +308,7 @@ function BlockNumber() {
       <Inline wrap={false}>
         <HeaderItem label="Block">
           <Text size="12px" tabular>
-            {block?.number ? block?.number.toString() : '‎'}
+            {block?.number ? block?.number.toString() : ''}
           </Text>
         </HeaderItem>
         {block && (
@@ -334,7 +334,7 @@ function MiningStatus() {
             : network.blockTime
             ? `Interval: ${network.blockTime}s`
             : 'On Demand'
-          : '‎'}
+          : ''}
       </Text>
     </HeaderItem>
   )

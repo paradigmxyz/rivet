@@ -62,6 +62,7 @@ export const Text = forwardRef<HTMLDivElement, TextProps>(
             color,
             fontSize: size,
             fontWeight: weight,
+            overflowWrap: wrap ? 'break-word' : undefined,
             textAlign: align,
           })}
           testId={testId}
@@ -72,7 +73,7 @@ export const Text = forwardRef<HTMLDivElement, TextProps>(
             as="span"
             className={[tabular && styles.tabular, !wrap && styles.nowrap]}
           >
-            {children}
+            {children || '‎'}
           </Box>
         </Box>
       </TextContext.Provider>

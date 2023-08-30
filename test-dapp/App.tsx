@@ -15,13 +15,23 @@ import {
   isHex,
   numberToHex,
   parseEther,
+  parseGwei,
   stringToHex,
   stringify,
 } from 'viem'
 import 'viem/window'
 import '~/design-system/styles/global.css'
 
-import { Box, Button, Inline, Input, Stack, Text } from '~/design-system'
+import {
+  Box,
+  Button,
+  Column,
+  Columns,
+  Inline,
+  Input,
+  Stack,
+  Text,
+} from '~/design-system'
 
 const store = createStore()
 
@@ -229,17 +239,22 @@ function ChainId() {
 function SendTransaction() {
   const provider = useContext(ProviderContext)
 
-  const [to, setTo] = useState<Address>()
-  const [value, setValue] = useState<`${number}`>()
-
   const [hash, setHash] = useState<Hash | undefined>()
   const [error, setError] = useState<Error>()
 
-  const handleClickSend = async () => {
-    if (!to) return
-    if (!value) return
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
 
-    setHash(undefined)
+    const formData = new FormData(e.target as HTMLFormElement)
+    const data = (formData.get('data') as Hex) || undefined
+    const gas = (formData.get('gas') as Hex) || undefined
+    const maxFeePerGas = (formData.get('maxFeePerGas') as Hex) || undefined
+    const maxPriorityFeePerGas =
+      (formData.get('maxPriorityFeePerGas') as Hex) || undefined
+    const nonce = (formData.get('nonce') as Hex) || undefined
+    const to = (formData.get('to') as Hex) || undefined
+    const value = (formData.get('value') as Hex) || undefined
+
     try {
       const [account] = await window.ethereum!.request({
         method: 'eth_accounts',
@@ -248,9 +263,18 @@ function SendTransaction() {
         method: 'eth_sendTransaction',
         params: [
           {
+            data,
             from: account,
+            gas,
+            maxFeePerGas: maxFeePerGas
+              ? numberToHex(parseGwei(maxFeePerGas))
+              : undefined,
+            maxPriorityFeePerGas: maxPriorityFeePerGas
+              ? numberToHex(parseGwei(maxPriorityFeePerGas))
+              : undefined,
+            nonce,
             to,
-            value: numberToHex(parseEther(value)),
+            value: value ? numberToHex(parseEther(value)) : undefined,
           },
         ],
       })
@@ -265,27 +289,63 @@ function SendTransaction() {
       <Text size="18px" weight="semibold">
         eth_sendTransaction
       </Text>
-      <Inline wrap={false} gap="12px">
-        <Box style={{ width: '500px' }}>
-          <Input
-            onChange={(e) => setTo(e.target.value as Address)}
-            value={to}
-            placeholder="to"
-          />
-        </Box>
-        <Box>
-          <Input
-            onChange={(e) => setValue(e.target.value as `${number}`)}
-            value={value}
-            placeholder="value"
-          />
-        </Box>
-        <Button onClick={handleClickSend} width="fit">
-          Send
-        </Button>
-      </Inline>
-      {hash && <Text>Tx Hash: {hash}</Text>}
-      {error && <Text>Error: {error.message}</Text>}
+      <Box style={{ maxWidth: '760px' }}>
+        <form onSubmit={handleSubmit}>
+          <Stack gap="12px">
+            <Columns gap="12px">
+              <Column>
+                <Input
+                  defaultValue="0x0000000000000000000000000000000000000000"
+                  name="to"
+                  placeholder="to"
+                />
+              </Column>
+              <Column width="1/4">
+                <Input name="nonce" placeholder="nonce" type="number" />
+              </Column>
+              <Column width="1/4">
+                <Input
+                  name="value"
+                  placeholder="value (eth)"
+                  step="0.001"
+                  type="number"
+                />
+              </Column>
+            </Columns>
+            <Columns gap="12px">
+              <Column>
+                <Input name="data" placeholder="data" />
+              </Column>
+            </Columns>
+            <Columns gap="12px">
+              <Column>
+                <Input name="gas" placeholder="gas" type="number" />
+              </Column>
+              <Column>
+                <Input
+                  name="maxFeePerGas"
+                  placeholder="maxFeePerGas (gwei)"
+                  step="0.001"
+                  type="number"
+                />
+              </Column>
+              <Column>
+                <Input
+                  name="maxPriorityFeePerGas"
+                  placeholder="maxPriorityFeePerGas (gwei)"
+                  step="0.001"
+                  type="number"
+                />
+              </Column>
+            </Columns>
+            <Button type="submit" width="fit">
+              Send
+            </Button>
+            {hash && <Text>Tx Hash: {hash}</Text>}
+            {error && <Text>Error: {error.message}</Text>}
+          </Stack>
+        </form>
+      </Box>
     </Stack>
   )
 }

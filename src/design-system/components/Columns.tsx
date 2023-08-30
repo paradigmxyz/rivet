@@ -39,6 +39,8 @@ export const Columns = forwardRef<HTMLDivElement, ColumnsProps>(
     }: ColumnsProps,
     ref,
   ) => {
+    const childrenArray = flattenChildren(children)
+    if (childrenArray.length === 0) return null
     return (
       <Box
         ref={ref}
@@ -52,7 +54,7 @@ export const Columns = forwardRef<HTMLDivElement, ColumnsProps>(
         }
         width={width}
       >
-        {flattenChildren(children).map((child, index) => {
+        {childrenArray.map((child, index) => {
           const columnProps = getColumnProps(child)
 
           return columnProps ? (
