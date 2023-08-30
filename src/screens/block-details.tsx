@@ -61,7 +61,7 @@ export default function BlockDetails() {
             </LabelledContent>
             <Column width="1/4">
               <LabelledContent label="Transactions">
-                <Text size="12px">{block.transactions.length}</Text>
+                <Text size="12px">{block.transactions.length || '0'}</Text>
               </LabelledContent>
             </Column>
           </Columns>
