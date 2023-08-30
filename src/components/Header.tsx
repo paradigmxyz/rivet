@@ -140,8 +140,8 @@ function Account() {
 
 function DappConnection() {
   const { data: host } = useHost()
-  const { sessions } = useSessionsStore()
-  const isConnected = Boolean(host && sessions[host])
+  const { getSession } = useSessionsStore()
+  const isConnected = Boolean(host && getSession({ host }))
 
   return (
     <Link to="session" style={{ height: '100%' }}>

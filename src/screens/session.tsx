@@ -18,8 +18,8 @@ const inpageMessenger = getMessenger('wallet:inpage')
 
 export default function Session() {
   const { data: host } = useHost()
-  const { sessions } = useSessionsStore()
-  const isConnected = Boolean(host && sessions[host])
+  const { getSession, sessions } = useSessionsStore()
+  const isConnected = Boolean(host && getSession({ host }))
 
   return (
     <>
