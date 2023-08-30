@@ -1,7 +1,15 @@
 import { Fragment } from 'react'
 import { connect, disconnect } from '~/actions'
 import { Container, LabelledContent } from '~/components'
-import { Box, Button, Separator, Stack, Text } from '~/design-system'
+import {
+  Box,
+  Button,
+  Inline,
+  SFSymbol,
+  Separator,
+  Stack,
+  Text,
+} from '~/design-system'
 import { useHost } from '~/hooks/useHost'
 import { getMessenger } from '~/messengers'
 import { useSessionsStore } from '~/zustand'
@@ -44,9 +52,32 @@ export default function Session() {
             {Object.values(sessions).map((session) => {
               return (
                 <Fragment key={session.host}>
-                  <LabelledContent label="Host" width="fit">
-                    <Text size="12px">{session.host}</Text>
-                  </LabelledContent>
+                  <Inline
+                    alignVertical="center"
+                    alignHorizontal="justify"
+                    wrap={false}
+                  >
+                    <LabelledContent label="Host" width="fit">
+                      <Text size="12px">{session.host}</Text>
+                    </LabelledContent>
+                    <Box
+                      cursor="pointer"
+                      width="fit"
+                      onClick={() => {
+                        disconnect({
+                          host: session.host,
+                          messenger: inpageMessenger,
+                        })
+                      }}
+                    >
+                      <SFSymbol
+                        color="text/tertiary"
+                        size="12px"
+                        symbol="trash"
+                        weight="medium"
+                      />
+                    </Box>
+                  </Inline>
                   <Separator />
                 </Fragment>
               )
