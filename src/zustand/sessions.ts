@@ -19,6 +19,9 @@ export const sessionsStore = createStore<SessionsStore>(
   (set, get) => ({
     sessions: [],
     addSession({ session }) {
+      if (get().sessions.find((s) => s.host === session.host)) {
+        return
+      }
       set((state) => ({
         ...state,
         sessions: [...state.sessions, session],
