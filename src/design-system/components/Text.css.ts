@@ -20,6 +20,7 @@ const textProperties = (inline: boolean) =>
       },
       fontSize: fontSize(inline),
       fontWeight,
+      overflowWrap: ['break-word'],
       textAlign: ['left', 'center', 'right'],
       textDecoration: ['underline'],
       textUnderlineOffset: ['2px'],
