@@ -1,10 +1,10 @@
+import { assignInlineVars } from '@vanilla-extract/dynamic'
 import { forwardRef } from 'react'
 
 import type { StrokeWeight } from '../tokens'
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
 import * as styles from './Separator.css'
-import { assignInlineVars } from '@vanilla-extract/dynamic'
 
 export type SeparatorProps = {
   color?: BoxStyles['backgroundColor']

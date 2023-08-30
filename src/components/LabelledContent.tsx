@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react'
 
-import type { StackProps } from '../design-system/components/Stack'
 import { Box, Stack, Text } from '~/design-system'
+
+import type { StackProps } from '../design-system/components/Stack'
 
 export function LabelledContent({
   children,

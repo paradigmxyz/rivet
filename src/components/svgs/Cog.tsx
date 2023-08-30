@@ -1,6 +1,7 @@
-import * as styles from './Cog.css'
 import { Box } from '~/design-system'
 import { backgroundColorVars } from '~/design-system/styles/theme.css'
+
+import * as styles from './Cog.css'
 
 export function Cog({ size }: { size: string }) {
   return (

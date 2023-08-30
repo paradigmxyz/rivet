@@ -9,8 +9,9 @@ import {
   createStore as create,
 } from 'zustand/vanilla'
 
-import * as stores from './index'
 import { webextStorage } from '~/storage'
+
+import * as stores from './index'
 
 //////////////////////////////////////////////////////////////////
 // Zustand Storages

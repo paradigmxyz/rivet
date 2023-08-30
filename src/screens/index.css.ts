@@ -1,6 +1,7 @@
-import { backgroundColorVars } from '../design-system/styles/theme.css'
 import { style } from '@vanilla-extract/css'
 import { keyframes } from '@vanilla-extract/css'
+
+import { backgroundColorVars } from '../design-system/styles/theme.css'
 
 const mineAnimation = keyframes({
   '0%': {
