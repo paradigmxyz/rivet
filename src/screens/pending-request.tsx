@@ -256,7 +256,7 @@ function SignMessageRequest({
 
   return (
     <PendingRequestContainer onApprove={handleApprove} onReject={handleReject}>
-      <Stack gap="12px">
+      <Stack gap="20px">
         <Text size="14px">Sign Message</Text>
         <Columns gap="12px">
           <Column width="1/4">
@@ -305,7 +305,7 @@ function SignTypedDataRequest({
 
   return (
     <PendingRequestContainer onApprove={handleApprove} onReject={handleReject}>
-      <Stack gap="12px">
+      <Stack gap="20px">
         <Text size="14px">Sign Data</Text>
         <Columns gap="12px">
           <Column width="1/4">
