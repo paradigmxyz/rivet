@@ -26,12 +26,12 @@ export function getProvider({
   let _id = Math.floor(Math.random() * 10000)
 
   messenger.reply('accountsChanged', async ({ accounts, sessions }) => {
-    if (host && !sessions[host]) return
+    if (host && !sessions.find((session) => session.host === host)) return
     emitter.emit('accountsChanged', accounts)
   })
 
   messenger.reply('chainChanged', async ({ chainId, sessions }) => {
-    if (host && !sessions[host]) return
+    if (host && !sessions.find((session) => session.host === host)) return
     emitter.emit('chainChanged', chainId)
   })
 

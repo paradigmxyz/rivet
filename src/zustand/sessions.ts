@@ -6,33 +6,32 @@ type Host = string
 type Session = { host: Host }
 
 export type SessionsState = {
-  sessions: Record<Host, Session>
+  sessions: Session[]
 }
 export type SessionsActions = {
   addSession: ({ session }: { session: Session }) => void
-  getSession: ({ host }: { host: Host }) => Session
+  getSession: ({ host }: { host: Host }) => Session | undefined
   removeSession: ({ host }: { host: Host }) => void
 }
 export type SessionsStore = SessionsState & SessionsActions
 
 export const sessionsStore = createStore<SessionsStore>(
   (set, get) => ({
-    sessions: {},
+    sessions: [],
     addSession({ session }) {
       set((state) => ({
         ...state,
-        sessions: {
-          ...state.sessions,
-          [session.host]: session,
-        },
+        sessions: [...state.sessions, session],
       }))
     },
     getSession({ host }) {
-      return get().sessions[host]
+      return get().sessions.find((session) => session.host === host)
     },
     removeSession({ host }) {
       set((state) => {
-        const { [host]: _, ...sessions } = state.sessions
+        const sessions = state.sessions.filter(
+          (session) => session.host !== host,
+        )
         return {
           ...state,
           sessions,
