@@ -9,9 +9,8 @@ import {
   isHex,
 } from 'viem'
 
-import { Container, LabelledContent } from '~/components'
+import { Container, LabelledContent, Tooltip } from '~/components'
 import { Button, Column, Columns, Inline, Stack, Text } from '~/design-system'
-
 import { usePendingBlockQueryOptions } from '~/hooks/usePendingBlock'
 import { usePendingTransactionsQueryOptions } from '~/hooks/usePendingTransactions'
 import {
@@ -152,24 +151,28 @@ function SendTransactionRequest({
         <Columns gap="12px">
           <Column width="1/3">
             <LabelledContent label="From">
-              <Text wrap={false} size="12px">
-                {from &&
-                  truncate(from, {
-                    start: 6,
-                    end: 4,
-                  })}
-              </Text>
+              <Tooltip label={from}>
+                <Text wrap={false} size="12px">
+                  {from &&
+                    truncate(from, {
+                      start: 6,
+                      end: 4,
+                    })}
+                </Text>
+              </Tooltip>
             </LabelledContent>
           </Column>
           <Column width="1/3">
             <LabelledContent label="To">
-              <Text wrap={false} size="12px">
-                {to &&
-                  truncate(to, {
-                    start: 6,
-                    end: 4,
-                  })}
-              </Text>
+              <Tooltip label={to}>
+                <Text wrap={false} size="12px">
+                  {to &&
+                    truncate(to, {
+                      start: 6,
+                      end: 4,
+                    })}
+                </Text>
+              </Tooltip>
             </LabelledContent>
           </Column>
           <Column width="1/3">
@@ -261,12 +264,14 @@ function SignMessageRequest({
         <Columns gap="12px">
           <Column width="1/4">
             <LabelledContent label="Address">
-              <Text wrap={false} size="12px">
-                {truncate(address, {
-                  start: 6,
-                  end: 4,
-                })}
-              </Text>
+              <Tooltip label={address}>
+                <Text wrap={false} size="12px">
+                  {truncate(address, {
+                    start: 6,
+                    end: 4,
+                  })}
+                </Text>
+              </Tooltip>
             </LabelledContent>
           </Column>
         </Columns>
@@ -310,12 +315,14 @@ function SignTypedDataRequest({
         <Columns gap="12px">
           <Column width="1/4">
             <LabelledContent label="Address">
-              <Text wrap={false} size="12px">
-                {truncate(address, {
-                  start: 6,
-                  end: 4,
-                })}
-              </Text>
+              <Tooltip label={address}>
+                <Text wrap={false} size="12px">
+                  {truncate(address, {
+                    start: 6,
+                    end: 4,
+                  })}
+                </Text>
+              </Tooltip>
             </LabelledContent>
           </Column>
         </Columns>

@@ -2,8 +2,7 @@ import { Fragment } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 
 import { type Transaction, formatEther, formatGwei } from 'viem'
-import { Container, LabelledContent } from '~/components'
-import { Tooltip } from '~/components/Tooltip'
+import { Container, LabelledContent, Tooltip } from '~/components'
 import {
   Box,
   Column,

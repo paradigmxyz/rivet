@@ -2,6 +2,7 @@ import { type ReactNode, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { formatGwei } from 'viem'
 
+import { Tooltip } from '~/components'
 import { BrandIcon } from '~/components/svgs'
 import {
   Box,
@@ -26,7 +27,6 @@ import { truncate } from '~/utils'
 import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 
 import * as styles from './Header.css'
-import { Tooltip } from './Tooltip'
 
 const contentMessenger = getMessenger('wallet:contentScript')
 

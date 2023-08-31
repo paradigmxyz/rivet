@@ -11,9 +11,14 @@ import {
   isAddress,
   parseEther,
 } from 'viem'
-import { Tooltip } from '~/components/Tooltip'
 
-import { Container, LabelledContent, TabsContent, TabsList } from '~/components'
+import {
+  Container,
+  LabelledContent,
+  TabsContent,
+  TabsList,
+  Tooltip,
+} from '~/components'
 import * as Form from '~/components/form'
 import {
   Bleed,
