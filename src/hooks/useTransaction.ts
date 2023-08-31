@@ -5,7 +5,7 @@ import { useClient } from './useClient'
 
 export const getTransactionQueryKey = createQueryKey<
   'transaction',
-  [key: Client['key'], hash: Hash | (string & {}), deps: string]
+  [key: Client['key'], hash: Hash | (string & {})]
 >('transaction')
 
 export function useTransactionQueryOptions(

@@ -5,7 +5,7 @@ import { useClient } from './useClient'
 
 export const getTransactionQueryKey = createQueryKey<
   'transaction-receipt',
-  [key: Client['key'], hash: Hash | (string & {}), deps: string]
+  [key: Client['key'], hash: Hash | (string & {})]
 >('transaction-receipt')
 
 export function useTransactionReceiptQueryOptions(

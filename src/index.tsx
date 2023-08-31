@@ -58,16 +58,7 @@ const router = createHashRouter([
       },
       {
         path: 'block/:blockNumber',
-        children: [
-          {
-            path: '',
-            element: <BlockDetails />,
-          },
-          {
-            path: 'transaction/:transactionHash',
-            element: <TransactionDetails />,
-          },
-        ],
+        element: <BlockDetails />,
       },
       {
         path: 'transaction/:transactionHash',

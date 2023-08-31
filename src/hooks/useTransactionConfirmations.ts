@@ -10,10 +10,10 @@ import { useClient } from './useClient'
 
 export const getTransactionQueryKey = createQueryKey<
   'transaction-confirmations',
-  [key: Client['key'], hash: Hash | (string & {}), deps: string]
+  [key: Client['key'], hash: Hash | (string & {})]
 >('transaction-confirmations')
 
-export function useTransactionReceiptQueryOptions(
+export function useTransactionConfirmationsQueryOptions(
   args: GetTransactionConfirmationsParameters,
 ) {
   const client = useClient()
@@ -31,6 +31,6 @@ export function useTransactionReceiptQueryOptions(
 export function useTransactionConfirmations(
   args: GetTransactionConfirmationsParameters,
 ) {
-  const queryOptions = useTransactionReceiptQueryOptions(args)
+  const queryOptions = useTransactionConfirmationsQueryOptions(args)
   return useQuery(queryOptions)
 }

@@ -503,7 +503,7 @@ function Transactions() {
           const { transaction, status } = transactions[index] || {}
           if (!transaction || typeof transaction === 'string') return
           return (
-            <Link to={`transaction/${transaction.hash}`}>
+            <Link to={`/transaction/${transaction.hash}`}>
               <Box
                 key={key}
                 backgroundColor={{ hover: 'surface/fill/quarternary' }}

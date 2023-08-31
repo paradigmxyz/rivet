@@ -140,8 +140,14 @@ export default function BlockDetails() {
                     (transaction, i) => (
                       <Fragment key={transaction.hash}>
                         {i !== 0 && <Separator />}
-                        <Link to={`transaction/${transaction.hash}`}>
-                          <Box paddingHorizontal="12px" paddingVertical="8px">
+                        <Link to={`/transaction/${transaction.hash}`}>
+                          <Box
+                            backgroundColor={{
+                              hover: 'surface/fill/quarternary',
+                            }}
+                            paddingHorizontal="12px"
+                            paddingVertical="8px"
+                          >
                             <Columns alignVertical="center">
                               <LabelledContent label="Hash">
                                 <Inline

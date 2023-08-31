@@ -10,7 +10,7 @@ import { Box, Text } from '~/design-system'
 
 export type TooltipProps = {
   children: ReactNode
-  label: ReactNode
+  label: string | ReactNode
 }
 
 export function Tooltip({ children, label }: TooltipProps) {
@@ -23,7 +23,7 @@ export function Tooltip({ children, label }: TooltipProps) {
           </Box>
         </Trigger>
         <Portal>
-          <Content asChild sideOffset={4}>
+          <Content asChild side="bottom" sideOffset={8}>
             <Box
               backgroundColor="surface/secondary/elevated"
               borderWidth="1px"
@@ -34,7 +34,11 @@ export function Tooltip({ children, label }: TooltipProps) {
               }}
               style={{ cursor: 'text', pointerEvents: 'visible' }}
             >
-              <Text size="11px">{label}</Text>
+              {typeof label !== 'string' ? (
+                label
+              ) : (
+                <Text size="11px">{label}</Text>
+              )}
             </Box>
           </Content>
         </Portal>
