@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
 
 import { type Transaction, formatEther, formatGwei } from 'viem'
-import { Container, LabelledContent } from '~/components'
+import { Container, LabelledContent, Tooltip } from '~/components'
 import {
   Box,
   Column,
@@ -69,7 +69,11 @@ export default function BlockDetails() {
             {block.hash && (
               <Column width="1/4">
                 <LabelledContent label="Hash">
-                  <Text size="12px">{truncate(block.hash, { start: 4 })}</Text>
+                  <Tooltip label={block.hash}>
+                    <Text size="12px">
+                      {truncate(block.hash, { start: 4 })}
+                    </Text>
+                  </Tooltip>
                 </LabelledContent>
               </Column>
             )}
@@ -99,7 +103,9 @@ export default function BlockDetails() {
           <Columns gap="8px">
             <Column width="1/4">
               <LabelledContent label="Fee Recipient">
-                <Text size="12px">{truncate(block.miner, { start: 4 })}</Text>
+                <Tooltip label={block.miner}>
+                  <Text size="12px">{truncate(block.miner, { start: 4 })}</Text>
+                </Tooltip>
               </LabelledContent>
             </Column>
             <Column width="3/4">
@@ -119,7 +125,9 @@ export default function BlockDetails() {
               </LabelledContent>
             </Column>
             <LabelledContent label="Logs Bloom">
-              <Text size="12px">{truncate(block.logsBloom!)}</Text>
+              <Tooltip label={block.logsBloom!}>
+                <Text size="12px">{truncate(block.logsBloom!)}</Text>
+              </Tooltip>
             </LabelledContent>
           </Columns>
           {block.transactions.length > 0 && (
@@ -140,27 +148,33 @@ export default function BlockDetails() {
                                 gap="4px"
                                 wrap={false}
                               >
-                                <Text size="12px">
-                                  {truncate(transaction.hash, { start: 4 })}
-                                </Text>
+                                <Tooltip label={transaction.hash}>
+                                  <Text size="12px">
+                                    {truncate(transaction.hash, { start: 4 })}
+                                  </Text>
+                                </Tooltip>
                               </Inline>
                             </LabelledContent>
                             <LabelledContent label="From">
-                              <Text wrap={false} size="12px">
-                                {truncate(transaction.from, {
-                                  start: 6,
-                                  end: 4,
-                                })}
-                              </Text>
-                            </LabelledContent>
-                            <LabelledContent label="To">
-                              <Text wrap={false} size="12px">
-                                {transaction.to &&
-                                  truncate(transaction.to, {
+                              <Tooltip label={transaction.from}>
+                                <Text wrap={false} size="12px">
+                                  {truncate(transaction.from, {
                                     start: 6,
                                     end: 4,
                                   })}
-                              </Text>
+                                </Text>
+                              </Tooltip>
+                            </LabelledContent>
+                            <LabelledContent label="To">
+                              <Tooltip label={transaction.to}>
+                                <Text wrap={false} size="12px">
+                                  {transaction.to &&
+                                    truncate(transaction.to, {
+                                      start: 6,
+                                      end: 4,
+                                    })}
+                                </Text>
+                              </Tooltip>
                             </LabelledContent>
                             <LabelledContent label="Value">
                               <Text wrap={false} size="12px">

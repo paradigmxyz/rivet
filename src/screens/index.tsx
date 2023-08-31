@@ -12,7 +12,13 @@ import {
   parseEther,
 } from 'viem'
 
-import { Container, LabelledContent, TabsContent, TabsList } from '~/components'
+import {
+  Container,
+  LabelledContent,
+  TabsContent,
+  TabsList,
+  Tooltip,
+} from '~/components'
 import * as Form from '~/components/form'
 import {
   Bleed,
@@ -136,12 +142,16 @@ function Accounts() {
                     {account.displayName && (
                       <Text size="12px">{account.displayName}</Text>
                     )}
-                    <Text
-                      color={account.displayName ? 'text/tertiary' : undefined}
-                      size="12px"
-                    >
-                      {truncate(account.address)}
-                    </Text>
+                    <Tooltip label={account.address}>
+                      <Text
+                        color={
+                          account.displayName ? 'text/tertiary' : undefined
+                        }
+                        size="12px"
+                      >
+                        {truncate(account.address)}
+                      </Text>
+                    </Tooltip>
                   </Inline>
                 </LabelledContent>
                 <Columns gap="4px">
@@ -521,15 +531,19 @@ function Transactions() {
                     </Inline>
                   </LabelledContent>
                   <LabelledContent label="From">
-                    <Text wrap={false} size="12px">
-                      {truncate(transaction.from, { start: 6, end: 4 })}
-                    </Text>
+                    <Tooltip label={transaction.from}>
+                      <Text wrap={false} size="12px">
+                        {truncate(transaction.from, { start: 6, end: 4 })}
+                      </Text>
+                    </Tooltip>
                   </LabelledContent>
                   <LabelledContent label="To">
-                    <Text wrap={false} size="12px">
-                      {transaction.to &&
-                        truncate(transaction.to, { start: 6, end: 4 })}
-                    </Text>
+                    <Tooltip label={transaction.to}>
+                      <Text wrap={false} size="12px">
+                        {transaction.to &&
+                          truncate(transaction.to, { start: 6, end: 4 })}
+                      </Text>
+                    </Tooltip>
                   </LabelledContent>
                   <LabelledContent label="Value">
                     <Text wrap={false} size="12px">

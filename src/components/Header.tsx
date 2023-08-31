@@ -2,6 +2,7 @@ import { type ReactNode, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { formatGwei } from 'viem'
 
+import { Tooltip } from '~/components'
 import { BrandIcon } from '~/components/svgs'
 import {
   Box,
@@ -129,7 +130,9 @@ function Account() {
         <Inset horizontal="8px">
           {account && (
             <HeaderItem label="Account">
-              <Text size="11px">{truncate(account.address)}</Text>
+              <Tooltip label={account.address}>
+                <Text size="11px">{truncate(account.address)}</Text>
+              </Tooltip>
             </HeaderItem>
           )}
         </Inset>
