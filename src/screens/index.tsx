@@ -422,7 +422,9 @@ function Blocks() {
                       </Box>
                     </LabelledContent>
                     <LabelledContent label="Transactions">
-                      <Text size="12px">{block.transactions.length}</Text>
+                      <Text size="12px">
+                        {block.transactions.length || '0'}
+                      </Text>
                     </LabelledContent>
                   </Inline>
                 </Box>
