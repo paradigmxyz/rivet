@@ -1,7 +1,7 @@
-import { useClient } from './useClient'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import type { Client, GetTransactionReceiptParameters, Hash } from 'viem'
 import { createQueryKey } from '~/react-query'
+import { useClient } from './useClient'
 
 export const getTransactionQueryKey = createQueryKey<
   'transaction-receipt',
