@@ -123,6 +123,12 @@ Once you have your dev server running, you can install the Web Extension in your
 4. Select the `dist/dev` folder in Rivet's root directory
 5. You're good to go! Don't forget to pin the Extension to your browser's toolbar for easy access. 🎉
 
+## Known Issues
+
+Rivet uses the `window.ethereum` interface, which means it has some known conflicts with other wallets which also rely on `window.ethereum`. This is being worked on with the [EIP-6963 proposal](https://eips.ethereum.org/EIPS/eip-6963), but for now it’s an open issue.
+
+For best results it is recommended to run Rivet in it's own Chrome profile, without any other conflicting browser wallets installed.
+
 ## Contributing
 
 If you're interested in contributing, please read the [contributing docs](/.github/CONTRIBUTING.md) **before submitting a pull request**.
