@@ -8,7 +8,6 @@ import { numberToHex } from 'viem'
 import { getTheme, setTheme } from '~/design-system'
 import '~/design-system/styles/global.css'
 import { useClient } from '~/hooks/useClient'
-import { getInfiniteBlocksQueryKey } from '~/hooks/useInfiniteBlocks'
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { usePrevious } from '~/hooks/usePrevious'
@@ -198,15 +197,20 @@ function SyncJsonRpcAccounts() {
 
 /** Keeps network in sync (+ ensure chain id is up-to-date). */
 function SyncNetwork() {
+  const client = useClient()
   const { data: listening } = useNetworkStatus()
 
   const prevListening = usePrevious(listening)
   useEffect(() => {
-    // Reset blocks query when node comes back online.
+    // Reset stale queries that are dependent on the client when node comes back online.
     if (!prevListening && listening) {
-      queryClient.resetQueries({ queryKey: getInfiniteBlocksQueryKey() })
+      queryClient.removeQueries({
+        predicate(query) {
+          return query.queryKey.includes(client.key)
+        },
+      })
     }
-  }, [prevListening, listening])
+  }, [prevListening, listening, client.key])
 
   return null
 }
