@@ -24,6 +24,7 @@ import {
   useSessionsStore,
 } from '~/zustand'
 
+import TransactionDetails from './screens/TransactionDetails'
 import Layout from './screens/_layout'
 import AccountConfig from './screens/account-config'
 import BlockConfig from './screens/block-config'
@@ -58,6 +59,10 @@ const router = createHashRouter([
       {
         path: 'block/:blockNumber',
         element: <BlockDetails />,
+      },
+      {
+        path: 'transaction/:transactionHash',
+        element: <TransactionDetails />,
       },
       {
         path: 'network-config',

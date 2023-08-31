@@ -1,5 +1,5 @@
 import { Fragment } from 'react'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 
 import { type Transaction, formatEther, formatGwei } from 'viem'
 import { Container, LabelledContent, Tooltip } from '~/components'
@@ -140,52 +140,60 @@ export default function BlockDetails() {
                     (transaction, i) => (
                       <Fragment key={transaction.hash}>
                         {i !== 0 && <Separator />}
-                        <Box paddingHorizontal="12px" paddingVertical="8px">
-                          <Columns alignVertical="center">
-                            <LabelledContent label="Hash">
-                              <Inline
-                                alignVertical="center"
-                                gap="4px"
-                                wrap={false}
-                              >
-                                <Tooltip label={transaction.hash}>
-                                  <Text size="12px">
-                                    {truncate(transaction.hash, { start: 4 })}
-                                  </Text>
-                                </Tooltip>
-                              </Inline>
-                            </LabelledContent>
-                            <LabelledContent label="From">
-                              <Tooltip label={transaction.from}>
-                                <Text wrap={false} size="12px">
-                                  {truncate(transaction.from, {
-                                    start: 6,
-                                    end: 4,
-                                  })}
-                                </Text>
-                              </Tooltip>
-                            </LabelledContent>
-                            <LabelledContent label="To">
-                              <Tooltip label={transaction.to}>
-                                <Text wrap={false} size="12px">
-                                  {transaction.to &&
-                                    truncate(transaction.to, {
+                        <Link to={`/transaction/${transaction.hash}`}>
+                          <Box
+                            backgroundColor={{
+                              hover: 'surface/fill/quarternary',
+                            }}
+                            paddingHorizontal="12px"
+                            paddingVertical="8px"
+                          >
+                            <Columns alignVertical="center">
+                              <LabelledContent label="Hash">
+                                <Inline
+                                  alignVertical="center"
+                                  gap="4px"
+                                  wrap={false}
+                                >
+                                  <Tooltip label={transaction.hash}>
+                                    <Text size="12px">
+                                      {truncate(transaction.hash, { start: 4 })}
+                                    </Text>
+                                  </Tooltip>
+                                </Inline>
+                              </LabelledContent>
+                              <LabelledContent label="From">
+                                <Tooltip label={transaction.from}>
+                                  <Text wrap={false} size="12px">
+                                    {truncate(transaction.from, {
                                       start: 6,
                                       end: 4,
                                     })}
+                                  </Text>
+                                </Tooltip>
+                              </LabelledContent>
+                              <LabelledContent label="To">
+                                <Tooltip label={transaction.to}>
+                                  <Text wrap={false} size="12px">
+                                    {transaction.to &&
+                                      truncate(transaction.to, {
+                                        start: 6,
+                                        end: 4,
+                                      })}
+                                  </Text>
+                                </Tooltip>
+                              </LabelledContent>
+                              <LabelledContent label="Value">
+                                <Text wrap={false} size="12px">
+                                  {numberIntl4SigFigs.format(
+                                    Number(formatEther(transaction.value!)),
+                                  )}{' '}
+                                  ETH
                                 </Text>
-                              </Tooltip>
-                            </LabelledContent>
-                            <LabelledContent label="Value">
-                              <Text wrap={false} size="12px">
-                                {numberIntl4SigFigs.format(
-                                  Number(formatEther(transaction.value!)),
-                                )}{' '}
-                                ETH
-                              </Text>
-                            </LabelledContent>
-                          </Columns>
-                        </Box>
+                              </LabelledContent>
+                            </Columns>
+                          </Box>
+                        </Link>
                       </Fragment>
                     ),
                   )}
