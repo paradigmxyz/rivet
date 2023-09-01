@@ -472,12 +472,17 @@ function Transactions() {
     ) || []),
   ]
 
-  const parentRef = useRef(null)
+  const parentRef = useRef<HTMLDivElement>(null)
   const virtualizer = useVirtualizer({
     count: (pendingTransactions?.length ?? 0) + (transactions?.length ?? 0),
     getScrollElement: () => parentRef.current!,
     estimateSize: () => 40,
   })
+
+  const { position, setPosition } = useScrollPositionStore()
+  useEffect(() => {
+    parentRef.current?.scrollTo({ top: position })
+  }, [position])
 
   const { ref, inView } = useInView()
   useEffect(() => {
@@ -503,7 +508,10 @@ function Transactions() {
           const { transaction, status } = transactions[index] || {}
           if (!transaction || typeof transaction === 'string') return
           return (
-            <Link to={`/transaction/${transaction.hash}`}>
+            <Link
+              onClick={() => setPosition(parentRef.current?.scrollTop!)}
+              to={`/transaction/${transaction.hash}`}
+            >
               <Box
                 key={key}
                 backgroundColor={{ hover: 'surface/fill/quarternary' }}

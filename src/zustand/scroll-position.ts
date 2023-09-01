@@ -6,7 +6,7 @@ export type ScrollPositionState = {
   position?: number
 }
 export type ScrollPositionActions = {
-  setPosition: (foo: number) => void
+  setPosition: (position: number) => void
 }
 export type ScrollPositionStore = ScrollPositionState & ScrollPositionActions
 
