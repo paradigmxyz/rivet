@@ -218,7 +218,7 @@ function SendTransactionRequest({
         <Columns gap="12px">
           <Column>
             <LabelledContent label="Nonce">
-              <Text size="12px">{nonce || '0'}</Text>
+              <Text size="12px">{nonce}</Text>
             </LabelledContent>
           </Column>
         </Columns>

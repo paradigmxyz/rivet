@@ -16,7 +16,7 @@ export type TooltipProps = {
 export function Tooltip({ children, label }: TooltipProps) {
   return (
     <Provider>
-      <Root delayDuration={0}>
+      <Root delayDuration={300}>
         <Trigger asChild>
           <Box testId="haha" tabIndex={0}>
             {children}

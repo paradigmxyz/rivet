@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { queryOptions, useQuery } from '@tanstack/react-query'
 import {
   type Client,
   type Hex,
@@ -28,7 +28,8 @@ export function usePrepareTransactionRequestQueryOptions(
   args: UsePrepareTransactionRequestParameters,
 ) {
   const client = useClient()
-  return {
+  return queryOptions({
+    gcTime: 0,
     queryKey: getNonceQueryKey([client.key, args.account, stringify(args)]),
     async queryFn() {
       const { account: _, ...preparedParams } =
@@ -39,7 +40,7 @@ export function usePrepareTransactionRequestQueryOptions(
         } as unknown as PrepareTransactionRequestParameters)
       return preparedParams
     },
-  }
+  })
 }
 
 export function usePrepareTransactionRequest(

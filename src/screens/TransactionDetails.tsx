@@ -47,12 +47,12 @@ export default function TransactionDetails() {
             </Column>
             <Column width="1/3">
               <LabelledContent label="Status">
-                {receipt?.status === undefined ? (
+                {!transaction.blockNumber ? (
                   <Text color="text/tertiary" size="12px">
                     Pending
                   </Text>
                 ) : (
-                  <Text size="12px">{capitalize(receipt?.status)}</Text>
+                  <Text size="12px">{receipt?.status ? capitalize(receipt?.status) : ''}</Text>
                 )}
               </LabelledContent>
             </Column>
@@ -135,7 +135,7 @@ export default function TransactionDetails() {
                       ? `${numberIntl.format(
                           Number(formatGwei(transaction.maxPriorityFeePerGas)),
                         )}`
-                      : null}
+                      : '0'}
                     /
                     {transaction.maxFeePerGas
                       ? `${numberIntl.format(
@@ -236,11 +236,13 @@ export default function TransactionDetails() {
           </Columns>
           <Separator />
           <Columns gap="12px">
-            <Column>
-              <LabelledContent label="Calldata">
-                <Text size="12px">{transaction.input}</Text>
-              </LabelledContent>
-            </Column>
+            {transaction.input && transaction.input !== '0x' && (
+              <Column>
+                <LabelledContent label="Calldata">
+                  <Text size="12px">{transaction.input}</Text>
+                </LabelledContent>
+              </Column>
+            )}
           </Columns>
         </Stack>
       </Container>
