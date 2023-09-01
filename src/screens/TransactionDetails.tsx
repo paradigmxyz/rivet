@@ -91,7 +91,7 @@ export default function TransactionDetails() {
                   {numberIntl4SigFigs.format(
                     Number(formatEther(transaction.value!)),
                   )}{' '}
-                  ETH
+                  <Text color="text/tertiary">ETH</Text>
                 </Text>
               </LabelledContent>
             </Column>
@@ -144,17 +144,20 @@ export default function TransactionDetails() {
                           Number(formatGwei(transaction.maxFeePerGas)),
                         )}`
                       : null}{' '}
-                    gwei
+                    <Text color="text/tertiary">gwei</Text>
                   </Text>
                 </LabelledContent>
               ) : (
                 <LabelledContent label="Gas Price">
                   <Text size="12px">
-                    {transaction.gasPrice
-                      ? `${numberIntl.format(
+                    {transaction.gasPrice ? (
+                      <>
+                        {numberIntl.format(
                           Number(formatGwei(transaction.gasPrice)),
-                        )} gwei`
-                      : null}
+                        )}{' '}
+                        <Text color="text/tertiary">gwei</Text>
+                      </>
+                    ) : null}
                   </Text>
                 </LabelledContent>
               )}
@@ -163,11 +166,14 @@ export default function TransactionDetails() {
               <Column width="1/3">
                 <LabelledContent label="Actual Fee Per Gas">
                   <Text size="12px">
-                    {receipt.effectiveGasPrice
-                      ? `${numberIntl.format(
+                    {receipt.effectiveGasPrice ? (
+                      <>
+                        {numberIntl.format(
                           Number(formatGwei(receipt.effectiveGasPrice)),
-                        )} gwei`
-                      : null}
+                        )}{' '}
+                        <Text color="text/tertiary">gwei</Text>
+                      </>
+                    ) : null}
                   </Text>
                 </LabelledContent>
               </Column>
@@ -204,37 +210,11 @@ export default function TransactionDetails() {
                         ),
                       ),
                     )}{' '}
-                    ETH
+                    <Text color="text/tertiary">ETH</Text>
                   </Text>
                 </LabelledContent>
               </Column>
             ) : null}
-          </Columns>
-          <Separator />
-          <Columns gap="12px">
-            <Column width="1/3">
-              <LabelledContent label="r">
-                <Tooltip label={<Text size="9px">{transaction.r}</Text>}>
-                  <Text size="12px">
-                    {truncate(transaction.r, { start: 4 })}
-                  </Text>
-                </Tooltip>
-              </LabelledContent>
-            </Column>
-            <Column width="1/3">
-              <LabelledContent label="s">
-                <Tooltip label={<Text size="9px">{transaction.s}</Text>}>
-                  <Text size="12px">
-                    {truncate(transaction.s, { start: 4 })}
-                  </Text>
-                </Tooltip>
-              </LabelledContent>
-            </Column>
-            <Column width="1/3">
-              <LabelledContent label="v">
-                <Text size="12px">{transaction.v.toString()}</Text>
-              </LabelledContent>
-            </Column>
           </Columns>
           <Separator />
           <Columns gap="12px">

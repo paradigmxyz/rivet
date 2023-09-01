@@ -553,7 +553,7 @@ function Transactions() {
                         {numberIntl4SigFigs.format(
                           Number(formatEther(transaction.value!)),
                         )}{' '}
-                        ETH
+                        <Text color="text/tertiary">ETH</Text>
                       </Text>
                     </LabelledContent>
                   </Columns>

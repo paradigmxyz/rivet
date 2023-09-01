@@ -83,7 +83,7 @@ export default function BlockDetails() {
                   {numberIntl6SigFigs.format(
                     Number(formatGwei(block.baseFeePerGas!)),
                   )}{' '}
-                  gwei
+                  <Text color="text/tertiary">gwei</Text>
                 </Text>
               </LabelledContent>
             </Column>
@@ -188,7 +188,7 @@ export default function BlockDetails() {
                                   {numberIntl4SigFigs.format(
                                     Number(formatEther(transaction.value!)),
                                   )}{' '}
-                                  ETH
+                                  <Text color="text/tertiary">ETH</Text>
                                 </Text>
                               </LabelledContent>
                             </Columns>

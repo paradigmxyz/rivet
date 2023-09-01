@@ -197,20 +197,28 @@ function SendTransactionRequest({
           <Column width="1/3">
             <LabelledContent label="Tip Per Gas">
               <Text size="12px">
-                {typeof maxPriorityFeePerGas === 'bigint' &&
-                  `${numberIntl8SigFigs.format(
-                    Number(formatGwei(maxPriorityFeePerGas)),
-                  )} gwei`}
+                {typeof maxPriorityFeePerGas === 'bigint' && (
+                  <>
+                    {numberIntl8SigFigs.format(
+                      Number(formatGwei(maxPriorityFeePerGas)),
+                    )}{' '}
+                    <Text color="text/tertiary">gwei</Text>
+                  </>
+                )}
               </Text>
             </LabelledContent>
           </Column>
           <Column width="1/3">
             <LabelledContent label="Max Fee Per Gas">
               <Text size="12px">
-                {typeof maxFeePerGas === 'bigint' &&
-                  `${numberIntl8SigFigs.format(
-                    Number(formatGwei(maxFeePerGas)),
-                  )} gwei`}
+                {typeof maxFeePerGas === 'bigint' && (
+                  <>
+                    {numberIntl8SigFigs.format(
+                      Number(formatGwei(maxFeePerGas)),
+                    )}{' '}
+                    <Text color="text/tertiary">gwei</Text>
+                  </>
+                )}
               </Text>
             </LabelledContent>
           </Column>

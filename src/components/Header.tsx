@@ -356,7 +356,8 @@ function BaseFee() {
   return (
     <HeaderItem label="Base Fee">
       <Text size="12px">
-        {intl.format(Number(formatGwei(block.baseFeePerGas!)))} gwei
+        {intl.format(Number(formatGwei(block.baseFeePerGas!)))}{' '}
+        <Text color="text/tertiary">gwei</Text>
       </Text>
     </HeaderItem>
   )
