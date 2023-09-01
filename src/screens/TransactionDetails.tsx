@@ -52,7 +52,9 @@ export default function TransactionDetails() {
                     Pending
                   </Text>
                 ) : (
-                  <Text size="12px">{receipt?.status ? capitalize(receipt?.status) : ''}</Text>
+                  <Text size="12px">
+                    {receipt?.status ? capitalize(receipt?.status) : ''}
+                  </Text>
                 )}
               </LabelledContent>
             </Column>
