@@ -4,6 +4,7 @@ import { Box } from '~/design-system'
 import { useNetworkStore, usePendingRequestsStore } from '~/zustand'
 
 import { Header } from '~/components'
+import { RpcDown } from '~/components/RpcDownMessage'
 
 import PendingRequest from './pending-request'
 
@@ -37,6 +38,7 @@ export default function Layout() {
         width="full"
         style={{ height: showHeader ? `calc(100% - ${headerHeight})` : '100%' }}
       >
+        <RpcDown/>
         {pendingRequests.length > 0 && (
           <PendingRequest request={pendingRequest} />
         )}
