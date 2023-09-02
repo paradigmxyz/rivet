@@ -1,7 +1,7 @@
-import { Box, Inset, Stack, Text } from '~/design-system';
-import './RpcDownMessage.css';
+import { Box, Inset, Stack, Text } from '~/design-system'
+import './RpcDownMessage.css'
 
-export function RpcDown(){
+export function RpcDown() {
   return (
     <div className="rpcdown-overlay">
       <Box
@@ -20,7 +20,9 @@ export function RpcDown(){
         <Inset horizontal="8px">
           <Stack gap="12px">
             <Text size="12px">Anvil is disconnected.</Text>
-            <Text size="12px">Once Anvil is reconnected, DevTools will automatically reconnect.</Text>
+            <Text size="12px">
+              Once Anvil is reconnected, DevTools will automatically reconnect.
+            </Text>
           </Stack>
         </Inset>
       </Box>

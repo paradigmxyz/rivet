@@ -6,12 +6,14 @@ import { useNetworkStore, usePendingRequestsStore } from '~/zustand'
 import { Header } from '~/components'
 import { RpcDown } from '~/components/RpcDownMessage'
 
+import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import PendingRequest from './pending-request'
 
 const headerHeight = '120px'
 
 export default function Layout() {
   const { onboarded } = useNetworkStore()
+  const { data: online } = useNetworkStatus()
   const { pendingRequests } = usePendingRequestsStore()
   const pendingRequest = pendingRequests[pendingRequests.length - 1]
 
@@ -38,7 +40,7 @@ export default function Layout() {
         width="full"
         style={{ height: showHeader ? `calc(100% - ${headerHeight})` : '100%' }}
       >
-        <RpcDown/>
+        {online ? '' : <RpcDown />}
         {pendingRequests.length > 0 && (
           <PendingRequest request={pendingRequest} />
         )}
