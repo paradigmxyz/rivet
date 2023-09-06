@@ -20,11 +20,8 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
     ],
     permissions: [
       'activeTab',
-      'alarms',
       'contextMenus',
-      'clipboardWrite',
       'declarativeNetRequest',
-      'notifications',
       'scripting',
       'storage',
       'tabs',
