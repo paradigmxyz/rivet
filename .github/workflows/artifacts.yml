@@ -1,0 +1,25 @@
+name: Artifacts
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  artifacts:
+    name: Artifacts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build
+        run: pnpm build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: extension
+          path: dist/build
