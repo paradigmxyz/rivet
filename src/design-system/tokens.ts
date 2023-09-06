@@ -567,6 +567,7 @@ export const symbolNames = [
   'chevron.right.2',
   'trash',
   'xmark',
+  'arrow.right',
 ] as const
 export type SymbolName = typeof symbolNames[number]
 

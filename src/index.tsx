@@ -35,6 +35,7 @@ import OnboardingDownload from './screens/onboarding/download'
 import OnboardingRun from './screens/onboarding/run'
 import OnboardingStart from './screens/onboarding/start'
 import Session from './screens/session'
+import TokenConfig from './screens/token-config'
 
 syncStores()
 
@@ -70,6 +71,10 @@ const router = createHashRouter([
       {
         path: 'session',
         element: <Session />,
+      },
+      {
+        path: 'token-config',
+        element: <TokenConfig />,
       },
       {
         path: 'onboarding',
