@@ -1,7 +1,7 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { type Address, formatEther } from 'viem'
+import { type Address, formatEther, parseEther } from 'viem'
 
 import {
   Container,
@@ -17,6 +17,7 @@ import {
   Column,
   Columns,
   Inline,
+  Input,
   Inset,
   Row,
   Rows,
@@ -27,7 +28,9 @@ import {
 } from '~/design-system'
 import { useAccountStore } from '~/zustand'
 
+import { useEffect, useState } from 'react'
 import { useErcBalance } from '~/hooks/useErcBalance'
+import { useSetErcBalance } from '~/hooks/useSetErcBalance'
 import { truncate } from '~/utils'
 import { useTokensStore } from '~/zustand/tokens'
 
@@ -149,6 +152,38 @@ function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
   )
 }
 
+function Balance({
+  erc,
+  address,
+  balance,
+}: { erc: Address; address: Address; balance: bigint }) {
+  const { mutate } = useSetErcBalance()
+
+  const [value, setValue] = useState(balance ? formatEther(balance) : '')
+  useEffect(() => {
+    if (balance) setValue(formatEther(balance))
+  }, [balance])
+
+  return (
+    <Input
+      onChange={(e) => setValue(e.target.value)}
+      onClick={(e) => e.stopPropagation()}
+      onBlur={(e) => {
+        const newValue = parseEther(e.target.value as `${number}`)
+        if (newValue !== balance) {
+          mutate({
+            address,
+            erc,
+            value: newValue,
+          })
+        }
+      }}
+      height="24px"
+      value={value}
+    />
+  )
+}
+
 function TokenBalance({ token }: { token: Address }) {
   const { account } = useAccountStore()
   if (!account) return null
@@ -191,7 +226,11 @@ function TokenBalance({ token }: { token: Address }) {
           </Tooltip>
         </Column>
         <Column width="content">
-          <Text size="12px">{formatEther(balance.result || 0n)}</Text>
+          <Balance
+            erc={token}
+            address={account.address}
+            balance={balance.result!}
+          />
         </Column>
         <Column width="content">
           <RemoveButton
