@@ -30,7 +30,7 @@ import * as styles from './Header.css'
 
 const contentMessenger = getMessenger('wallet:contentScript')
 
-export function Header() {
+export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
   return (
     <Rows>
       <Row>
@@ -68,10 +68,16 @@ export function Header() {
         <Separator />
       </Row>
       <Row>
-        <Block />
+        <Box position="relative" width="full">
+          <Block />
+          {isNetworkOffline && <NetworkOfflineOverlay />}
+        </Box>
       </Row>
       <Row height="content">
-        <Separator />
+        <Box position="relative" width="full">
+          <Separator />
+          {isNetworkOffline && <NetworkOfflineOverlay />}
+        </Box>
       </Row>
     </Rows>
   )
@@ -88,6 +94,18 @@ function HeaderItem({
       </Text>
       <Box>{children}</Box>
     </Stack>
+  )
+}
+
+function NetworkOfflineOverlay() {
+  return (
+    <Box
+      backgroundColor="surface/black@0.5"
+      position="absolute"
+      height="full"
+      top="0px"
+      width="full"
+    />
   )
 }
 
