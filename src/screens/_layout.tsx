@@ -3,8 +3,7 @@ import { Outlet } from 'react-router-dom'
 import { Box } from '~/design-system'
 import { useNetworkStore, usePendingRequestsStore } from '~/zustand'
 
-import { Header } from '~/components'
-import { RpcDown } from '~/components/RpcDownMessage'
+import { Header, NetworkOfflineDialog } from '~/components'
 
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import PendingRequest from './pending-request'
@@ -12,12 +11,14 @@ import PendingRequest from './pending-request'
 const headerHeight = '120px'
 
 export default function Layout() {
-  const { onboarded } = useNetworkStore()
+  const { network, onboarded } = useNetworkStore()
   const { data: online } = useNetworkStatus()
   const { pendingRequests } = usePendingRequestsStore()
   const pendingRequest = pendingRequests[pendingRequests.length - 1]
 
   const showHeader = onboarded
+
+  const isNetworkOffline = Boolean(network.rpcUrl && onboarded && !online)
 
   return (
     <Box
@@ -33,14 +34,15 @@ export default function Layout() {
     >
       {showHeader && (
         <Box style={{ height: headerHeight }}>
-          <Header />
+          <Header isNetworkOffline={isNetworkOffline} />
         </Box>
       )}
       <Box
         width="full"
+        position="relative"
         style={{ height: showHeader ? `calc(100% - ${headerHeight})` : '100%' }}
       >
-        {online ? '' : <RpcDown />}
+        {isNetworkOffline && <NetworkOfflineDialog />}
         {pendingRequests.length > 0 && (
           <PendingRequest request={pendingRequest} />
         )}

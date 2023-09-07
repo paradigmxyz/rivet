@@ -146,6 +146,10 @@ const boxBaseProperties = defineProperties({
       fit: 'fit-content',
       full: '100%',
     },
+    zIndex: {
+      dialogOverlay: '2147483640',
+      dialogContent: '2147483641',
+    },
   },
   shorthands: {
     padding: ['paddingTop', 'paddingBottom', 'paddingLeft', 'paddingRight'],
