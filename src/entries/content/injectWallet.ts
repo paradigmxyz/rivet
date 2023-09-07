@@ -8,24 +8,28 @@ setInterval(() => {
   backgroundMessenger.send('ping', undefined)
 }, 5000)
 
+const initialWidth = 400
+
 export async function injectWallet() {
   const extensionId: string = await backgroundMessenger.send(
     'extensionId',
     undefined,
   )
 
+  const context = document.body
+
   // Inject wallet elements
-  const container = injectContainer()
+  const container = injectContainer({ context })
   injectIframe({ container, extensionId })
 
   const handle = injectHandle({ container })
-  setupHandleListeners({ container, handle })
-  setupToggleListeners({ container, handle })
+  setupHandleListeners({ container, context, handle })
+  setupToggleListeners({ container, context, handle })
 }
 
 /////////////////////////////////////////////////////////////////////
 
-function injectContainer() {
+function injectContainer({ context }: { context: HTMLElement }) {
   const container = document.createElement('div')
   container.id = '__dev-wallet'
   container.style.width = '0px'
@@ -35,7 +39,8 @@ function injectContainer() {
   container.style.right = '0'
   container.style.border = 'none'
   container.style.zIndex = '2147483646'
-  document.body.appendChild(container)
+  context.style.width = `calc(100% - ${initialWidth}px)`
+  context.appendChild(container)
   return container
 }
 
@@ -70,8 +75,9 @@ function injectHandle({ container }: { container: HTMLElement }) {
 
 function setupHandleListeners({
   container,
+  context,
   handle,
-}: { container: HTMLElement; handle: HTMLElement }) {
+}: { container: HTMLElement; context: HTMLElement; handle: HTMLElement }) {
   let isDragging = false
   let startX = 0
   let startWidth = 0
@@ -89,7 +95,8 @@ function setupHandleListeners({
   document.addEventListener('mousemove', (e) => {
     if (!isDragging) return
     const width = startWidth + startX - e.pageX
-    if (width < 400) return
+    if (width < initialWidth) return
+    context.style.width = `calc(100% - ${width}px)`
     container.style.width = `${width}px`
     handle.style.right = `${width - 8}px`
   })
@@ -102,9 +109,11 @@ function setupHandleListeners({
 
 function setupToggleListeners({
   container,
+  context,
   handle,
 }: {
   container: HTMLElement
+  context: HTMLElement
   handle: HTMLElement
 }) {
   let open = Boolean(windowStorage.local.getItem('open')) || false
@@ -117,12 +126,14 @@ function setupToggleListeners({
     else open = args?.open ?? !open
 
     if (!open) {
+      context.style.width = ''
       container.style.width = '0px'
       handle.style.display = 'none'
     } else {
-      container.style.width = '400px'
+      context.style.width = `calc(100% - ${initialWidth}px)`
+      container.style.width = `${initialWidth}px`
       handle.style.display = 'block'
-      handle.style.right = '392px'
+      handle.style.right = `${initialWidth - 8}px`
     }
 
     if (typeof args?.open === 'undefined')
