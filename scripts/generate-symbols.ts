@@ -4,6 +4,7 @@ import { mkdirSync, readFileSync, writeFileSync } from 'fs-extra'
 import opentype from 'opentype.js'
 import prettierTypeScript from 'prettier/parser-typescript'
 import prettier from 'prettier/standalone'
+// @ts-expect-error
 import SVGPathCommander from 'svg-path-commander'
 
 import type { SFSymbol } from '../src/design-system/symbols/generated/types'

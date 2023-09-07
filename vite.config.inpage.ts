@@ -17,6 +17,16 @@ export default defineConfig({
         entryFileNames: '[name].js',
         chunkFileNames: '[name].js',
       },
+      plugins: [
+        {
+          name: 'try-catch',
+          generateBundle(_, context) {
+            Object.values(context).forEach((bundle: any) => {
+              bundle.code = `try{${bundle.code}}catch{}`
+            })
+          },
+        },
+      ],
     },
   },
   plugins: [tsconfigPaths()],

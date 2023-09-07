@@ -41,8 +41,7 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
     ],
     commands: {
       'toggle-theme': {
-        // @ts-expect-error
-        suggested_key: 'Ctrl+Shift+Y',
+        suggested_key: 'Ctrl+Shift+Y' as any,
         description: 'Toggle Theme',
       },
     },
