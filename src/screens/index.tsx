@@ -3,13 +3,14 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useInView } from 'react-intersection-observer'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   type Address,
   type Transaction,
   formatEther,
   isAddress,
   parseEther,
+  isHash,
 } from 'viem'
 
 import {
@@ -53,6 +54,7 @@ import {
 import type { Account } from '~/zustand/account'
 
 import OnboardingStart from './onboarding/start'
+
 
 export default function Index() {
   const { setPosition } = useScrollPositionStore()
@@ -450,6 +452,55 @@ function Blocks() {
 ////////////////////////////////////////////////////////////////////////
 // Transactions
 
+function SearchTransaction() {
+
+  const navigate = useNavigate()
+
+  const { handleSubmit, register, reset } = useForm<{transactionHash: string }>({
+    defaultValues: {
+      transactionHash: '',
+    },
+  })
+
+  // Navigates to /transaction/{txHash} path if txHash passes isHash
+  const submit = handleSubmit(async ({ transactionHash }) => {
+    try {
+
+      const hash = isHash(transactionHash)
+        ? transactionHash
+        : undefined
+
+      if (!hash) {
+        reset()
+        return
+      }
+
+     
+    navigate(`/transaction/${hash}`)
+
+    } finally {
+      reset()
+    }
+  })
+
+  return (
+    <Form.Root onSubmit={submit} style={{ width: '100%' }}>
+      <Inline gap="4px" wrap={false}>
+        <Form.InputField
+          height="24px"
+          hideLabel
+          label="Search transaction"
+          placeholder="Transaction hash..."
+          register={register('transactionHash')}
+        />
+        <Button height="24px" variant="stroked fill" width="fit">
+          Search
+        </Button>
+      </Inline>
+    </Form.Root>
+  )
+}
+
 const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
   maximumSignificantDigits: 4,
 })
@@ -497,12 +548,21 @@ function Transactions() {
       marginHorizontal="-12px"
       style={{ height: '100%', overflowY: 'scroll' }}
     >
+            <Box alignItems="center" display="flex" style={{ height: '40px', padding: '12px' }}>
+        <SearchTransaction />
+        
+      </Box>
+      <Box marginHorizontal="-12px">
+                  <Separator />
+                </Box>
+      
       <Box
         position="relative"
         width="full"
         style={{
           height: `${virtualizer.getTotalSize()}px`,
         }}
+        
       >
         {virtualizer.getVirtualItems().map(({ key, index, size, start }) => {
           const { transaction, status } = transactions[index] || {}
@@ -525,6 +585,7 @@ function Transactions() {
                 }}
               >
                 <Box paddingHorizontal="12px" paddingVertical="8px">
+                  
                   <Columns alignVertical="center">
                     <LabelledContent label="Block">
                       <Inline alignVertical="center" gap="4px" wrap={false}>
