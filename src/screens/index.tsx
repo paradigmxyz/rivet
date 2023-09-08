@@ -3,7 +3,7 @@ import { useVirtualizer } from '@tanstack/react-virtual'
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useInView } from 'react-intersection-observer'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import {
   type Address,
   type Transaction,
@@ -451,45 +451,42 @@ function Blocks() {
 ////////////////////////////////////////////////////////////////////////
 // Transactions
 
-function SearchTransaction() {
-  const navigate = useNavigate()
-
-  const { handleSubmit, register, reset } = useForm<{
-    transactionHash: string
+function SearchTransactions({
+  setSearchString,
+}: {
+  setSearchString: (searchString: string) => void
+}) {
+  const { register, reset, watch } = useForm<{
+    searchString: string
   }>({
     defaultValues: {
-      transactionHash: '',
+      searchString: '',
     },
   })
 
-  // Navigates to /transaction/{txHash} path if txHash passes isHash
-  const submit = handleSubmit(async ({ transactionHash }) => {
-    try {
-      const hash = isHash(transactionHash) ? transactionHash : undefined
+  const searchString = watch('searchString')
 
-      if (!hash) {
-        reset()
-        return
-      }
-
-      navigate(`/transaction/${hash}`)
-    } finally {
-      reset()
-    }
-  })
+  useEffect(() => {
+    setSearchString(searchString)
+  }, [searchString, setSearchString])
 
   return (
-    <Form.Root onSubmit={submit} style={{ width: '100%' }}>
+    <Form.Root style={{ width: '100%' }}>
       <Inline gap="4px" wrap={false}>
         <Form.InputField
           height="24px"
           hideLabel
           label="Search transaction"
-          placeholder="Transaction hash..."
-          register={register('transactionHash')}
+          placeholder="Filter by transaction hash or sender address..."
+          register={register('searchString')}
         />
-        <Button height="24px" variant="stroked fill" width="fit">
-          Search
+        <Button
+          onClick={() => reset()}
+          height="24px"
+          variant="stroked fill"
+          width="fit"
+        >
+          Clear
         </Button>
       </Inline>
     </Form.Root>
@@ -508,7 +505,7 @@ function Transactions() {
     isFetching,
     isFetchingNextPage,
   } = useInfiniteBlockTransactions()
-  const transactions = [
+  const unfilteredTransactions = [
     ...(pendingTransactions?.map((transaction) => ({
       transaction,
       status: 'pending',
@@ -518,9 +515,76 @@ function Transactions() {
     ) || []),
   ]
 
+  ////////////////////////////
+  // Filtering & searching //
+  ///////////////////////////
+  const client = useClient()
+
+  // Holds search string from SearchTransactions component
+  const [searchString, setSearchString] = useState('')
+
+  // Updated when a queried transaction is not found in the existing transactions array
+  const [fetchedTx, setFetchedTx] = useState<null | {
+    transaction: Transaction
+    status: string
+  }>(null)
+
+  // If a hash is searched get transaction directly from viem
+  useEffect(() => {
+    const fetchTransaction = async () => {
+      if (isHash(searchString)) {
+        setFetchedTx(null)
+        const tx = await client.getTransaction({ hash: searchString })
+        if (tx) {
+          setFetchedTx({ transaction: tx, status: 'mined' })
+        }
+      }
+    }
+    fetchTransaction()
+  }, [searchString, client])
+
+  // Logic to filter transactions based on search criteria
+  const getFilteredTransactions = (): {
+    transaction: Transaction
+    status: string
+  }[] => {
+    if (searchString.length === 0) {
+      return unfilteredTransactions
+    }
+
+    // User querying hash
+    if (isHash(searchString)) {
+      const foundTx = unfilteredTransactions.find(
+        (tx) => tx.transaction.hash === searchString,
+      )
+      if (foundTx) {
+        return [foundTx]
+      } else {
+        return fetchedTx ? [fetchedTx] : []
+      }
+    }
+
+    // User querying sender address, only filter loaded txs
+    if (isAddress(searchString)) {
+      return unfilteredTransactions.filter(
+        (tx) => tx.transaction.from === searchString,
+      )
+    }
+
+    // No conditions met, return empty array
+    return []
+  }
+
+  // Get transactions based on filter criteria, if no filter this is equivalent to unfiltered transactions
+  const transactions = getFilteredTransactions()
+
+  ////////////////////////////////
+  // End Filtering & searching //
+  ///////////////////////////////
+
   const parentRef = useRef<HTMLDivElement>(null)
   const virtualizer = useVirtualizer({
-    count: (pendingTransactions?.length ?? 0) + (transactions?.length ?? 0),
+    count: transactions?.length ?? 0,
     getScrollElement: () => parentRef.current!,
     estimateSize: () => 40,
   })
@@ -548,7 +612,7 @@ function Transactions() {
         display="flex"
         style={{ height: '40px', padding: '12px' }}
       >
-        <SearchTransaction />
+        <SearchTransactions setSearchString={setSearchString} />
       </Box>
       <Box marginHorizontal="-12px">
         <Separator />
@@ -566,11 +630,11 @@ function Transactions() {
           if (!transaction || typeof transaction === 'string') return
           return (
             <Link
+              key={key}
               onClick={() => setPosition(parentRef.current?.scrollTop!)}
               to={`/transaction/${transaction.hash}`}
             >
               <Box
-                key={key}
                 backgroundColor={{ hover: 'surface/fill/quarternary' }}
                 position="absolute"
                 top="0px"
@@ -631,13 +695,15 @@ function Transactions() {
           )
         })}
       </Box>
-      <Inset space="12px">
-        <Box ref={ref}>
-          {(isFetching || isFetchingNextPage) && (
-            <Text color="text/tertiary">Loading...</Text>
-          )}
-        </Box>
-      </Inset>
+      {searchString.length === 0 && (
+        <Inset space="12px">
+          <Box ref={ref}>
+            {(isFetching || isFetchingNextPage) && (
+              <Text color="text/tertiary">Loading...</Text>
+            )}
+          </Box>
+        </Inset>
+      )}
     </Box>
   )
 }
