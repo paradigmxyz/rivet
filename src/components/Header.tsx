@@ -8,6 +8,7 @@ import {
   Box,
   Column,
   Columns,
+  IconButton,
   Inline,
   Inset,
   Row,
@@ -386,27 +387,21 @@ function MineButton() {
   const { mutateAsync: mine } = useMine()
 
   return (
-    // TODO: Extract into `IconButton`
     <Box
       key={block?.number?.toString()}
-      as="button"
-      backgroundColor={{
-        hover: 'surface/fill/secondary',
-      }}
-      borderRadius="3px"
-      onClick={(e) => {
-        e.preventDefault()
-        mine({ blocks: 1 })
-      }}
       position="absolute"
-      style={{ marginTop: '8px', width: '20px', height: '20px' }}
-      transform={{ hoveractive: 'shrink95' }}
+      style={{ marginTop: '8px' }}
     >
-      <SFSymbol
-        className={styles.mineSymbol}
-        color="text/tertiary"
-        symbol="hammer.fill"
-        size="12px"
+      <IconButton
+        icon="hammer.fill"
+        size="20px"
+        onClick={(e: MouseEvent) => {
+          e.preventDefault()
+          mine({ blocks: 1 })
+        }}
+        symbolProps={{
+          className: styles.mineSymbol,
+        }}
       />
     </Box>
   )

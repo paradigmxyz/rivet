@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { OnboardingContainer } from '~/components'
-import { Box, SFSymbol, Stack, Text } from '~/design-system'
+import { Box, IconButton, Stack, Text } from '~/design-system'
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import { useNetworkStore } from '~/zustand'
 
@@ -68,24 +68,12 @@ export default function OnboardingRun() {
           <Text as="code" size="12px">
             {command}
           </Text>
-          {/* TODO: Extract into `IconButton` */}
-          <Box
-            as="button"
-            alignItems="center"
-            display="flex"
-            backgroundColor={{
-              hover: 'surface/fill/secondary',
-            }}
-            borderRadius="3px"
-            onClick={() => navigator.clipboard.writeText(command)}
-            justifyContent="center"
-            position="absolute"
-            top="4px"
-            right="4px"
-            style={{ width: '24px', height: '24px' }}
-            transform={{ hoveractive: 'shrink95' }}
-          >
-            <SFSymbol symbol="doc.on.doc" size="16px" />
+          <Box position="absolute" top="4px" right="4px">
+            <IconButton
+              icon="doc.on.doc"
+              size="24px"
+              onClick={() => navigator.clipboard.writeText(command)}
+            />
           </Box>
         </Box>
         <Text color="text/secondary" size="14px">

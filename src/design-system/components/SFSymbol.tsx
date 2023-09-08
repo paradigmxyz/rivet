@@ -6,12 +6,15 @@ import type { FontSize, FontWeight, SymbolName } from '../tokens'
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
 
-export type SFSymbolProps = {
+export type SFSymbolOptionalProps = {
   className?: ClassValue
   color?: BoxStyles['color']
-  symbol: SymbolName
   weight?: FontWeight
   size?: FontSize
+}
+
+export type SFSymbolProps = SFSymbolOptionalProps & {
+  symbol: SymbolName
 }
 
 export const SFSymbol = forwardRef<SVGSVGElement, SFSymbolProps>(

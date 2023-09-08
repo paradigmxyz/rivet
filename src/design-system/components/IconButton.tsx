@@ -1,25 +1,23 @@
 import { forwardRef } from 'react'
-
+import { SFSymbol } from '~/design-system'
+import type { BoxStyles } from '~/design-system/components/Box.css.ts'
+import type { ButtonVariant } from '~/design-system/components/Button.css.ts'
+import type { SFSymbolOptionalProps } from '~/design-system/components/SFSymbol.tsx'
+import type { SymbolName } from '~/design-system/tokens.ts'
 import { Box } from './Box'
-import type { BoxStyles } from './Box.css'
-import {
-  type ButtonHeight,
-  type ButtonVariant,
-  buttonHeightStyles,
-} from './Button.css'
-import { Text, type TextProps } from './Text'
+import { type IconButtonSize, iconButtonHeightStyles } from './IconButton.css'
 
-type ButtonProps = {
-  children: string | React.ReactNode
+type IconButtonProps = {
+  icon: SymbolName
   disabled?: boolean
-  height?: ButtonHeight
-  width?: 'fit' | 'full'
+  size?: IconButtonSize
   variant?: ButtonVariant
+  symbolProps?: SFSymbolOptionalProps
 } & (
   | {
       as?: 'button'
       href?: never
-      onClick?: () => void
+      onClick?: (e?: any) => void
       type?: 'button' | 'submit'
     }
   | {
@@ -35,18 +33,6 @@ type ButtonProps = {
       type?: never
     }
 )
-
-const stylesForHeight = {
-  '24px': {
-    paddingHorizontal: '6px',
-  },
-  '36px': {
-    paddingHorizontal: '12px',
-  },
-  '44px': {
-    paddingHorizontal: '16px',
-  },
-} satisfies Record<ButtonHeight, BoxStyles>
 
 const stylesForVariant = {
   'solid invert': {
@@ -94,9 +80,9 @@ const stylesForVariant = {
   },
   'stroked red': {
     backgroundColor: {
-      hover: 'surface/red@0.05',
+      hover: 'surface/red@0.2',
     },
-    borderColor: 'surface/red',
+    borderColor: 'surface/red@0.4',
     borderWidth: '1px',
   },
   'stroked green': {
@@ -117,54 +103,33 @@ const stylesForVariant = {
   },
 } satisfies Record<ButtonVariant, BoxStyles>
 
-const textStylesForHeight = {
+const iconStylesForHeight = {
+  '20px': {
+    size: '12px',
+  },
   '24px': {
-    size: '11px',
+    size: '16px',
   },
   '36px': {
-    size: '15px',
+    size: '20px',
   },
   '44px': {
-    size: '18px',
+    size: '26px',
   },
-} satisfies Record<ButtonHeight, { size: TextProps['size'] }>
+} satisfies Record<IconButtonSize, { size: SFSymbolOptionalProps['size'] }>
 
-const textStylesForVariant = {
-  'solid invert': {},
-  'solid primary': {},
-  'solid fill': {},
-  'solid blue': {},
-  'solid green': {},
-  'solid red': {},
-  'solid transparent': {},
-  'stroked fill': {},
-  'stroked invert': {},
-  'stroked blue': {
-    color: 'surface/blue',
-  },
-  'stroked red': {
-    color: 'surface/red',
-  },
-  'stroked green': {
-    color: 'surface/green',
-  },
-  'tint blue': {},
-  'tint green': {},
-  'tint red': {},
-} satisfies Record<ButtonVariant, { color?: TextProps['color'] }>
-
-export const Button = forwardRef<HTMLDivElement, ButtonProps>(
+export const IconButton = forwardRef<HTMLDivElement, IconButtonProps>(
   (
     {
       as = 'button',
-      children,
       disabled,
-      height = '36px',
+      icon,
+      size = '36px',
       href,
       onClick,
-      variant = 'solid invert',
-      width = 'full',
-    }: ButtonProps,
+      variant = 'solid transparent',
+      symbolProps,
+    }: IconButtonProps,
     ref,
   ) => {
     return (
@@ -172,32 +137,22 @@ export const Button = forwardRef<HTMLDivElement, ButtonProps>(
         ref={ref as any}
         as={as}
         href={href}
-        onClick={onClick}
-        disabled={disabled}
-        className={buttonHeightStyles[height]}
-        cursor={disabled ? 'not-allowed' : 'pointer'}
         display="flex"
         alignItems="center"
         justifyContent="center"
+        onClick={onClick}
+        cursor={disabled ? 'not-allowed' : 'pointer'}
         hoverable={!disabled}
-        opacity={disabled ? '0.5' : undefined}
-        width={width}
-        transform={
-          disabled
-            ? {}
-            : {
-                hoveractive: 'shrink',
-              }
-        }
+        borderRadius="3px"
+        className={iconButtonHeightStyles[size]}
+        transform={{ hoveractive: 'shrink95' }}
         {...stylesForVariant[variant]}
-        {...stylesForHeight[height]}
       >
-        <Text
-          {...textStylesForVariant[variant]}
-          {...textStylesForHeight[height]}
-        >
-          {children}
-        </Text>
+        <SFSymbol
+          {...symbolProps}
+          symbol={icon}
+          {...iconStylesForHeight[size]}
+        />
       </Box>
     )
   },

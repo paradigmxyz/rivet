@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { OnboardingContainer } from '~/components'
-import { Box, Button, SFSymbol, Stack, Text } from '~/design-system'
+import { Box, Button, IconButton, Stack, Text } from '~/design-system'
 
 export default function OnboardingDownload() {
   return (
@@ -35,27 +35,16 @@ export default function OnboardingDownload() {
           <Text as="code" size="12px">
             curl -L https://foundry.paradigm.xyz | bash
           </Text>
-          {/* TODO: Extract into `IconButton` */}
-          <Box
-            as="button"
-            alignItems="center"
-            display="flex"
-            backgroundColor={{
-              hover: 'surface/fill/secondary',
-            }}
-            borderRadius="3px"
-            onClick={() =>
-              navigator.clipboard.writeText(
-                'curl -L https://foundry.paradigm.xyz | bash',
-              )
-            }
-            justifyContent="center"
-            position="absolute"
-            right="12px"
-            style={{ width: '24px', height: '24px' }}
-            transform={{ hoveractive: 'shrink95' }}
-          >
-            <SFSymbol symbol="doc.on.doc" size="16px" />
+          <Box position="absolute" right="12px">
+            <IconButton
+              icon="doc.on.doc"
+              size="24px"
+              onClick={() =>
+                navigator.clipboard.writeText(
+                  'curl -L https://foundry.paradigm.xyz | bash',
+                )
+              }
+            />
           </Box>
         </Box>
         <Text color="text/secondary" size="14px">

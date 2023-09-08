@@ -20,6 +20,7 @@ export const buttonVariants = [
   'solid blue',
   'solid red',
   'solid green',
+  'solid transparent',
   'stroked fill',
   'stroked invert',
   'stroked blue',
