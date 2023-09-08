@@ -35,6 +35,12 @@ const balanceOfABI = [
 // so it's obvious when checking balanceOf it was the right slot
 const SLOT_VALUE_TO_CHECK = 1337_1337_1337_1337_1337_1337_1337_1337_1337n
 
+/** Hack to be able to set the storage of the balanceOf mapping
+ *  other than hardcoding the storage slot per address or reading source
+ *  we can guess the mapping slot and test against `balanceOf` result
+ *  by looping from 0. so check slot 0, calculate the slot via keccak
+ *  and verify that the value of the storage slot is the same as the balanceOf call
+ */
 export function useSetErcBalance() {
   const client = useClient()
 
@@ -45,8 +51,7 @@ export function useSetErcBalance() {
         let slotGuess = 0n
 
         while (slotFound !== true) {
-          // if map, will be keccak256(abi.encode(key, uint(slot)));
-          // console.log(`${pad(address)}${pad('0x0').slice(2)}`)
+          // if mapping, use keccak256(abi.encode(address(key), uint(slot)));
           const encodedData = encodeAbiParameters(
             [
               { name: 'key', type: 'address' },
@@ -74,7 +79,9 @@ export function useSetErcBalance() {
             args: [address],
           })
 
-          if (newBalance === BigInt(SLOT_VALUE_TO_CHECK)) {
+          const guessIsCorrect = newBalance === BigInt(SLOT_VALUE_TO_CHECK)
+
+          if (guessIsCorrect) {
             slotFound = true
             await client.setStorageAt({
               address: erc,
@@ -82,17 +89,43 @@ export function useSetErcBalance() {
               value: pad(toHex(value)),
             })
           } else {
-            if (slotGuess >= 10n) {
+            // check for a rebasing token (stETH)
+            // by setting storage value again with an offset
+            await client.setStorageAt({
+              address: erc,
+              index: keccak256(encodedData),
+              value: pad(toHex(SLOT_VALUE_TO_CHECK + 1n)),
+            })
+            const newBalanceAgain = await client.readContract({
+              abi: balanceOfABI,
+              address: erc,
+              functionName: 'balanceOf',
+              args: [address],
+            })
+
+            // the diff in balanceOf is the offset in value
+            if (newBalanceAgain - newBalance === 1n) {
               slotFound = true
-              throw 'balances not found past slot 10'
+              await client.setStorageAt({
+                address: erc,
+                index: keccak256(encodedData),
+                value: pad(toHex(value)),
+              })
+              break
             }
 
-            slotGuess++
+            // reset storage slot
             await client.setStorageAt({
               address: erc,
               index: keccak256(encodedData),
               value: oldSlotValue || pad('0x0'),
             })
+
+            // loop
+            slotGuess++
+            if (slotGuess >= 10n) {
+              throw "couldn't find balancesOf mapping past slot 10"
+            }
           }
         }
       } catch (e) {
