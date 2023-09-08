@@ -209,12 +209,6 @@ function CollapseButton() {
         onClick={handleClose}
       />
     </Box>
-    // <Box
-    //   onClick={handleClose}
-    //   style={{ width: '28px' }}
-    // >
-    //   <SFSymbol size="12px" symbol="chevron.right.2" weight="medium" />
-    // </Box>
   )
 }
 
