@@ -4,8 +4,8 @@ import { Container, LabelledContent } from '~/components'
 import {
   Box,
   Button,
+  IconButton,
   Inline,
-  SFSymbol,
   Separator,
   Stack,
   Text,
@@ -60,23 +60,17 @@ export default function Session() {
                     <LabelledContent label="Host" width="fit">
                       <Text size="12px">{session.host}</Text>
                     </LabelledContent>
-                    <Box
-                      cursor="pointer"
-                      width="fit"
+                    <IconButton
+                      size="20px"
+                      icon="trash"
                       onClick={() => {
                         disconnect({
                           host: session.host,
                           messenger: inpageMessenger,
                         })
                       }}
-                    >
-                      <SFSymbol
-                        color="text/tertiary"
-                        size="12px"
-                        symbol="trash"
-                        weight="medium"
-                      />
-                    </Box>
+                      symbolProps={{ color: 'text/tertiary' }}
+                    />
                   </Inline>
                   <Separator />
                 </Fragment>

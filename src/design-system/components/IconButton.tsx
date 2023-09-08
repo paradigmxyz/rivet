@@ -12,6 +12,7 @@ type IconButtonProps = {
   disabled?: boolean
   size?: IconButtonSize
   variant?: ButtonVariant
+  fillContainer?: boolean
   symbolProps?: SFSymbolOptionalProps
 } & (
   | {
@@ -116,6 +117,9 @@ const iconStylesForHeight = {
   '44px': {
     size: '26px',
   },
+  '100%': {
+    size: '16px',
+  },
 } satisfies Record<IconButtonSize, { size: SFSymbolOptionalProps['size'] }>
 
 export const IconButton = forwardRef<HTMLDivElement, IconButtonProps>(
@@ -128,6 +132,7 @@ export const IconButton = forwardRef<HTMLDivElement, IconButtonProps>(
       href,
       onClick,
       variant = 'solid transparent',
+      fillContainer,
       symbolProps,
     }: IconButtonProps,
     ref,
@@ -144,7 +149,7 @@ export const IconButton = forwardRef<HTMLDivElement, IconButtonProps>(
         cursor={disabled ? 'not-allowed' : 'pointer'}
         hoverable={!disabled}
         borderRadius="3px"
-        className={iconButtonHeightStyles[size]}
+        className={iconButtonHeightStyles[fillContainer ? '100%' : size]}
         transform={{ hoveractive: 'shrink95' }}
         {...stylesForVariant[variant]}
       >

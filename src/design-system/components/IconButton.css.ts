@@ -5,6 +5,7 @@ const iconButtonSize = {
   '24px': 24,
   '36px': 36,
   '44px': 44,
+  '100%': '100%',
 } as const
 export type IconButtonSize = keyof typeof iconButtonSize
 export const iconButtonHeightStyles = styleVariants(iconButtonSize, (size) => [

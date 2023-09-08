@@ -13,7 +13,6 @@ import {
   Inset,
   Row,
   Rows,
-  SFSymbol,
   Separator,
   Stack,
   Text,
@@ -198,18 +197,24 @@ function CollapseButton() {
   return (
     <Box
       alignItems="center"
-      as="button"
-      backgroundColor={{
-        hover: 'surface/fill/quarternary',
-      }}
       display="flex"
       justifyContent="center"
       height="full"
-      onClick={handleClose}
       style={{ width: '28px' }}
     >
-      <SFSymbol size="12px" symbol="chevron.right.2" weight="medium" />
+      <IconButton
+        icon="chevron.right.2"
+        size="20px"
+        fillContainer
+        onClick={handleClose}
+      />
     </Box>
+    // <Box
+    //   onClick={handleClose}
+    //   style={{ width: '28px' }}
+    // >
+    //   <SFSymbol size="12px" symbol="chevron.right.2" weight="medium" />
+    // </Box>
   )
 }
 
