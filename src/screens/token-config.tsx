@@ -201,11 +201,11 @@ function TokenBalance({ token }: { token: Address }) {
     <Box position="relative">
       <Columns alignVertical="center" gap="4px">
         <Column>
-          <Tooltip label={`${token}, ${decimals.result} dec`}>
+          <Tooltip label={`${token}, ${decimals} dec`}>
             <Rows gap="8px">
               <Row>
                 <Text weight="medium" size="14px">
-                  {name.result}
+                  {name}
                 </Text>
               </Row>
               <Row>
@@ -218,7 +218,7 @@ function TokenBalance({ token }: { token: Address }) {
                     borderColor="surface/invert@0.2"
                     padding="2px"
                   >
-                    <Text size="11px">{symbol.result}</Text>
+                    <Text size="11px">{symbol}</Text>
                   </Box>
                 </Inline>
               </Row>
@@ -226,11 +226,7 @@ function TokenBalance({ token }: { token: Address }) {
           </Tooltip>
         </Column>
         <Column width="content">
-          <Balance
-            erc={token}
-            address={account.address}
-            balance={balance.result!}
-          />
+          <Balance erc={token} address={account.address} balance={balance} />
         </Column>
         <Column width="content">
           <RemoveButton

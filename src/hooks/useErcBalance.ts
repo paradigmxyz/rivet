@@ -1,5 +1,5 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
-import type { Address, Client } from 'viem'
+import { type Address, type Client, getContract } from 'viem'
 
 import { createQueryKey } from '~/react-query'
 import { erc20ABI } from '~/utils/abi'
@@ -25,33 +25,18 @@ export function useErcBalanceQueryOptions({
     enabled: Boolean(address),
     queryKey: getErcBalanceQueryKey([client.key, { erc, address }]),
     async queryFn() {
-      const contractConfig = {
-        abi: erc20ABI,
+      const contract = getContract({
         address: erc,
-      }
-
-      return await client.multicall({
-        contracts: [
-          {
-            ...contractConfig,
-            functionName: 'name',
-          },
-          {
-            ...contractConfig,
-            functionName: 'symbol',
-          },
-          {
-            ...contractConfig,
-            functionName: 'decimals',
-          },
-          {
-            ...contractConfig,
-            functionName: 'balanceOf',
-            args: [address],
-          },
-        ],
-        // multicallAddress: '',
+        abi: erc20ABI,
+        publicClient: client,
       })
+
+      return Promise.all([
+        contract.read.name(),
+        contract.read.symbol(),
+        contract.read.decimals(),
+        contract.read.balanceOf([address]),
+      ])
     },
   })
 }
