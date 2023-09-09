@@ -166,6 +166,7 @@ function Balance({
 
   useEffect(() => {
     if (balance) setValue(formatUnits(balance, decimals))
+    else setValue('')
   }, [balance, decimals])
 
   return (
