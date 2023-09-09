@@ -1,7 +1,7 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { type Address, formatEther, parseEther } from 'viem'
+import { type Address, formatEther, isAddress, parseEther } from 'viem'
 
 import {
   Container,
@@ -100,7 +100,7 @@ function ImportAccount() {
 
   const submit = handleSubmit(async ({ address }) => {
     try {
-      if (!address) {
+      if (!address || !isAddress(address)) {
         reset()
         return
       }
@@ -117,12 +117,12 @@ function ImportAccount() {
         <Form.InputField
           height="24px"
           hideLabel
-          label="Import address"
-          placeholder="Import address"
+          label="Import token address"
+          placeholder="Import token address"
           register={register('address')}
         />
         <Button height="24px" variant="stroked fill" width="fit">
-          Add
+          Import
         </Button>
       </Inline>
     </Form.Root>
@@ -186,15 +186,14 @@ function Balance({
 
 function TokenBalance({ token }: { token: Address }) {
   const { account } = useAccountStore()
-  if (!account) return null
-
+  const { removeToken } = useTokensStore()
   const { data, isSuccess } = useErcBalance({
-    address: account.address,
+    address: account!.address,
     erc: token,
   })
-  const { removeToken } = useTokensStore()
 
   if (!isSuccess) return null
+
   const [name, symbol, decimals, balance] = data
 
   return (
@@ -226,7 +225,7 @@ function TokenBalance({ token }: { token: Address }) {
           </Tooltip>
         </Column>
         <Column width="content">
-          <Balance erc={token} address={account.address} balance={balance} />
+          <Balance erc={token} address={account!.address} balance={balance} />
         </Column>
         <Column width="content">
           <RemoveButton
@@ -242,9 +241,6 @@ function TokenBalance({ token }: { token: Address }) {
 }
 
 function Tokens() {
-  const { account } = useAccountStore()
-  if (!account) return null
-
   const { tokens } = useTokensStore()
   return (
     <>
