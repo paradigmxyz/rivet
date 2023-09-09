@@ -261,9 +261,9 @@ export function DetailButton({ onClick }: { onClick: (e: any) => void }) {
       as="button"
       backgroundColor={{
         default: 'surface/blue@0.8',
-        hover: 'surface/red@0.1',
+        hover: 'surface/blue@0.4',
       }}
-      borderColor="surface/red@0.4"
+      borderColor="surface/blue@0.4"
       borderWidth="1px"
       onClick={onClick}
       style={{
