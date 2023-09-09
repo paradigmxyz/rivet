@@ -1,7 +1,7 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { type Address, formatEther, isAddress, parseEther } from 'viem'
+import { type Address, formatUnits, isAddress, parseUnits } from 'viem'
 
 import {
   Container,
@@ -156,20 +156,24 @@ function Balance({
   erc,
   address,
   balance,
-}: { erc: Address; address: Address; balance: bigint }) {
+  decimals,
+}: { erc: Address; address: Address; balance: bigint; decimals: number }) {
   const { mutate } = useSetErcBalance()
 
-  const [value, setValue] = useState(balance ? formatEther(balance) : '')
+  const [value, setValue] = useState(
+    balance ? formatUnits(balance, decimals) : '',
+  )
+
   useEffect(() => {
-    if (balance) setValue(formatEther(balance))
-  }, [balance])
+    if (balance) setValue(formatUnits(balance, decimals))
+  }, [balance, decimals])
 
   return (
     <Input
       onChange={(e) => setValue(e.target.value)}
       onClick={(e) => e.stopPropagation()}
       onBlur={(e) => {
-        const newValue = parseEther(e.target.value as `${number}`)
+        const newValue = parseUnits(e.target.value as `${number}`, decimals)
         if (newValue !== balance) {
           mutate({
             address,
@@ -225,7 +229,12 @@ function TokenBalance({ token }: { token: Address }) {
           </Tooltip>
         </Column>
         <Column width="content">
-          <Balance erc={token} address={account!.address} balance={balance} />
+          <Balance
+            erc={token}
+            address={account!.address}
+            balance={balance}
+            decimals={decimals}
+          />
         </Column>
         <Column width="content">
           <RemoveButton
