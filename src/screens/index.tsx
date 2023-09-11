@@ -25,7 +25,6 @@ import {
   Box,
   Button,
   Columns,
-  IconButton,
   Inline,
   Input,
   Inset,
@@ -243,15 +242,11 @@ function ImportAccount() {
 
 function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
   return (
-    <IconButton
-      icon="trash"
-      size="24px"
+    <Button.Symbol
+      symbol="trash"
+      height="24px"
       variant="stroked red"
       onClick={onClick}
-      symbolProps={{
-        weight: 'semibold',
-        color: 'surface/red',
-      }}
     />
   )
 }

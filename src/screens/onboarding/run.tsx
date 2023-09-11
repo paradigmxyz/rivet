@@ -2,7 +2,7 @@ import { useEffect, useMemo } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 
 import { OnboardingContainer } from '~/components'
-import { Box, IconButton, Stack, Text } from '~/design-system'
+import { Box, Button, Stack, Text } from '~/design-system'
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import { useNetworkStore } from '~/zustand'
 
@@ -69,9 +69,10 @@ export default function OnboardingRun() {
             {command}
           </Text>
           <Box position="absolute" top="4px" right="4px">
-            <IconButton
-              icon="doc.on.doc"
-              size="24px"
+            <Button.Symbol
+              symbol="doc.on.doc"
+              height="24px"
+              variant="ghost primary"
               onClick={() => navigator.clipboard.writeText(command)}
             />
           </Box>

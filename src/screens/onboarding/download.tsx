@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { OnboardingContainer } from '~/components'
-import { Box, Button, IconButton, Stack, Text } from '~/design-system'
+import { Box, Button, Stack, Text } from '~/design-system'
 
 export default function OnboardingDownload() {
   return (
@@ -36,9 +36,10 @@ export default function OnboardingDownload() {
             curl -L https://foundry.paradigm.xyz | bash
           </Text>
           <Box position="absolute" right="12px">
-            <IconButton
-              icon="doc.on.doc"
-              size="24px"
+            <Button.Symbol
+              symbol="doc.on.doc"
+              height="24px"
+              variant="ghost primary"
               onClick={() =>
                 navigator.clipboard.writeText(
                   'curl -L https://foundry.paradigm.xyz | bash',

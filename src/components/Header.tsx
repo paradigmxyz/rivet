@@ -6,13 +6,14 @@ import { Tooltip } from '~/components'
 import { BrandIcon } from '~/components/svgs'
 import {
   Box,
+  Button,
   Column,
   Columns,
-  IconButton,
   Inline,
   Inset,
   Row,
   Rows,
+  SFSymbol,
   Separator,
   Stack,
   Text,
@@ -197,17 +198,17 @@ function CollapseButton() {
   return (
     <Box
       alignItems="center"
+      as="button"
+      backgroundColor={{
+        hover: 'surface/fill/quarternary',
+      }}
       display="flex"
       justifyContent="center"
       height="full"
+      onClick={handleClose}
       style={{ width: '28px' }}
     >
-      <IconButton
-        icon="chevron.right.2"
-        size="20px"
-        fillContainer
-        onClick={handleClose}
-      />
+      <SFSymbol size="12px" symbol="chevron.right.2" weight="medium" />
     </Box>
   )
 }
@@ -391,16 +392,15 @@ function MineButton() {
       position="absolute"
       style={{ marginTop: '8px' }}
     >
-      <IconButton
-        icon="hammer.fill"
-        size="20px"
-        onClick={(e: MouseEvent) => {
+      <Button.Symbol
+        height="20px"
+        onClick={(e) => {
           e.preventDefault()
           mine({ blocks: 1 })
         }}
-        symbolProps={{
-          className: styles.mineSymbol,
-        }}
+        symbol="hammer.fill"
+        symbolProps={{ className: styles.mineSymbol }}
+        variant="ghost primary"
       />
     </Box>
   )

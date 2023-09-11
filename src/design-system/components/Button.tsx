@@ -1,4 +1,5 @@
-import { forwardRef } from 'react'
+import type { ClassValue } from 'clsx'
+import { type MouseEventHandler, forwardRef } from 'react'
 
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
@@ -7,48 +8,64 @@ import {
   type ButtonVariant,
   buttonHeightStyles,
 } from './Button.css'
-import { Text, type TextProps } from './Text'
+import { ButtonSymbol } from './ButtonSymbol'
+import { ButtonText } from './ButtonText'
 
-type ButtonProps = {
+export type ButtonRootProps = {
   children: string | React.ReactNode
+  className?: ClassValue
   disabled?: boolean
   height?: ButtonHeight
   width?: 'fit' | 'full'
   variant?: ButtonVariant
 } & (
   | {
+      as: 'button'
+      href?: never
+      onClick?: MouseEventHandler<HTMLButtonElement>
+      type?: 'button' | 'submit'
+    }
+  | {
       as?: 'button'
       href?: never
-      onClick?: () => void
-      type?: 'button' | 'submit'
+      onClick?: MouseEventHandler<HTMLButtonElement>
+      type: 'button' | 'submit'
     }
   | {
       as?: 'div'
       href?: never
-      onClick?: () => void
+      onClick?: MouseEventHandler<HTMLDivElement>
       type?: never
     }
   | {
-      as: 'a'
+      as?: 'a'
       href: string
       onClick?: never
       type?: never
     }
 )
 
-const stylesForHeight = {
-  '24px': {
-    paddingHorizontal: '6px',
-  },
-  '36px': {
-    paddingHorizontal: '12px',
-  },
-  '44px': {
-    paddingHorizontal: '16px',
-  },
-} satisfies Record<ButtonHeight, BoxStyles>
-
 const stylesForVariant = {
+  'ghost primary': {
+    backgroundColor: {
+      hover: 'surface/invert@0.05',
+    },
+  },
+  'ghost blue': {
+    backgroundColor: {
+      hover: 'surface/blueTint@0.5',
+    },
+  },
+  'ghost green': {
+    backgroundColor: {
+      hover: 'surface/greenTint@0.5',
+    },
+  },
+  'ghost red': {
+    backgroundColor: {
+      hover: 'surface/redTint@0.5',
+    },
+  },
   'solid invert': {
     backgroundColor: 'surface/invert',
   },
@@ -66,11 +83,6 @@ const stylesForVariant = {
   },
   'solid red': {
     backgroundColor: 'surface/red',
-  },
-  'solid transparent': {
-    backgroundColor: {
-      hover: 'surface/fill/secondary',
-    },
   },
   'stroked fill': {
     backgroundColor: {
@@ -117,54 +129,19 @@ const stylesForVariant = {
   },
 } satisfies Record<ButtonVariant, BoxStyles>
 
-const textStylesForHeight = {
-  '24px': {
-    size: '11px',
-  },
-  '36px': {
-    size: '15px',
-  },
-  '44px': {
-    size: '18px',
-  },
-} satisfies Record<ButtonHeight, { size: TextProps['size'] }>
-
-const textStylesForVariant = {
-  'solid invert': {},
-  'solid primary': {},
-  'solid fill': {},
-  'solid blue': {},
-  'solid green': {},
-  'solid red': {},
-  'solid transparent': {},
-  'stroked fill': {},
-  'stroked invert': {},
-  'stroked blue': {
-    color: 'surface/blue',
-  },
-  'stroked red': {
-    color: 'surface/red',
-  },
-  'stroked green': {
-    color: 'surface/green',
-  },
-  'tint blue': {},
-  'tint green': {},
-  'tint red': {},
-} satisfies Record<ButtonVariant, { color?: TextProps['color'] }>
-
-export const Button = forwardRef<HTMLDivElement, ButtonProps>(
+export const ButtonRoot = forwardRef<HTMLDivElement, ButtonRootProps>(
   (
     {
       as = 'button',
       children,
+      className,
       disabled,
       height = '36px',
       href,
       onClick,
+      width,
       variant = 'solid invert',
-      width = 'full',
-    }: ButtonProps,
+    }: ButtonRootProps,
     ref,
   ) => {
     return (
@@ -172,16 +149,15 @@ export const Button = forwardRef<HTMLDivElement, ButtonProps>(
         ref={ref as any}
         as={as}
         href={href}
-        onClick={onClick}
+        onClick={onClick as any}
         disabled={disabled}
-        className={buttonHeightStyles[height]}
+        className={[buttonHeightStyles[height], className]}
         cursor={disabled ? 'not-allowed' : 'pointer'}
         display="flex"
         alignItems="center"
         justifyContent="center"
         hoverable={!disabled}
         opacity={disabled ? '0.5' : undefined}
-        width={width}
         transform={
           disabled
             ? {}
@@ -189,16 +165,16 @@ export const Button = forwardRef<HTMLDivElement, ButtonProps>(
                 hoveractive: 'shrink',
               }
         }
+        width={width}
         {...stylesForVariant[variant]}
-        {...stylesForHeight[height]}
       >
-        <Text
-          {...textStylesForVariant[variant]}
-          {...textStylesForHeight[height]}
-        >
-          {children}
-        </Text>
+        {children}
       </Box>
     )
   },
 )
+
+export const Button = Object.assign(ButtonText, {
+  Root: ButtonRoot,
+  Symbol: ButtonSymbol,
+})

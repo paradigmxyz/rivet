@@ -1,6 +1,7 @@
 import { styleVariants } from '@vanilla-extract/css'
 
-const buttonHeight = {
+export const buttonHeight = {
+  '20px': 20,
   '24px': 24,
   '36px': 36,
   '44px': 44,
@@ -11,16 +12,19 @@ export const buttonHeightStyles = styleVariants(buttonHeight, (height) => [
   { height },
 ])
 
-export type ButtonKind = 'solid' | 'stroked' | 'tint'
+export type ButtonKind = 'ghost' | 'solid' | 'stroked' | 'tint'
 
 export const buttonVariants = [
+  'ghost primary',
+  'ghost blue',
+  'ghost red',
+  'ghost green',
   'solid invert',
   'solid primary',
   'solid fill',
   'solid blue',
   'solid red',
   'solid green',
-  'solid transparent',
   'stroked fill',
   'stroked invert',
   'stroked blue',

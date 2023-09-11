@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import {
   Box,
-  IconButton,
+  Button,
   Inline,
   Inset,
   Row,
@@ -59,11 +59,11 @@ export function Container({
                       header
                     )}
                     {dismissable && (
-                      <IconButton
-                        icon="xmark"
-                        size="20px"
+                      <Button.Symbol
+                        height="24px"
                         onClick={() => history.back()}
-                        symbolProps={{ color: 'text/tertiary' }}
+                        symbol="xmark"
+                        variant="ghost primary"
                       />
                     )}
                   </Inline>
