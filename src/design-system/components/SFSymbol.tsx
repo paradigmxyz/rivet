@@ -9,8 +9,8 @@ import type { BoxStyles } from './Box.css'
 export type SFSymbolProps = {
   className?: ClassValue
   color?: BoxStyles['color']
-  symbol: SymbolName
   weight?: FontWeight
+  symbol: SymbolName
   size?: FontSize
 }
 

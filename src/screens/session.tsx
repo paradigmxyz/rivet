@@ -1,15 +1,7 @@
 import { Fragment } from 'react'
 import { connect, disconnect } from '~/actions'
 import { Container, LabelledContent } from '~/components'
-import {
-  Box,
-  Button,
-  Inline,
-  SFSymbol,
-  Separator,
-  Stack,
-  Text,
-} from '~/design-system'
+import { Box, Button, Inline, Separator, Stack, Text } from '~/design-system'
 import { useHost } from '~/hooks/useHost'
 import { getMessenger } from '~/messengers'
 import { useSessionsStore } from '~/zustand'
@@ -60,23 +52,17 @@ export default function Session() {
                     <LabelledContent label="Host" width="fit">
                       <Text size="12px">{session.host}</Text>
                     </LabelledContent>
-                    <Box
-                      cursor="pointer"
-                      width="fit"
+                    <Button.Symbol
+                      height="24px"
+                      symbol="trash"
                       onClick={() => {
                         disconnect({
                           host: session.host,
                           messenger: inpageMessenger,
                         })
                       }}
-                    >
-                      <SFSymbol
-                        color="text/tertiary"
-                        size="12px"
-                        symbol="trash"
-                        weight="medium"
-                      />
-                    </Box>
+                      variant="ghost red"
+                    />
                   </Inline>
                   <Separator />
                 </Fragment>

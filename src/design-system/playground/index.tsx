@@ -350,6 +350,25 @@ function DesignSystem() {
               </Stack>
               <Stack gap="16px">
                 <Text weight="medium" size="18px">
+                  Ghost
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button variant="ghost primary" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="ghost blue" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="ghost green" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="ghost red" width="fit">
+                    Button
+                  </Button>
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
                   Height
                 </Text>
                 <Box display="flex" gap="8px">
@@ -360,6 +379,9 @@ function DesignSystem() {
                     Button
                   </Button>
                   <Button variant="tint green" height="44px" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="ghost primary" height="44px" width="fit">
                     Button
                   </Button>
                 </Box>
@@ -373,6 +395,9 @@ function DesignSystem() {
                   <Button variant="tint green" height="36px" width="fit">
                     Button
                   </Button>
+                  <Button variant="ghost primary" height="36px" width="fit">
+                    Button
+                  </Button>
                 </Box>
                 <Box display="flex" gap="8px">
                   <Button height="24px" width="fit">
@@ -382,6 +407,23 @@ function DesignSystem() {
                     Button
                   </Button>
                   <Button variant="tint green" height="24px" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="ghost primary" height="24px" width="fit">
+                    Button
+                  </Button>
+                </Box>
+                <Box display="flex" gap="8px">
+                  <Button height="20px" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="stroked invert" height="20px" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="tint green" height="20px" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="ghost primary" height="20px" width="fit">
                     Button
                   </Button>
                 </Box>
@@ -410,6 +452,168 @@ function DesignSystem() {
                   >
                     Button
                   </Button>
+                  <Button
+                    disabled
+                    variant="ghost primary"
+                    height="44px"
+                    width="fit"
+                  >
+                    Button
+                  </Button>
+                </Box>
+              </Stack>
+            </Stack>
+          </Box>
+          <Box
+            backgroundColor="surface/primary/elevated"
+            margin="-24px"
+            borderRadius="12px"
+            padding="24px"
+          >
+            <Stack gap="24px">
+              <Text weight="medium" size="22px">
+                Button.Symbol
+              </Text>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Solid
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol symbol="trash" />
+                  <Button.Symbol symbol="trash" variant="solid primary" />
+                  <Button.Symbol symbol="trash" variant="solid fill" />
+                  <Button.Symbol symbol="trash" variant="solid blue" />
+                  <Button.Symbol symbol="trash" variant="solid green" />
+                  <Button.Symbol symbol="trash" variant="solid red" />
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Stroked
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol symbol="trash" variant="stroked fill" />
+                  <Button.Symbol symbol="trash" variant="stroked invert" />
+                  <Button.Symbol symbol="trash" variant="stroked blue" />
+                  <Button.Symbol symbol="trash" variant="stroked green" />
+                  <Button.Symbol symbol="trash" variant="stroked red" />
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Tint
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol symbol="trash" variant="tint blue" />
+                  <Button.Symbol symbol="trash" variant="tint green" />
+                  <Button.Symbol symbol="trash" variant="tint red" />
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Ghost
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol symbol="trash" variant="ghost primary" />
+                  <Button.Symbol symbol="trash" variant="ghost blue" />
+                  <Button.Symbol symbol="trash" variant="ghost green" />
+                  <Button.Symbol symbol="trash" variant="ghost red" />
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Height
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol height="44px" symbol="trash" />
+                  <Button.Symbol
+                    height="44px"
+                    symbol="trash"
+                    variant="stroked invert"
+                  />
+                  <Button.Symbol
+                    height="44px"
+                    symbol="trash"
+                    variant="tint green"
+                  />
+                  <Button.Symbol
+                    height="44px"
+                    symbol="trash"
+                    variant="ghost red"
+                  />
+                </Box>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol height="36px" symbol="trash" />
+                  <Button.Symbol
+                    height="36px"
+                    symbol="trash"
+                    variant="stroked invert"
+                  />
+                  <Button.Symbol
+                    height="36px"
+                    symbol="trash"
+                    variant="tint green"
+                  />
+                  <Button.Symbol
+                    height="36px"
+                    symbol="trash"
+                    variant="ghost red"
+                  />
+                </Box>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol height="24px" symbol="trash" />
+                  <Button.Symbol
+                    height="24px"
+                    symbol="trash"
+                    variant="stroked invert"
+                  />
+                  <Button.Symbol
+                    height="24px"
+                    symbol="trash"
+                    variant="tint green"
+                  />
+                  <Button.Symbol
+                    height="24px"
+                    symbol="trash"
+                    variant="ghost red"
+                  />
+                </Box>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol height="20px" symbol="trash" />
+                  <Button.Symbol
+                    height="20px"
+                    symbol="trash"
+                    variant="stroked invert"
+                  />
+                  <Button.Symbol
+                    height="20px"
+                    symbol="trash"
+                    variant="tint green"
+                  />
+                  <Button.Symbol
+                    height="20px"
+                    symbol="trash"
+                    variant="ghost red"
+                  />
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Disabled
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol disabled symbol="trash" />
+                  <Button.Symbol
+                    disabled
+                    symbol="trash"
+                    variant="stroked invert"
+                  />
+                  <Button.Symbol disabled symbol="trash" variant="tint green" />
+                  <Button.Symbol
+                    disabled
+                    symbol="trash"
+                    variant="ghost primary"
+                  />
                 </Box>
               </Stack>
             </Stack>

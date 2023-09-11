@@ -242,28 +242,12 @@ function ImportAccount() {
 
 function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
   return (
-    /* TODO: Extract into `IconButton` */
-    <Box
-      as="button"
-      backgroundColor={{
-        hover: 'surface/red@0.1',
-      }}
-      borderColor="surface/red@0.4"
-      borderWidth="1px"
+    <Button.Symbol
+      symbol="trash"
+      height="24px"
+      variant="stroked red"
       onClick={onClick}
-      style={{
-        width: '24px',
-        height: '24px',
-      }}
-      transform={{ hoveractive: 'shrink95' }}
-    >
-      <SFSymbol
-        color="surface/red"
-        size="12px"
-        symbol="trash"
-        weight="semibold"
-      />
-    </Box>
+    />
   )
 }
 

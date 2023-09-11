@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import {
   Box,
+  Button,
   Inline,
   Inset,
   Row,
   Rows,
-  SFSymbol,
   Separator,
   Text,
 } from '~/design-system'
@@ -59,14 +59,12 @@ export function Container({
                       header
                     )}
                     {dismissable && (
-                      <Box cursor="pointer" onClick={() => history.back()}>
-                        <SFSymbol
-                          color="text/tertiary"
-                          size="12px"
-                          symbol="xmark"
-                          weight="medium"
-                        />
-                      </Box>
+                      <Button.Symbol
+                        height="24px"
+                        onClick={() => history.back()}
+                        symbol="xmark"
+                        variant="ghost primary"
+                      />
                     )}
                   </Inline>
                 </Box>
