@@ -59,7 +59,7 @@ export const networkStore = createStore<NetworkStore>(
       }
 
       set((state) => {
-        const networks = state.networks
+        const networks = { ...state.networks }
         networks[rpcUrl] = {
           ...(networks[rpcUrl] || defaultNetwork),
           ...network,
