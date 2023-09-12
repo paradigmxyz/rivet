@@ -175,7 +175,12 @@ function Accounts() {
                     />
                   )}
                   <Link to="token-config">
-                    <DetailButton onClick={() => {}} />
+                    <Button.Symbol
+                      height="24px"
+                      onClick={() => {}}
+                      symbol="arrow.right"
+                      variant="solid blue"
+                    />
                   </Link>
                 </Inline>
               </Box>
@@ -243,7 +248,7 @@ function ImportAccount() {
   )
 }
 
-export function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
+function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
   return (
     <Button.Symbol
       symbol="trash"
@@ -251,34 +256,6 @@ export function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
       variant="stroked red"
       onClick={onClick}
     />
-  )
-}
-
-export function DetailButton({ onClick }: { onClick: (e: any) => void }) {
-  return (
-    /* TODO: Extract into `IconButton` */
-    <Box
-      as="button"
-      backgroundColor={{
-        default: 'surface/blue@0.8',
-        hover: 'surface/blue@0.4',
-      }}
-      borderColor="surface/blue@0.4"
-      borderWidth="1px"
-      onClick={onClick}
-      style={{
-        width: '24px',
-        height: '24px',
-      }}
-      transform={{ hoveractive: 'shrink95' }}
-    >
-      <SFSymbol
-        color="surface/white"
-        size="12px"
-        symbol="arrow.right"
-        weight="semibold"
-      />
-    </Box>
   )
 }
 

@@ -29,8 +29,9 @@ import {
 import { useAccountStore } from '~/zustand'
 
 import { useEffect, useState } from 'react'
-import { useErcBalance } from '~/hooks/useErcBalance'
-import { useSetErcBalance } from '~/hooks/useSetErcBalance'
+import { useErc20Balance } from '~/hooks/useErc20Balance'
+import { useErc20Metadata } from '~/hooks/useErc20Metadata'
+import { useSetErc20Balance } from '~/hooks/useSetErc20Balance'
 import { truncate } from '~/utils'
 import { useTokensStore } from '~/zustand/tokens'
 
@@ -131,34 +132,27 @@ function ImportAccount() {
 
 function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
   return (
-    <Box
-      as="button"
-      backgroundColor={{
-        hover: 'surface/red@0.1',
-      }}
-      borderColor="surface/invert@0.2"
-      borderWidth="1px"
-      borderRadius="3px"
+    <Button.Symbol
+      symbol="xmark"
+      height="24px"
+      variant="stroked red"
       onClick={onClick}
-      style={{ width: '24px', height: '24px' }}
-      transform={{ hoveractive: 'shrink95' }}
-      display="flex"
-      alignItems="center"
-      justifyContent="center"
-      height="full"
-    >
-      <SFSymbol color="surface/red" symbol="xmark" size="9px" />
-    </Box>
+    />
   )
 }
 
 function Balance({
-  erc,
+  contractAddress,
   address,
   balance,
   decimals,
-}: { erc: Address; address: Address; balance: bigint; decimals: number }) {
-  const { mutate } = useSetErcBalance()
+}: {
+  contractAddress: Address
+  address: Address
+  balance: bigint | undefined
+  decimals: number
+}) {
+  const { mutate } = useSetErc20Balance()
 
   const [value, setValue] = useState(
     balance ? formatUnits(balance, decimals) : '',
@@ -178,7 +172,7 @@ function Balance({
         if (newValue !== balance) {
           mutate({
             address,
-            erc,
+            contractAddress,
             value: newValue,
           })
         }
@@ -192,12 +186,16 @@ function Balance({
 function TokenBalance({ token }: { token: Address }) {
   const { account } = useAccountStore()
   const { removeToken } = useTokensStore()
-  const { data, isSuccess } = useErcBalance({
+  const { data: balance } = useErc20Balance({
     address: account!.address,
-    erc: token,
+    contractAddress: token,
+  })
+  const { data, isSuccess: isSuccessMetadata } = useErc20Metadata({
+    address: account!.address,
+    contractAddress: token,
   })
 
-  if (!isSuccess) {
+  if (!isSuccessMetadata) {
     return (
       <Inset top="8px">
         <Columns alignVertical="center" gap="4px">
@@ -217,7 +215,7 @@ function TokenBalance({ token }: { token: Address }) {
     )
   }
 
-  const [name, symbol, decimals, balance] = data
+  const [name, symbol, decimals] = data
 
   return (
     <Box position="relative">
@@ -249,7 +247,7 @@ function TokenBalance({ token }: { token: Address }) {
         </Column>
         <Column width="content">
           <Balance
-            erc={token}
+            contractAddress={token}
             address={account!.address}
             balance={balance}
             decimals={decimals}
