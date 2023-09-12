@@ -61,9 +61,9 @@ export default function Network() {
         dismissable
         header="Network Configuration"
         footer={
-          <Stack gap="2px">
-            <Button onClick={handleResetFork}>Reset fork</Button>
-            <Button type="submit">Update</Button>
+          <Stack gap="8px">
+            <Button  type="submit">Update</Button>
+            <Button onClick={handleResetFork} variant='stroked red'>Reset fork</Button>
           </Stack>
         }
       >
