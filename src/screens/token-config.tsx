@@ -49,7 +49,7 @@ export default function TokenConfig() {
   const [params, setParams] = useSearchParams({ tab: 'tokens' })
   const navigate = useNavigate()
   return (
-    <Container scrollable={false} dismissable fit>
+    <Container dismissable fit>
       <Stack gap="8px">
         <Inline wrap={false} gap="12px">
           <Box cursor="pointer" onClick={() => navigate('/')}>
@@ -197,7 +197,25 @@ function TokenBalance({ token }: { token: Address }) {
     erc: token,
   })
 
-  if (!isSuccess) return null
+  if (!isSuccess) {
+    return (
+      <Inset top="8px">
+        <Columns alignVertical="center" gap="4px">
+          <Column>
+            <Text size="11px">{truncate(token, { start: 6, end: 4 })}</Text>
+          </Column>
+          <Column width="content">
+            <RemoveButton
+              onClick={(e) => {
+                e.stopPropagation()
+                removeToken(token)
+              }}
+            />
+          </Column>
+        </Columns>
+      </Inset>
+    )
+  }
 
   const [name, symbol, decimals, balance] = data
 
