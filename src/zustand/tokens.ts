@@ -3,27 +3,36 @@ import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWit
 import { createStore } from './utils'
 
 export type TokensState = {
-  tokens: Address[]
+  tokens: Record<Address, Address[]>
 }
 export type TokensActions = {
-  addToken: (address: Address) => void
-  removeToken: (address: Address) => void
+  addToken: (tokenAddress: Address, address: Address) => void
+  removeToken: (tokenAddress: Address, address: Address) => void
 }
 export type TokensStore = TokensState & TokensActions
 
 export const tokensStore = createStore<TokensStore>(
   (set, get) => ({
-    tokens: [],
-    addToken(address: Address) {
-      if (get().tokens.find((token) => token === address)) return
-      set((state) => ({
-        ...state,
-        tokens: [...state.tokens, address],
-      }))
-    },
-    removeToken(address: Address) {
+    tokens: {},
+    addToken(tokenAddress: Address, address: Address) {
+      if ((get().tokens[address] || []).find((token) => token === tokenAddress))
+        return
       set((state) => {
-        const tokens = state.tokens.filter((token) => token !== address)
+        const tokens = { ...state.tokens }
+        tokens[address] = [...(state.tokens[address] || []), tokenAddress]
+
+        return {
+          ...state,
+          tokens,
+        }
+      })
+    },
+    removeToken(tokenAddress: Address, address: Address) {
+      set((state) => {
+        const tokens = { ...state.tokens }
+        tokens[address] = tokens[address].filter(
+          (token) => token !== tokenAddress,
+        )
         return {
           ...state,
           tokens,

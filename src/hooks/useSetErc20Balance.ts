@@ -13,7 +13,7 @@ import { getErc20BalanceQueryKey } from './useErc20Balance'
 
 type SetErcBalanceParameters = {
   address: Address
-  contractAddress: Address
+  tokenAddress: Address
   value: bigint
 }
 
@@ -52,7 +52,7 @@ export function useSetErc20Balance() {
 
   return useMutation({
     async mutationFn({
-      contractAddress,
+      tokenAddress,
       address,
       value,
     }: SetErcBalanceParameters) {
@@ -70,20 +70,20 @@ export function useSetErc20Balance() {
         )
 
         const oldSlotValue = await client.getStorageAt({
-          address: contractAddress,
+          address: tokenAddress,
           slot: keccak256(encodedData),
         })
 
         // user value might be something that might have collision (like 0)
         await client.setStorageAt({
-          address: contractAddress,
+          address: tokenAddress,
           index: keccak256(encodedData),
           value: pad(toHex(SLOT_VALUE_TO_CHECK)),
         })
 
         const newBalance = await client.readContract({
           abi: balanceOfABI,
-          address: contractAddress,
+          address: tokenAddress,
           functionName: 'balanceOf',
           args: [address],
         })
@@ -93,7 +93,7 @@ export function useSetErc20Balance() {
         if (guessIsCorrect) {
           slotFound = true
           await client.setStorageAt({
-            address: contractAddress,
+            address: tokenAddress,
             index: keccak256(encodedData),
             value: pad(toHex(value)),
           })
@@ -101,13 +101,13 @@ export function useSetErc20Balance() {
           // check for a rebasing token (stETH)
           // by setting storage value again with an offset
           await client.setStorageAt({
-            address: contractAddress,
+            address: tokenAddress,
             index: keccak256(encodedData),
             value: pad(toHex(SLOT_VALUE_TO_CHECK + 1n)),
           })
           const newBalanceAgain = await client.readContract({
             abi: balanceOfABI,
-            address: contractAddress,
+            address: tokenAddress,
             functionName: 'balanceOf',
             args: [address],
           })
@@ -116,7 +116,7 @@ export function useSetErc20Balance() {
           if (newBalanceAgain - newBalance === 1n) {
             slotFound = true
             await client.setStorageAt({
-              address: contractAddress,
+              address: tokenAddress,
               index: keccak256(encodedData),
               value: pad(toHex(value)),
             })
@@ -125,7 +125,7 @@ export function useSetErc20Balance() {
 
           // reset storage slot
           await client.setStorageAt({
-            address: contractAddress,
+            address: tokenAddress,
             index: keccak256(encodedData),
             value: oldSlotValue || pad('0x0'),
           })
@@ -139,7 +139,7 @@ export function useSetErc20Balance() {
       queryClient.invalidateQueries({
         queryKey: getErc20BalanceQueryKey([
           client.key,
-          { contractAddress: contractAddress, address },
+          { tokenAddress, address },
         ]),
       })
     },

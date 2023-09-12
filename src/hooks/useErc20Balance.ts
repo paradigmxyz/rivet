@@ -8,7 +8,7 @@ import { useClient } from './useClient'
 
 type UseErc20BalanceParameters = {
   address: Address
-  contractAddress: Address
+  tokenAddress: Address
 }
 
 export const getErc20BalanceQueryKey = createQueryKey<
@@ -18,21 +18,18 @@ export const getErc20BalanceQueryKey = createQueryKey<
 
 export function useErc20BalanceQueryOptions({
   address,
-  contractAddress,
+  tokenAddress,
 }: UseErc20BalanceParameters) {
   const client = useClient()
   const contract = getContract({
-    address: contractAddress,
+    address: tokenAddress,
     abi: erc20ABI,
     publicClient: client,
   })
 
   return queryOptions({
     enabled: Boolean(address),
-    queryKey: getErc20BalanceQueryKey([
-      client.key,
-      { contractAddress, address },
-    ]),
+    queryKey: getErc20BalanceQueryKey([client.key, { tokenAddress, address }]),
     async queryFn() {
       return contract.read.balanceOf([address])
     },
@@ -40,9 +37,9 @@ export function useErc20BalanceQueryOptions({
 }
 
 export function useErc20Balance({
-  contractAddress,
+  tokenAddress,
   address,
 }: UseErc20BalanceParameters) {
-  const queryOptions = useErc20BalanceQueryOptions({ contractAddress, address })
+  const queryOptions = useErc20BalanceQueryOptions({ tokenAddress, address })
   return useQuery(queryOptions)
 }

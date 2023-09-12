@@ -92,6 +92,7 @@ export default function TokenConfig() {
 
 function ImportAccount() {
   const { addToken } = useTokensStore()
+  const { account } = useAccountStore()
 
   const { handleSubmit, register, reset } = useForm<{ address: string }>({
     defaultValues: {
@@ -101,12 +102,12 @@ function ImportAccount() {
 
   const submit = handleSubmit(async ({ address }) => {
     try {
-      if (!address || !isAddress(address)) {
+      if (!account || !address || !isAddress(address)) {
         reset()
         return
       }
 
-      addToken(address as Address)
+      addToken(address as Address, account.address)
     } finally {
       reset()
     }
@@ -142,12 +143,12 @@ function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
 }
 
 function Balance({
-  contractAddress,
+  tokenAddress,
   address,
   balance,
   decimals,
 }: {
-  contractAddress: Address
+  tokenAddress: Address
   address: Address
   balance: bigint | undefined
   decimals: number
@@ -172,7 +173,7 @@ function Balance({
         if (newValue !== balance) {
           mutate({
             address,
-            contractAddress,
+            tokenAddress,
             value: newValue,
           })
         }
@@ -188,11 +189,10 @@ function TokenBalance({ token }: { token: Address }) {
   const { removeToken } = useTokensStore()
   const { data: balance } = useErc20Balance({
     address: account!.address,
-    contractAddress: token,
+    tokenAddress: token,
   })
   const { data, isSuccess: isSuccessMetadata } = useErc20Metadata({
-    address: account!.address,
-    contractAddress: token,
+    tokenAddress: token,
   })
 
   if (!isSuccessMetadata) {
@@ -206,7 +206,7 @@ function TokenBalance({ token }: { token: Address }) {
             <RemoveButton
               onClick={(e) => {
                 e.stopPropagation()
-                removeToken(token)
+                removeToken(token, account!.address)
               }}
             />
           </Column>
@@ -247,7 +247,7 @@ function TokenBalance({ token }: { token: Address }) {
         </Column>
         <Column width="content">
           <Balance
-            contractAddress={token}
+            tokenAddress={token}
             address={account!.address}
             balance={balance}
             decimals={decimals}
@@ -257,7 +257,7 @@ function TokenBalance({ token }: { token: Address }) {
           <RemoveButton
             onClick={(e) => {
               e.stopPropagation()
-              removeToken(token)
+              removeToken(token, account!.address)
             }}
           />
         </Column>
@@ -266,8 +266,26 @@ function TokenBalance({ token }: { token: Address }) {
   )
 }
 
-function Tokens() {
+function TokensList() {
   const { tokens } = useTokensStore()
+  const { account } = useAccountStore()
+
+  if (!account) return null
+
+  return (
+    <>
+      {(tokens[account.address] || []).map((token) => {
+        return (
+          <Columns key={token}>
+            <TokenBalance token={token} />
+          </Columns>
+        )
+      })}
+    </>
+  )
+}
+
+function Tokens() {
   return (
     <>
       <Box alignItems="center" display="flex" style={{ height: '40px' }}>
@@ -287,13 +305,7 @@ function Tokens() {
           </Column>
         </Columns>
         <Separator />
-        {tokens.map((token) => {
-          return (
-            <Columns key={token}>
-              <TokenBalance token={token} />
-            </Columns>
-          )
-        })}
+        <TokensList />
       </Stack>
     </>
   )

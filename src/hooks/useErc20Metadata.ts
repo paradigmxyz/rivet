@@ -7,8 +7,7 @@ import { erc20ABI } from '~/utils/abi'
 import { useClient } from './useClient'
 
 type UseErc20MetadataParameters = {
-  address: Address
-  contractAddress: Address
+  tokenAddress: Address
 }
 
 export const getErcBalanceQueryKey = createQueryKey<
@@ -17,19 +16,18 @@ export const getErcBalanceQueryKey = createQueryKey<
 >('erc-metadata')
 
 export function useErc20MetadataQueryOptions({
-  contractAddress,
-  address,
+  tokenAddress,
 }: UseErc20MetadataParameters) {
   const client = useClient()
   const contract = getContract({
-    address: contractAddress,
+    address: tokenAddress,
     abi: erc20ABI,
     publicClient: client,
   })
 
   return queryOptions({
-    enabled: Boolean(address),
-    queryKey: getErcBalanceQueryKey([client.key, { contractAddress, address }]),
+    enabled: Boolean(tokenAddress),
+    queryKey: getErcBalanceQueryKey([client.key, { tokenAddress }]),
     async queryFn() {
       return Promise.all([
         contract.read.name(),
@@ -40,13 +38,9 @@ export function useErc20MetadataQueryOptions({
   })
 }
 
-export function useErc20Metadata({
-  contractAddress,
-  address,
-}: UseErc20MetadataParameters) {
+export function useErc20Metadata({ tokenAddress }: UseErc20MetadataParameters) {
   const queryOptions = useErc20MetadataQueryOptions({
-    contractAddress,
-    address,
+    tokenAddress,
   })
   return useQuery(queryOptions)
 }
