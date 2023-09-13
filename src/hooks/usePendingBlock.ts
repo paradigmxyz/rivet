@@ -11,6 +11,7 @@ import { useNetworkStore } from '~/zustand'
 import { getBalanceQueryKey } from './useBalance'
 import { getBlockQueryKey } from './useBlock'
 import { useClient } from './useClient'
+import { getErc20BalanceQueryKey } from './useErc20Balance'
 import { getInfiniteBlockTransactionsQueryKey } from './useInfiniteBlockTransactions'
 import { getInfiniteBlocksQueryKey } from './useInfiniteBlocks'
 import { useNetworkStatus } from './useNetworkStatus'
@@ -54,6 +55,9 @@ export function usePendingBlockQueryOptions({
 
       queryClient.invalidateQueries({
         queryKey: getBalanceQueryKey([client.key]),
+      })
+      queryClient.invalidateQueries({
+        queryKey: getErc20BalanceQueryKey([client.key]),
       })
       queryClient.invalidateQueries({
         queryKey: getBlockQueryKey([client.key, 'latest']),

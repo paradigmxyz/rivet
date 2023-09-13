@@ -24,6 +24,7 @@ import {
   Bleed,
   Box,
   Button,
+  Column,
   Columns,
   Inline,
   Input,
@@ -106,20 +107,14 @@ function Accounts() {
         const active = activeAccount?.address === account.address
         return (
           <Fragment key={account.address}>
-            <Box marginHorizontal="-12px">
+            <Box marginHorizontal="-8px">
               <Separator />
             </Box>
             <Box
-              backgroundColor={
-                active
-                  ? 'surface/fill/tertiary'
-                  : { hover: 'surface/fill/quarternary' }
-              }
-              cursor="pointer"
-              onClick={() => setAccount({ account })}
-              marginHorizontal="-12px"
-              paddingHorizontal="12px"
-              paddingVertical="16px"
+              backgroundColor={active ? 'surface/fill/tertiary' : undefined}
+              marginHorizontal="-8px"
+              paddingHorizontal="8px"
+              paddingVertical="12px"
               position="relative"
             >
               {active && (
@@ -138,21 +133,35 @@ function Accounts() {
               )}
               <Stack gap="16px">
                 <LabelledContent label="Account">
-                  <Inline gap="4px">
-                    {account.displayName && (
-                      <Text size="12px">{account.displayName}</Text>
-                    )}
-                    <Tooltip label={account.address}>
-                      <Text
-                        color={
-                          account.displayName ? 'text/tertiary' : undefined
-                        }
-                        size="12px"
-                      >
-                        {truncate(account.address)}
-                      </Text>
-                    </Tooltip>
-                  </Inline>
+                  <Box width="fit" position="relative">
+                    <Inline gap="4px">
+                      {account.displayName && (
+                        <Text size="12px">{account.displayName}</Text>
+                      )}
+                      <Tooltip label={account.address}>
+                        <Text
+                          color={
+                            account.displayName ? 'text/tertiary' : undefined
+                          }
+                          size="12px"
+                        >
+                          {account.displayName
+                            ? truncate(account.address)
+                            : account.address}
+                        </Text>
+                      </Tooltip>
+                      <Box position="absolute" style={{ right: -24, top: -6 }}>
+                        <Button.Symbol
+                          symbol="doc.on.doc"
+                          height="20px"
+                          onClick={() =>
+                            navigator.clipboard.writeText(account.address)
+                          }
+                          variant="ghost primary"
+                        />
+                      </Box>
+                    </Inline>
+                  </Box>
                 </LabelledContent>
                 <Columns gap="4px">
                   <Balance address={account.address} />
@@ -163,17 +172,39 @@ function Accounts() {
               </Stack>
               <Box
                 position="absolute"
-                style={{ bottom: '16px', right: '12px' }}
+                style={{ bottom: '12px', right: '12px' }}
               >
                 <Inline gap="4px" wrap={false}>
                   {account.impersonate && (
-                    <RemoveButton
+                    <Button.Symbol
+                      symbol="trash"
+                      height="24px"
+                      variant="stroked red"
                       onClick={(e) => {
                         e.stopPropagation()
                         removeAccount({ account })
                       }}
                     />
                   )}
+                  {!active && (
+                    <Button.Symbol
+                      height="24px"
+                      onClick={() => setAccount({ account })}
+                      symbol="arrow.left.arrow.right"
+                      variant={active ? 'solid invert' : 'stroked fill'}
+                    />
+                  )}
+                  <Link to={`account/${account.address}`}>
+                    <Box style={{ width: active ? '52px' : '24px' }}>
+                      <Button.Symbol
+                        height="24px"
+                        width="full"
+                        onClick={() => {}}
+                        symbol="arrow.right"
+                        variant={active ? 'solid invert' : 'stroked fill'}
+                      />
+                    </Box>
+                  </Link>
                 </Inline>
               </Box>
             </Box>
@@ -237,17 +268,6 @@ function ImportAccount() {
         </Button>
       </Inline>
     </Form.Root>
-  )
-}
-
-function RemoveButton({ onClick }: { onClick: (e: any) => void }) {
-  return (
-    <Button.Symbol
-      symbol="trash"
-      height="24px"
-      variant="stroked red"
-      onClick={onClick}
-    />
   )
 }
 
@@ -353,7 +373,7 @@ function Blocks() {
   return (
     <Box
       ref={parentRef}
-      marginHorizontal="-12px"
+      marginHorizontal="-8px"
       style={{ height: '100%', overflowY: 'scroll' }}
     >
       <Box
@@ -383,7 +403,7 @@ function Blocks() {
                   transform: `translateY(${start}px)`,
                 }}
               >
-                <Box paddingHorizontal="12px" paddingVertical="8px">
+                <Box paddingHorizontal="8px" paddingVertical="8px">
                   <Inline wrap={false}>
                     <LabelledContent label="Block">
                       <Box style={{ width: '80px' }}>
@@ -412,7 +432,7 @@ function Blocks() {
                     </LabelledContent>
                   </Inline>
                 </Box>
-                <Box marginHorizontal="-12px">
+                <Box marginHorizontal="-8px">
                   <Separator />
                 </Box>
               </Box>
@@ -478,7 +498,7 @@ function Transactions() {
   return (
     <Box
       ref={parentRef}
-      marginHorizontal="-12px"
+      marginHorizontal="-8px"
       style={{ height: '100%', overflowY: 'scroll' }}
     >
       <Box
@@ -508,7 +528,7 @@ function Transactions() {
                   transform: `translateY(${start}px)`,
                 }}
               >
-                <Box paddingHorizontal="12px" paddingVertical="8px">
+                <Box paddingHorizontal="8px" paddingVertical="8px">
                   <Columns alignVertical="center">
                     <LabelledContent label="Block">
                       <Inline alignVertical="center" gap="4px" wrap={false}>
@@ -540,17 +560,25 @@ function Transactions() {
                         </Text>
                       </Tooltip>
                     </LabelledContent>
-                    <LabelledContent label="Value">
-                      <Text wrap={false} size="12px">
-                        {numberIntl4SigFigs.format(
-                          Number(formatEther(transaction.value!)),
-                        )}{' '}
-                        <Text color="text/tertiary">ETH</Text>
-                      </Text>
-                    </LabelledContent>
+                    <Column>
+                      <Box
+                        display="flex"
+                        alignItems="flex-end"
+                        justifyContent="flex-end"
+                      >
+                        <LabelledContent label="Value">
+                          <Text wrap={false} size="12px">
+                            {numberIntl4SigFigs.format(
+                              Number(formatEther(transaction.value!)),
+                            )}{' '}
+                            <Text color="text/tertiary">ETH</Text>
+                          </Text>
+                        </LabelledContent>
+                      </Box>
+                    </Column>
                   </Columns>
                 </Box>
-                <Box marginHorizontal="-12px">
+                <Box marginHorizontal="-8px">
                   <Separator />
                 </Box>
               </Box>

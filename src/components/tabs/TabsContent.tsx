@@ -20,13 +20,13 @@ export function TabsContent({
     <Tabs_.Content asChild value={value}>
       <Box
         height="full"
-        marginHorizontal="-12px"
+        marginHorizontal="-8px"
         style={{ overflowY: scrollable ? 'scroll' : 'auto' }}
       >
         <Box
           height="full"
-          paddingHorizontal="12px"
-          paddingVertical={inset ? '12px' : undefined}
+          paddingHorizontal="8px"
+          paddingVertical={inset ? '8px' : undefined}
         >
           {children}
         </Box>

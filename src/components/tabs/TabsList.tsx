@@ -37,7 +37,7 @@ export function TabsList({ items, onSelect }: TabsListProps) {
           ))}
         </Inline>
       </Tabs_.List>
-      <Bleed horizontal="-12px">
+      <Bleed horizontal="-8px">
         <Separator />
       </Bleed>
     </>

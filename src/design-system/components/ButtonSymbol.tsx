@@ -5,7 +5,7 @@ import type { UnionOmit } from '~/utils/types'
 import type { SymbolName } from '../tokens'
 import { ButtonRoot, type ButtonRootProps } from './Button'
 import { type ButtonHeight, type ButtonVariant } from './Button.css'
-import { stylesForHeight } from './ButtonSymbol.css'
+import { widthForHeight } from './ButtonSymbol.css'
 import { SFSymbol } from './SFSymbol'
 import type { SFSymbolProps } from './SFSymbol'
 
@@ -63,17 +63,14 @@ const symbolStylesForVariant = {
 } satisfies Record<ButtonVariant, { color?: SFSymbolProps['color'] }>
 
 export const ButtonSymbol = forwardRef<HTMLDivElement, ButtonSymbolProps>(
-  (
-    { symbol, symbolProps, width = 'fit', ...rootProps }: ButtonSymbolProps,
-    ref,
-  ) => {
+  ({ symbol, symbolProps, width, ...rootProps }: ButtonSymbolProps, ref) => {
     const { height = '36px', variant = 'solid invert' } = rootProps
     return (
       <ButtonRoot
         ref={ref}
-        width={width}
         {...rootProps}
-        className={[stylesForHeight[height], rootProps.className]}
+        className={[!width && widthForHeight[height], rootProps.className]}
+        width={width}
       >
         <SFSymbol
           symbol={symbol}
