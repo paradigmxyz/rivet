@@ -2,7 +2,7 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 import { type Address, type Client, getContract } from 'viem'
 
 import { createQueryKey } from '~/react-query'
-import { erc20ABI } from '~/utils/abi'
+import { erc20Abi } from '~/utils'
 
 import { useClient } from './useClient'
 
@@ -12,25 +12,25 @@ type UseErc20BalanceParameters = {
 }
 
 export const getErc20BalanceQueryKey = createQueryKey<
-  'erc-balance',
+  'erc20-balance',
   [key: Client['key'], args: UseErc20BalanceParameters]
->('erc-balance')
+>('erc20-balance')
 
 export function useErc20BalanceQueryOptions({
   address,
   tokenAddress,
 }: UseErc20BalanceParameters) {
   const client = useClient()
-  const contract = getContract({
-    address: tokenAddress,
-    abi: erc20ABI,
-    publicClient: client,
-  })
 
   return queryOptions({
     enabled: Boolean(address),
     queryKey: getErc20BalanceQueryKey([client.key, { tokenAddress, address }]),
     async queryFn() {
+      const contract = getContract({
+        address: tokenAddress,
+        abi: erc20Abi,
+        publicClient: client,
+      })
       return contract.read.balanceOf([address])
     },
   })

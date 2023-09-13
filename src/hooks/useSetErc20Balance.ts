@@ -3,11 +3,16 @@ import {
   type Address,
   BaseError,
   encodeAbiParameters,
+  getAbiItem,
   keccak256,
   pad,
+  parseAbiParameters,
   toHex,
 } from 'viem'
+
 import { queryClient } from '~/react-query'
+import { erc20Abi } from '~/utils'
+
 import { useClient } from './useClient'
 import { getErc20BalanceQueryKey } from './useErc20Balance'
 
@@ -17,35 +22,18 @@ type SetErcBalanceParameters = {
   value: bigint
 }
 
-const balanceOfABI = [
-  {
-    type: 'function',
-    name: 'balanceOf',
-    stateMutability: 'view',
-    inputs: [
-      {
-        name: 'account',
-        type: 'address',
-      },
-    ],
-    outputs: [
-      {
-        name: '',
-        type: 'uint256',
-      },
-    ],
-  },
-] as const
+const balanceOfAbiItem = getAbiItem({ abi: erc20Abi, name: 'balanceOf' })
 
 // set guessed storage slot to odd value
 // so it's obvious when checking balanceOf it was the right slot
 const SLOT_VALUE_TO_CHECK = 1337_1337_1337_1337_1337_1337_1337_1337_1337n
 
-/** Hack to be able to set the storage of the balanceOf mapping
- *  other than hardcoding the storage slot per address or reading source
- *  we can guess the mapping slot and test against `balanceOf` result
- *  by looping from 0. so check slot 0, calculate the slot via keccak
- *  and verify that the value of the storage slot is the same as the balanceOf call
+/**
+ * Hack to be able to set the storage of the balanceOf mapping
+ * other than hardcoding the storage slot per address or reading source
+ * we can guess the mapping slot and test against `balanceOf` result
+ * by looping from 0. so check slot 0, calculate the slot via keccak
+ * and verify that the value of the storage slot is the same as the balanceOf call
  */
 export function useSetErc20Balance() {
   const client = useClient()
@@ -56,16 +44,15 @@ export function useSetErc20Balance() {
       address,
       value,
     }: SetErcBalanceParameters) {
+      // TODO: Compose storage slot manipulation into an action.
+      // See https://github.com/paradigmxyz/rivet/pull/50#discussion_r1322267280
       let slotFound = false
       let slotGuess = 0n
 
       while (slotFound !== true) {
         // if mapping, use keccak256(abi.encode(address(key), uint(slot)));
         const encodedData = encodeAbiParameters(
-          [
-            { name: 'key', type: 'address' },
-            { name: 'slot', type: 'uint' },
-          ],
+          parseAbiParameters('address, uint'),
           [address, slotGuess],
         )
 
@@ -82,7 +69,7 @@ export function useSetErc20Balance() {
         })
 
         const newBalance = await client.readContract({
-          abi: balanceOfABI,
+          abi: [balanceOfAbiItem],
           address: tokenAddress,
           functionName: 'balanceOf',
           args: [address],
@@ -106,7 +93,7 @@ export function useSetErc20Balance() {
             value: pad(toHex(SLOT_VALUE_TO_CHECK + 1n)),
           })
           const newBalanceAgain = await client.readContract({
-            abi: balanceOfABI,
+            abi: [balanceOfAbiItem],
             address: tokenAddress,
             functionName: 'balanceOf',
             args: [address],
@@ -136,6 +123,7 @@ export function useSetErc20Balance() {
             throw new BaseError('could not find storage for: `balanceOf`')
         }
       }
+
       queryClient.invalidateQueries({
         queryKey: getErc20BalanceQueryKey([
           client.key,

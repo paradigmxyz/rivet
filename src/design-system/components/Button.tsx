@@ -86,7 +86,7 @@ const stylesForVariant = {
   },
   'stroked fill': {
     backgroundColor: {
-      hover: 'surface/invert@0.02',
+      hover: 'surface/invert@0.05',
     },
     borderColor: 'surface/fill',
     borderWidth: '1px',
@@ -99,21 +99,21 @@ const stylesForVariant = {
   },
   'stroked blue': {
     backgroundColor: {
-      hover: 'surface/blue@0.05',
+      hover: 'surface/blue@0.2',
     },
     borderColor: 'surface/blue',
     borderWidth: '1px',
   },
   'stroked red': {
     backgroundColor: {
-      hover: 'surface/red@0.05',
+      hover: 'surface/red@0.2',
     },
     borderColor: 'surface/red',
     borderWidth: '1px',
   },
   'stroked green': {
     backgroundColor: {
-      hover: 'surface/green@0.05',
+      hover: 'surface/green@0.2',
     },
     borderColor: 'surface/green',
     borderWidth: '1px',

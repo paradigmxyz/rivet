@@ -1,7 +1,7 @@
 /**
  * [ERC-20 Token Standard](https://ethereum.org/en/developers/docs/standards/tokens/erc-20)
  */
-export const erc20ABI = [
+export const erc20Abi = [
   {
     type: 'event',
     name: 'Approval',

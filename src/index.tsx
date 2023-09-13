@@ -23,9 +23,9 @@ import {
   useSessionsStore,
 } from '~/zustand'
 
-import TransactionDetails from './screens/TransactionDetails'
 import Layout from './screens/_layout'
 import AccountConfig from './screens/account-config'
+import AccountDetails from './screens/account-details'
 import BlockConfig from './screens/block-config'
 import BlockDetails from './screens/block-details'
 import Index from './screens/index'
@@ -35,7 +35,7 @@ import OnboardingDownload from './screens/onboarding/download'
 import OnboardingRun from './screens/onboarding/run'
 import OnboardingStart from './screens/onboarding/start'
 import Session from './screens/session'
-import TokenConfig from './screens/token-config'
+import TransactionDetails from './screens/transaction-details'
 
 syncStores()
 
@@ -51,6 +51,10 @@ const router = createHashRouter([
       {
         path: 'account-config',
         element: <AccountConfig />,
+      },
+      {
+        path: 'account/:address',
+        element: <AccountDetails />,
       },
       {
         path: 'block-config',
@@ -71,10 +75,6 @@ const router = createHashRouter([
       {
         path: 'session',
         element: <Session />,
-      },
-      {
-        path: 'token-config',
-        element: <TokenConfig />,
       },
       {
         path: 'onboarding',

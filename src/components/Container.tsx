@@ -44,7 +44,7 @@ export function Container({
                   alignItems="center"
                   backgroundColor="surface/primary/elevated"
                   display="flex"
-                  paddingHorizontal="12px"
+                  paddingHorizontal="8px"
                   width="full"
                   style={{ minHeight: '44px' }}
                 >
@@ -70,14 +70,14 @@ export function Container({
                 </Box>
               </Row>
               <Row height="content">
-                <Inset horizontal="12px">
+                <Inset horizontal="8px">
                   <Separator />
                 </Inset>
               </Row>
             </>
           )}
           <Box
-            paddingHorizontal="12px"
+            paddingHorizontal="8px"
             paddingVertical={verticalInset ? (header ? '16px' : '12px') : '0px'}
             height="full"
             width="full"
@@ -88,7 +88,7 @@ export function Container({
       </Row>
       {footer && (
         <Row height="content">
-          <Box padding="12px" width="full">
+          <Box paddingHorizontal="8px" paddingVertical="12px" width="full">
             {footer}
           </Box>
         </Row>

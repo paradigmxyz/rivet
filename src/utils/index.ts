@@ -1,3 +1,4 @@
+export { erc20Abi } from './abi'
 export { capitalize } from './capitalize'
 export { deepEqual } from './deepEqual'
 export { truncate } from './truncate'

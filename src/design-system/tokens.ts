@@ -565,6 +565,7 @@ export const symbolNames = [
   'person.circle',
   'chevron.down',
   'chevron.right.2',
+  'chevron.left',
   'trash',
   'xmark',
   'arrow.right',
