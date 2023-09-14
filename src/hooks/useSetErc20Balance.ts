@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
 import {
   type Address,
   BaseError,
@@ -37,8 +38,9 @@ const SLOT_VALUE_TO_CHECK = 1337_1337_1337_1337_1337_1337_1337_1337_1337n
  */
 export function useSetErc20Balance() {
   const client = useClient()
+  const [loading, setLoading] = useState(false)
 
-  return useMutation({
+  const mutation = useMutation({
     async mutationFn({
       tokenAddress,
       address,
@@ -131,5 +133,16 @@ export function useSetErc20Balance() {
         ]),
       })
     },
+    onMutate: () => {
+      setLoading(true)
+    },
+    onSuccess: () => {
+      setLoading(false)
+    },
   })
+
+  return {
+    ...mutation,
+    loading,
+  }
 }

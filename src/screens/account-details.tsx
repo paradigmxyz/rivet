@@ -5,6 +5,7 @@ import { type Address, formatUnits, isAddress, parseUnits } from 'viem'
 
 import { LabelledContent, TabsContent, TabsList, Tooltip } from '~/components'
 import * as Form from '~/components/form'
+import { Spinner } from '~/components/svgs'
 import {
   Bleed,
   Box,
@@ -252,7 +253,7 @@ function BalanceInput({
   tokenAddress: Address
 }) {
   // TODO: Handle errors when setting balance.
-  const { mutate } = useSetErc20Balance()
+  const { mutate, loading } = useSetErc20Balance()
 
   const [value, setValue] = useState(formatUnits(balance, decimals))
 
@@ -261,22 +262,30 @@ function BalanceInput({
   }, [balance, decimals])
 
   return (
-    <Input
-      onChange={(e) => setValue(e.target.value)}
-      onClick={(e) => e.stopPropagation()}
-      onBlur={(e) => {
-        const newValue = parseUnits(e.target.value as `${number}`, decimals)
-        if (newValue !== balance) {
-          mutate({
-            address,
-            tokenAddress,
-            value: newValue,
-          })
-        }
-      }}
-      height="24px"
-      style={{ textAlign: 'right' }}
-      value={value}
-    />
+    <>
+      {loading ? (
+        <Box style={{ textAlign: 'center' }}>
+          <Spinner size="15px" />
+        </Box>
+      ) : (
+        <Input
+          onChange={(e) => setValue(e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          onBlur={(e) => {
+            const newValue = parseUnits(e.target.value as `${number}`, decimals)
+            if (newValue !== balance) {
+              mutate({
+                address,
+                tokenAddress,
+                value: newValue,
+              })
+            }
+          }}
+          height="24px"
+          style={{ textAlign: 'right' }}
+          value={value}
+        />
+      )}
+    </>
   )
 }
