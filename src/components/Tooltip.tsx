@@ -10,20 +10,20 @@ import { Box, Text } from '~/design-system'
 
 export type TooltipProps = {
   children: ReactNode
+  enabled?: boolean
   label: string | ReactNode
+  side?: 'top' | 'bottom' | 'left' | 'right'
 }
 
-export function Tooltip({ children, label }: TooltipProps) {
+export function Tooltip({ children, enabled, label, side }: TooltipProps) {
   return (
     <Provider>
-      <Root delayDuration={300}>
+      <Root delayDuration={300} open={enabled === false ? false : undefined}>
         <Trigger asChild>
-          <Box testId="haha" tabIndex={0}>
-            {children}
-          </Box>
+          <Box>{children}</Box>
         </Trigger>
         <Portal>
-          <Content asChild side="bottom" sideOffset={8}>
+          <Content asChild side={side} sideOffset={8}>
             <Box
               backgroundColor="surface/secondary/elevated"
               borderWidth="1px"

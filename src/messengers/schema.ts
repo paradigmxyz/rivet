@@ -22,6 +22,7 @@ export type Schema = {
     response: void,
   ]
   ping: [payload: void, response: string]
+  pushRoute: [payload: string, response: void]
   request: [
     payload: { request: RpcRequest; rpcUrl?: string },
     response: RpcResponse,
@@ -29,9 +30,11 @@ export type Schema = {
   toggleTheme: [payload: void, response: void]
   toggleWallet: [
     payload:
-      | { open: boolean; useStorage?: never }
-      | { open?: never; useStorage: true }
-      | void,
+      | ({ route?: string } & (
+          | { open: boolean; useStorage?: never }
+          | { open?: never; useStorage?: true }
+        ))
+      | undefined,
     response: void,
   ]
 }

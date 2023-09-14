@@ -21,12 +21,13 @@ export type TextProps = {
     | 'pre'
   children: React.ReactNode
   color?: TextStyles['color']
+  family?: TextStyles['fontFamily']
   size?: TextStyles['fontSize']
   style?: React.CSSProperties
   tabular?: boolean
   weight?: TextStyles['fontWeight']
   width?: BoxStyles['width']
-  wrap?: boolean
+  wrap?: TextStyles['overflowWrap'] | false
   testId?: string
 }
 
@@ -39,11 +40,12 @@ export const Text = forwardRef<HTMLDivElement, TextProps>(
       as: as_,
       children,
       color,
+      family,
       size: size_,
       style,
       tabular = false,
       weight = 'regular',
-      wrap = true,
+      wrap = 'break-word',
       testId,
     }: TextProps,
     ref,
@@ -61,8 +63,9 @@ export const Text = forwardRef<HTMLDivElement, TextProps>(
           className={textStyle({
             color,
             fontSize: size,
+            fontFamily: family,
             fontWeight: weight,
-            overflowWrap: wrap ? 'break-word' : undefined,
+            overflowWrap: typeof wrap === 'string' ? wrap : undefined,
             textAlign: align,
           })}
           testId={testId}

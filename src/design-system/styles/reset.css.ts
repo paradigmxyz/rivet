@@ -40,7 +40,13 @@ const backgroundTransparent = style({
 const button = style([
   backgroundTransparent,
   {
-    '@layer': { [reset]: { color: 'unset', cursor: 'default' } },
+    '@layer': {
+      [reset]: {
+        color: 'unset',
+        cursor: 'default',
+        display: 'block',
+      },
+    },
   },
 ])
 

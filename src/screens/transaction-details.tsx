@@ -1,7 +1,26 @@
+import * as Tabs from '@radix-ui/react-tabs'
+import { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { type Hash, formatEther, formatGwei } from 'viem'
-import { Container, LabelledContent, Tooltip } from '~/components'
-import { Column, Columns, Separator, Stack, Text } from '~/design-system'
+
+import {
+  Container,
+  DecodedCalldata,
+  LabelledContent,
+  TabsContent,
+  TabsList,
+  Tooltip,
+} from '~/components'
+import {
+  Box,
+  Column,
+  Columns,
+  Inline,
+  Inset,
+  Separator,
+  Stack,
+  Text,
+} from '~/design-system'
 import { useBlock } from '~/hooks/useBlock'
 import { useTransaction } from '~/hooks/useTransaction'
 import { useTransactionConfirmations } from '~/hooks/useTransactionConfirmations'
@@ -15,11 +34,12 @@ const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
 
 export default function TransactionDetails() {
   const { transactionHash } = useParams()
+  const [tab, setTab] = useState('data')
 
   const { data: transaction } = useTransaction({
     hash: transactionHash as Hash,
   })
-  const { data: receipt } = useTransactionReceipt({
+  const { data: receipt, isSuccess: isReceiptSuccess } = useTransactionReceipt({
     hash: transaction?.hash as Hash,
   })
   const { data: confirmations } = useTransactionConfirmations({
@@ -47,14 +67,30 @@ export default function TransactionDetails() {
             </Column>
             <Column width="1/3">
               <LabelledContent label="Status">
-                {!transaction.blockNumber ? (
-                  <Text color="text/tertiary" size="12px">
-                    Pending
-                  </Text>
-                ) : (
-                  <Text size="12px">
-                    {receipt?.status ? capitalize(receipt?.status) : ''}
-                  </Text>
+                {isReceiptSuccess && (
+                  <Inline gap="4px" wrap={false}>
+                    <Box
+                      backgroundColor={
+                        receipt?.status === 'success'
+                          ? 'surface/green'
+                          : receipt?.status === 'reverted'
+                          ? 'surface/red'
+                          : 'surface/invert@0.5'
+                      }
+                      borderWidth="1px"
+                      borderRadius="round"
+                      style={{ minWidth: 8, minHeight: 8 }}
+                    />
+                    {!transaction.blockNumber ? (
+                      <Text color="text/tertiary" size="12px">
+                        Pending
+                      </Text>
+                    ) : (
+                      <Text size="12px">
+                        {receipt?.status ? capitalize(receipt?.status) : ''}
+                      </Text>
+                    )}
+                  </Inline>
                 )}
               </LabelledContent>
             </Column>
@@ -216,16 +252,34 @@ export default function TransactionDetails() {
               </Column>
             ) : null}
           </Columns>
-          <Separator />
-          <Columns gap="12px">
-            {transaction.input && transaction.input !== '0x' && (
-              <Column>
-                <LabelledContent label="Calldata">
-                  <Text size="12px">{transaction.input}</Text>
-                </LabelledContent>
-              </Column>
-            )}
-          </Columns>
+          <Tabs.Root asChild value={tab}>
+            <Box display="flex" flexDirection="column" height="full">
+              <TabsList
+                items={[
+                  { label: 'Data', value: 'data' },
+                  { label: 'Logs', value: 'logs' },
+                  { label: 'Trace', value: 'trace' },
+                ]}
+                onSelect={(item) => {
+                  setTab(item.value)
+                }}
+              />
+              <Inset vertical="16px" bottom="152px">
+                <TabsContent inset={false} scrollable={false} value="data">
+                  <DecodedCalldata
+                    address={transaction.to || undefined}
+                    data={transaction.input}
+                  />
+                </TabsContent>
+                <TabsContent inset={false} value="logs">
+                  {''}
+                </TabsContent>
+                <TabsContent inset={false} value="state">
+                  {''}
+                </TabsContent>
+              </Inset>
+            </Box>
+          </Tabs.Root>
         </Stack>
       </Container>
     </>

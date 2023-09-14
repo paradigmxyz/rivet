@@ -32,7 +32,7 @@ export default function OnboardingDownload() {
           // @ts-expect-error
           style={{ textWrap: 'wrap' }}
         >
-          <Text as="code" size="12px">
+          <Text family="mono" size="12px">
             curl -L https://foundry.paradigm.xyz | bash
           </Text>
           <Box position="absolute" right="12px">

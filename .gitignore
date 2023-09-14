@@ -22,3 +22,7 @@ public/initializeTheme.*
 *.njsproj
 *.sln
 *.sw?
+
+# Foundry
+test/contracts/cache
+test/contracts/out

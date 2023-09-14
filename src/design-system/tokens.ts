@@ -1,4 +1,5 @@
 import { createStyleObject as capsize } from '@capsizecss/core'
+import type { CapsizeOptions } from '@capsizecss/core/dist/declarations/src/types'
 
 export type Theme = 'light' | 'dark'
 export type ColorScheme = 'light' | 'dark'
@@ -397,8 +398,9 @@ export type InheritedColor = keyof typeof defaultInheritedColor
 export const fontFamily = {
   default:
     "'SFPro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
-  mono: "'SFMono', 'Fira Code', 'Fira Mono', 'Roboto Mono', 'Lucida Console', Monaco, monospace",
+  mono: "'SFMono', monospace",
 }
+export type FontFamily = keyof typeof fontFamily
 
 const fontMetrics = {
   capHeight: 1443,
@@ -406,7 +408,7 @@ const fontMetrics = {
   descent: -494,
   lineGap: 0,
   unitsPerEm: 2048,
-}
+} satisfies CapsizeOptions['fontMetrics']
 
 function defineType(
   fontSize: number,
@@ -558,6 +560,7 @@ export type StrokeWeight = keyof typeof strokeWeights
 export const symbolNames = [
   'arrow.clockwise',
   'arrow.left.arrow.right',
+  'checkmark',
   'clock',
   'doc.on.doc',
   'hammer.fill',
@@ -569,6 +572,7 @@ export const symbolNames = [
   'trash',
   'xmark',
   'arrow.right',
+  'arrowtriangle.left.and.line.vertical.and.arrowtriangle.right',
 ] as const
 export type SymbolName = typeof symbolNames[number]
 

@@ -81,7 +81,7 @@ export default function Index() {
           <TabsContent inset={false} value="blocks">
             <Blocks />
           </TabsContent>
-          <TabsContent inset={false} scrollable={false} value="transactions">
+          <TabsContent inset={false} scrollable="auto" value="transactions">
             <Transactions />
           </TabsContent>
         </Box>
