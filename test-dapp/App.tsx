@@ -46,7 +46,7 @@ export default function App() {
 
   const [{ provider }] = providerDetails
   return (
-    <ProviderContext.Provider value={provider}>
+    <ProviderContext.Provider value={provider as EIP1193Provider}>
       <Box
         backgroundColor="surface/primary"
         marginHorizontal="auto"

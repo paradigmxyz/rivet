@@ -554,7 +554,7 @@ export const strokeWeights = {
 }
 export type StrokeWeight = keyof typeof strokeWeights
 
-// Note: Don't forget to generate the symbols with `pnpm symbols`!
+// Note: Don't forget to generate the symbols with `bun run symbols`!
 export const symbolNames = [
   'arrow.clockwise',
   'arrow.left.arrow.right',

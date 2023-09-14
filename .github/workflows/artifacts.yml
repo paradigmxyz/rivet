@@ -16,7 +16,7 @@ jobs:
         uses: ./.github/actions/install-dependencies
 
       - name: Build
-        run: pnpm build
+        run: bun run build
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3

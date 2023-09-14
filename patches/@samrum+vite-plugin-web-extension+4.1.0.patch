@@ -1,0 +1,26 @@
+diff --git a/node_modules/@samrum/vite-plugin-web-extension/dist/index.es.js b/node_modules/@samrum/vite-plugin-web-extension/dist/index.es.js
+index f2d642d..56beb35 100644
+--- a/node_modules/@samrum/vite-plugin-web-extension/dist/index.es.js
++++ b/node_modules/@samrum/vite-plugin-web-extension/dist/index.es.js
+@@ -186,7 +186,7 @@ class DevBuilder {
+     }
+     async writeBuild({ devServerPort, manifestHtmlFiles, }) {
+         this.hmrServerOrigin = this.getHmrServerOrigin(devServerPort);
+-        await emptyDir(this.outDir);
++        // await emptyDir(this.outDir);
+         const publicDir = path.resolve(process.cwd(), this.viteConfig.root, this.viteConfig.publicDir);
+         copy(publicDir, this.outDir);
+         await this.writeManifestHtmlFiles(manifestHtmlFiles);
+diff --git a/node_modules/@samrum/vite-plugin-web-extension/dist/index.js b/node_modules/@samrum/vite-plugin-web-extension/dist/index.js
+index a16b52f..65627cb 100644
+--- a/node_modules/@samrum/vite-plugin-web-extension/dist/index.js
++++ b/node_modules/@samrum/vite-plugin-web-extension/dist/index.js
+@@ -188,7 +188,7 @@ class DevBuilder {
+     }
+     async writeBuild({ devServerPort, manifestHtmlFiles, }) {
+         this.hmrServerOrigin = this.getHmrServerOrigin(devServerPort);
+-        await fsExtra.emptyDir(this.outDir);
++        // await fsExtra.emptyDir(this.outDir);
+         const publicDir = path.resolve(process.cwd(), this.viteConfig.root, this.viteConfig.publicDir);
+         fsExtra.copy(publicDir, this.outDir);
+         await this.writeManifestHtmlFiles(manifestHtmlFiles);
