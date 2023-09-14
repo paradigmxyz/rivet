@@ -91,7 +91,7 @@ bun -v
 
 If the versions are not correct or you don't have Bun installed, download and follow their setup instructions:
 
-- Install [Bun](https://bun.sh/docs/install)
+- Install [Bun](https://bun.sh/docs/installation)
 
 ### 3. Install dependencies
 
