@@ -79,28 +79,26 @@ Clone the repo to your local machine using git:
 git clone https://github.com/paradigmxyz/rivet.git
 ```
 
-### 2. Install Node.js and pnpm
+### 2. Install Bun
 
-You need to install **Node.js v18 or higher** and **pnpm v8 or higher**.
+wagmi uses [Bun](https://bun.sh). You need to install **Bun v1 or higher**.
 
-You can run the following commands in your terminal to check your local Node.js and pnpm versions:
+You can run the following commands in your terminal to check your local Bun version:
 
 ```bash
-node -v
-pnpm -v
+bun -v
 ```
 
-If the versions are not correct or you don't have Node.js or pnpm installed, download and follow their setup instructions:
+If the versions are not correct or you don't have Bun installed, download and follow their setup instructions:
 
-- Install Node.js using [fnm](https://github.com/Schniz/fnm) or from the [official website](https://nodejs.org)
-- Install [pnpm](https://pnpm.io/installation)
+- Install [Bun](https://bun.sh/docs/install)
 
 ### 3. Install dependencies
 
 Once in the project's root directory, run the following command to install the project's dependencies:
 
 ```bash
-pnpm install
+bun i
 ```
 
 ### 4. Run the dev server
@@ -108,7 +106,7 @@ pnpm install
 After you have installed dependencies, you are ready to run the dev server for the Extension. To do so, run the following:
 
 ```bash
-pnpm dev 
+bun run dev 
 ```
 
 This will run a script that will build the Web Extension and start a dev server for the Test Dapp, it will also open the Test Dapp in a new browser tab.

@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from '@lukeed/uuid'
-import { announceProvider } from 'mipd'
+import { type EIP1193Provider, announceProvider } from 'mipd'
 
 import { getMessenger } from '~/messengers'
 import { getProvider } from '~/provider'
@@ -24,6 +24,6 @@ export function injectProvider() {
       rdns: 'et.riv',
       uuid: uuidv4(),
     },
-    provider,
+    provider: provider as EIP1193Provider,
   })
 }

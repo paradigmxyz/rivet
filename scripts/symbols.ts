@@ -1,10 +1,5 @@
-import path from 'path'
-
-import { mkdirSync, readFileSync, writeFileSync } from 'fs-extra'
+import path from 'node:path'
 import opentype from 'opentype.js'
-import prettierTypeScript from 'prettier/parser-typescript'
-import prettier from 'prettier/standalone'
-// @ts-expect-error
 import SVGPathCommander from 'svg-path-commander'
 
 import type { SFSymbol } from '../src/design-system/symbols/generated/types'
@@ -21,21 +16,14 @@ const weights = Object.keys(fontWeight)
 ;(async () => {
   console.log('Generating symbols...')
 
-  const chars = readFileSync(
-    path.join(__dirname, '../public/sources/chars.txt'),
-    {
-      encoding: 'utf-8',
-    },
+  const chars = (
+    await Bun.file(path.join(__dirname, '../public/sources/chars.txt')).text()
   ).match(/.{1,2}/g)
   if (!chars) return
 
   // Load name sequence from text file.
-  const names = readFileSync(
-    path.join(__dirname, '../public/sources/names.txt'),
-    {
-      encoding: 'utf8',
-      flag: 'r',
-    },
+  const names = (
+    await Bun.file(path.join(__dirname, '../public/sources/names.txt')).text()
   ).split(/\r?\n/)
   if (!names) return
 
@@ -83,17 +71,14 @@ const weights = Object.keys(fontWeight)
     })
   })
 
-  mkdirSync(path.join(__dirname, '../src/design-system/symbols/generated'), {
-    recursive: true,
-  })
+  const source = `export default ${JSON.stringify(symbols)} as const`
 
-  writeFileSync(
-    path.join(__dirname, '../src/design-system/symbols/generated/index.ts'),
-    prettier.format(`export default ${JSON.stringify(symbols)} as const`, {
-      parser: 'typescript',
-      plugins: [prettierTypeScript],
-      singleQuote: true,
-    }),
+  Bun.write(
+    path.join(
+      import.meta.dir,
+      '../src/design-system/symbols/generated/index.ts',
+    ),
+    source,
   )
 
   const typesSource = `
@@ -108,12 +93,11 @@ const weights = Object.keys(fontWeight)
     };
   }
   `
-  writeFileSync(
-    path.join(__dirname, '../src/design-system/symbols/generated/types.ts'),
-    prettier.format(typesSource, {
-      parser: 'typescript',
-      plugins: [prettierTypeScript],
-      singleQuote: true,
-    }),
+  Bun.write(
+    path.join(
+      import.meta.dir,
+      '../src/design-system/symbols/generated/types.ts',
+    ),
+    typesSource,
   )
 })()
