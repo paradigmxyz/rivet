@@ -6,7 +6,7 @@ import { Box } from '~/design-system'
 type TabsContentProps = {
   children: ReactNode
   inset?: boolean
-  scrollable?: boolean
+  scrollable?: boolean | 'auto'
   value: string
 }
 
@@ -21,7 +21,10 @@ export function TabsContent({
       <Box
         height="full"
         marginHorizontal="-8px"
-        style={{ overflowY: scrollable ? 'scroll' : 'auto' }}
+        style={{
+          overflowY:
+            scrollable === 'auto' ? 'auto' : scrollable ? 'scroll' : undefined,
+        }}
       >
         <Box
           height="full"

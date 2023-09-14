@@ -7,7 +7,7 @@ import {
   foregroundColorVars,
   inheritedColorVars,
 } from '../styles/theme.css'
-import { fontSize, fontWeight } from '../tokens'
+import { fontFamily, fontSize, fontWeight } from '../tokens'
 
 const textProperties = (inline: boolean) =>
   defineProperties({
@@ -18,9 +18,10 @@ const textProperties = (inline: boolean) =>
         ...mapValues(backgroundColorVars, (colorVar) => `rgb(${colorVar})`),
         ...mapValues(foregroundColorVars, (colorVar) => `rgb(${colorVar})`),
       },
+      fontFamily,
       fontSize: fontSize(inline),
       fontWeight,
-      overflowWrap: ['break-word'],
+      overflowWrap: ['anywhere', 'break-word'],
       textAlign: ['left', 'center', 'right'],
       textDecoration: ['underline'],
       textUnderlineOffset: ['2px'],

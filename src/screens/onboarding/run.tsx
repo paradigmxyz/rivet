@@ -65,7 +65,7 @@ export default function OnboardingRun() {
           // @ts-expect-error
           style={{ textWrap: 'wrap' }}
         >
-          <Text as="code" size="12px">
+          <Text family="mono" size="12px">
             {command}
           </Text>
           <Box position="absolute" top="4px" right="4px">

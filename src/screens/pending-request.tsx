@@ -1,4 +1,5 @@
-import { useMemo } from 'react'
+import * as Tabs from '@radix-ui/react-tabs'
+import { useMemo, useState } from 'react'
 import { omitBy } from 'remeda'
 import {
   formatEther,
@@ -9,8 +10,24 @@ import {
   isHex,
 } from 'viem'
 
-import { Container, LabelledContent, Tooltip } from '~/components'
-import { Button, Column, Columns, Inline, Stack, Text } from '~/design-system'
+import {
+  Container,
+  DecodedCalldata,
+  LabelledContent,
+  TabsContent,
+  TabsList,
+  Tooltip,
+} from '~/components'
+import {
+  Box,
+  Button,
+  Column,
+  Columns,
+  Inline,
+  Inset,
+  Stack,
+  Text,
+} from '~/design-system'
 import { usePendingBlockQueryOptions } from '~/hooks/usePendingBlock'
 import { usePendingTransactionsQueryOptions } from '~/hooks/usePendingTransactions'
 import {
@@ -140,6 +157,10 @@ function SendTransactionRequest({
 
   ////////////////////////////////////////////////////////////////////////
 
+  const [tab, setTab] = useState('data')
+
+  ////////////////////////////////////////////////////////////////////////
+
   return (
     <PendingRequestContainer
       isLoading={isLoading}
@@ -230,15 +251,33 @@ function SendTransactionRequest({
             </LabelledContent>
           </Column>
         </Columns>
-        <Columns gap="12px">
-          {data && (
-            <Column>
-              <LabelledContent label="Data">
-                <Text size="12px">{data}</Text>
-              </LabelledContent>
-            </Column>
-          )}
-        </Columns>
+        {data && (
+          <Tabs.Root asChild value={tab}>
+            <Box display="flex" flexDirection="column" height="full">
+              <TabsList
+                items={[
+                  { label: 'Data', value: 'data' },
+                  { label: 'Logs', value: 'logs' },
+                  { label: 'Trace', value: 'trace' },
+                ]}
+                onSelect={(item) => {
+                  setTab(item.value)
+                }}
+              />
+              <Inset vertical="16px" bottom="152px">
+                <TabsContent inset={false} scrollable={false} value="data">
+                  <DecodedCalldata address={to} data={data} />
+                </TabsContent>
+                <TabsContent inset={false} value="logs">
+                  {''}
+                </TabsContent>
+                <TabsContent inset={false} value="state">
+                  {''}
+                </TabsContent>
+              </Inset>
+            </Box>
+          </Tabs.Root>
+        )}
       </Stack>
     </PendingRequestContainer>
   )

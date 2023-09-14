@@ -104,7 +104,7 @@ export function setupRpcHandler() {
             async ({ request: pendingRequest, status }) => {
               if (pendingRequest.id !== request.id) return
 
-              if (status === 'rejected')
+              if (status === 'rejected') {
                 resolve({
                   id: request.id,
                   jsonrpc: '2.0',
@@ -114,6 +114,8 @@ export function setupRpcHandler() {
                     data: { request },
                   },
                 } satisfies RpcResponse)
+                return
+              }
 
               try {
                 const response = await rpcClient.request(pendingRequest)

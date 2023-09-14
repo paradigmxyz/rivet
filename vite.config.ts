@@ -22,7 +22,11 @@ export default defineConfig({
     vanillaExtractPlugin(),
     webExtension({
       additionalInputs: {
-        html: ['src/index.html', 'src/design-system/playground/index.html'],
+        html: [
+          'src/index.html',
+          'src/components/_playground/index.html',
+          'src/design-system/_playground/index.html',
+        ],
       },
       manifest: getManifest({ dev }),
     }),

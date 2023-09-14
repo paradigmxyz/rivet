@@ -3,6 +3,7 @@ import {
   createContext,
   useContext,
   useEffect,
+  useMemo,
   useState,
   useSyncExternalStore,
 } from 'react'
@@ -11,15 +12,20 @@ import {
   type EIP1193Provider,
   type Hash,
   type Hex,
+  createClient,
+  custom,
   hexToNumber,
   isHex,
   numberToHex,
   parseEther,
   parseGwei,
+  publicActions,
   stringToHex,
   stringify,
+  walletActions,
 } from 'viem'
 import 'viem/window'
+
 import '~/design-system/styles/global.css'
 
 import {
@@ -32,10 +38,15 @@ import {
   Stack,
   Text,
 } from '~/design-system'
+import type { Client } from '~/viem'
+import { Playground } from '../contracts/generated'
 
 const store = createStore()
 
-const ProviderContext = createContext({} as EIP1193Provider)
+const Context = createContext({
+  client: null as unknown as Client,
+  provider: null as unknown as EIP1193Provider,
+})
 
 export default function App() {
   const providerDetails = useSyncExternalStore(
@@ -45,8 +56,18 @@ export default function App() {
   if (providerDetails.length === 0) return null
 
   const [{ provider }] = providerDetails
+  const client = useMemo(
+    () =>
+      createClient({
+        transport: custom(provider),
+      })
+        .extend(publicActions)
+        .extend(walletActions) as unknown as Client,
+    [provider],
+  )
+
   return (
-    <ProviderContext.Provider value={provider as EIP1193Provider}>
+    <Context.Provider value={{ client, provider }}>
       <Box
         backgroundColor="surface/primary"
         marginHorizontal="auto"
@@ -74,21 +95,25 @@ export default function App() {
           <SendTransaction />
           <SignMessage />
           <SignTypedData />
+          <Text weight="semibold" size="22px">
+            Misc.
+          </Text>
+          <WriteContract />
         </Stack>
       </Box>
-    </ProviderContext.Provider>
+    </Context.Provider>
   )
 }
 
 function AccountsChanged() {
-  const provider = useContext(ProviderContext)
+  const { provider } = useContext(Context)
 
   const [accounts, setAccounts] = useState<Address[][]>([])
   useEffect(() => {
     provider.on('accountsChanged', (accounts) => {
       setAccounts((x) => [...x, accounts as Address[]])
     })
-  }, [])
+  }, [provider])
   return (
     <Stack gap="12px">
       <Text size="18px" weight="semibold">
@@ -104,14 +129,15 @@ function AccountsChanged() {
 }
 
 function ChainChanged() {
-  const provider = useContext(ProviderContext)
+  const { provider } = useContext(Context)
 
   const [chainIds, setChainIds] = useState<number[]>([])
   useEffect(() => {
     provider.on('chainChanged', (chainId) => {
       setChainIds((chainIds) => [...chainIds, hexToNumber(chainId as Hex)])
     })
-  }, [])
+  }, [provider])
+
   return (
     <Stack gap="12px">
       <Text size="18px" weight="semibold">
@@ -123,7 +149,7 @@ function ChainChanged() {
 }
 
 function Connect() {
-  const provider = useContext(ProviderContext)
+  const { provider } = useContext(Context)
 
   const [lastEvent, setLastEvent] = useState<string>('')
   useEffect(() => {
@@ -133,7 +159,8 @@ function Connect() {
     provider.on('disconnect', () => {
       setLastEvent('disconnect')
     })
-  }, [])
+  }, [provider])
+
   return (
     <Stack gap="12px">
       <Text size="18px" weight="semibold">
@@ -145,7 +172,7 @@ function Connect() {
 }
 
 function RequestAccounts() {
-  const provider = useContext(ProviderContext)
+  const { provider } = useContext(Context)
 
   const [accounts, setAccounts] = useState<Address[]>()
 
@@ -172,7 +199,7 @@ function RequestAccounts() {
 }
 
 function Accounts() {
-  const provider = useContext(ProviderContext)
+  const { provider } = useContext(Context)
   const [accounts, setAccounts] = useState<Address[]>()
 
   useEffect(() => {
@@ -182,7 +209,7 @@ function Accounts() {
       })
       setAccounts(accounts)
     })()
-  }, [])
+  }, [provider])
 
   return (
     <Stack gap="12px">
@@ -197,14 +224,14 @@ function Accounts() {
 }
 
 function BlockNumber() {
-  const provider = useContext(ProviderContext)
+  const { provider } = useContext(Context)
   const [blockNumber, setBlockNumber] = useState<Hex>()
 
   useEffect(() => {
     ;(async () => {
       setBlockNumber(await provider.request({ method: 'eth_blockNumber' }))
     })()
-  }, [])
+  }, [provider])
 
   return (
     <Stack gap="12px">
@@ -217,14 +244,14 @@ function BlockNumber() {
 }
 
 function ChainId() {
-  const provider = useContext(ProviderContext)
+  const { provider } = useContext(Context)
   const [chainId, setChainId] = useState<Hex>()
 
   useEffect(() => {
     ;(async () => {
       setChainId(await provider.request({ method: 'eth_chainId' }))
     })()
-  }, [])
+  }, [provider])
 
   return (
     <Stack gap="12px">
@@ -237,7 +264,7 @@ function ChainId() {
 }
 
 function SendTransaction() {
-  const provider = useContext(ProviderContext)
+  const { provider } = useContext(Context)
 
   const [hash, setHash] = useState<Hash | undefined>()
   const [error, setError] = useState<Error>()
@@ -351,7 +378,7 @@ function SendTransaction() {
 }
 
 function SignMessage() {
-  const provider = useContext(ProviderContext)
+  const { provider } = useContext(Context)
 
   const [message, setMessage] = useState('')
   const [signature, setSignature] = useState<Hex | undefined>()
@@ -399,7 +426,7 @@ function SignMessage() {
 }
 
 function SignTypedData() {
-  const provider = useContext(ProviderContext)
+  const { provider } = useContext(Context)
 
   const [signature, setSignature] = useState<Hex | undefined>()
   const [error, setError] = useState<Error>()
@@ -463,6 +490,57 @@ function SignTypedData() {
       </Inline>
       {signature && <Text>Signature: {signature}</Text>}
       {error && <Text>Error: {error.message}</Text>}
+    </Stack>
+  )
+}
+
+function WriteContract() {
+  const { client } = useContext(Context)
+
+  const test_1 = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const [address] = await client.getAddresses()
+    await client.writeContract({
+      abi: Playground.abi,
+      address: '0x',
+      account: address,
+      chain: null,
+      functionName: 'test_rivet_1',
+      args: [1n, true, { x: 1n, y: true }, [{ x: 2n, y: false }]],
+    })
+  }
+
+  const test_2 = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const [address] = await client.getAddresses()
+    await client.writeContract({
+      abi: Playground.abi,
+      address: '0x',
+      account: address,
+      chain: null,
+      functionName: 'approve',
+      args: ['0x04d7478fDF318C3C22cECE62Da9D78ff94807D77', 1n],
+    })
+  }
+
+  return (
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
+        write: test_rivet_1
+      </Text>
+      <Inline wrap={false} gap="12px">
+        <Button onClick={test_1} width="fit">
+          Write
+        </Button>
+      </Inline>
+      <Text size="18px" weight="semibold">
+        write: approve
+      </Text>
+      <Inline wrap={false} gap="12px">
+        <Button onClick={test_2} width="fit">
+          Write
+        </Button>
+      </Inline>
     </Stack>
   )
 }

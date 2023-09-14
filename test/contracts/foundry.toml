@@ -1,0 +1,10 @@
+[profile.default]
+src = 'src'
+solc_version = "0.8.18"
+
+ignored_error_codes = ["license", "unused-param", "unused-var"]
+
+[fmt]
+line_length = 80
+
+# See more config options https://github.com/foundry-rs/foundry/tree/master/config

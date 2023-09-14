@@ -2,6 +2,7 @@ import { getMessenger } from '~/messengers'
 import { windowStorage } from '~/storage'
 
 const backgroundMessenger = getMessenger('background:contentScript')
+const walletMessenger = getMessenger('wallet:contentScript')
 
 backgroundMessenger.send('ping', undefined)
 setInterval(() => {
@@ -110,8 +111,10 @@ function setupToggleListeners({
   let open = Boolean(windowStorage.local.getItem('open')) || false
 
   async function listener(
-    args: { open?: boolean; useStorage?: boolean } | void = {},
+    args: { route?: string; open?: boolean; useStorage?: boolean } | void = {},
   ) {
+    if (args?.route) walletMessenger.send('pushRoute', args.route)
+
     if (args?.useStorage && windowStorage.local.getItem('open'))
       open = Boolean(windowStorage.local.getItem('open'))
     else open = args?.open ?? !open
