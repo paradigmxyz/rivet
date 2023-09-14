@@ -111,7 +111,7 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
       </Bleed>
       {/* TODO: Handle empty state. */}
       {tokens[accountAddress]?.map((tokenAddress) => (
-        <TokenRow accountAddress={accountAddress} tokenAddress={tokenAddress} />
+        <TokenRow accountAddress={accountAddress} tokenAddress={tokenAddress} key={tokenAddress} />
       ))}
     </Inset>
   )
