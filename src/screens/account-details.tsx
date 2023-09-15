@@ -266,8 +266,8 @@ function BalanceInput({
   }, [balance, decimals])
 
   return (
-    <Box position="relative">
-      <Columns alignVertical="center" alignHorizontal="right" gap="4px">
+    <Box>
+      <Columns alignVertical="center" alignHorizontal="right">
         {isPending && (
           <Column width="1/5">
             <Spinner size="15px" />
