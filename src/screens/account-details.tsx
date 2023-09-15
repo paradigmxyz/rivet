@@ -5,6 +5,7 @@ import { type Address, formatUnits, isAddress, parseUnits } from 'viem'
 
 import { LabelledContent, TabsContent, TabsList, Tooltip } from '~/components'
 import * as Form from '~/components/form'
+import { Spinner } from '~/components/svgs'
 import {
   Bleed,
   Box,
@@ -110,7 +111,11 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
       </Bleed>
       {/* TODO: Handle empty state. */}
       {tokens[accountAddress]?.map((tokenAddress) => (
-        <TokenRow accountAddress={accountAddress} tokenAddress={tokenAddress} />
+        <TokenRow
+          accountAddress={accountAddress}
+          tokenAddress={tokenAddress}
+          key={tokenAddress}
+        />
       ))}
     </Inset>
   )
@@ -252,7 +257,7 @@ function BalanceInput({
   tokenAddress: Address
 }) {
   // TODO: Handle errors when setting balance.
-  const { mutate } = useSetErc20Balance()
+  const { mutate, isPending } = useSetErc20Balance()
 
   const [value, setValue] = useState(formatUnits(balance, decimals))
 
@@ -261,22 +266,36 @@ function BalanceInput({
   }, [balance, decimals])
 
   return (
-    <Input
-      onChange={(e) => setValue(e.target.value)}
-      onClick={(e) => e.stopPropagation()}
-      onBlur={(e) => {
-        const newValue = parseUnits(e.target.value as `${number}`, decimals)
-        if (newValue !== balance) {
-          mutate({
-            address,
-            tokenAddress,
-            value: newValue,
-          })
-        }
-      }}
-      height="24px"
-      style={{ textAlign: 'right' }}
-      value={value}
-    />
+    <Box>
+      <Columns alignVertical="center" alignHorizontal="right" gap="8px">
+        {isPending && (
+          <Column alignHorizontal="right" width="1/5">
+            <Spinner size="15px" />
+          </Column>
+        )}
+        <Column width="4/5">
+          <Input
+            onChange={(e) => setValue(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+            onBlur={(e) => {
+              const newValue = parseUnits(
+                e.target.value as `${number}`,
+                decimals,
+              )
+              if (newValue !== balance) {
+                mutate({
+                  address,
+                  tokenAddress,
+                  value: newValue,
+                })
+              }
+            }}
+            height="24px"
+            style={{ textAlign: 'right' }}
+            value={value}
+          />
+        </Column>
+      </Columns>
+    </Box>
   )
 }

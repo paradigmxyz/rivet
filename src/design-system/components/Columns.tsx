@@ -70,6 +70,7 @@ export const Columns = forwardRef<HTMLDivElement, ColumnsProps>(
 )
 
 type ColumnProps = {
+  alignHorizontal?: AlignHorizontal
   alignVertical?: AlignVertical
   width?: 'content' | keyof typeof styles.width
   children: ReactNode
@@ -98,10 +99,18 @@ function getColumnProps(node: NonNullable<ReactNode>): ColumnProps | null {
     : null
 }
 
-function PrivateColumn({ alignVertical, children, width }: ColumnProps) {
+function PrivateColumn({
+  alignHorizontal,
+  alignVertical,
+  children,
+  width,
+}: ColumnProps) {
   if (width) {
     return (
       <Box
+        alignItems={
+          alignHorizontal && alignHorizontalToJustifyContent[alignHorizontal]
+        }
         className={width !== 'content' ? styles.width[width] : undefined}
         display="flex"
         flexDirection="column"
