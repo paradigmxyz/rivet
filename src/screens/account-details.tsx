@@ -111,7 +111,11 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
       </Bleed>
       {/* TODO: Handle empty state. */}
       {tokens[accountAddress]?.map((tokenAddress) => (
-        <TokenRow accountAddress={accountAddress} tokenAddress={tokenAddress} key={tokenAddress} />
+        <TokenRow
+          accountAddress={accountAddress}
+          tokenAddress={tokenAddress}
+          key={tokenAddress}
+        />
       ))}
     </Inset>
   )
@@ -253,7 +257,7 @@ function BalanceInput({
   tokenAddress: Address
 }) {
   // TODO: Handle errors when setting balance.
-  const { mutate, loading } = useSetErc20Balance()
+  const { mutate, isPending } = useSetErc20Balance()
 
   const [value, setValue] = useState(formatUnits(balance, decimals))
 
@@ -263,7 +267,7 @@ function BalanceInput({
 
   return (
     <>
-      {loading ? (
+      {isPending ? (
         <Box style={{ textAlign: 'center' }}>
           <Spinner size="15px" />
         </Box>
