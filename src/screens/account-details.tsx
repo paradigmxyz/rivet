@@ -266,30 +266,36 @@ function BalanceInput({
   }, [balance, decimals])
 
   return (
-    <>
-      {isPending ? (
-        <Box style={{ textAlign: 'center' }}>
-          <Spinner size="15px" />
-        </Box>
-      ) : (
-        <Input
-          onChange={(e) => setValue(e.target.value)}
-          onClick={(e) => e.stopPropagation()}
-          onBlur={(e) => {
-            const newValue = parseUnits(e.target.value as `${number}`, decimals)
-            if (newValue !== balance) {
-              mutate({
-                address,
-                tokenAddress,
-                value: newValue,
-              })
-            }
-          }}
-          height="24px"
-          style={{ textAlign: 'right' }}
-          value={value}
-        />
-      )}
-    </>
+    <Box position="relative">
+      <Columns alignVertical="center" alignHorizontal="right" gap="4px">
+        {isPending && (
+          <Column width="1/5">
+            <Spinner size="15px" />
+          </Column>
+        )}
+        <Column width="4/5">
+          <Input
+            onChange={(e) => setValue(e.target.value)}
+            onClick={(e) => e.stopPropagation()}
+            onBlur={(e) => {
+              const newValue = parseUnits(
+                e.target.value as `${number}`,
+                decimals,
+              )
+              if (newValue !== balance) {
+                mutate({
+                  address,
+                  tokenAddress,
+                  value: newValue,
+                })
+              }
+            }}
+            height="24px"
+            style={{ textAlign: 'right' }}
+            value={value}
+          />
+        </Column>
+      </Columns>
+    </Box>
   )
 }
