@@ -267,9 +267,9 @@ function BalanceInput({
 
   return (
     <Box>
-      <Columns alignVertical="center" alignHorizontal="right">
+      <Columns alignVertical="center" alignHorizontal="right" gap="8px">
         {isPending && (
-          <Column width="1/5">
+          <Column alignHorizontal="right" width="1/5">
             <Spinner size="15px" />
           </Column>
         )}
