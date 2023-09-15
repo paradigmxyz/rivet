@@ -53,7 +53,7 @@ export default function App() {
     store.subscribe,
     store.getProviders,
   )
-  if (providerDetails.length === 0) return null
+  if (providerDetails.length === 0) return <InstallExtension />
 
   const [{ provider }] = providerDetails
   const client = useMemo(
@@ -102,6 +102,42 @@ export default function App() {
         </Stack>
       </Box>
     </Context.Provider>
+  )
+}
+
+function InstallExtension() {
+  return (
+    <Box
+      backgroundColor="surface/primary"
+      marginHorizontal="auto"
+      maxWidth="1152px"
+      paddingTop="40px"
+      paddingBottom="152px"
+    >
+      <Stack gap="28px">
+        <Text weight="bold" size="32px">
+          Install or Enable Extension
+        </Text>
+        <Stack gap="28px">
+          <Text as="p" size="18px">
+            Once you have your dev server running, you can install the Web
+            Extension in your browser. To do so, follow these steps:
+          </Text>
+          <Text> 1. Open your browser's Extensions page </Text>
+          <Text> 2. Enable "Developer mode" in the top right corner </Text>
+          <Text> 3. Click "Load unpacked" in the top left corner </Text>
+          <Text>
+            {' '}
+            4. Select the `dist/dev` folder in Rivet's root directory{' '}
+          </Text>
+          <Text>
+            5. You're good to go! Refresh this page again to show test dapp.
+            Don't forget to pin the Extension to your browser's toolbar for easy
+            access.
+          </Text>
+        </Stack>
+      </Stack>
+    </Box>
   )
 }
 
