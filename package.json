@@ -58,6 +58,7 @@
     "react-dom": "^18.2.0",
     "react-flatten-children": "^1.1.2",
     "react-hook-form": "^7.44.2",
+    "react-hot-toast": "^2.4.1",
     "react-intersection-observer": "^9.5.2",
     "react-router": "^6.10.0",
     "react-router-dom": "^6.10.0",
