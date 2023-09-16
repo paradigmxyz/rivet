@@ -50,6 +50,9 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
     return <SignMessageRequest request={request} />
   if (request.method === 'eth_signTypedData_v4')
     return <SignTypedDataRequest request={request} />
+  if (request.method === 'eth_requestAccounts') {
+    return <RequestAccounts request={request} />
+  }
   return null
 }
 
@@ -278,6 +281,40 @@ function SendTransactionRequest({
             </Box>
           </Tabs.Root>
         )}
+      </Stack>
+    </PendingRequestContainer>
+  )
+}
+
+function RequestAccounts({
+  request,
+}: {
+  request: ExtractRequest<'eth_requestAccounts'>
+}) {
+  const handleApprove = async () => {
+    await backgroundMessenger.send('pendingRequest', {
+      request,
+      status: 'approved',
+    })
+  }
+  const handleReject = async () => {
+    await backgroundMessenger.send('pendingRequest', {
+      request,
+      status: 'rejected',
+    })
+  }
+
+  return (
+    <PendingRequestContainer
+      // isLoading={isLoading}
+      onApprove={handleApprove}
+      onReject={handleReject}
+    >
+      <Stack gap="20px">
+        <Text size="14px">Approve Login</Text>
+        <Text size="20px">
+          Please approve if you want to continue accessing accounts
+        </Text>
       </Stack>
     </PendingRequestContainer>
   )

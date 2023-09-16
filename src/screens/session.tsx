@@ -1,7 +1,15 @@
 import { Fragment } from 'react'
 import { connect, disconnect } from '~/actions'
 import { Container, LabelledContent } from '~/components'
-import { Box, Button, Inline, Separator, Stack, Text } from '~/design-system'
+import {
+  Box,
+  Button,
+  Inline,
+  Input,
+  Separator,
+  Stack,
+  Text,
+} from '~/design-system'
 import { useHost } from '~/hooks/useHost'
 import { getMessenger } from '~/messengers'
 import { useSessionsStore } from '~/zustand'
@@ -10,7 +18,8 @@ const inpageMessenger = getMessenger('wallet:inpage')
 
 export default function Session() {
   const { data: host } = useHost()
-  const { getSession, sessions } = useSessionsStore()
+  const { getSession, sessions, instantMode, updateInstantMode } =
+    useSessionsStore()
   const isConnected = Boolean(host && getSession({ host }))
 
   return (
@@ -36,6 +45,26 @@ export default function Session() {
               Connect
             </Button>
           )}
+        </Container>
+      </Box>
+      <Box>
+        <Container fit header={'Authorization'}>
+          <Inline alignVertical="center" alignHorizontal="justify" wrap={false}>
+            <Text size="12px">{'Enable Instant Authorization mode'}</Text>
+            <Input
+              type="checkbox"
+              style={{
+                height: '16px',
+                float: 'right',
+                width: 'auto',
+                marginRight: '10px',
+              }}
+              checked={instantMode}
+              onChange={(e) => {
+                updateInstantMode({ mode: e.target.checked })
+              }}
+            />
+          </Inline>
         </Container>
       </Box>
       <Box>
