@@ -88,22 +88,7 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
   if (!accountAddress) return null
   return (
     <Inset vertical="8px">
-      <Toaster
-        toastOptions={{
-          success: {
-            style: {
-              background: 'rgb(48, 164, 108)',
-              color: 'white',
-            },
-          },
-          error: {
-            style: {
-              background: 'rgb(242, 85, 90)',
-              color: 'white',
-            },
-          },
-        }}
-      />
+      <Toaster />
       <ImportToken accountAddress={accountAddress} />
       <Box style={{ height: '4px' }} />
       <Box style={{ height: '24px' }}>
