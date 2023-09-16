@@ -23,6 +23,7 @@ import {
 } from '~/design-system'
 
 import { useEffect, useState } from 'react'
+import { toast } from 'sonner'
 import { useErc20Balance } from '~/hooks/useErc20Balance'
 import { useErc20Metadata } from '~/hooks/useErc20Metadata'
 import { useSetErc20Balance } from '~/hooks/useSetErc20Balance'
@@ -83,20 +84,27 @@ export default function AccountDetails() {
 
 function Tokens({ accountAddress }: { accountAddress: Address }) {
   const { tokens } = useTokensStore()
-  const [toastMessage, setToastMessage] = useState<string | null>(null)
-
-  const showToast = (message: string) => {
-    setToastMessage(message)
-    setTimeout(() => {
-      setToastMessage(null)
-    }, 5000)
-  }
 
   if (!accountAddress) return null
   return (
     <Inset vertical="8px">
-      {toastMessage && <Box>{toastMessage}</Box>}
-      <ImportToken accountAddress={accountAddress} showToast={showToast} />
+      <Toaster
+        toastOptions={{
+          success: {
+            style: {
+              background: 'rgb(48, 164, 108)',
+              color: 'white',
+            },
+          },
+          error: {
+            style: {
+              background: 'rgb(242, 85, 90)',
+              color: 'white',
+            },
+          },
+        }}
+      />
+      <ImportToken accountAddress={accountAddress} />
       <Box style={{ height: '4px' }} />
       <Box style={{ height: '24px' }}>
         <Columns alignHorizontal="justify" gap="4px">
@@ -130,10 +138,7 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
   )
 }
 
-function ImportToken({
-  accountAddress,
-  showToast,
-}: { accountAddress: Address; showToast: (message: string) => void }) {
+function ImportToken({ accountAddress }: { accountAddress: Address }) {
   const { addToken } = useTokensStore()
 
   const { handleSubmit, register, reset } = useForm<{ address: string }>({
@@ -145,8 +150,7 @@ function ImportToken({
   const submit = handleSubmit(async ({ address }) => {
     try {
       if (!accountAddress || !address || !isAddress(address)) {
-        console.log('invalid token address')
-        showToast('Invalid token address')
+        toast.error('Invalid token address')
         reset()
         return
       }
