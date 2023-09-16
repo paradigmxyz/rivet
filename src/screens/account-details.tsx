@@ -83,11 +83,20 @@ export default function AccountDetails() {
 
 function Tokens({ accountAddress }: { accountAddress: Address }) {
   const { tokens } = useTokensStore()
+  const [toastMessage, setToastMessage] = useState<string | null>(null)
+
+  const showToast = (message: string) => {
+    setToastMessage(message)
+    setTimeout(() => {
+      setToastMessage(null)
+    }, 5000)
+  }
 
   if (!accountAddress) return null
   return (
     <Inset vertical="8px">
-      <ImportToken accountAddress={accountAddress} />
+      {toastMessage && <Box>{toastMessage}</Box>}
+      <ImportToken accountAddress={accountAddress} showToast={showToast} />
       <Box style={{ height: '4px' }} />
       <Box style={{ height: '24px' }}>
         <Columns alignHorizontal="justify" gap="4px">
@@ -121,7 +130,10 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
   )
 }
 
-function ImportToken({ accountAddress }: { accountAddress: Address }) {
+function ImportToken({
+  accountAddress,
+  showToast,
+}: { accountAddress: Address; showToast: (message: string) => void }) {
   const { addToken } = useTokensStore()
 
   const { handleSubmit, register, reset } = useForm<{ address: string }>({
@@ -133,6 +145,8 @@ function ImportToken({ accountAddress }: { accountAddress: Address }) {
   const submit = handleSubmit(async ({ address }) => {
     try {
       if (!accountAddress || !address || !isAddress(address)) {
+        console.log('invalid token address')
+        showToast('Invalid token address')
         reset()
         return
       }
