@@ -3,11 +3,15 @@ import type { RpcRequest } from '~/messengers/schema'
 
 import { createStore } from './utils'
 
+export type PendingRequest = RpcRequest & {
+  sender?: chrome.runtime.MessageSender
+}
+
 export type PendingRequestsState = {
-  pendingRequests: RpcRequest[]
+  pendingRequests: PendingRequest[]
 }
 export type PendingRequestsActions = {
-  addPendingRequest: (request: RpcRequest) => void
+  addPendingRequest: (request: PendingRequest) => void
   removePendingRequest: (requestId: number) => void
 }
 export type PendingRequestsStore = PendingRequestsState & PendingRequestsActions

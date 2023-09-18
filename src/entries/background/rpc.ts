@@ -93,7 +93,7 @@ export function setupRpcHandler() {
       const { addPendingRequest, removePendingRequest } =
         pendingRequestsStore.getState()
 
-      addPendingRequest(request)
+      addPendingRequest({ ...request, sender: meta.sender })
 
       inpageMessenger.send('toggleWallet', { open: true })
 
@@ -134,26 +134,69 @@ export function setupRpcHandler() {
     }
 
     if (isInpage && request.method === 'eth_requestAccounts') {
-      const { accountsForRpcUrl } = accountStore.getState()
-      const { network } = networkStore.getState()
+      const { addPendingRequest, removePendingRequest } =
+        pendingRequestsStore.getState()
 
-      const accounts = accountsForRpcUrl({
-        activeFirst: true,
-        rpcUrl: network.rpcUrl,
-      })
+      const { addSession, instantAuth } = sessionsStore.getState()
 
-      const host = new URL(meta.sender.url || '').host
-      const addresses = accounts.map((x) => x.address) as Address[]
+      const authorize = () => {
+        const { accountsForRpcUrl } = accountStore.getState()
+        const { network } = networkStore.getState()
 
-      const { addSession } = sessionsStore.getState()
-      addSession({ session: { host } })
-      inpageMessenger.send('connect', { chainId: numberToHex(network.chainId) })
+        const accounts = accountsForRpcUrl({
+          activeFirst: true,
+          rpcUrl: network.rpcUrl,
+        })
 
-      return {
-        id: request.id,
-        jsonrpc: '2.0',
-        result: addresses,
-      } as RpcResponse
+        const host = new URL(meta.sender.url || '').host.replace('www.', '')
+        const addresses = accounts.map((x) => x.address) as Address[]
+
+        addSession({ session: { host } })
+        inpageMessenger.send('connect', {
+          chainId: numberToHex(network.chainId),
+        })
+
+        return {
+          id: request.id,
+          jsonrpc: '2.0',
+          result: addresses,
+        } as RpcResponse
+      }
+
+      if (instantAuth) return authorize()
+
+      addPendingRequest({ ...request, sender: meta.sender })
+
+      inpageMessenger.send('toggleWallet', { open: true })
+
+      try {
+        const response = await new Promise((resolve) => {
+          walletMessenger.reply(
+            'pendingRequest',
+            async ({ request: pendingRequest, status }) => {
+              if (pendingRequest.id !== request.id) return
+
+              if (status === 'rejected') {
+                resolve({
+                  id: request.id,
+                  jsonrpc: '2.0',
+                  error: {
+                    code: UserRejectedRequestError.code,
+                    message: UserRejectedRequestError.message,
+                    data: { request },
+                  },
+                } satisfies RpcResponse)
+                return
+              }
+
+              resolve(authorize())
+            },
+          )
+        })
+        return response as RpcResponse
+      } finally {
+        removePendingRequest(request.id)
+      }
     }
 
     if (isInpage && request.method === 'eth_accounts') {
