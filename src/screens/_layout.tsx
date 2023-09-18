@@ -1,16 +1,10 @@
 import { useEffect } from 'react'
-import { Toaster } from 'react-hot-toast'
 import { Outlet, useNavigate } from 'react-router-dom'
 
+import { Header, NetworkOfflineDialog, Toaster } from '~/components'
 import { Box } from '~/design-system'
-import { useNetworkStore, usePendingRequestsStore } from '~/zustand'
-
-import { Header, NetworkOfflineDialog } from '~/components'
-
-import { ErrorToast } from '~/components/toast/Error'
-import { LoadingToast } from '~/components/toast/Loading'
-import { SuccessToast } from '~/components/toast/Success'
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
+import { useNetworkStore, usePendingRequestsStore } from '~/zustand'
 import { getMessenger } from '../messengers'
 import PendingRequest from './pending-request'
 
@@ -48,6 +42,7 @@ export default function Layout() {
         overflow: 'hidden',
       }}
     >
+      <Toaster />
       {showHeader && (
         <Box style={{ height: headerHeight }}>
           <Header isNetworkOffline={isNetworkOffline} />
@@ -67,28 +62,6 @@ export default function Layout() {
           height="full"
         >
           <Outlet />
-          <Toaster
-            children={(toast) => {
-              if (toast.type === 'success') {
-                return <SuccessToast message={toast.message} />
-              }
-
-              if (toast.type === 'error') {
-                return <ErrorToast message={toast.message} />
-              }
-
-              if (toast.type === 'loading') {
-                return <LoadingToast message={toast.message} />
-              }
-
-              // Custom Toast does have all styles and config just rendering would do fine.
-              if (toast.type === 'custom') {
-                return <>{toast.message}</>
-              }
-              // Default for any custom toasts
-              return <SuccessToast message={toast.message} />
-            }}
-          />
         </Box>
       </Box>
     </Box>
