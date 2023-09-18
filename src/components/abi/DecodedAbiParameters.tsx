@@ -1,11 +1,15 @@
 import * as Accordion from '@radix-ui/react-accordion'
-import { type AbiParameter, type AbiParametersToPrimitiveTypes } from 'abitype'
-import React, { useEffect, useState } from 'react'
-import { stringify } from 'viem'
+import {
+  type AbiParameter,
+  type AbiParameterToPrimitiveType,
+  type AbiParametersToPrimitiveTypes,
+} from 'abitype'
+import React, { useEffect, useMemo, useState } from 'react'
+import { type Hex, concat, decodeAbiParameters, stringify } from 'viem'
 
 import { Tooltip } from '~/components'
-import { Box, SFSymbol, Text } from '~/design-system'
-import { truncate } from '~/utils'
+import { Bleed, Box, SFSymbol, Text } from '~/design-system'
+import { guessAbiItem, truncate } from '~/utils'
 
 import * as styles from './DecodedAbiParameters.css'
 
@@ -24,91 +28,144 @@ export function DecodedAbiParameters<
 }) {
   return (
     <Accordion.Root className={styles.root} type="multiple">
-      {params.map((param, index) => {
-        // TODO: Make truncate length responsive to element width.
-        const truncateLength = 20
-
-        const value = param.name
-          ? args[param.name as any] ?? args[index]
-          : args[index]
-
-        const params = (() => {
-          if (param.type?.includes('[') && Array.isArray(value)) {
-            return value.map((_, i) => ({
-              ...param,
-              name: i.toString(),
-              internalType: param.internalType?.replace(/\[\d?\]$/, ''),
-              type: param.type.replace(/\[\d?\]$/, ''),
-            }))
-          }
-          if ('components' in param) return param.components
-          return undefined
-        })()
-
-        const isExpandableParams = Boolean(params)
-
-        const isExpandablePrimitive = (() => {
-          if (params) return false
-          if ((value ?? '').toString().length <= truncateLength) return false
-          return true
-        })()
-
-        const expandable = isExpandableParams || isExpandablePrimitive
-
-        if (!expandable) {
-          return (
-            <Box className={styles.staticItem}>
-              <ParameterRow level={level} value={value}>
-                <ParameterLabel
-                  index={index}
-                  param={param}
-                  truncateLength={truncateLength}
-                />
-                <ParameterValue value={value} truncateLength={truncateLength} />
-              </ParameterRow>
-            </Box>
-          )
-        }
-        return (
-          <Accordion.Item className={styles.item} value={`${index}`}>
-            <ParameterTrigger>
-              <ParameterRow expandable level={level} value={value}>
-                <ParameterLabel
-                  index={index}
-                  param={param}
-                  truncateLength={truncateLength}
-                />
-                <ParameterValue value={value} truncateLength={truncateLength} />
-              </ParameterRow>
-            </ParameterTrigger>
-            <Accordion.Content asChild>
-              <Box className={styles.content}>
-                {isExpandableParams && params && (
-                  <DecodedAbiParameters
-                    params={params}
-                    args={value as readonly unknown[]}
-                    level={level + 1}
-                  />
-                )}
-                {isExpandablePrimitive && (
-                  <ParameterRow level={level + 1} value={value}>
-                    <Text
-                      align="left"
-                      family="mono"
-                      size="9px"
-                      width="full"
-                      wrap="anywhere"
-                    >
-                      {(value ?? '').toString()}
-                    </Text>
-                  </ParameterRow>
-                )}
-              </Box>
-            </Accordion.Content>
-          </Accordion.Item>
-        )
-      })}
+      {params.map((param, index) => (
+        <DecodedAbiParameter
+          args={args}
+          index={index}
+          level={level}
+          param={param}
+        />
+      ))}
     </Accordion.Root>
+  )
+}
+
+export function DecodedAbiParameter<TAbiParameter extends AbiParameter>({
+  args,
+  index,
+  level,
+  param: param_,
+}: {
+  args: [AbiParameterToPrimitiveType<TAbiParameter>] | readonly unknown[]
+  param: TAbiParameter
+  level: number
+  index: number
+}) {
+  // TODO: Make truncate length responsive to element width.
+  const truncateLength = 20
+
+  const { guessed, param, value } = useMemo(() => {
+    let guessed = false
+    let param = param_
+    let value = param.name
+      ? args[param.name as any] ?? args[index]
+      : args[index]
+
+    // It could be possible that the bytes value is ABI encoded,
+    // so we will try to decode it.
+    if (param_.type === 'bytes') {
+      try {
+        const abiItem = guessAbiItem(concat(['0xdeadbeef', value as Hex]))
+        if (
+          'inputs' in abiItem &&
+          abiItem.inputs &&
+          abiItem.inputs.length > 1
+        ) {
+          guessed = true
+          param = { ...param_, components: abiItem.inputs }
+          value = decodeAbiParameters(abiItem.inputs, value as Hex)
+        }
+      } catch {}
+    }
+
+    return { guessed, param, value }
+  }, [args, index, param_])
+
+  const params = useMemo(() => {
+    if (param.type?.includes('[') && Array.isArray(value)) {
+      return value.map((_, i) => ({
+        ...param,
+        name: i.toString(),
+        internalType: param.internalType?.replace(/\[\d?\]$/, ''),
+        type: param.type.replace(/\[\d?\]$/, ''),
+      }))
+    }
+    if ('components' in param) return param.components
+    return undefined
+  }, [param, value])
+
+  const isExpandableParams = Boolean(params)
+
+  const isExpandablePrimitive = useMemo(() => {
+    if (params) return false
+    if ((value ?? '').toString().length <= truncateLength) return false
+    return true
+  }, [params, value])
+
+  const expandable = isExpandableParams || isExpandablePrimitive
+
+  if (!expandable) {
+    return (
+      <Box className={styles.staticItem}>
+        <ParameterRow level={level} value={value}>
+          <ParameterLabel
+            index={index}
+            param={param}
+            truncateLength={truncateLength}
+          />
+          <ParameterValue value={value} truncateLength={truncateLength} />
+        </ParameterRow>
+      </Box>
+    )
+  }
+  return (
+    <Accordion.Item className={styles.item} value={`${index}`}>
+      <ParameterTrigger>
+        <ParameterRow expandable level={level} value={value}>
+          <ParameterLabel
+            index={index}
+            param={param}
+            truncateLength={truncateLength}
+          />
+          <ParameterValue value={value} truncateLength={truncateLength} />
+        </ParameterRow>
+      </ParameterTrigger>
+      <Accordion.Content asChild>
+        <Box className={styles.content}>
+          {guessed && (
+            <ParameterRow level={level + 1}>
+              <Bleed bottom="-4px" top="-2px">
+                <Text color="text/tertiary" size="11px">
+                  Warning: We could not accurately decode the bytes component of
+                  this parameter. The guessed parameters and values may be
+                  incorrect.
+                </Text>
+              </Bleed>
+            </ParameterRow>
+          )}
+          {isExpandableParams && params && (
+            <DecodedAbiParameters
+              params={params}
+              args={value as readonly unknown[]}
+              level={level + 1}
+            />
+          )}
+          {isExpandablePrimitive && (
+            <ParameterRow level={level + 1} value={value}>
+              <Text
+                align="left"
+                family="mono"
+                size="9px"
+                width="full"
+                wrap="anywhere"
+              >
+                {(value ?? '').toString()}
+              </Text>
+            </ParameterRow>
+          )}
+        </Box>
+      </Accordion.Content>
+    </Accordion.Item>
   )
 }
 
@@ -136,7 +193,7 @@ function ParameterRow({
   children: React.ReactNode
   expandable?: boolean
   level: number
-  value: unknown
+  value?: unknown
 }) {
   const [copied, setCopied] = useState(false)
   useEffect(() => {
@@ -152,10 +209,10 @@ function ParameterRow({
       className={styles.row}
       backgroundColor={{
         default: 'surface/primary/elevated',
-        hover: 'surface/fill/quarternary',
+        hover: value ? 'surface/fill/quarternary' : undefined,
       }}
       display="flex"
-      onClick={() => setCopied(true)}
+      onClick={value ? () => setCopied(true) : undefined}
       paddingHorizontal="12px"
       width="full"
     >
@@ -183,21 +240,23 @@ function ParameterRow({
             symbol="chevron.down"
             weight="medium"
           />
-        ) : copied ? (
-          <SFSymbol
-            color="surface/green"
-            size="9px"
-            symbol="checkmark"
-            weight="semibold"
-          />
-        ) : (
-          <SFSymbol
-            color="text/quarternary"
-            size="9px"
-            symbol="doc.on.doc"
-            weight="medium"
-          />
-        )}
+        ) : value ? (
+          copied ? (
+            <SFSymbol
+              color="surface/green"
+              size="9px"
+              symbol="checkmark"
+              weight="semibold"
+            />
+          ) : (
+            <SFSymbol
+              color="text/quarternary"
+              size="9px"
+              symbol="doc.on.doc"
+              weight="medium"
+            />
+          )
+        ) : null}
       </Box>
     </Box>
   )

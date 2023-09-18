@@ -1,8 +1,8 @@
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { type Address, type Client, getContract } from 'viem'
 
+import { erc20Abi } from '~/constants'
 import { createQueryKey } from '~/react-query'
-import { erc20Abi } from '~/utils'
 
 import { useClient } from './useClient'
 

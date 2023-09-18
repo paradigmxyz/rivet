@@ -10,8 +10,8 @@ import {
   toHex,
 } from 'viem'
 
+import { erc20Abi } from '~/constants'
 import { queryClient } from '~/react-query'
-import { erc20Abi } from '~/utils'
 
 import { useClient } from './useClient'
 import { getErc20BalanceQueryKey } from './useErc20Balance'
