@@ -1,12 +1,10 @@
 import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
+import { Header, NetworkOfflineDialog, Toaster } from '~/components'
 import { Box } from '~/design-system'
-import { useNetworkStore, usePendingRequestsStore } from '~/zustand'
-
-import { Header, NetworkOfflineDialog } from '~/components'
-
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
+import { useNetworkStore, usePendingRequestsStore } from '~/zustand'
 import { getMessenger } from '../messengers'
 import PendingRequest from './pending-request'
 
@@ -44,6 +42,7 @@ export default function Layout() {
         overflow: 'hidden',
       }}
     >
+      <Toaster />
       {showHeader && (
         <Box style={{ height: headerHeight }}>
           <Header isNetworkOffline={isNetworkOffline} />
