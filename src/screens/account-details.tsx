@@ -1,6 +1,8 @@
 import * as Tabs from '@radix-ui/react-tabs'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useParams, useSearchParams } from 'react-router-dom'
+import { toast } from 'sonner'
 import { type Address, formatUnits, isAddress, parseUnits } from 'viem'
 
 import { LabelledContent, TabsContent, TabsList, Tooltip } from '~/components'
@@ -22,8 +24,6 @@ import {
   Text,
 } from '~/design-system'
 
-import { useEffect, useState } from 'react'
-import { toast } from 'sonner'
 import { useErc20Balance } from '~/hooks/useErc20Balance'
 import { useErc20Metadata } from '~/hooks/useErc20Metadata'
 import { useSetErc20Balance } from '~/hooks/useSetErc20Balance'
@@ -88,7 +88,6 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
   if (!accountAddress) return null
   return (
     <Inset vertical="8px">
-      <Toaster />
       <ImportToken accountAddress={accountAddress} />
       <Box style={{ height: '4px' }} />
       <Box style={{ height: '24px' }}>
