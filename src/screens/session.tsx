@@ -5,7 +5,7 @@ import {
   Box,
   Button,
   Inline,
-  Input,
+  Inset,
   Separator,
   Stack,
   Text,
@@ -18,7 +18,7 @@ const inpageMessenger = getMessenger('wallet:inpage')
 
 export default function Session() {
   const { data: host } = useHost()
-  const { getSession, sessions, instantMode, updateInstantMode } =
+  const { getSession, sessions, instantAuth, setInstantAuth } =
     useSessionsStore()
   const isConnected = Boolean(host && getSession({ host }))
 
@@ -49,22 +49,29 @@ export default function Session() {
       </Box>
       <Box>
         <Container fit header={'Authorization'}>
-          <Inline alignVertical="center" alignHorizontal="justify" wrap={false}>
-            <Text size="12px">{'Enable Instant Authorization mode'}</Text>
-            <Input
-              type="checkbox"
-              style={{
-                height: '16px',
-                float: 'right',
-                width: 'auto',
-                marginRight: '10px',
-              }}
-              checked={instantMode}
-              onChange={(e) => {
-                updateInstantMode({ mode: e.target.checked })
-              }}
-            />
-          </Inline>
+          <Inset right="4px">
+            <Box>
+              <Inline
+                alignVertical="center"
+                alignHorizontal="justify"
+                wrap={false}
+              >
+                <Box as="label" htmlFor="instant-auth" width="full">
+                  <Text size="12px">Enable Instant Authorization</Text>
+                </Box>
+                {/** TODO: <Checkbox> component */}
+                <Box
+                  as="input"
+                  id="instant-auth"
+                  checked={instantAuth}
+                  onChange={(e) => {
+                    setInstantAuth(e.target.checked)
+                  }}
+                  type="checkbox"
+                />
+              </Inline>
+            </Box>
+          </Inset>
         </Container>
       </Box>
       <Box>
@@ -79,7 +86,9 @@ export default function Session() {
                     wrap={false}
                   >
                     <LabelledContent label="Host" width="fit">
-                      <Text size="12px">{session.host}</Text>
+                      <Text size="12px">
+                        {session.host.replace('www.', '')}
+                      </Text>
                     </LabelledContent>
                     <Button.Symbol
                       height="24px"

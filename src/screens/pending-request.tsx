@@ -36,14 +36,16 @@ import {
 } from '~/hooks/usePrepareTransactionRequest'
 import { useTxpoolQueryOptions } from '~/hooks/useTxpool'
 import { getMessenger } from '~/messengers'
-import type { RpcRequest } from '~/messengers/schema'
 import { queryClient } from '~/react-query'
 import { truncate } from '~/utils'
 import { useAccountStore } from '~/zustand'
+import type { PendingRequest } from '~/zustand/pending-requests'
 
 const backgroundMessenger = getMessenger('background:wallet')
 
-export default function PendingRequest({ request }: { request: RpcRequest }) {
+export default function PendingRequest_({
+  request,
+}: { request: PendingRequest }) {
   if (request.method === 'eth_sendTransaction')
     return <SendTransactionRequest request={request} />
   if (request.method === 'personal_sign')
@@ -58,18 +60,20 @@ export default function PendingRequest({ request }: { request: RpcRequest }) {
 
 function PendingRequestContainer({
   children,
+  header = 'Pending Request',
   isLoading,
   onApprove,
   onReject,
 }: {
   children: React.ReactNode
+  header?: string
   isLoading?: boolean
   onApprove(): void
   onReject(): void
 }) {
   return (
     <Container
-      header="Pending Request"
+      header={header}
       footer={
         <Inline gap="12px" wrap={false}>
           <Button disabled={isLoading} onClick={onReject} variant="tint red">
@@ -95,7 +99,7 @@ const numberIntl8SigFigs = new Intl.NumberFormat('en-US', {
 })
 
 type ExtractRequest<Method extends string> = Extract<
-  RpcRequest,
+  PendingRequest,
   { method: Method }
 >
 
@@ -166,12 +170,12 @@ function SendTransactionRequest({
 
   return (
     <PendingRequestContainer
+      header="Transaction Request"
       isLoading={isLoading}
       onApprove={handleApprove}
       onReject={handleReject}
     >
       <Stack gap="20px">
-        <Text size="14px">Send Transaction</Text>
         <Columns gap="12px">
           <Column width="1/3">
             <LabelledContent label="From">
@@ -304,16 +308,28 @@ function RequestAccounts({
     })
   }
 
+  const host = request.sender?.origin
+    ? new URL(request.sender.origin).hostname.replace('www.', '')
+    : undefined
+
   return (
     <PendingRequestContainer
-      // isLoading={isLoading}
+      header="Connection Request"
       onApprove={handleApprove}
       onReject={handleReject}
     >
       <Stack gap="20px">
-        <Text size="14px">Approve Login</Text>
-        <Text size="20px">
-          Please approve if you want to continue accessing accounts
+        <Text color="text/secondary" size="14px">
+          The application{' '}
+          <Text color="text" weight="medium">
+            {host}
+          </Text>{' '}
+          wants to connect to your wallet.
+        </Text>
+        <Text color="text/secondary" size="14px">
+          By approving this request, this application will be able to view your
+          account addresses, balances, and request approval for transactions or
+          signatures.
         </Text>
       </Stack>
     </PendingRequestContainer>
@@ -342,9 +358,12 @@ function SignMessageRequest({
   }
 
   return (
-    <PendingRequestContainer onApprove={handleApprove} onReject={handleReject}>
+    <PendingRequestContainer
+      header="Sign Message Request"
+      onApprove={handleApprove}
+      onReject={handleReject}
+    >
       <Stack gap="20px">
-        <Text size="14px">Sign Message</Text>
         <Columns gap="12px">
           <Column width="1/4">
             <LabelledContent label="Address">
@@ -393,9 +412,12 @@ function SignTypedDataRequest({
   }
 
   return (
-    <PendingRequestContainer onApprove={handleApprove} onReject={handleReject}>
+    <PendingRequestContainer
+      header="Sign Typed Data Request"
+      onApprove={handleApprove}
+      onReject={handleReject}
+    >
       <Stack gap="20px">
-        <Text size="14px">Sign Data</Text>
         <Columns gap="12px">
           <Column width="1/4">
             <LabelledContent label="Address">

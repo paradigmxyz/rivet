@@ -14,6 +14,7 @@ export function CheckboxField({ label, register }: CheckboxFieldProps) {
       <Inset bottom="2px">
         <Inline alignVertical="center" gap="4px">
           <Form.Control asChild {...register}>
+            {/** TODO: <Checkbox> component */}
             <Box as="input" type="checkbox" />
           </Form.Control>
           <Form.Label>

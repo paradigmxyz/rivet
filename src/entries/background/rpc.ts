@@ -93,7 +93,7 @@ export function setupRpcHandler() {
       const { addPendingRequest, removePendingRequest } =
         pendingRequestsStore.getState()
 
-      addPendingRequest(request)
+      addPendingRequest({ ...request, sender: meta.sender })
 
       inpageMessenger.send('toggleWallet', { open: true })
 
@@ -137,9 +137,9 @@ export function setupRpcHandler() {
       const { addPendingRequest, removePendingRequest } =
         pendingRequestsStore.getState()
 
-      const { addSession, instantMode } = sessionsStore.getState()
+      const { addSession, instantAuth } = sessionsStore.getState()
 
-      const processAccounts = () => {
+      const authorize = () => {
         const { accountsForRpcUrl } = accountStore.getState()
         const { network } = networkStore.getState()
 
@@ -148,7 +148,7 @@ export function setupRpcHandler() {
           rpcUrl: network.rpcUrl,
         })
 
-        const host = new URL(meta.sender.url || '').host
+        const host = new URL(meta.sender.url || '').host.replace('www.', '')
         const addresses = accounts.map((x) => x.address) as Address[]
 
         addSession({ session: { host } })
@@ -163,11 +163,11 @@ export function setupRpcHandler() {
         } as RpcResponse
       }
 
-      if (instantMode) {
-        return processAccounts()
-      }
+      if (instantAuth) return authorize()
 
-      addPendingRequest(request)
+      addPendingRequest({ ...request, sender: meta.sender })
+
+      inpageMessenger.send('toggleWallet', { open: true })
 
       try {
         const response = await new Promise((resolve) => {
@@ -189,7 +189,7 @@ export function setupRpcHandler() {
                 return
               }
 
-              resolve(processAccounts())
+              resolve(authorize())
             },
           )
         })
