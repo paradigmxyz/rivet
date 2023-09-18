@@ -1,6 +1,8 @@
 import * as Tabs from '@radix-ui/react-tabs'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useParams, useSearchParams } from 'react-router-dom'
+import { toast } from 'sonner'
 import { type Address, formatUnits, isAddress, parseUnits } from 'viem'
 
 import { LabelledContent, TabsContent, TabsList, Tooltip } from '~/components'
@@ -22,7 +24,6 @@ import {
   Text,
 } from '~/design-system'
 
-import { useEffect, useState } from 'react'
 import { useErc20Balance } from '~/hooks/useErc20Balance'
 import { useErc20Metadata } from '~/hooks/useErc20Metadata'
 import { useSetErc20Balance } from '~/hooks/useSetErc20Balance'
@@ -133,6 +134,7 @@ function ImportToken({ accountAddress }: { accountAddress: Address }) {
   const submit = handleSubmit(async ({ address }) => {
     try {
       if (!accountAddress || !address || !isAddress(address)) {
+        toast.error('Invalid token address')
         reset()
         return
       }
