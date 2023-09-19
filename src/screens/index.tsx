@@ -1,11 +1,12 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { useVirtualizer } from '@tanstack/react-virtual'
-import { Fragment, useEffect, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useInView } from 'react-intersection-observer'
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   type Address,
+  type Hex,
   type Transaction,
   formatEther,
   isAddress,
@@ -37,6 +38,7 @@ import {
 import { useAccounts } from '~/hooks/useAccounts'
 import { useBalance } from '~/hooks/useBalance'
 import { useClient } from '~/hooks/useClient'
+import { useDebounce } from '~/hooks/useDebounce'
 import { useInfiniteBlockTransactions } from '~/hooks/useInfiniteBlockTransactions'
 import { useInfiniteBlocks } from '~/hooks/useInfiniteBlocks'
 import { useNonce } from '~/hooks/useNonce'
@@ -45,6 +47,7 @@ import { usePendingTransactions } from '~/hooks/usePendingTransactions'
 import { useSetAccount } from '~/hooks/useSetAccount'
 import { useSetBalance } from '~/hooks/useSetBalance'
 import { useSetNonce } from '~/hooks/useSetNonce'
+import { useTransaction } from '~/hooks/useTransaction'
 import { truncate } from '~/utils'
 import {
   useAccountStore,
@@ -392,18 +395,12 @@ function Blocks() {
               to={`block/${block.number}?status=${status}`}
               key={key}
             >
-              <Box
-                backgroundColor={{ hover: 'surface/fill/quarternary' }}
-                position="absolute"
-                top="0px"
-                left="0px"
-                width="full"
-                style={{
-                  height: `${size}px`,
-                  transform: `translateY(${start}px)`,
-                }}
-              >
-                <Box paddingHorizontal="8px" paddingVertical="8px">
+              <VirtualItem size={size} start={start}>
+                <Box
+                  backgroundColor={{ hover: 'surface/fill/quarternary' }}
+                  paddingHorizontal="8px"
+                  paddingVertical="8px"
+                >
                   <Inline wrap={false}>
                     <LabelledContent label="Block">
                       <Box style={{ width: '80px' }}>
@@ -435,7 +432,7 @@ function Blocks() {
                 <Box marginHorizontal="-8px">
                   <Separator />
                 </Box>
-              </Box>
+              </VirtualItem>
             </Link>
           )
         })}
@@ -461,24 +458,57 @@ const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
 function Transactions() {
   const { data: pendingTransactions } = usePendingTransactions()
   const {
-    data: infiniteTransactions,
+    data: infiniteBlockTransactions,
     fetchNextPage,
     isFetching,
     isFetchingNextPage,
+    isFetched,
   } = useInfiniteBlockTransactions()
-  const transactions = [
-    ...(pendingTransactions?.map((transaction) => ({
-      transaction,
-      status: 'pending',
-    })) || []),
-    ...((infiniteTransactions?.pages.flat() as Transaction[])?.map(
-      (transaction) => ({ transaction, status: 'mined' }),
-    ) || []),
-  ]
+  const blockTransactions = useMemo(
+    () => [
+      ...(pendingTransactions?.map((transaction) => ({
+        transaction,
+        status: 'pending',
+      })) || []),
+      ...((infiniteBlockTransactions?.pages.flat() as Transaction[])?.map(
+        (transaction) => ({
+          transaction,
+          status: 'mined',
+        }),
+      ) || []),
+    ],
+    [pendingTransactions, infiniteBlockTransactions],
+  )
+
+  const [searchText, setSearchText] = useState('')
+  const debouncedSearchText = useDebounce(searchText)
+
+  const { data: transaction, isLoading } = useTransaction({
+    enabled: debouncedSearchText.length >= 64,
+    hash: debouncedSearchText as Hex,
+  })
+
+  // Derived transactions based from filters (only hash search right now - soon: filter by account).
+  const transactions = useMemo(() => {
+    if (transaction) return [{ transaction, status: 'mined' }]
+
+    // If we have no valid search text, return all transactions.
+    if (!debouncedSearchText) return blockTransactions
+
+    // If we have some search text, try and find transaction in list.
+    const filteredTransaction = blockTransactions.find(
+      ({ transaction }) => transaction.hash === debouncedSearchText,
+    )
+    if (filteredTransaction) return [filteredTransaction]
+
+    return []
+  }, [blockTransactions, debouncedSearchText, transaction])
+
+  const isEmpty = isFetched && transactions.length === 0
 
   const parentRef = useRef<HTMLDivElement>(null)
   const virtualizer = useVirtualizer({
-    count: (pendingTransactions?.length ?? 0) + (transactions?.length ?? 0),
+    count: transactions.length + (isLoading || isEmpty ? 2 : 1),
     getScrollElement: () => parentRef.current!,
     estimateSize: () => 40,
   })
@@ -496,103 +526,170 @@ function Transactions() {
   }, [fetchNextPage, inView, isFetching, isFetchingNextPage])
 
   return (
-    <Box
-      ref={parentRef}
-      marginHorizontal="-8px"
-      style={{ height: '100%', overflowY: 'scroll' }}
-    >
+    <>
       <Box
-        position="relative"
-        width="full"
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-        }}
+        ref={parentRef}
+        marginHorizontal="-8px"
+        style={{ height: '100%', overflowY: 'scroll' }}
       >
-        {virtualizer.getVirtualItems().map(({ key, index, size, start }) => {
-          const { transaction, status } = transactions[index] || {}
-          if (!transaction || typeof transaction === 'string') return
-          return (
-            <Link
-              onClick={() => setPosition(parentRef.current?.scrollTop!)}
-              to={`/transaction/${transaction.hash}`}
-            >
-              <Box
+        <Box
+          position="relative"
+          width="full"
+          style={{
+            height: `${virtualizer.getTotalSize()}px`,
+          }}
+        >
+          {virtualizer.getVirtualItems().map(({ key, index, size, start }) => {
+            if (index === 0) {
+              return (
+                <VirtualItem key={key} size={size} start={start}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    height="full"
+                    paddingHorizontal="8px"
+                  >
+                    <Input
+                      height="24px"
+                      onChange={(e) => setSearchText(e.target.value)}
+                      placeholder="Search by transaction hash..."
+                      value={searchText}
+                    />
+                  </Box>
+                </VirtualItem>
+              )
+            }
+            if (index === 1) {
+              if (isLoading)
+                return (
+                  <VirtualItem key={key} size={size} start={start}>
+                    <Box display="flex" height="full" padding="8px">
+                      <Text color="text/secondary" size="14px">
+                        Loading...
+                      </Text>
+                    </Box>
+                  </VirtualItem>
+                )
+              if (isEmpty)
+                return (
+                  <VirtualItem key={key} size={size} start={start}>
+                    <Box display="flex" height="full" padding="8px">
+                      <Text color="text/secondary" size="14px">
+                        No transactions found by search text "
+                        <Text color="text" wrap="anywhere">
+                          {debouncedSearchText}
+                        </Text>
+                        ".
+                      </Text>
+                    </Box>
+                  </VirtualItem>
+                )
+            }
+
+            const { transaction, status } = transactions[index - 1] || {}
+            if (!transaction || typeof transaction === 'string') return
+            return (
+              <Link
                 key={key}
-                backgroundColor={{ hover: 'surface/fill/quarternary' }}
-                position="absolute"
-                top="0px"
-                left="0px"
-                width="full"
-                style={{
-                  height: `${size}px`,
-                  transform: `translateY(${start}px)`,
-                }}
+                onClick={() => setPosition(parentRef.current?.scrollTop!)}
+                to={`/transaction/${transaction.hash}`}
               >
-                <Box paddingHorizontal="8px" paddingVertical="8px">
-                  <Columns alignVertical="center">
-                    <LabelledContent label="Block">
-                      <Inline alignVertical="center" gap="4px" wrap={false}>
-                        <Text size="12px">
-                          {transaction.blockNumber?.toString()}
-                        </Text>
-                        {status === 'pending' && (
-                          <SFSymbol
-                            color="text/tertiary"
-                            size="11px"
-                            symbol="clock"
-                            weight="semibold"
-                          />
-                        )}
-                      </Inline>
-                    </LabelledContent>
-                    <LabelledContent label="From">
-                      <Tooltip label={transaction.from}>
-                        <Text wrap={false} size="12px">
-                          {truncate(transaction.from, { start: 6, end: 4 })}
-                        </Text>
-                      </Tooltip>
-                    </LabelledContent>
-                    <LabelledContent label="To">
-                      <Tooltip label={transaction.to}>
-                        <Text wrap={false} size="12px">
-                          {transaction.to &&
-                            truncate(transaction.to, { start: 6, end: 4 })}
-                        </Text>
-                      </Tooltip>
-                    </LabelledContent>
-                    <Column>
-                      <Box
-                        display="flex"
-                        alignItems="flex-end"
-                        justifyContent="flex-end"
-                      >
-                        <LabelledContent label="Value">
-                          <Text wrap={false} size="12px">
-                            {numberIntl4SigFigs.format(
-                              Number(formatEther(transaction.value!)),
-                            )}{' '}
-                            <Text color="text/tertiary">ETH</Text>
+                <VirtualItem size={size} start={start}>
+                  <Box marginHorizontal="-8px">
+                    <Separator />
+                  </Box>
+                  <Box
+                    backgroundColor={{ hover: 'surface/fill/quarternary' }}
+                    paddingHorizontal="8px"
+                    paddingVertical="8px"
+                  >
+                    <Columns alignVertical="center">
+                      <LabelledContent label="Block">
+                        <Inline alignVertical="center" gap="4px" wrap={false}>
+                          <Text size="12px">
+                            {transaction.blockNumber?.toString()}
                           </Text>
-                        </LabelledContent>
-                      </Box>
-                    </Column>
-                  </Columns>
-                </Box>
-                <Box marginHorizontal="-8px">
-                  <Separator />
-                </Box>
-              </Box>
-            </Link>
-          )
-        })}
-      </Box>
-      <Inset space="12px">
-        <Box ref={ref}>
-          {(isFetching || isFetchingNextPage) && (
-            <Text color="text/tertiary">Loading...</Text>
-          )}
+                          {status === 'pending' && (
+                            <SFSymbol
+                              color="text/tertiary"
+                              size="11px"
+                              symbol="clock"
+                              weight="semibold"
+                            />
+                          )}
+                        </Inline>
+                      </LabelledContent>
+                      <LabelledContent label="From">
+                        <Tooltip label={transaction.from}>
+                          <Text wrap={false} size="12px">
+                            {truncate(transaction.from, { start: 6, end: 4 })}
+                          </Text>
+                        </Tooltip>
+                      </LabelledContent>
+                      <LabelledContent label="To">
+                        <Tooltip label={transaction.to}>
+                          <Text wrap={false} size="12px">
+                            {transaction.to &&
+                              truncate(transaction.to, { start: 6, end: 4 })}
+                          </Text>
+                        </Tooltip>
+                      </LabelledContent>
+                      <Column>
+                        <Box
+                          display="flex"
+                          alignItems="flex-end"
+                          justifyContent="flex-end"
+                        >
+                          <LabelledContent label="Value">
+                            <Text wrap={false} size="12px">
+                              {numberIntl4SigFigs.format(
+                                Number(formatEther(transaction.value!)),
+                              )}{' '}
+                              <Text color="text/tertiary">ETH</Text>
+                            </Text>
+                          </LabelledContent>
+                        </Box>
+                      </Column>
+                    </Columns>
+                  </Box>
+                </VirtualItem>
+              </Link>
+            )
+          })}
         </Box>
-      </Inset>
+        {!debouncedSearchText && (
+          <Inset space="12px">
+            <Box ref={ref}>
+              {(isFetching || isFetchingNextPage) && (
+                <Text color="text/tertiary">Loading...</Text>
+              )}
+            </Box>
+          </Inset>
+        )}
+      </Box>
+    </>
+  )
+}
+
+function VirtualItem({
+  children,
+  size,
+  start,
+  ...props
+}: { children: React.ReactNode; size: number; start: number }) {
+  return (
+    <Box
+      position="absolute"
+      top="0px"
+      left="0px"
+      width="full"
+      style={{
+        height: `${size}px`,
+        transform: `translateY(${start}px)`,
+      }}
+      {...props}
+    >
+      {children}
     </Box>
   )
 }
