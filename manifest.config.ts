@@ -6,7 +6,14 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
     description: pkg.extension.description,
     version: pkg.version,
     manifest_version: 3,
-    action: {},
+    action: {
+      default_icon: {
+        '16': `icons/icon${dev ? '-dev' : ''}@16w.png`,
+        '32': `icons/icon${dev ? '-dev' : ''}@32w.png`,
+        '48': `icons/icon${dev ? '-dev' : ''}@48w.png`,
+        '128': `icons/icon${dev ? '-dev' : ''}@128w.png`,
+      },
+    },
     background: {
       service_worker: 'src/entries/background/index.ts',
     },
@@ -18,6 +25,12 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
         all_frames: true,
       },
     ],
+    icons: {
+      '16': `icons/icon${dev ? '-dev' : ''}@16w.png`,
+      '32': `icons/icon${dev ? '-dev' : ''}@32w.png`,
+      '48': `icons/icon${dev ? '-dev' : ''}@48w.png`,
+      '128': `icons/icon${dev ? '-dev' : ''}@128w.png`,
+    },
     permissions: [
       'activeTab',
       'contextMenus',
