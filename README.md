@@ -109,23 +109,15 @@ After you have installed dependencies, you are ready to run the dev server for t
 bun run dev 
 ```
 
-This will run a script that will build the Web Extension and start a dev server for the Test Dapp, it will also open the Test Dapp in a new browser tab.
-
-### 5. Installing the Web Extension
-
-Once you have your dev server running, you can install the Web Extension in your browser. To do so, follow these steps:
-
-1. Open your browser's Extensions page
-2. Enable "Developer mode" in the top right corner
-3. Click "Load unpacked" in the top left corner
-4. Select the `dist/dev` folder in Rivet's root directory
-5. You're good to go! Don't forget to pin the Extension to your browser's toolbar for easy access. 🎉
+This will run a script that will build the Web Extension, start a dev server for the Test Dapp, and automatically open Chrome with a fresh profile and the extension installed.
 
 ## Known Issues
 
 Rivet uses the `window.ethereum` interface, which means it has some known conflicts with other wallets which also rely on `window.ethereum`. Once Dapps start to integrate [EIP-6963](https://eips.ethereum.org/EIPS/eip-6963) to handle multiple injected wallets, this should not be a problem anymore.
 
 For best results it is recommended to run Rivet in it's own Chrome profile, without any other conflicting browser wallets installed.
+
+Helpful note: A fresh Chrome profile gets instantiated when running the dev script: `bun run dev`.
 
 ## Contributing
 

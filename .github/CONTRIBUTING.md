@@ -175,15 +175,15 @@ After you have installed dependencies, you are ready to run the Web Extension. T
 bun run dev # start dev server
 ```
 
-This will run a script that will build the Web Extension and start a dev server for the Test Dapp, it will also open the Test Dapp in a new browser tab. The Web Extension also utilizes Hot Module Replacement (HMR), so you can make changes to the code and see them reflected in the extension without having to reload the extension itself.
+This will run a script that will build the Web Extension, start a dev server for the Test Dapp, and automatically open Chrome with a fresh profile and the extension installed. The Web Extension also utilizes Hot Module Replacement (HMR), so you can make changes to the code and see them reflected in the extension without having to reload the extension itself.
 
 <div align="right">
   <a href="#getting-started">&uarr; back to top</a></b>
 </div>
 
-### Installing the Web Extension
+### (Optional) Installing the Web Extension
 
-Once you have your dev server running, you can install the Web Extension in your browser. To do so, follow these steps:
+You can install the Web Extension separately in your browser. To do so, follow these steps:
 
 1. Open your browser's Extensions page
 2. Enable "Developer mode" in the top right corner

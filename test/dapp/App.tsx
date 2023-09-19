@@ -49,6 +49,9 @@ const Context = createContext({
 })
 
 export default function App() {
+  const hasReloaded = useReloadAfterFirstInstall()
+  if (!hasReloaded) return null
+
   const providerDetails = useSyncExternalStore(
     store.subscribe,
     store.getProviders,
@@ -579,4 +582,18 @@ function WriteContract() {
       </Inline>
     </Stack>
   )
+}
+
+function useReloadAfterFirstInstall() {
+  // Hack to reload page after installing extension on fresh Chrome profile (`bun run chrome`).
+  const installed = window.localStorage.getItem('installed')
+  useEffect(() => {
+    if (installed) return
+    setTimeout(() => {
+      window.localStorage.setItem('installed', 'true')
+      window.location.reload()
+    }, 500)
+  }, [installed])
+  const hasReloaded = Boolean(installed)
+  return hasReloaded
 }

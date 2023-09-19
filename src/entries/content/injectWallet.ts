@@ -15,6 +15,9 @@ export async function injectWallet() {
     undefined,
   )
 
+  if (process.env.NODE_ENV === 'development')
+    windowStorage.local.setItem('open', true)
+
   // Inject wallet elements
   const container = injectContainer()
   injectIframe({ container, extensionId })
