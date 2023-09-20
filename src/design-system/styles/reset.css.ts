@@ -45,6 +45,7 @@ const button = style([
         color: 'unset',
         cursor: 'default',
         display: 'block',
+        textAlign: 'unset',
       },
     },
   },

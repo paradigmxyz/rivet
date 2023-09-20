@@ -1,4 +1,5 @@
 import { globalStyle, keyframes, style } from '@vanilla-extract/css'
+import { backgroundColorVars } from '~/design-system/styles/theme.css'
 
 const fadeIn = keyframes({
   from: {
@@ -49,7 +50,11 @@ const slideUp = keyframes({
   },
 })
 
-export const item = style({})
+export const item = style({
+  borderBottomWidth: 1,
+  borderBottomColor: `rgb(${backgroundColorVars['surface/fill']})`,
+  borderBottomStyle: 'solid',
+})
 export const root = style({
   selectors: {
     [`${item}[data-state="open"] &`]: {
@@ -65,16 +70,6 @@ export const root = style({
   },
 })
 export const trigger = style({})
-export const staticItem = style({
-  selectors: {
-    [`${root} ${item}[data-state="open"] ~ &`]: {
-      opacity: 0.4,
-    },
-    [`${root} &:has(~ ${item}[data-state="open"])`]: {
-      opacity: 0.4,
-    },
-  },
-})
 export const row = style({
   selectors: {
     [`${root} ${item}[data-state="open"] ~ ${item}[data-state="closed"] &`]: {

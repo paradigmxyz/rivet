@@ -1,3 +1,4 @@
+import type { AbiFunction } from 'abitype'
 import { useMemo } from 'react'
 import {
   type Abi,
@@ -6,6 +7,7 @@ import {
   type Hex,
   decodeAbiParameters,
   getAbiItem as getAbiItem_viem,
+  parseAbiItem,
   slice,
 } from 'viem'
 
@@ -13,6 +15,7 @@ import { LabelledContent } from '~/components'
 import { Bleed, Box, Separator, Stack, Text } from '~/design-system'
 import { useAutoloadAbi } from '~/hooks/useAutoloadAbi'
 import { useCalldataAbi } from '~/hooks/useCalldataAbi'
+import { useLookupSignature } from '~/hooks/useLookupSignature'
 
 import { DecodedAbiParameters } from './DecodedAbiParameters'
 import { FormattedAbiItem } from './FormattedAbiItem'
@@ -21,35 +24,58 @@ export function DecodedCalldata({
   address,
   data,
 }: { address?: Address; data: Hex }) {
+  const selector = slice(data, 0, 4)
+
   // Try extract ABI from whatsabi autoloading (etherscan, 4byte dbs, etc)
-  const { data: autoloadAbi, isLoading } = useAutoloadAbi({
+  const { data: autoloadAbi } = useAutoloadAbi({
     address,
-    enabled: Boolean(data),
+    enabled: data && data !== '0x',
   })
+
+  const { data: signature, isFetched } = useLookupSignature({
+    selector,
+  })
+  const signatureAbi = useMemo(() => {
+    if (!signature) return
+    return [parseAbiItem(`function ${signature}`) as AbiFunction] as const
+  }, [signature])
 
   // If extraction fails, fall back to guessing ABI from calldata.
   const calldataAbi = useCalldataAbi({
     data,
   })
 
-  const abi = autoloadAbi || calldataAbi
+  const [abiItem, isGuess] = useMemo(() => {
+    const autoloadAbiItem =
+      autoloadAbi &&
+      (getAbiItem({
+        abi: autoloadAbi as unknown as Abi,
+        selector,
+      }) as AbiFunction)
+    const signatureAbiItem =
+      signatureAbi &&
+      (getAbiItem({ abi: signatureAbi, selector }) as AbiFunction)
+    const calldataAbiItem =
+      calldataAbi && (getAbiItem({ abi: calldataAbi, selector }) as AbiFunction)
 
-  const selector = abi ? slice(data, 0, 4) : undefined
-  const rawArgs = abi && data.length > 10 ? slice(data, 4) : undefined
+    if (autoloadAbiItem) {
+      if (
+        (signatureAbiItem?.inputs?.length || 0) >
+        (autoloadAbiItem?.inputs?.length || 0)
+      )
+        return [signatureAbiItem, false]
+      if (
+        (calldataAbiItem?.inputs?.length || 0) >
+        (autoloadAbiItem?.inputs?.length || 0)
+      )
+        return [calldataAbiItem, true]
+      return [autoloadAbiItem, false]
+    }
+    if (signatureAbiItem) return [signatureAbiItem, false]
+    return [calldataAbiItem, true]
+  }, [autoloadAbi, signatureAbi, calldataAbi, selector])
 
-  const autoloadAbiItem = useMemo(() => {
-    if (!autoloadAbi) return
-    if (!selector) return
-    return getAbiItem({ abi: autoloadAbi as unknown as Abi, selector })
-  }, [autoloadAbi, selector])
-  const calldataAbiItem = useMemo(() => {
-    if (!calldataAbi) return
-    if (!selector) return
-    return getAbiItem({ abi: calldataAbi, selector })
-  }, [calldataAbi, selector])
-
-  const abiItem = autoloadAbiItem || calldataAbiItem
-
+  const rawArgs = abiItem && data.length > 10 ? slice(data, 4) : undefined
   const { args } = useMemo(() => {
     if (abiItem && rawArgs && 'name' in abiItem && 'inputs' in abiItem) {
       try {
@@ -60,14 +86,18 @@ export function DecodedCalldata({
       } catch {}
     }
     return { args: undefined, functionName: undefined }
-  }, [abi, rawArgs])
+  }, [abiItem, rawArgs])
 
   return (
     <Stack gap="20px">
-      {isLoading && <Text size="12px">Loading...</Text>}
-      {abiItem && !isLoading && (
+      {!isFetched && (
+        <Text color="text/tertiary" size="12px">
+          Loading...
+        </Text>
+      )}
+      {isFetched && abiItem && (
         <>
-          {calldataAbiItem && !autoloadAbiItem && (
+          {isGuess && (
             <Box backgroundColor="surface/yellowTint" padding="8px">
               <Text size="11px">
                 Warning: We could not accurately extract function parameters for

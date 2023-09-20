@@ -1,17 +1,19 @@
 import * as Tabs from '@radix-ui/react-tabs'
-import { useState } from 'react'
+import type { AbiEvent } from 'abitype'
 import { useParams } from 'react-router-dom'
-import { type Hash, formatEther, formatGwei } from 'viem'
+import { type Hash, type Log, formatEther, formatGwei } from 'viem'
 
 import {
   Container,
   DecodedCalldata,
+  DecodedLogs,
   LabelledContent,
   TabsContent,
   TabsList,
   Tooltip,
 } from '~/components'
 import {
+  Bleed,
   Box,
   Column,
   Columns,
@@ -34,12 +36,15 @@ const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
 
 export default function TransactionDetails() {
   const { transactionHash } = useParams()
-  const [tab, setTab] = useState('data')
 
   const { data: transaction } = useTransaction({
     hash: transactionHash as Hash,
   })
-  const { data: receipt, isSuccess: isReceiptSuccess } = useTransactionReceipt({
+  const {
+    data: receipt,
+    isLoading: isReceiptLoading,
+    isSuccess: isReceiptSuccess,
+  } = useTransactionReceipt({
     hash: transaction?.hash as Hash,
   })
   const { data: confirmations } = useTransactionConfirmations({
@@ -252,7 +257,7 @@ export default function TransactionDetails() {
               </Column>
             ) : null}
           </Columns>
-          <Tabs.Root asChild value={tab}>
+          <Tabs.Root asChild defaultValue="data">
             <Box display="flex" flexDirection="column" height="full">
               <TabsList
                 items={[
@@ -260,9 +265,6 @@ export default function TransactionDetails() {
                   { label: 'Logs', value: 'logs' },
                   { label: 'Trace', value: 'trace' },
                 ]}
-                onSelect={(item) => {
-                  setTab(item.value)
-                }}
               />
               <Inset vertical="16px" bottom="152px">
                 <TabsContent inset={false} scrollable={false} value="data">
@@ -271,8 +273,32 @@ export default function TransactionDetails() {
                     data={transaction.input}
                   />
                 </TabsContent>
-                <TabsContent inset={false} value="logs">
-                  {''}
+                <TabsContent inset={false} scrollable={false} value="logs">
+                  {isReceiptLoading && (
+                    <Text color="text/tertiary">Loading...</Text>
+                  )}
+                  {!isReceiptLoading && (
+                    <>
+                      {receipt?.logs && receipt.logs.length > 0 ? (
+                        <Bleed horizontal="-8px" top="-16px">
+                          <DecodedLogs
+                            logs={
+                              receipt.logs as Log<
+                                bigint,
+                                number,
+                                false,
+                                AbiEvent
+                              >[]
+                            }
+                          />
+                        </Bleed>
+                      ) : (
+                        <Text color="text/secondary" size="14px">
+                          No logs found.
+                        </Text>
+                      )}
+                    </>
+                  )}
                 </TabsContent>
                 <TabsContent inset={false} value="state">
                   {''}

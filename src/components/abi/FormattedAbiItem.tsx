@@ -1,16 +1,34 @@
 import type { AbiParameter } from 'abitype'
+import { Fragment } from 'react'
 import type { AbiItem } from 'viem'
 
 import { Text } from '~/design-system'
 
-export function FormattedAbiItem({ abiItem }: { abiItem: AbiItem }) {
+export function FormattedAbiItem({
+  abiItem,
+  compact,
+  showIndexed = true,
+  showParameterNames = true,
+  showType = true,
+}: {
+  abiItem: AbiItem
+  compact?: boolean
+  showIndexed?: boolean
+  showParameterNames?: boolean
+  showType?: boolean
+}) {
   return (
     <Text family="mono" size="11px">
       {abiItem.type === 'function' && (
         <>
-          <Text color="text/tertiary">function </Text>
+          {showType && <Text color="text/tertiary">function </Text>}
           {abiItem.name && <Text>{abiItem.name}</Text>}(
-          {abiItem.inputs && <FormattedAbiParameters params={abiItem.inputs} />}
+          {abiItem.inputs && (
+            <FormattedAbiParameters
+              params={abiItem.inputs}
+              showNames={showParameterNames}
+            />
+          )}
           )
           {abiItem.stateMutability &&
             abiItem.stateMutability !== 'nonpayable' && (
@@ -20,31 +38,55 @@ export function FormattedAbiItem({ abiItem }: { abiItem: AbiItem }) {
             <>
               {' '}
               returns (
-              <FormattedAbiParameters params={abiItem.outputs} />)
+              <FormattedAbiParameters
+                compact={compact}
+                params={abiItem.outputs}
+                showNames={showParameterNames}
+              />
+              )
             </>
           )}
         </>
       )}
       {abiItem.type === 'event' && (
         <>
-          <Text color="text/tertiary">event </Text>
+          {showType && <Text color="text/tertiary">event </Text>}
           {abiItem.name && <Text>{abiItem.name}</Text>}(
-          {abiItem.inputs && <FormattedAbiParameters params={abiItem.inputs} />}
+          {abiItem.inputs && (
+            <FormattedAbiParameters
+              compact={compact}
+              params={abiItem.inputs}
+              showIndexed={showIndexed}
+              showNames={showParameterNames}
+            />
+          )}
           )
         </>
       )}
       {abiItem.type === 'error' && (
         <>
-          <Text color="text/tertiary">error </Text>
+          {showType && <Text color="text/tertiary">error </Text>}
           {abiItem.name && <Text>{abiItem.name}</Text>}((
-          {abiItem.inputs && <FormattedAbiParameters params={abiItem.inputs} />}
+          {abiItem.inputs && (
+            <FormattedAbiParameters
+              compact={compact}
+              params={abiItem.inputs}
+              showNames={showParameterNames}
+            />
+          )}
           )
         </>
       )}
       {abiItem.type === 'constructor' && (
         <>
           <Text color="text/tertiary">constructor</Text>(
-          {abiItem.inputs && <FormattedAbiParameters params={abiItem.inputs} />}
+          {abiItem.inputs && (
+            <FormattedAbiParameters
+              compact={compact}
+              params={abiItem.inputs}
+              showNames={showParameterNames}
+            />
+          )}
           ){abiItem.stateMutability === 'payable' && <Text> payable</Text>}
         </>
       )}
@@ -65,18 +107,27 @@ export function FormattedAbiItem({ abiItem }: { abiItem: AbiItem }) {
 ////////////////////////////////////////////////////////////////////////
 
 function FormattedAbiParameters({
+  compact,
   params,
+  showIndexed,
+  showNames,
 }: {
+  compact?: boolean
   params: readonly AbiParameter[]
+  showIndexed?: boolean
+  showNames?: boolean
 }) {
   return (
     <Text>
       {params?.map((x, index) => (
-        <>
-          {index !== 0 ? ', ' : ''}
+        <Fragment key={index}>
+          {index !== 0 ? `,${!compact ? ' ' : ''}` : ''}
           <ParameterType type={x.internalType || x.type} />
-          <ParameterProperty index={index} name={x.name} />
-        </>
+          {showIndexed && 'indexed' in x && x.indexed ? (
+            <Text color="text/tertiary"> indexed</Text>
+          ) : null}
+          {showNames && <ParameterProperty index={index} name={x.name} />}
+        </Fragment>
       ))}
     </Text>
   )

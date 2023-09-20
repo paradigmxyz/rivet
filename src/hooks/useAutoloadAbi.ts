@@ -1,7 +1,8 @@
-import { whatsabi } from '@shazow/whatsabi'
+import { loaders, whatsabi } from '@shazow/whatsabi'
 import { queryOptions, useQuery } from '@tanstack/react-query'
 import { type Address, type Client } from 'viem'
 import { createQueryKey } from '~/react-query'
+import { etherscanApiUrls } from '../constants/etherscan'
 import { useClient } from './useClient'
 
 type AutoloadAbiParameters = {
@@ -29,6 +30,13 @@ export function useAutoloadAbiQueryOptions({
       if (!client) throw new Error('client is required')
       const result = await whatsabi.autoload(address, {
         provider: client,
+        abiLoader: new loaders.MultiABILoader([
+          new loaders.EtherscanABILoader({
+            baseURL:
+              (etherscanApiUrls as any)[client.chain.id] || etherscanApiUrls[1],
+          }),
+          new loaders.SourcifyABILoader(),
+        ]),
       })
       if (!result.abi.some((item) => (item as { name?: string }).name))
         return null

@@ -16,10 +16,12 @@ import * as styles from './DecodedAbiParameters.css'
 export function DecodedAbiParameters<
   const TParams extends readonly AbiParameter[],
 >({
+  expandable = true,
   params,
   args,
   level = 0,
 }: {
+  expandable?: boolean
   params: TParams
   args: TParams extends readonly AbiParameter[]
     ? AbiParametersToPrimitiveTypes<TParams>
@@ -30,7 +32,9 @@ export function DecodedAbiParameters<
     <Accordion.Root className={styles.root} type="multiple">
       {params.map((param, index) => (
         <DecodedAbiParameter
+          key={index}
           args={args}
+          expandable={expandable}
           index={index}
           level={level}
           param={param}
@@ -42,11 +46,13 @@ export function DecodedAbiParameters<
 
 export function DecodedAbiParameter<TAbiParameter extends AbiParameter>({
   args,
+  expandable: expandable_,
   index,
   level,
   param: param_,
 }: {
   args: [AbiParameterToPrimitiveType<TAbiParameter>] | readonly unknown[]
+  expandable?: boolean
   param: TAbiParameter
   level: number
   index: number
@@ -102,7 +108,8 @@ export function DecodedAbiParameter<TAbiParameter extends AbiParameter>({
     return true
   }, [params, value])
 
-  const expandable = isExpandableParams || isExpandablePrimitive
+  const expandable =
+    expandable_ && (isExpandableParams || isExpandablePrimitive)
 
   if (!expandable) {
     return (
@@ -113,7 +120,9 @@ export function DecodedAbiParameter<TAbiParameter extends AbiParameter>({
             param={param}
             truncateLength={truncateLength}
           />
-          <ParameterValue value={value} truncateLength={truncateLength} />
+          <Tooltip label={(value ?? '').toString()}>
+            <ParameterValue value={value} truncateLength={truncateLength} />
+          </Tooltip>
         </ParameterRow>
       </Box>
     )
@@ -184,7 +193,7 @@ function ParameterTrigger({
   )
 }
 
-function ParameterRow({
+export function ParameterRow({
   children,
   expandable,
   level,
@@ -266,8 +275,9 @@ function Indent({ level }: { level: number }) {
   if (level === 0) return null
   return (
     <>
-      {Array.from({ length: level }).map(() => (
+      {Array.from({ length: level }).map((_, i) => (
         <Box
+          key={i}
           style={{
             minWidth: '12px',
             alignSelf: 'stretch',
