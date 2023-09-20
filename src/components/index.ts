@@ -1,4 +1,5 @@
 export { DecodedCalldata, DecodedAbiParameters, FormattedAbiItem } from './abi'
+export { DecodedLogs } from './logs'
 export { TabsContent, TabsList } from './tabs'
 
 export { Container } from './Container'

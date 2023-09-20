@@ -541,7 +541,7 @@ function WriteContract() {
     const [address] = await client.getAddresses()
     await client.writeContract({
       abi: Playground.abi,
-      address: '0x',
+      address: '0x6345e50859b0Ce82D8A495ba9894C6C81de385F3',
       account: address,
       chain: null,
       functionName: 'test_rivet_1',
@@ -554,7 +554,7 @@ function WriteContract() {
     const [address] = await client.getAddresses()
     await client.writeContract({
       abi: Playground.abi,
-      address: '0x',
+      address: '0x6345e50859b0Ce82D8A495ba9894C6C81de385F3',
       account: address,
       chain: null,
       functionName: 'approve',

@@ -1,4 +1,4 @@
-export { guessAbiItem } from './abi'
+export { decodeEventLogs_guessed, guessAbiItem } from './abi'
 export { capitalize } from './capitalize'
 export { deepEqual } from './deepEqual'
 export { truncate } from './truncate'

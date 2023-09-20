@@ -264,7 +264,6 @@ function SendTransactionRequest({
               <TabsList
                 items={[
                   { label: 'Data', value: 'data' },
-                  { label: 'Logs', value: 'logs' },
                   { label: 'Trace', value: 'trace' },
                 ]}
                 onSelect={(item) => {
@@ -274,9 +273,6 @@ function SendTransactionRequest({
               <Inset vertical="16px" bottom="152px">
                 <TabsContent inset={false} scrollable={false} value="data">
                   <DecodedCalldata address={to} data={data} />
-                </TabsContent>
-                <TabsContent inset={false} value="logs">
-                  {''}
                 </TabsContent>
                 <TabsContent inset={false} value="state">
                   {''}
