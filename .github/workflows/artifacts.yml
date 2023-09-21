@@ -23,3 +23,14 @@ jobs:
         with:
           name: extension
           path: dist/build
+
+      - name: Comment 
+        uses: tonyhallett/artifacts-url-comments@v1.1.0
+        if: ${{ github.event_name == 'pull_request' }}
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+            prefix: "Here is the extension:"
+            suffix: "Have a nice day. 🫡"
+            format: name
+            addTo: pull
