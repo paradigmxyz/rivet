@@ -13,14 +13,21 @@ export type TooltipProps = {
   enabled?: boolean
   label: string | ReactNode
   side?: 'top' | 'bottom' | 'left' | 'right'
+  width?: 'fit' | 'full'
 }
 
-export function Tooltip({ children, enabled, label, side }: TooltipProps) {
+export function Tooltip({
+  children,
+  enabled,
+  label,
+  side,
+  width,
+}: TooltipProps) {
   return (
     <Provider>
       <Root delayDuration={300} open={enabled === false ? false : undefined}>
         <Trigger asChild>
-          <Box width="full">{children}</Box>
+          <Box width={width}>{children}</Box>
         </Trigger>
         <Portal>
           <Content asChild side={side} sideOffset={8}>

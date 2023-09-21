@@ -156,7 +156,10 @@ export default function BlockDetails() {
                                   gap="4px"
                                   wrap={false}
                                 >
-                                  <Tooltip label={transaction.hash}>
+                                  <Tooltip
+                                    label={transaction.hash}
+                                    width="full"
+                                  >
                                     <Text.Truncated end={4} size="12px">
                                       {transaction.hash}
                                     </Text.Truncated>
@@ -164,14 +167,14 @@ export default function BlockDetails() {
                                 </Inline>
                               </LabelledContent>
                               <LabelledContent label="From">
-                                <Tooltip label={transaction.from}>
+                                <Tooltip label={transaction.from} width="full">
                                   <Text.Truncated end={4} size="12px">
                                     {transaction.from}
                                   </Text.Truncated>
                                 </Tooltip>
                               </LabelledContent>
                               <LabelledContent label="To">
-                                <Tooltip label={transaction.to}>
+                                <Tooltip label={transaction.to} width="full">
                                   <Text.Truncated end={4} size="12px">
                                     {transaction.to}
                                   </Text.Truncated>
