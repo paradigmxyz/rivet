@@ -13,7 +13,6 @@ import {
   Text,
 } from '~/design-system'
 import { useBlock } from '~/hooks/useBlock'
-import { truncate } from '~/utils'
 
 const numberIntl = new Intl.NumberFormat()
 const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
@@ -70,9 +69,9 @@ export default function BlockDetails() {
               <Column width="1/4">
                 <LabelledContent label="Hash">
                   <Tooltip label={block.hash}>
-                    <Text size="12px">
-                      {truncate(block.hash, { start: 4 })}
-                    </Text>
+                    <Text.Truncated end={4} size="12px">
+                      {block.hash}
+                    </Text.Truncated>
                   </Tooltip>
                 </LabelledContent>
               </Column>
@@ -104,7 +103,9 @@ export default function BlockDetails() {
             <Column width="1/4">
               <LabelledContent label="Fee Recipient">
                 <Tooltip label={block.miner}>
-                  <Text size="12px">{truncate(block.miner, { start: 4 })}</Text>
+                  <Text.Truncated end={4} size="12px">
+                    {block.miner}
+                  </Text.Truncated>
                 </Tooltip>
               </LabelledContent>
             </Column>
@@ -126,7 +127,7 @@ export default function BlockDetails() {
             </Column>
             <LabelledContent label="Logs Bloom">
               <Tooltip label={block.logsBloom!}>
-                <Text size="12px">{truncate(block.logsBloom!)}</Text>
+                <Text.Truncated size="12px">{block.logsBloom!}</Text.Truncated>
               </Tooltip>
             </LabelledContent>
           </Columns>
@@ -148,7 +149,7 @@ export default function BlockDetails() {
                             paddingHorizontal="12px"
                             paddingVertical="8px"
                           >
-                            <Columns alignVertical="center">
+                            <Columns gap="6px" alignVertical="center">
                               <LabelledContent label="Hash">
                                 <Inline
                                   alignVertical="center"
@@ -156,31 +157,24 @@ export default function BlockDetails() {
                                   wrap={false}
                                 >
                                   <Tooltip label={transaction.hash}>
-                                    <Text size="12px">
-                                      {truncate(transaction.hash, { start: 4 })}
-                                    </Text>
+                                    <Text.Truncated end={4} size="12px">
+                                      {transaction.hash}
+                                    </Text.Truncated>
                                   </Tooltip>
                                 </Inline>
                               </LabelledContent>
                               <LabelledContent label="From">
                                 <Tooltip label={transaction.from}>
-                                  <Text wrap={false} size="12px">
-                                    {truncate(transaction.from, {
-                                      start: 6,
-                                      end: 4,
-                                    })}
-                                  </Text>
+                                  <Text.Truncated end={4} size="12px">
+                                    {transaction.from}
+                                  </Text.Truncated>
                                 </Tooltip>
                               </LabelledContent>
                               <LabelledContent label="To">
                                 <Tooltip label={transaction.to}>
-                                  <Text wrap={false} size="12px">
-                                    {transaction.to &&
-                                      truncate(transaction.to, {
-                                        start: 6,
-                                        end: 4,
-                                      })}
-                                  </Text>
+                                  <Text.Truncated end={4} size="12px">
+                                    {transaction.to}
+                                  </Text.Truncated>
                                 </Tooltip>
                               </LabelledContent>
                               <LabelledContent label="Value">

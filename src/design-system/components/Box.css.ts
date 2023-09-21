@@ -104,7 +104,7 @@ const boxBaseProperties = defineProperties({
     })),
     bottom: positionSpacing,
     cursor: ['default', 'text', 'pointer', 'not-allowed'],
-    display: ['none', 'flex', 'block', 'inline'],
+    display: ['none', 'flex', 'block', 'inline', 'inline-block'],
     flex: ['1'],
     flexDirection: ['row', 'column'],
     flexWrap: ['wrap'],

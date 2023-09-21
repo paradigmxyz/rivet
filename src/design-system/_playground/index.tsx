@@ -1077,6 +1077,12 @@ function DesignSystem() {
               <Text>
                 This is some <Text color="surface/blue">inline text</Text>.
               </Text>
+              <Box style={{ maxWidth: '340px' }}>
+                <Text.Truncated end={20}>
+                  This is text that overflows the boundaries of the parent
+                  element.
+                </Text.Truncated>
+              </Box>
             </Stack>
           </Box>
         </Stack>

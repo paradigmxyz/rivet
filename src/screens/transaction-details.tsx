@@ -27,7 +27,7 @@ import { useBlock } from '~/hooks/useBlock'
 import { useTransaction } from '~/hooks/useTransaction'
 import { useTransactionConfirmations } from '~/hooks/useTransactionConfirmations'
 import { useTransactionReceipt } from '~/hooks/useTransactionReceipt'
-import { capitalize, truncate } from '~/utils'
+import { capitalize } from '~/utils'
 
 const numberIntl = new Intl.NumberFormat()
 const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
@@ -55,18 +55,15 @@ export default function TransactionDetails() {
   if (!transaction) return null
   return (
     <>
-      <Container
-        dismissable
-        header={`Transaction ${truncate(transaction.hash, { start: 8 })}`}
-      >
+      <Container dismissable header={'Transaction Details'}>
         <Stack gap="20px">
           <Columns gap="12px">
             <Column width="1/3">
               <LabelledContent label="Hash">
                 <Tooltip label={<Text size="9px">{transaction.hash}</Text>}>
-                  <Text size="12px">
-                    {truncate(transaction.hash!.toString(), { start: 8 })}
-                  </Text>
+                  <Text.Truncated size="12px">
+                    {transaction.hash!.toString()}
+                  </Text.Truncated>
                 </Tooltip>
               </LabelledContent>
             </Column>
@@ -109,20 +106,18 @@ export default function TransactionDetails() {
             <Column width="1/3">
               <LabelledContent label="From">
                 <Tooltip label={transaction.from}>
-                  <Text size="12px">
-                    {truncate(transaction.from, { start: 4 })}
-                  </Text>
+                  <Text.Truncated size="12px" end={6}>
+                    {transaction.from}
+                  </Text.Truncated>
                 </Tooltip>
               </LabelledContent>
             </Column>
             <Column width="1/3">
               <LabelledContent label="To">
                 <Tooltip label={transaction.to}>
-                  <Text size="12px">
-                    {transaction.to
-                      ? truncate(transaction.to, { start: 4 })
-                      : null}
-                  </Text>
+                  <Text.Truncated size="12px" end={6}>
+                    {transaction.to}
+                  </Text.Truncated>
                 </Tooltip>
               </LabelledContent>
             </Column>

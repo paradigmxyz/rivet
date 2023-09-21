@@ -38,8 +38,7 @@ export const tabular = style({
   letterSpacing: '0px',
 })
 
-export const nowrap = style({
-  display: 'block',
+export const overflow = style({
   textOverflow: 'ellipsis',
   overflow: 'hidden',
   whiteSpace: 'nowrap',

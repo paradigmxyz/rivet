@@ -603,7 +603,7 @@ function Transactions() {
                     paddingHorizontal="8px"
                     paddingVertical="8px"
                   >
-                    <Columns alignVertical="center">
+                    <Columns gap="6px" alignVertical="center">
                       <LabelledContent label="Block">
                         <Inline alignVertical="center" gap="4px" wrap={false}>
                           <Text size="12px">
@@ -621,17 +621,16 @@ function Transactions() {
                       </LabelledContent>
                       <LabelledContent label="From">
                         <Tooltip label={transaction.from}>
-                          <Text wrap={false} size="12px">
-                            {truncate(transaction.from, { start: 6, end: 4 })}
-                          </Text>
+                          <Text.Truncated end={5} size="12px">
+                            {transaction.from}
+                          </Text.Truncated>
                         </Tooltip>
                       </LabelledContent>
                       <LabelledContent label="To">
                         <Tooltip label={transaction.to}>
-                          <Text wrap={false} size="12px">
-                            {transaction.to &&
-                              truncate(transaction.to, { start: 6, end: 4 })}
-                          </Text>
+                          <Text.Truncated end={5} size="12px">
+                            {transaction.to}
+                          </Text.Truncated>
                         </Tooltip>
                       </LabelledContent>
                       <Column>

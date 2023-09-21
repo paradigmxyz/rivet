@@ -24,7 +24,6 @@ import { useMine } from '~/hooks/useMine'
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { getMessenger } from '~/messengers'
-import { truncate } from '~/utils'
 import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 
 import * as styles from './Header.css'
@@ -150,7 +149,7 @@ function Account() {
           {account && (
             <HeaderItem label="Account">
               <Tooltip label={account.address}>
-                <Text size="11px">{truncate(account.address)}</Text>
+                <Text.Truncated size="11px">{account.address}</Text.Truncated>
               </Tooltip>
             </HeaderItem>
           )}

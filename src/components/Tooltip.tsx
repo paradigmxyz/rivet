@@ -20,7 +20,7 @@ export function Tooltip({ children, enabled, label, side }: TooltipProps) {
     <Provider>
       <Root delayDuration={300} open={enabled === false ? false : undefined}>
         <Trigger asChild>
-          <Box>{children}</Box>
+          <Box width="full">{children}</Box>
         </Trigger>
         <Portal>
           <Content asChild side={side} sideOffset={8}>

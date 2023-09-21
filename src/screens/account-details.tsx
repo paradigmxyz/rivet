@@ -27,7 +27,6 @@ import {
 import { useErc20Balance } from '~/hooks/useErc20Balance'
 import { useErc20Metadata } from '~/hooks/useErc20Metadata'
 import { useSetErc20Balance } from '~/hooks/useSetErc20Balance'
-import { truncate } from '~/utils'
 import { useTokensStore } from '~/zustand/tokens'
 
 export default function AccountDetails() {
@@ -195,9 +194,11 @@ function TokenRow({
                   </Row>
                   <Row>
                     <Inline>
-                      <Text color="text/tertiary" size="11px">
-                        {truncate(tokenAddress, { start: 6, end: 4 })}
-                      </Text>
+                      <Box style={{ maxWidth: '156px' }}>
+                        <Text.Truncated color="text/tertiary" size="11px">
+                          {tokenAddress}
+                        </Text.Truncated>
+                      </Box>
                       <Box position="relative">
                         <Box position="absolute" style={{ left: 4, top: -2.5 }}>
                           <Box

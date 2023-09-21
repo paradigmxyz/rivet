@@ -200,9 +200,9 @@ function LogRow({ index, log }: { index: number; log: Log }) {
                 {log.transactionHash && (
                   <Column>
                     <LabelledContent label="Transaction Hash">
-                      <Text size="11px">
-                        {truncate(log.transactionHash, { start: 20, end: 20 })}
-                      </Text>
+                      <Text.Truncated size="11px">
+                        {log.transactionHash}
+                      </Text.Truncated>
                     </LabelledContent>
                   </Column>
                 )}
