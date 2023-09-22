@@ -30,6 +30,14 @@ export const placeholderStyle = style({
   },
 })
 
+export const disabledStyle = style({
+  selectors: {
+    '&[disabled]': {
+      pointerEvents: 'none',
+    },
+  },
+})
+
 export const invalidStyle = style({
   selectors: {
     '&[data-invalid="true"]': {

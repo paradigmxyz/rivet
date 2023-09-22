@@ -1,3 +1,4 @@
+import { uniqBy } from 'remeda'
 import type { Address, JsonRpcAccount as JsonRpcAccount_ } from 'viem'
 
 import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
@@ -12,6 +13,8 @@ type JsonRpcAccount = JsonRpcAccount_ & {
 }
 export type Account = JsonRpcAccount & {
   displayName?: string
+  key: string
+  state: 'loaded' | 'loading'
 }
 
 export type AccountState = {
@@ -28,7 +31,11 @@ export type AccountActions = {
     addresses,
     rpcUrl,
   }: { addresses: Address[]; rpcUrl: string }): void
-  upsertAccount({ account }: { account: Account }): void
+  upsertAccount({
+    account,
+    key,
+    setActive,
+  }: { account: Account; key?: string; setActive?: boolean }): void
 }
 export type AccountStore = AccountState & AccountActions
 
@@ -51,13 +58,9 @@ export const accountStore = createStore<AccountStore>(
     },
     removeAccount({ account }) {
       set((state) => {
-        const accounts = state.accounts.filter(
-          (x) => x.address !== account.address,
-        )
+        const accounts = state.accounts.filter((x) => x.key !== account.key)
         const account_ =
-          state.account?.address === account.address
-            ? accounts[0]
-            : state.account
+          state.account?.key === account.key ? accounts[0] : state.account
         return {
           ...state,
           account: account_,
@@ -70,7 +73,9 @@ export const accountStore = createStore<AccountStore>(
         (address) =>
           ({
             address,
+            key: `${rpcUrl}.${address}`,
             rpcUrl,
+            state: 'loaded',
             type: 'json-rpc',
           }) as const,
       )
@@ -88,16 +93,22 @@ export const accountStore = createStore<AccountStore>(
         }
       })
     },
-    upsertAccount({ account }) {
-      const exists = get().accounts.some(
-        (x) => x.address === account.address && x.rpcUrl === account.rpcUrl,
-      )
-
+    upsertAccount({ account, key, setActive = false }) {
       set((state) => {
+        const exists = state.accounts.some(
+          (x) => x.key === (key || account.key),
+        )
+        const accounts_ = exists
+          ? state.accounts.map((x) =>
+              x.key === (key || account.key) ? account : x,
+            )
+          : [account, ...state.accounts]
+        const account_ = setActive ? account : state.account
+
         return {
           ...state,
-          account,
-          accounts: exists ? state.accounts : [account, ...state.accounts],
+          account: account_,
+          accounts: uniqBy(accounts_, (x) => x.key),
         }
       })
     },
