@@ -81,7 +81,7 @@ git clone https://github.com/paradigmxyz/rivet.git
 
 ### 2. Install Bun
 
-wagmi uses [Bun](https://bun.sh). You need to install **Bun v1 or higher**.
+Rivet uses [Bun](https://bun.sh). You need to install **Bun v1 or higher**.
 
 You can run the following commands in your terminal to check your local Bun version:
 
