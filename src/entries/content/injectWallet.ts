@@ -19,7 +19,7 @@ export async function injectWallet() {
     windowStorage.local.setItem('open', true)
 
   // Inject wallet elements
-  const container = injectContainer()
+  const container = await injectContainer()
   injectIframe({ container, extensionId })
 
   const handle = injectHandle({ container })
@@ -29,7 +29,7 @@ export async function injectWallet() {
 
 /////////////////////////////////////////////////////////////////////
 
-function injectContainer() {
+async function injectContainer() {
   const container = document.createElement('div')
   container.id = '__dev-wallet'
   container.style.width = '0px'
@@ -39,6 +39,14 @@ function injectContainer() {
   container.style.right = '0'
   container.style.border = 'none'
   container.style.zIndex = '2147483646'
+  container.style.transition = 'width 0.2s ease-in-out'
+  if (document.body === null) {
+    await new Promise<void>((resolve) => {
+      document.addEventListener('DOMContentLoaded', () => {
+        resolve()
+      })
+    })
+  }
   document.body.appendChild(container)
   return container
 }
@@ -99,7 +107,7 @@ function setupHandleListeners({
   })
 
   document.addEventListener('mouseup', () => {
-    container.style.pointerEvents = 'inherit'
+    container.style.pointerEvents = 'all'
     isDragging = false
   })
 }
