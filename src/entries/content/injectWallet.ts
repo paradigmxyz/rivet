@@ -39,14 +39,14 @@ async function injectContainer() {
   container.style.right = '0'
   container.style.border = 'none'
   container.style.zIndex = '2147483646'
-  container.style.transition = 'width 0.2s ease-in-out'
-  if (document.body === null) {
+
+  if (document.body === null)
     await new Promise<void>((resolve) => {
       document.addEventListener('DOMContentLoaded', () => {
         resolve()
       })
     })
-  }
+
   document.body.appendChild(container)
   return container
 }
