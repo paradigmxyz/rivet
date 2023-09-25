@@ -5,6 +5,7 @@ import { getMessenger } from '~/messengers'
 import { getProvider } from '~/provider'
 
 const backgroundMessenger = getMessenger('background:inpage')
+const walletMessenger = getMessenger('wallet:inpage')
 
 export function injectProvider() {
   const provider = getProvider({
@@ -15,6 +16,11 @@ export function injectProvider() {
   // Inject provider directly onto window
   window.ethereum = provider
   window.dispatchEvent(new Event('ethereum#initialized'))
+
+  // Re-inject provider on demand
+  walletMessenger.reply('injectProvider', async () => {
+    window.ethereum = provider
+  })
 
   // Announce provider
   announceProvider({

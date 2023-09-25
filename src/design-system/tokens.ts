@@ -644,6 +644,7 @@ export const symbolNames = [
   'xmark',
   'arrow.right',
   'arrowtriangle.left.and.line.vertical.and.arrowtriangle.right',
+  'square.and.arrow.down',
 ] as const
 export type SymbolName = typeof symbolNames[number]
 

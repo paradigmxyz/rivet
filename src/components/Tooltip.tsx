@@ -11,6 +11,7 @@ import { Box, Text } from '~/design-system'
 export type TooltipProps = {
   children: ReactNode
   enabled?: boolean
+  height?: 'fit' | 'full'
   label: string | ReactNode
   side?: 'top' | 'bottom' | 'left' | 'right'
   width?: 'fit' | 'full'
@@ -19,6 +20,7 @@ export type TooltipProps = {
 export function Tooltip({
   children,
   enabled,
+  height,
   label,
   side,
   width,
@@ -27,7 +29,9 @@ export function Tooltip({
     <Provider>
       <Root delayDuration={300} open={enabled === false ? false : undefined}>
         <Trigger asChild>
-          <Box width={width}>{children}</Box>
+          <Box height={height} width={width}>
+            {children}
+          </Box>
         </Trigger>
         <Portal>
           <Content asChild side={side} sideOffset={8}>

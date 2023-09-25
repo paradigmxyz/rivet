@@ -29,6 +29,7 @@ import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 import * as styles from './Header.css'
 
 const contentMessenger = getMessenger('wallet:contentScript')
+const inpageMessenger = getMessenger('wallet:inpage')
 
 export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
   return (
@@ -49,6 +50,13 @@ export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
           </Column>
           <Column>
             <DappConnection />
+          </Column>
+          <Column width="content">
+            <Separator orientation="vertical" />
+          </Column>
+          <Column width="content">
+            {/** TODO: Remove this once EIP-6963 is widely adopted across wallets & dapps. */}
+            <ReinjectButton />
           </Column>
           <Column width="content">
             <Separator orientation="vertical" />
@@ -197,20 +205,47 @@ function CollapseButton() {
   }, [])
 
   return (
-    <Box
-      alignItems="center"
-      as="button"
-      backgroundColor={{
-        hover: 'surface/fill/quarternary',
-      }}
-      display="flex"
-      justifyContent="center"
-      height="full"
-      onClick={handleClose}
-      style={{ width: '28px' }}
-    >
-      <SFSymbol size="12px" symbol="chevron.right.2" weight="medium" />
-    </Box>
+    <Tooltip label="Hide Wallet" height="full">
+      <Box
+        alignItems="center"
+        as="button"
+        backgroundColor={{
+          hover: 'surface/fill/quarternary',
+        }}
+        display="flex"
+        justifyContent="center"
+        height="full"
+        onClick={handleClose}
+        style={{ width: '28px' }}
+      >
+        <SFSymbol size="12px" symbol="chevron.right.2" weight="medium" />
+      </Box>
+    </Tooltip>
+  )
+}
+
+function ReinjectButton() {
+  const handleInject = useCallback(() => {
+    inpageMessenger.send('injectProvider', undefined)
+  }, [])
+
+  return (
+    <Tooltip label="Re-inject Wallet into Dapp" height="full">
+      <Box
+        alignItems="center"
+        as="button"
+        backgroundColor={{
+          hover: 'surface/fill/quarternary',
+        }}
+        display="flex"
+        justifyContent="center"
+        height="full"
+        onClick={handleInject}
+        style={{ width: '28px' }}
+      >
+        <SFSymbol size="14px" symbol="square.and.arrow.down" weight="medium" />
+      </Box>
+    </Tooltip>
   )
 }
 
