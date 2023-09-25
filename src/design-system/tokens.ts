@@ -402,6 +402,81 @@ export const fontFamily = {
 }
 export type FontFamily = keyof typeof fontFamily
 
+export type FontAttributes = {
+  letterWidth: number
+  fontSize: number
+  lineHeight: number | `${number}%`
+  letterSpacing: number
+}
+export const fontAttributes = {
+  '9px': {
+    fontSize: 9,
+    letterSpacing: 0.56,
+    letterWidth: 5.75,
+    lineHeight: 11,
+  },
+  '11px': {
+    fontSize: 11,
+    letterSpacing: 0.56,
+    letterWidth: 6.9,
+    lineHeight: 13,
+  },
+  '12px': {
+    fontSize: 12,
+    letterSpacing: 0.52,
+    letterWidth: 7.825,
+    lineHeight: 15,
+  },
+  '14px': {
+    fontSize: 14,
+    letterSpacing: 0.48,
+    letterWidth: 8.75,
+    lineHeight: 19,
+  },
+  '15px': {
+    fontSize: 15,
+    letterSpacing: 0.35,
+    letterWidth: 9.25,
+    lineHeight: 21,
+  },
+  '16px': {
+    fontSize: 16,
+    letterSpacing: 0.35,
+    letterWidth: 9.75,
+    lineHeight: 21,
+  },
+  '18px': {
+    fontSize: 18,
+    letterSpacing: 0.36,
+    letterWidth: 10.75,
+    lineHeight: 23,
+  },
+  '20px': {
+    fontSize: 20,
+    letterSpacing: 0.36,
+    letterWidth: 12,
+    lineHeight: 25,
+  },
+  '22px': {
+    fontSize: 22,
+    letterSpacing: 0.35,
+    letterWidth: 13.5,
+    lineHeight: 29,
+  },
+  '26px': {
+    fontSize: 26,
+    letterSpacing: 0.36,
+    letterWidth: 16,
+    lineHeight: 32,
+  },
+  '32px': {
+    fontSize: 32,
+    letterSpacing: 0.41,
+    letterWidth: 20,
+    lineHeight: 40,
+  },
+} satisfies { [key: string]: FontAttributes }
+
 const fontMetrics = {
   capHeight: 1443,
   ascent: 1950,
@@ -410,12 +485,8 @@ const fontMetrics = {
   unitsPerEm: 2048,
 } satisfies CapsizeOptions['fontMetrics']
 
-function defineType(
-  fontSize: number,
-  lineHeight: number | `${number}%`,
-  letterSpacing: number,
-  inline: boolean,
-) {
+function defineType(fontAttributes: FontAttributes, inline: boolean) {
+  const { fontSize, lineHeight, letterSpacing } = fontAttributes
   const leading =
     typeof lineHeight === 'number'
       ? lineHeight
@@ -430,17 +501,17 @@ function defineType(
 
 export const fontSize = (inline: boolean) =>
   ({
-    '9px': defineType(9, 11, 0.56, inline),
-    '11px': defineType(11, 13, 0.56, inline),
-    '12px': defineType(12, 15, 0.52, inline),
-    '14px': defineType(14, 19, 0.48, inline),
-    '15px': defineType(15, 21, 0.35, inline),
-    '16px': defineType(16, 21, 0.35, inline),
-    '18px': defineType(18, 23, 0.36, inline),
-    '20px': defineType(20, 25, 0.36, inline),
-    '22px': defineType(22, 29, 0.35, inline),
-    '26px': defineType(26, 32, 0.36, inline),
-    '32px': defineType(32, 40, 0.41, inline),
+    '9px': defineType(fontAttributes['9px'], inline),
+    '11px': defineType(fontAttributes['11px'], inline),
+    '12px': defineType(fontAttributes['12px'], inline),
+    '14px': defineType(fontAttributes['14px'], inline),
+    '15px': defineType(fontAttributes['15px'], inline),
+    '16px': defineType(fontAttributes['16px'], inline),
+    '18px': defineType(fontAttributes['18px'], inline),
+    '20px': defineType(fontAttributes['20px'], inline),
+    '22px': defineType(fontAttributes['22px'], inline),
+    '26px': defineType(fontAttributes['26px'], inline),
+    '32px': defineType(fontAttributes['32px'], inline),
   }) as const
 export type FontSize = keyof ReturnType<typeof fontSize>
 

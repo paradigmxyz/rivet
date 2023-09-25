@@ -674,14 +674,14 @@ function Transactions() {
                       </LabelledContent>
                       <LabelledContent label="From">
                         <Tooltip label={transaction.from}>
-                          <Text.Truncated end={5} size="12px">
+                          <Text.Truncated size="12px">
                             {transaction.from}
                           </Text.Truncated>
                         </Tooltip>
                       </LabelledContent>
                       <LabelledContent label="To">
                         <Tooltip label={transaction.to}>
-                          <Text.Truncated end={5} size="12px">
+                          <Text.Truncated size="12px">
                             {transaction.to}
                           </Text.Truncated>
                         </Tooltip>

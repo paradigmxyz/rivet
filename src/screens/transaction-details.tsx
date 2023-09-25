@@ -106,7 +106,7 @@ export default function TransactionDetails() {
             <Column width="1/3">
               <LabelledContent label="From">
                 <Tooltip label={transaction.from}>
-                  <Text.Truncated size="12px" end={6}>
+                  <Text.Truncated size="12px">
                     {transaction.from}
                   </Text.Truncated>
                 </Tooltip>
@@ -115,9 +115,7 @@ export default function TransactionDetails() {
             <Column width="1/3">
               <LabelledContent label="To">
                 <Tooltip label={transaction.to}>
-                  <Text.Truncated size="12px" end={6}>
-                    {transaction.to}
-                  </Text.Truncated>
+                  <Text.Truncated size="12px">{transaction.to}</Text.Truncated>
                 </Tooltip>
               </LabelledContent>
             </Column>

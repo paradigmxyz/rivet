@@ -179,18 +179,14 @@ function SendTransactionRequest({
           <Column width="1/3">
             <LabelledContent label="From">
               <Tooltip label={from}>
-                <Text.Truncated end={5} size="12px">
-                  {from}
-                </Text.Truncated>
+                <Text.Truncated size="12px">{from}</Text.Truncated>
               </Tooltip>
             </LabelledContent>
           </Column>
           <Column width="1/3">
             <LabelledContent label="To">
               <Tooltip label={to}>
-                <Text.Truncated end={5} size="12px">
-                  {to}
-                </Text.Truncated>
+                <Text.Truncated size="12px">{to}</Text.Truncated>
               </Tooltip>
             </LabelledContent>
           </Column>
@@ -355,9 +351,7 @@ function SignMessageRequest({
           <Column width="1/4">
             <LabelledContent label="Address">
               <Tooltip label={address}>
-                <Text.Truncated end={5} size="12px">
-                  {address}
-                </Text.Truncated>
+                <Text.Truncated size="12px">{address}</Text.Truncated>
               </Tooltip>
             </LabelledContent>
           </Column>
@@ -406,9 +400,7 @@ function SignTypedDataRequest({
           <Column width="1/4">
             <LabelledContent label="Address">
               <Tooltip label={address}>
-                <Text.Truncated end={5} size="12px">
-                  {address}
-                </Text.Truncated>
+                <Text.Truncated size="12px">{address}</Text.Truncated>
               </Tooltip>
             </LabelledContent>
           </Column>
