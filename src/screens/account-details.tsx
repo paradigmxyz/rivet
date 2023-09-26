@@ -154,7 +154,7 @@ function ImportToken({ accountAddress }: { accountAddress: Address }) {
           placeholder="Import token address"
           register={register('address')}
         />
-        <Button height="24px" variant="stroked fill" width="fit">
+        <Button height="24px" variant="stroked fill" width="fit" type="submit">
           Import
         </Button>
       </Inline>

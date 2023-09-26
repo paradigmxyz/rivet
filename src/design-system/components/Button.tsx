@@ -140,6 +140,7 @@ export const ButtonRoot = forwardRef<HTMLDivElement, ButtonRootProps>(
       href,
       onClick,
       width,
+      type = 'button',
       variant = 'solid invert',
     }: ButtonRootProps,
     ref,
@@ -147,12 +148,12 @@ export const ButtonRoot = forwardRef<HTMLDivElement, ButtonRootProps>(
     return (
       <Box
         ref={ref as any}
-        as={as}
+        as={as as any}
         href={href}
         onClick={onClick as any}
         disabled={disabled}
         className={[buttonHeightStyles[height], className]}
-        cursor={disabled ? 'not-allowed' : 'pointer'}
+        cursor={disabled ? 'not-allowed' : undefined}
         display="flex"
         alignItems="center"
         justifyContent="center"
@@ -165,6 +166,7 @@ export const ButtonRoot = forwardRef<HTMLDivElement, ButtonRootProps>(
                 hoveractive: 'shrink',
               }
         }
+        type={type}
         width={width}
         {...stylesForVariant[variant]}
       >

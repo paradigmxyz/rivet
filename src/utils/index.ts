@@ -1,5 +1,6 @@
 export { decodeEventLogs_guessed, guessAbiItem } from './abi'
 export { capitalize } from './capitalize'
 export { deepEqual } from './deepEqual'
+export { isDomain } from './isDomain'
 export { truncate } from './truncate'
 export { uid } from './uid'

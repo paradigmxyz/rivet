@@ -8,6 +8,7 @@ import { OnboardingContainer } from '~/components'
 import * as Form from '~/components/form'
 import { Button, Separator, Stack, Text } from '~/design-system'
 import { useNetworkStore } from '~/zustand'
+import { defaultNetwork } from '~/zustand/network'
 
 export default function OnboardingConfigure() {
   const [params] = useSearchParams()
@@ -53,8 +54,8 @@ export default function OnboardingConfigure() {
 
   const navigate = useNavigate()
 
-  const { upsertNetwork } = useNetworkStore()
-  const submit = handleSubmit((values_) => {
+  const { upsertNetwork, switchNetwork } = useNetworkStore()
+  const submit = handleSubmit(async (values_) => {
     const values = {
       ...values_,
       autoMine: String(values_.autoMine),
@@ -66,15 +67,19 @@ export default function OnboardingConfigure() {
         : '',
     }
 
-    if (type === 'local')
-      upsertNetwork({
+    if (type === 'local') {
+      const rpcUrl = `http://127.0.0.1:${values.port}`
+      await upsertNetwork({
+        rpcUrl: defaultNetwork.rpcUrl,
         network: {
           blockTime: Number(values.blockTime),
           chainId: Number(values.chainId),
           name: values.networkName,
-          rpcUrl: `http://127.0.0.1:${values.port}`,
+          rpcUrl,
         },
       })
+      switchNetwork(rpcUrl)
+    }
 
     const search = new URLSearchParams(values)
     navigate(`/onboarding/run?${search.toString()}`)
@@ -86,8 +91,16 @@ export default function OnboardingConfigure() {
         title="Configure Options"
         footer={
           <>
-            {type === 'hosted' && <Button height="44px">Deploy node</Button>}
-            {type === 'local' && <Button height="44px">Continue</Button>}
+            {type === 'hosted' && (
+              <Button height="44px" type="submit">
+                Deploy node
+              </Button>
+            )}
+            {type === 'local' && (
+              <Button height="44px" type="submit">
+                Continue
+              </Button>
+            )}
           </>
         }
       >

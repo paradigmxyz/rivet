@@ -2,8 +2,8 @@ import { useQuery } from '@tanstack/react-query'
 import type { Client } from 'viem'
 
 import { createQueryKey } from '~/react-query'
-import { useNetworkStore } from '~/zustand'
 
+import { useNetworkStore } from '../zustand'
 import { useClient } from './useClient'
 
 type UseNetworkStatusParameters = {
@@ -11,11 +11,12 @@ type UseNetworkStatusParameters = {
   refetchInterval?: number
   retry?: number
   retryDelay?: number
+  rpcUrl?: string
 }
 
 export const getNetworkStatusQueryKey = createQueryKey<
   'listening',
-  [key: Client['key']]
+  [key: Client['key'], string | undefined]
 >('listening')
 
 export function useNetworkStatus({
@@ -23,18 +24,26 @@ export function useNetworkStatus({
   refetchInterval,
   retry = 5,
   retryDelay,
+  rpcUrl,
 }: UseNetworkStatusParameters = {}) {
-  const { network, upsertNetwork } = useNetworkStore()
-  const client = useClient()
+  const client = useClient({ rpcUrl })
+  const { networks, upsertNetwork } = useNetworkStore()
 
   return useQuery({
     enabled,
-    queryKey: getNetworkStatusQueryKey([client.key]),
+    queryKey: getNetworkStatusQueryKey([client.key, rpcUrl]),
     async queryFn() {
       try {
         const chainId = await client.getChainId()
-        if (network.chainId !== chainId)
-          upsertNetwork({ rpcUrl: network.rpcUrl, network: { chainId } })
+        const network = networks.find((x) => x.rpcUrl === client.key)
+        if (
+          network &&
+          chainId &&
+          network.rpcUrl === client.key &&
+          network.chainId !== chainId
+        ) {
+          upsertNetwork({ rpcUrl, network: { chainId } })
+        }
         return chainId
       } catch {
         return false

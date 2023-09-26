@@ -2,6 +2,7 @@ import type { Address, JsonRpcAccount as JsonRpcAccount_ } from 'viem'
 
 import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
 
+import { uniqBy } from 'remeda'
 import { createStore } from './utils'
 
 // Only support JSON-RPC Accounts for now. In the future, we may want to add support
@@ -12,6 +13,8 @@ type JsonRpcAccount = JsonRpcAccount_ & {
 }
 export type Account = JsonRpcAccount & {
   displayName?: string
+  key: string
+  state: 'loaded' | 'loading'
 }
 
 export type AccountState = {
@@ -28,7 +31,8 @@ export type AccountActions = {
     addresses,
     rpcUrl,
   }: { addresses: Address[]; rpcUrl: string }): void
-  upsertAccount({ account }: { account: Account }): void
+  switchAccount(key: string): void
+  upsertAccount({ account, key }: { account: Account; key?: string }): void
 }
 export type AccountStore = AccountState & AccountActions
 
@@ -51,13 +55,9 @@ export const accountStore = createStore<AccountStore>(
     },
     removeAccount({ account }) {
       set((state) => {
-        const accounts = state.accounts.filter(
-          (x) => x.address !== account.address,
-        )
+        const accounts = state.accounts.filter((x) => x.key !== account.key)
         const account_ =
-          state.account?.address === account.address
-            ? accounts[0]
-            : state.account
+          state.account?.key === account.key ? accounts[0] : state.account
         return {
           ...state,
           account: account_,
@@ -70,7 +70,9 @@ export const accountStore = createStore<AccountStore>(
         (address) =>
           ({
             address,
+            key: `${rpcUrl}.${address}`,
             rpcUrl,
+            state: 'loaded',
             type: 'json-rpc',
           }) as const,
       )
@@ -88,16 +90,35 @@ export const accountStore = createStore<AccountStore>(
         }
       })
     },
-    upsertAccount({ account }) {
-      const exists = get().accounts.some(
-        (x) => x.address === account.address && x.rpcUrl === account.rpcUrl,
-      )
-
+    switchAccount(key) {
       set((state) => {
+        const account = state.accounts.find((account) => account.key === key)
         return {
           ...state,
           account,
-          accounts: exists ? state.accounts : [account, ...state.accounts],
+        }
+      })
+    },
+    upsertAccount({ account: account_, key: key_ }) {
+      const key = key_ || account_.key
+
+      set((state) => {
+        const accounts = [...state.accounts]
+        const index = accounts.findIndex((account) => account.key === key)
+
+        const account = {
+          ...(index >= 0 ? accounts[index] : {}),
+          ...account_,
+        }
+        if (index >= 0) accounts[index] = account
+        else accounts.unshift(account)
+
+        return {
+          ...state,
+          ...(key === state.account?.key && {
+            account,
+          }),
+          accounts: uniqBy(accounts, (x) => x.key),
         }
       })
     },

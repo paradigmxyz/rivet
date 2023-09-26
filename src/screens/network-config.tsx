@@ -1,26 +1,31 @@
 import { useQuery } from '@tanstack/react-query'
-import { useEffect } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
-import * as chains from 'viem/chains'
+import { useParams } from 'react-router-dom'
 
 import { Container } from '~/components'
-import { Button, Input, Stack, Text } from '~/design-system'
+import * as Form from '~/components/form'
+import { Button, Stack, Text } from '~/design-system'
 import { useDebounce } from '~/hooks/useDebounce'
 import { getClient } from '~/viem'
 import { useNetworkStore } from '~/zustand'
 
 export default function Network() {
-  const { network, upsertNetwork, switchNetwork } = useNetworkStore()
+  const { networks, upsertNetwork } = useNetworkStore()
+  const { rpcUrl } = useParams()
+
+  const network = useMemo(
+    () => networks.find((n) => n.rpcUrl === rpcUrl),
+    [networks, rpcUrl],
+  )
 
   type FormValues = {
     name: string
     rpcUrl: string
   }
-  const { register, handleSubmit, setValue, getFieldState, watch } =
-    useForm<FormValues>({
-      defaultValues: { name: network.name, rpcUrl: network.rpcUrl },
-    })
+  const { register, handleSubmit, watch } = useForm<FormValues>({
+    defaultValues: { name: network?.name || '', rpcUrl: network?.rpcUrl || '' },
+  })
 
   const debouncedRpcUrl = useDebounce(watch('rpcUrl'), 300)
   const { data: chainId, isError: isOffline } = useQuery({
@@ -32,67 +37,46 @@ export default function Network() {
     },
   })
 
-  useEffect(() => {
-    const { isDirty } = getFieldState('name')
-    if (isDirty) return
-    const name = Object.values(chains).find(
-      (chain) => chain.id === chainId,
-    )?.name
-    setValue('name', name || 'Ethereum')
-  }, [chainId, getFieldState, setValue])
-
-  const navigate = useNavigate()
-
   const onSubmit = handleSubmit(async ({ name, rpcUrl }) => {
-    await upsertNetwork({ rpcUrl, network: { name } })
-    switchNetwork(rpcUrl)
-    navigate('/')
+    await upsertNetwork({ rpcUrl: network?.rpcUrl, network: { name, rpcUrl } })
+    history.back()
   })
 
   return (
-    <form onSubmit={onSubmit} style={{ height: '100%' }}>
+    <Form.Root onSubmit={onSubmit} style={{ height: '100%' }}>
       <Container
         dismissable
         header="Network Configuration"
         footer={<Button type="submit">Update</Button>}
       >
         <Stack gap="20px">
-          <Stack gap="12px">
-            <Text color="text/tertiary" size="11px">
-              Chain ID
-            </Text>
-            <Input
-              disabled
-              name="chainId"
-              placeholder="1"
-              value={chainId || network.chainId}
-            />
-          </Stack>
-          <Stack gap="8px">
-            <Stack gap="12px">
-              <Text color="text/tertiary" size="11px">
-                RPC URL
-              </Text>
-              <Input
-                placeholder="http://localhost:8545"
-                state={isOffline ? 'warning' : undefined}
-                {...register('rpcUrl', { required: true })}
-              />
-            </Stack>
-            {isOffline && (
-              <Text color="surface/yellow" size="11px">
-                Warning: Network is offline
-              </Text>
-            )}
-          </Stack>
-          <Stack gap="12px">
-            <Text color="text/tertiary" size="11px">
-              Name
-            </Text>
-            <Input placeholder="Ethereum" {...register('name')} />
-          </Stack>
+          <Form.InputField
+            disabled
+            label="Chain ID"
+            name="chainId"
+            placeholder="1"
+            value={chainId || network?.chainId}
+          />
+          <Form.InputField
+            label="RPC URL"
+            placeholder="http://localhost:8545"
+            register={register('rpcUrl', { required: true })}
+            hint={
+              isOffline ? (
+                <Text color="surface/yellow" size="12px">
+                  Network is offline
+                </Text>
+              ) : undefined
+            }
+            state={isOffline ? 'warning' : undefined}
+          />
+          <Form.InputField
+            label="Name"
+            placeholder="Ethereum"
+            register={register('name')}
+          />
         </Stack>
       </Container>
-    </form>
+    </Form.Root>
   )
 }

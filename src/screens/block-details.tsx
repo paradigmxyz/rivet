@@ -69,9 +69,7 @@ export default function BlockDetails() {
               <Column width="1/4">
                 <LabelledContent label="Hash">
                   <Tooltip label={block.hash}>
-                    <Text.Truncated end={4} size="12px">
-                      {block.hash}
-                    </Text.Truncated>
+                    <Text.Truncated size="12px">{block.hash}</Text.Truncated>
                   </Tooltip>
                 </LabelledContent>
               </Column>
@@ -103,9 +101,7 @@ export default function BlockDetails() {
             <Column width="1/4">
               <LabelledContent label="Fee Recipient">
                 <Tooltip label={block.miner}>
-                  <Text.Truncated end={4} size="12px">
-                    {block.miner}
-                  </Text.Truncated>
+                  <Text.Truncated size="12px">{block.miner}</Text.Truncated>
                 </Tooltip>
               </LabelledContent>
             </Column>
@@ -156,23 +152,26 @@ export default function BlockDetails() {
                                   gap="4px"
                                   wrap={false}
                                 >
-                                  <Tooltip label={transaction.hash}>
-                                    <Text.Truncated end={4} size="12px">
+                                  <Tooltip
+                                    label={transaction.hash}
+                                    width="full"
+                                  >
+                                    <Text.Truncated size="12px">
                                       {transaction.hash}
                                     </Text.Truncated>
                                   </Tooltip>
                                 </Inline>
                               </LabelledContent>
                               <LabelledContent label="From">
-                                <Tooltip label={transaction.from}>
-                                  <Text.Truncated end={4} size="12px">
+                                <Tooltip label={transaction.from} width="full">
+                                  <Text.Truncated size="12px">
                                     {transaction.from}
                                   </Text.Truncated>
                                 </Tooltip>
                               </LabelledContent>
                               <LabelledContent label="To">
-                                <Tooltip label={transaction.to}>
-                                  <Text.Truncated end={4} size="12px">
+                                <Tooltip label={transaction.to} width="full">
+                                  <Text.Truncated size="12px">
                                     {transaction.to}
                                   </Text.Truncated>
                                 </Tooltip>

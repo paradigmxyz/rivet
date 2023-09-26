@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { formatGwei } from 'viem'
 
 import { Tooltip } from '~/components'
@@ -29,6 +29,7 @@ import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 import * as styles from './Header.css'
 
 const contentMessenger = getMessenger('wallet:contentScript')
+const inpageMessenger = getMessenger('wallet:inpage')
 
 export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
   return (
@@ -54,6 +55,13 @@ export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
             <Separator orientation="vertical" />
           </Column>
           <Column width="content">
+            {/** TODO: Remove this once EIP-6963 is widely adopted across wallets & dapps. */}
+            <ReinjectButton />
+          </Column>
+          <Column width="content">
+            <Separator orientation="vertical" />
+          </Column>
+          <Column width="content">
             <CollapseButton />
           </Column>
         </Columns>
@@ -68,16 +76,17 @@ export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
         <Separator />
       </Row>
       <Row>
-        <Box position="relative" width="full">
+        <Box
+          width="full"
+          style={
+            isNetworkOffline ? { opacity: 0.5, pointerEvents: 'none' } : {}
+          }
+        >
           <Block />
-          {isNetworkOffline && <NetworkOfflineOverlay />}
         </Box>
       </Row>
       <Row height="content">
-        <Box position="relative" width="full">
-          <Separator />
-          {isNetworkOffline && <NetworkOfflineOverlay />}
-        </Box>
+        <Separator />
       </Row>
     </Rows>
   )
@@ -94,18 +103,6 @@ function HeaderItem({
       </Text>
       <Box>{children}</Box>
     </Stack>
-  )
-}
-
-function NetworkOfflineOverlay() {
-  return (
-    <Box
-      backgroundColor="surface/black@0.5"
-      position="absolute"
-      height="full"
-      top="0px"
-      width="full"
-    />
   )
 }
 
@@ -135,7 +132,7 @@ function Account() {
   const { account } = useAccountStore()
   if (!account) return null
   return (
-    <Link to="account-config" style={{ height: '100%' }}>
+    <Link to="/" style={{ height: '100%' }}>
       <Box
         alignItems="center"
         backgroundColor={{
@@ -197,20 +194,47 @@ function CollapseButton() {
   }, [])
 
   return (
-    <Box
-      alignItems="center"
-      as="button"
-      backgroundColor={{
-        hover: 'surface/fill/quarternary',
-      }}
-      display="flex"
-      justifyContent="center"
-      height="full"
-      onClick={handleClose}
-      style={{ width: '28px' }}
-    >
-      <SFSymbol size="12px" symbol="chevron.right.2" weight="medium" />
-    </Box>
+    <Tooltip label="Hide Wallet" height="full">
+      <Box
+        alignItems="center"
+        as="button"
+        backgroundColor={{
+          hover: 'surface/fill/quarternary',
+        }}
+        display="flex"
+        justifyContent="center"
+        height="full"
+        onClick={handleClose}
+        style={{ width: '28px' }}
+      >
+        <SFSymbol size="12px" symbol="chevron.right.2" weight="medium" />
+      </Box>
+    </Tooltip>
+  )
+}
+
+function ReinjectButton() {
+  const handleInject = useCallback(() => {
+    inpageMessenger.send('injectProvider', undefined)
+  }, [])
+
+  return (
+    <Tooltip label="Re-inject Wallet into Dapp" height="full">
+      <Box
+        alignItems="center"
+        as="button"
+        backgroundColor={{
+          hover: 'surface/fill/quarternary',
+        }}
+        display="flex"
+        justifyContent="center"
+        height="full"
+        onClick={handleInject}
+        style={{ width: '28px' }}
+      >
+        <SFSymbol size="14px" symbol="square.and.arrow.down" weight="medium" />
+      </Box>
+    </Tooltip>
   )
 }
 
@@ -218,8 +242,10 @@ function CollapseButton() {
 // Middle Bar
 
 function Network() {
+  const navigate = useNavigate()
+  const { network } = useNetworkStore()
   return (
-    <Link to="network-config" style={{ height: '100%', width: '100%' }}>
+    <Link to="networks" style={{ height: '100%', width: '100%' }}>
       <Box
         alignItems="center"
         backgroundColor={{
@@ -231,14 +257,25 @@ function Network() {
         style={{ cursor: 'default' }}
       >
         <Inset horizontal="8px">
-          <Columns gap="12px">
-            <Column alignVertical="center" width="1/2">
+          <Columns alignVertical="center" gap="12px">
+            <Column alignVertical="center">
               <RpcUrl />
             </Column>
-            <Column alignVertical="center" width="1/2">
+            <Column alignVertical="center">
               <Inset left="8px">
                 <Chain />
               </Inset>
+            </Column>
+            <Column width="content">
+              <Button.Symbol
+                onClick={(e) => {
+                  e.preventDefault()
+                  navigate(`/networks/${encodeURIComponent(network.rpcUrl)}`)
+                }}
+                variant="ghost primary"
+                height="24px"
+                symbol="gearshape.fill"
+              />
             </Column>
           </Columns>
         </Inset>

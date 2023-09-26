@@ -7,6 +7,7 @@ import {
   type InputState,
   type InputVariant,
   backgroundStyle,
+  disabledStyle,
   heightStyles,
   invalidStyle,
   placeholderStyle,
@@ -29,12 +30,13 @@ export const stylesForVariant = {
   solid: {
     backgroundColor: {
       default: 'surface/primary/elevated',
+      disabled: 'surface/secondary/elevated',
     },
     borderColor: {
       default: 'surface/invert@0.2',
       hover: 'surface/invert@0.3',
-      focus: 'surface/invert',
-      hoverfocus: 'surface/invert',
+      focus: 'surface/invert@0.7',
+      hoverfocus: 'surface/invert@0.7',
     },
   },
 } satisfies Record<InputVariant, BoxStyles>
@@ -86,6 +88,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         className={[
           backgroundStyle,
           heightStyles[height],
+          disabledStyle,
           invalidStyle,
           placeholderStyle,
           styles.inlineText({

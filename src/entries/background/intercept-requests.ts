@@ -1,48 +1,85 @@
-import { networkStore } from '~/zustand'
+import { type SessionsStore, networkStore, sessionsStore } from '~/zustand'
 
 const decoder = new TextDecoder('utf-8')
 
 export async function interceptJsonRpcRequests() {
   let id = 0
-  const rulesCache = new Map()
 
-  function watchRequests({ redirectUrl }: { redirectUrl: string }) {
+  function watchRequests({
+    redirectUrl,
+    sessions,
+  }: { redirectUrl: string; sessions: SessionsStore['sessions'] }) {
     const handler = (details: chrome.webRequest.WebRequestBodyDetails) => {
-      const host = new URL(details.url).host
+      ;(async () => {
+        const url = new URL(details.url).host
+        const initiator = details.initiator
+          ? new URL(details.initiator).host
+          : undefined
 
-      // Do not add intercept rule if it has already been added.
-      if (rulesCache.get(host)) return
-      // Do not intercept requests that are not JSON-RPC.
-      if (!isJsonRpcRequest(details)) return
-      // Do not intercept requests that are coming from the redirect URL.
-      if (host === new URL(redirectUrl).host) return
-      // Do not intercept requests that are coming from extensions.
-      if (details.initiator?.startsWith('chrome-extension://')) return
+        // Do not add intercept rule if there is no initiator.
+        if (!initiator) return
+        // Do not add intercept rule that are not JSON-RPC.
+        if (!isJsonRpcRequest(details)) return
+        // Do not add intercept rule that are coming from the redirect URL.
+        if (url === new URL(redirectUrl).host) return
+        // Do not add intercept rule that are coming from extensions.
+        if (details.initiator?.startsWith('chrome-extension://')) return
 
-      id++
+        id++
 
-      chrome.declarativeNetRequest.updateDynamicRules({
-        addRules: [
-          {
-            id,
-            priority: 1,
-            action: {
-              type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
-              redirect: {
-                url: redirectUrl,
+        const initiatorDomain = initiator.includes('localhost')
+          ? 'localhost'
+          : initiator
+
+        // Extract current rule from the initiator domain.
+        const rules = await chrome.declarativeNetRequest.getDynamicRules()
+        const rule = rules.find((rule) =>
+          rule.condition.initiatorDomains?.includes(initiatorDomain),
+        )
+
+        const initiatorAuthorized = sessions.find((x) => x.host === initiator)
+        if (initiatorAuthorized) {
+          // If rule has already been added (same redirect url), do not add again.
+          if (rule?.action.redirect?.url === redirectUrl) return
+
+          // Remove existing rule (that has different redirect url).
+          if (rule)
+            chrome.declarativeNetRequest.updateDynamicRules({
+              removeRuleIds: [rule?.id],
+            })
+
+          // Add intercept rule for new redirect url.
+          chrome.declarativeNetRequest.updateDynamicRules({
+            addRules: [
+              {
+                id,
+                priority: 1,
+                action: {
+                  type: chrome.declarativeNetRequest.RuleActionType.REDIRECT,
+                  redirect: {
+                    url: redirectUrl,
+                  },
+                },
+                condition: {
+                  initiatorDomains: [initiatorDomain],
+                  urlFilter: url,
+                  resourceTypes: [
+                    chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,
+                  ],
+                },
               },
-            },
-            condition: {
-              urlFilter: host,
-              resourceTypes: [
-                chrome.declarativeNetRequest.ResourceType.XMLHTTPREQUEST,
-              ],
-            },
-          },
-        ],
-        removeRuleIds: [id],
-      })
-      rulesCache.set(host, true)
+            ],
+          })
+        } else {
+          // If rule does not exist, don't need to remove.
+          if (!rule) return
+
+          // If initiator is not authorized in the wallet session, remove intercept rule.
+          chrome.declarativeNetRequest.updateDynamicRules({
+            removeRuleIds: [rule?.id],
+          })
+        }
+      })()
     }
 
     chrome.webRequest.onBeforeRequest.addListener(
@@ -59,31 +96,29 @@ export async function interceptJsonRpcRequests() {
     removeRuleIds: rules.map(({ id }) => id),
   })
 
+  let unwatch = () => {}
+
   // Subscribe to network changes (Anvil RPC URL).
   networkStore.subscribe(async ({ network }) => {
-    // Update existing intercept rules
-    const rules = await chrome.declarativeNetRequest.getDynamicRules()
-    if (rules.length > 0)
-      chrome.declarativeNetRequest.updateDynamicRules({
-        addRules: network.rpcUrl
-          ? rules.map((rule) => ({
-              ...rule,
-              action: {
-                ...rule.action,
-                redirect: {
-                  url: network.rpcUrl,
-                },
-              },
-            }))
-          : [],
-        removeRuleIds: rules.map(({ id }) => id),
-      })
+    unwatch()
 
     // If there is no current RPC URL, do not intercept requests.
     if (!network.rpcUrl) return
 
+    const { sessions } = sessionsStore.getState()
+
     // Listen for new incoming requests to intercept.
-    return watchRequests({ redirectUrl: network.rpcUrl })
+    unwatch = watchRequests({ redirectUrl: network.rpcUrl, sessions })
+  })
+
+  // Subscribe to session changes.
+  sessionsStore.subscribe(({ sessions }) => {
+    unwatch()
+
+    const { network } = networkStore.getState()
+
+    // Listen for new incoming requests to intercept.
+    unwatch = watchRequests({ redirectUrl: network.rpcUrl, sessions })
   })
 }
 

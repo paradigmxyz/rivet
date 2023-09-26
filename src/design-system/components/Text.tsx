@@ -1,5 +1,17 @@
-import { createContext, forwardRef, useContext } from 'react'
+import useResizeObserver from '@react-hook/resize-observer'
+import {
+  createContext,
+  forwardRef,
+  useContext,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 
+import { truncate } from '~/utils'
+
+import { fontAttributes } from '../tokens'
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
 import type { TextStyles } from './Text.css'
@@ -134,7 +146,6 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
       align,
       children,
       color,
-      end = 10,
       family,
       size = '15px',
       style,
@@ -144,8 +155,27 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
     }: TextTruncatedProps,
     ref,
   ) => {
-    const first = children?.slice(0, -end)
-    const last = children?.slice(-end)
+    const wrapperRef = useRef(null)
+    const [width, setWidth] = useState<number | undefined>()
+
+    useLayoutEffect(() => {
+      setWidth(
+        ((wrapperRef.current as any).getBoundingClientRect() as DOMRectReadOnly)
+          .width,
+      )
+    }, [])
+    useResizeObserver(wrapperRef, (entry) => setWidth(entry.contentRect.width))
+
+    const truncatedText = useMemo(() => {
+      const letterWidth = fontAttributes[size].letterWidth
+      return typeof width === 'number'
+        ? truncate(children || '', {
+            start: Math.floor(width / letterWidth) / 2,
+            end: Math.floor(width / letterWidth) / 2,
+          })
+        : children
+    }, [children, size, width])
+
     return (
       <TextWrapper
         ref={ref}
@@ -157,20 +187,13 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
         weight={weight}
         testId={testId}
       >
-        <Box
-          as="span"
-          display="inline-block"
-          className={[tabular && styles.tabular, styles.overflow]}
-          style={{ maxWidth: `calc(100% - ${end + 1}ch)` }}
-        >
-          {first || '‎'}
-        </Box>
-        <Box
-          as="span"
-          display="inline-block"
-          className={[tabular && styles.tabular, styles.overflow]}
-        >
-          {last || '‎'}
+        <Box ref={wrapperRef}>
+          <Box
+            as="span"
+            className={[tabular && styles.tabular, styles.overflow]}
+          >
+            {truncatedText || '‎'}
+          </Box>
         </Box>
       </TextWrapper>
     )

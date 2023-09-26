@@ -4,6 +4,7 @@ import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useInView } from 'react-intersection-observer'
 import { Link, useSearchParams } from 'react-router-dom'
+import { toast } from 'sonner'
 import {
   type Address,
   type Hex,
@@ -21,6 +22,7 @@ import {
   Tooltip,
 } from '~/components'
 import * as Form from '~/components/form'
+import { Spinner } from '~/components/svgs'
 import {
   Bleed,
   Box,
@@ -48,7 +50,7 @@ import { useSetAccount } from '~/hooks/useSetAccount'
 import { useSetBalance } from '~/hooks/useSetBalance'
 import { useSetNonce } from '~/hooks/useSetNonce'
 import { useTransaction } from '~/hooks/useTransaction'
-import { truncate } from '~/utils'
+import { isDomain, truncate } from '~/utils'
 import {
   useAccountStore,
   useNetworkStore,
@@ -97,124 +99,138 @@ export default function Index() {
 // Accounts
 
 function Accounts() {
-  const { account: activeAccount, removeAccount } = useAccountStore()
   const accounts = useAccounts()
-  const { mutateAsync: setAccount } = useSetAccount()
 
   return (
     <>
       <Box alignItems="center" display="flex" style={{ height: '40px' }}>
         <ImportAccount />
       </Box>
-      {accounts.map((account) => {
-        const active = activeAccount?.address === account.address
-        return (
-          <Fragment key={account.address}>
-            <Box marginHorizontal="-8px">
-              <Separator />
-            </Box>
-            <Box
-              backgroundColor={active ? 'surface/fill/tertiary' : undefined}
-              marginHorizontal="-8px"
-              paddingHorizontal="8px"
-              paddingVertical="12px"
-              position="relative"
-            >
-              {active && (
-                <Text
-                  color="text/secondary"
-                  weight="medium"
-                  size="9px"
-                  style={{
-                    position: 'absolute',
-                    top: '8px',
-                    right: '8px',
-                  }}
-                >
-                  ACTIVE
+      {accounts.map((account, i) => (
+        <Fragment key={i}>
+          <Box marginHorizontal="-8px">
+            <Separator />
+          </Box>
+          <AccountRow account={account} />
+        </Fragment>
+      ))}
+    </>
+  )
+}
+
+function AccountRow({ account }: { account: Account }) {
+  const { account: activeAccount, removeAccount } = useAccountStore()
+  const { mutateAsync: setAccount } = useSetAccount()
+
+  const active = activeAccount?.address === account.address
+  return (
+    <Box
+      backgroundColor={active ? 'surface/fill/tertiary' : undefined}
+      marginHorizontal="-8px"
+      paddingHorizontal="8px"
+      paddingVertical="12px"
+      position="relative"
+      style={{ height: '100px' }}
+    >
+      {active && (
+        <Text
+          color="text/tertiary"
+          size="9px"
+          style={{
+            position: 'absolute',
+            top: '8px',
+            right: '8px',
+          }}
+        >
+          ACTIVE
+        </Text>
+      )}
+      {account.state === 'loading' && (
+        <Box position="absolute" style={{ top: '4px', right: '8px' }}>
+          <Spinner size="12px" />
+        </Box>
+      )}
+      <Stack gap="16px">
+        <LabelledContent label="Account">
+          <Box width="fit" position="relative">
+            <Inline gap="4px">
+              {account.state === 'loading' && (
+                <Text color="text/tertiary" size="12px">
+                  {truncate(account.key, { start: 20, end: 20 })}
                 </Text>
               )}
-              <Stack gap="16px">
-                <LabelledContent label="Account">
-                  <Box width="fit" position="relative">
-                    <Inline gap="4px">
-                      {account.displayName && (
-                        <Text size="12px">{account.displayName}</Text>
-                      )}
-                      <Tooltip label={account.address}>
-                        <Text
-                          color={
-                            account.displayName ? 'text/tertiary' : undefined
-                          }
-                          size="12px"
-                        >
-                          {account.displayName
-                            ? truncate(account.address)
-                            : account.address}
-                        </Text>
-                      </Tooltip>
-                      <Box position="absolute" style={{ right: -24, top: -6 }}>
-                        <Button.Symbol
-                          symbol="doc.on.doc"
-                          height="20px"
-                          onClick={() =>
-                            navigator.clipboard.writeText(account.address)
-                          }
-                          variant="ghost primary"
-                        />
-                      </Box>
-                    </Inline>
-                  </Box>
-                </LabelledContent>
-                <Columns gap="4px">
-                  <Balance address={account.address} />
-                  <Box style={{ width: '50px' }}>
-                    <Nonce address={account.address} />
-                  </Box>
-                </Columns>
-              </Stack>
-              <Box
-                position="absolute"
-                style={{ bottom: '12px', right: '12px' }}
-              >
-                <Inline gap="4px" wrap={false}>
-                  {account.impersonate && (
-                    <Button.Symbol
-                      symbol="trash"
-                      height="24px"
-                      variant="stroked red"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        removeAccount({ account })
-                      }}
-                    />
-                  )}
-                  {!active && (
-                    <Button.Symbol
-                      height="24px"
-                      onClick={() => setAccount({ account })}
-                      symbol="arrow.left.arrow.right"
-                      variant={active ? 'solid invert' : 'stroked fill'}
-                    />
-                  )}
-                  <Link to={`account/${account.address}`}>
-                    <Box style={{ width: active ? '52px' : '24px' }}>
-                      <Button.Symbol
-                        height="24px"
-                        width="full"
-                        onClick={() => {}}
-                        symbol="arrow.right"
-                        variant={active ? 'solid invert' : 'stroked fill'}
-                      />
-                    </Box>
-                  </Link>
-                </Inline>
+              {account.displayName && (
+                <Text size="12px">{account.displayName}</Text>
+              )}
+              <Tooltip label={account.address}>
+                <Text
+                  color={account.displayName ? 'text/tertiary' : undefined}
+                  size="12px"
+                >
+                  {account.displayName
+                    ? truncate(account.address)
+                    : account.address}
+                </Text>
+              </Tooltip>
+              {account.address && (
+                <Box position="absolute" style={{ right: -24, top: -6 }}>
+                  <Button.Symbol
+                    symbol="doc.on.doc"
+                    height="20px"
+                    onClick={() =>
+                      navigator.clipboard.writeText(account.address!)
+                    }
+                    variant="ghost primary"
+                  />
+                </Box>
+              )}
+            </Inline>
+          </Box>
+        </LabelledContent>
+        <Columns gap="4px">
+          <Balance address={account.address} />
+          <Box style={{ width: '50px' }}>
+            <Nonce address={account.address} />
+          </Box>
+        </Columns>
+      </Stack>
+      {account.state === 'loaded' && (
+        <Box position="absolute" style={{ bottom: '12px', right: '12px' }}>
+          <Inline gap="4px" wrap={false}>
+            {account.impersonate && (
+              <Button.Symbol
+                symbol="trash"
+                height="24px"
+                variant="stroked red"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  removeAccount({ account })
+                }}
+              />
+            )}
+            {!active && (
+              <Button.Symbol
+                height="24px"
+                onClick={() => setAccount({ account, setActive: true })}
+                symbol="arrow.left.arrow.right"
+                variant={active ? 'solid invert' : 'stroked fill'}
+              />
+            )}
+            <Link to={`account/${account.address}`}>
+              <Box style={{ width: active ? '52px' : '24px' }}>
+                <Button.Symbol
+                  height="24px"
+                  width="full"
+                  onClick={() => {}}
+                  symbol="arrow.right"
+                  variant={active ? 'solid invert' : 'stroked fill'}
+                />
               </Box>
-            </Box>
-          </Fragment>
-        )
-      })}
-    </>
+            </Link>
+          </Inline>
+        </Box>
+      )}
+    </Box>
   )
 }
 
@@ -224,6 +240,7 @@ function ImportAccount() {
   } = useNetworkStore()
   const client = useClient()
   const { mutateAsync: setAccount } = useSetAccount()
+  const { accounts, upsertAccount, removeAccount } = useAccountStore()
 
   const { handleSubmit, register, reset } = useForm<{ addressOrEns: string }>({
     defaultValues: {
@@ -232,27 +249,57 @@ function ImportAccount() {
   })
 
   const submit = handleSubmit(async ({ addressOrEns }) => {
+    reset()
+
+    const isAlreadyImported = accounts.some(
+      (account) =>
+        account.displayName === addressOrEns ||
+        account.address.toLowerCase() === addressOrEns.toLowerCase(),
+    )
+    if (isAlreadyImported) {
+      toast(`"${addressOrEns}" is already imported.`)
+      return
+    }
+
+    const isDomain_ = isDomain(addressOrEns)
+    const isAddress_ = isAddress(addressOrEns)
+
+    const loadingAccount = {
+      address: '' as Address,
+      key: addressOrEns,
+      rpcUrl,
+      state: 'loading',
+      type: 'json-rpc',
+    } as const
+
     try {
-      const address = isAddress(addressOrEns)
+      if (!isDomain_ && !isAddress_) throw new Error()
+
+      if (isDomain_)
+        upsertAccount({
+          account: loadingAccount,
+        })
+
+      const address = isAddress_
         ? addressOrEns
         : await client.getEnsAddress({ name: addressOrEns })
-      const displayName = !isAddress(addressOrEns) ? addressOrEns : undefined
+      const displayName = isDomain_ ? addressOrEns : undefined
 
-      if (!address) {
-        reset()
-        return
-      }
+      if (!address) throw new Error()
 
-      const account: Account = {
-        address,
-        displayName,
-        impersonate: true,
-        rpcUrl,
-        type: 'json-rpc',
-      }
-      setAccount({ account })
-    } finally {
-      reset()
+      setAccount({
+        account: {
+          address,
+          displayName,
+          impersonate: true,
+          rpcUrl,
+          type: 'json-rpc',
+        },
+        key: addressOrEns,
+      })
+    } catch {
+      if (isDomain_) removeAccount({ account: loadingAccount })
+      toast.error(`"${addressOrEns}" is not a valid address or ENS.`)
     }
   })
 
@@ -266,7 +313,7 @@ function ImportAccount() {
           placeholder="Import address or ENS name..."
           register={register('addressOrEns')}
         />
-        <Button height="24px" variant="stroked fill" width="fit">
+        <Button height="24px" variant="stroked fill" width="fit" type="submit">
           Import
         </Button>
       </Inline>
@@ -274,38 +321,41 @@ function ImportAccount() {
   )
 }
 
-function Balance({ address }: { address: Address }) {
+function Balance({ address }: { address?: Address }) {
   const { data: balance, isSuccess } = useBalance({ address })
   const { mutate } = useSetBalance()
 
-  const [value, setValue] = useState(balance ? formatEther(balance) : '')
+  const [value, setValue] = useState(balance ? formatEther(balance) : '0')
   useEffect(() => {
     if (balance) setValue(formatEther(balance))
   }, [balance])
 
+  const disabled = !isSuccess || !address
+
   return (
     <LabelledContent label="Balance (ETH)">
-      {isSuccess ? (
-        <Bleed top="-2px">
-          <Input
-            onChange={(e) => setValue(e.target.value)}
-            onClick={(e) => e.stopPropagation()}
-            onBlur={(e) =>
-              mutate({
-                address,
-                value: parseEther(e.target.value as `${number}`),
-              })
-            }
-            height="24px"
-            value={value}
-          />
-        </Bleed>
-      ) : null}
+      <Bleed top="-2px">
+        <Input
+          disabled={disabled}
+          onChange={(e) => setValue(e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          onBlur={(e) =>
+            address
+              ? mutate({
+                  address,
+                  value: parseEther(e.target.value as `${number}`),
+                })
+              : undefined
+          }
+          height="24px"
+          value={disabled ? '' : value}
+        />
+      </Bleed>
     </LabelledContent>
   )
 }
 
-function Nonce({ address }: { address: Address }) {
+function Nonce({ address }: { address?: Address }) {
   const { data: nonce, isSuccess } = useNonce({ address })
   const { mutate } = useSetNonce()
 
@@ -314,24 +364,27 @@ function Nonce({ address }: { address: Address }) {
     if (nonce) setValue(nonce?.toString() ?? '0')
   }, [nonce])
 
+  const disabled = !isSuccess || !address
+
   return (
     <LabelledContent label="Nonce">
-      {isSuccess ? (
-        <Bleed top="-2px">
-          <Input
-            onChange={(e) => setValue(e.target.value)}
-            onClick={(e) => e.stopPropagation()}
-            value={value}
-            onBlur={(e) =>
-              mutate({
-                address,
-                nonce: Number(e.target.value),
-              })
-            }
-            height="24px"
-          />
-        </Bleed>
-      ) : null}
+      <Bleed top="-2px">
+        <Input
+          disabled={disabled}
+          onChange={(e) => setValue(e.target.value)}
+          onClick={(e) => e.stopPropagation()}
+          value={disabled ? '' : value}
+          onBlur={(e) =>
+            address
+              ? mutate({
+                  address,
+                  nonce: Number(e.target.value),
+                })
+              : undefined
+          }
+          height="24px"
+        />
+      </Bleed>
     </LabelledContent>
   )
 }
@@ -628,14 +681,14 @@ function Transactions() {
                       </LabelledContent>
                       <LabelledContent label="From">
                         <Tooltip label={transaction.from}>
-                          <Text.Truncated end={5} size="12px">
+                          <Text.Truncated size="12px">
                             {transaction.from}
                           </Text.Truncated>
                         </Tooltip>
                       </LabelledContent>
                       <LabelledContent label="To">
                         <Tooltip label={transaction.to}>
-                          <Text.Truncated end={5} size="12px">
+                          <Text.Truncated size="12px">
                             {transaction.to}
                           </Text.Truncated>
                         </Tooltip>
