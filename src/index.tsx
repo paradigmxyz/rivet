@@ -24,12 +24,12 @@ import {
 } from '~/zustand'
 
 import Layout from './screens/_layout'
-import AccountConfig from './screens/account-config'
 import AccountDetails from './screens/account-details'
 import BlockConfig from './screens/block-config'
 import BlockDetails from './screens/block-details'
 import Index from './screens/index'
 import NetworkConfig from './screens/network-config'
+import Networks from './screens/networks'
 import OnboardingConfigure from './screens/onboarding/configure'
 import OnboardingDownload from './screens/onboarding/download'
 import OnboardingRun from './screens/onboarding/run'
@@ -49,10 +49,6 @@ const router = createHashRouter([
         element: <Index />,
       },
       {
-        path: 'account-config',
-        element: <AccountConfig />,
-      },
-      {
         path: 'account/:address',
         element: <AccountDetails />,
       },
@@ -69,7 +65,11 @@ const router = createHashRouter([
         element: <TransactionDetails />,
       },
       {
-        path: 'network-config',
+        path: 'networks',
+        element: <Networks />,
+      },
+      {
+        path: 'networks/:rpcUrl',
         element: <NetworkConfig />,
       },
       {

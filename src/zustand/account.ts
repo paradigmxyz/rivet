@@ -1,8 +1,8 @@
-import { uniqBy } from 'remeda'
 import type { Address, JsonRpcAccount as JsonRpcAccount_ } from 'viem'
 
 import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
 
+import { uniqBy } from 'remeda'
 import { createStore } from './utils'
 
 // Only support JSON-RPC Accounts for now. In the future, we may want to add support
@@ -31,11 +31,8 @@ export type AccountActions = {
     addresses,
     rpcUrl,
   }: { addresses: Address[]; rpcUrl: string }): void
-  upsertAccount({
-    account,
-    key,
-    setActive,
-  }: { account: Account; key?: string; setActive?: boolean }): void
+  switchAccount(key: string): void
+  upsertAccount({ account, key }: { account: Account; key?: string }): void
 }
 export type AccountStore = AccountState & AccountActions
 
@@ -93,22 +90,35 @@ export const accountStore = createStore<AccountStore>(
         }
       })
     },
-    upsertAccount({ account, key, setActive = false }) {
+    switchAccount(key) {
       set((state) => {
-        const exists = state.accounts.some(
-          (x) => x.key === (key || account.key),
-        )
-        const accounts_ = exists
-          ? state.accounts.map((x) =>
-              x.key === (key || account.key) ? account : x,
-            )
-          : [account, ...state.accounts]
-        const account_ = setActive ? account : state.account
+        const account = state.accounts.find((account) => account.key === key)
+        return {
+          ...state,
+          account,
+        }
+      })
+    },
+    upsertAccount({ account: account_, key: key_ }) {
+      const key = key_ || account_.key
+
+      set((state) => {
+        const accounts = [...state.accounts]
+        const index = accounts.findIndex((account) => account.key === key)
+
+        const account = {
+          ...(index >= 0 ? accounts[index] : {}),
+          ...account_,
+        }
+        if (index >= 0) accounts[index] = account
+        else accounts.unshift(account)
 
         return {
           ...state,
-          account: account_,
-          accounts: uniqBy(accounts_, (x) => x.key),
+          ...(key === state.account?.key && {
+            account,
+          }),
+          accounts: uniqBy(accounts, (x) => x.key),
         }
       })
     },

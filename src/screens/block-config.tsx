@@ -2,7 +2,8 @@ import { useMutation } from '@tanstack/react-query'
 import { useForm } from 'react-hook-form'
 
 import { Container } from '~/components'
-import { Button, Inline, Input, Separator, Stack, Text } from '~/design-system'
+import * as Form from '~/components/form'
+import { Button, Inline, Separator, Stack, Text } from '~/design-system'
 import { useClient } from '~/hooks/useClient'
 import { useGetAutomine } from '~/hooks/useGetAutomine'
 import { useMine } from '~/hooks/useMine'
@@ -69,17 +70,13 @@ function IntervalMining() {
   return (
     <Stack gap="16px">
       <Text color="text/tertiary">Interval Mining</Text>
-      <form onSubmit={submit}>
+      <Form.Root onSubmit={submit}>
         <Inline gap="8px" wrap={false}>
-          <Stack gap="12px" width="fit">
-            <Text color="text/tertiary" size="11px">
-              Interval (s)
-            </Text>
-            <Input
-              style={{ width: '70px' }}
-              {...register('interval', { required: true })}
-            />
-          </Stack>
+          <Form.InputField
+            label="Interval (s)"
+            register={register('interval', { required: true })}
+            style={{ width: '70px' }}
+          />
           <Stack gap="12px" width="fit">
             {/* TODO: don't do this lol */}
             <Text color="text/tertiary" size="11px">
@@ -90,7 +87,7 @@ function IntervalMining() {
             </Button>
           </Stack>
         </Inline>
-      </form>
+      </Form.Root>
       <Button onClick={toggle} variant="solid fill">
         {network.blockTime > 0 ? 'Pause' : 'Continue'}
       </Button>
@@ -123,26 +120,18 @@ function Mine() {
   return (
     <Stack gap="16px">
       <Text color="text/tertiary">Mine Blocks</Text>
-      <form onSubmit={submit}>
+      <Form.Root onSubmit={submit}>
         <Inline gap="8px" wrap={false}>
-          <Stack gap="12px" width="fit">
-            <Text color="text/tertiary" size="11px">
-              Blocks
-            </Text>
-            <Input
-              style={{ width: '70px' }}
-              {...register('blocks', { required: true, min: 1 })}
-            />
-          </Stack>
-          <Stack gap="12px" width="fit">
-            <Text color="text/tertiary" size="11px">
-              Interval (s)
-            </Text>
-            <Input
-              style={{ width: '70px' }}
-              {...register('interval', { required: true })}
-            />
-          </Stack>
+          <Form.InputField
+            label="Blocks"
+            register={register('blocks', { required: true, min: 1 })}
+            style={{ width: '70px' }}
+          />
+          <Form.InputField
+            label="Interval (s)"
+            register={register('interval', { required: true })}
+            style={{ width: '70px' }}
+          />
           <Stack gap="12px" width="fit">
             {/* TODO: don't do this lol */}
             <Text color="text/tertiary" size="11px">
@@ -158,7 +147,7 @@ function Mine() {
             </Button>
           </Stack>
         </Inline>
-      </form>
+      </Form.Root>
     </Stack>
   )
 }

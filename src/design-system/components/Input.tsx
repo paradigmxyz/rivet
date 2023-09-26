@@ -85,7 +85,6 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {...inputProps}
         as="input"
         borderWidth="1px"
-        data-disabled="true"
         className={[
           backgroundStyle,
           heightStyles[height],

@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Outlet, useNavigate } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 
 import { Header, NetworkOfflineDialog, Toaster } from '~/components'
 import { Box } from '~/design-system'
@@ -9,12 +9,14 @@ import { getMessenger } from '../messengers'
 import PendingRequest from './pending-request'
 
 const headerHeight = '120px'
+const networkOfflineBypassPaths = ['networks', 'session']
 
 const contentMessenger = getMessenger('wallet:contentScript')
 
 export default function Layout() {
   const { network, onboarded } = useNetworkStore()
-  const { data: online } = useNetworkStatus()
+  const location = useLocation()
+  const { data: online } = useNetworkStatus({ rpcUrl: network.rpcUrl })
   const navigate = useNavigate()
   const { pendingRequests } = usePendingRequestsStore()
   const pendingRequest = pendingRequests[pendingRequests.length - 1]
@@ -29,6 +31,10 @@ export default function Layout() {
       return
     })
   }, [])
+
+  const showNetworkOfflineDialog =
+    isNetworkOffline &&
+    !networkOfflineBypassPaths.some((path) => location.pathname.includes(path))
 
   return (
     <Box
@@ -53,7 +59,7 @@ export default function Layout() {
         position="relative"
         style={{ height: showHeader ? `calc(100% - ${headerHeight})` : '100%' }}
       >
-        {isNetworkOffline && <NetworkOfflineDialog />}
+        {showNetworkOfflineDialog && <NetworkOfflineDialog />}
         {pendingRequests.length > 0 && (
           <PendingRequest request={pendingRequest} />
         )}

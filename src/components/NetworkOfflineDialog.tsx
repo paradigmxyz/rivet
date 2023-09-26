@@ -4,7 +4,7 @@ import * as styles from './NetworkOfflineDialog.css'
 
 export function NetworkOfflineDialog() {
   return (
-    <Dialog.Root open>
+    <Dialog.Root open modal={false}>
       <Dialog.Overlay asChild>
         <Box
           alignItems="center"
@@ -20,6 +20,7 @@ export function NetworkOfflineDialog() {
       <Dialog.Content asChild>
         <Box
           alignItems="center"
+          backgroundColor="surface/black@0.5"
           className={styles.content}
           display="flex"
           justifyContent="center"

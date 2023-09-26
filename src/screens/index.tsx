@@ -134,8 +134,7 @@ function AccountRow({ account }: { account: Account }) {
     >
       {active && (
         <Text
-          color="text/secondary"
-          weight="medium"
+          color="text/tertiary"
           size="9px"
           style={{
             position: 'absolute',
@@ -276,9 +275,10 @@ function ImportAccount() {
     try {
       if (!isDomain_ && !isAddress_) throw new Error()
 
-      upsertAccount({
-        account: loadingAccount,
-      })
+      if (isDomain_)
+        upsertAccount({
+          account: loadingAccount,
+        })
 
       const address = isAddress_
         ? addressOrEns
@@ -298,7 +298,7 @@ function ImportAccount() {
         key: addressOrEns,
       })
     } catch {
-      removeAccount({ account: loadingAccount })
+      if (isDomain_) removeAccount({ account: loadingAccount })
       toast.error(`"${addressOrEns}" is not a valid address or ENS.`)
     }
   })
@@ -313,7 +313,7 @@ function ImportAccount() {
           placeholder="Import address or ENS name..."
           register={register('addressOrEns')}
         />
-        <Button height="24px" variant="stroked fill" width="fit">
+        <Button height="24px" variant="stroked fill" width="fit" type="submit">
           Import
         </Button>
       </Inline>

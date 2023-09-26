@@ -12,7 +12,11 @@ export type SetAccountParameters = {
 }
 
 export function useSetAccount() {
-  const { account: activeAccount, upsertAccount } = useAccountStore()
+  const {
+    account: activeAccount,
+    switchAccount,
+    upsertAccount,
+  } = useAccountStore()
   const { mutateAsync: stopImpersonate } = useStopImpersonate()
   const { mutateAsync: impersonate } = useImpersonate()
 
@@ -22,15 +26,16 @@ export function useSetAccount() {
         await stopImpersonate({
           address: activeAccount.address,
         })
+      const key_ = `${account.rpcUrl}.${account.address}`
       upsertAccount({
         key,
         account: {
           ...account,
-          key: `${account.rpcUrl}.${account.address}`,
+          key: key_,
           state: 'loaded',
         },
-        setActive,
       })
+      if (setActive) switchAccount(key_)
       if (account.impersonate) await impersonate({ address: account.address })
     },
   })
