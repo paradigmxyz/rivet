@@ -3,7 +3,13 @@ import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useParams, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
-import { type Address, formatUnits, isAddress, parseUnits } from 'viem'
+import {
+  type Address,
+  BaseError,
+  formatUnits,
+  isAddress,
+  parseUnits,
+} from 'viem'
 
 import { LabelledContent, TabsContent, TabsList, Tooltip } from '~/components'
 import * as Form from '~/components/form'
@@ -23,7 +29,6 @@ import {
   Stack,
   Text,
 } from '~/design-system'
-
 import { useErc20Balance } from '~/hooks/useErc20Balance'
 import { useErc20Metadata } from '~/hooks/useErc20Metadata'
 import { useSetErc20Balance } from '~/hooks/useSetErc20Balance'
@@ -168,37 +173,55 @@ function TokenRow({
 }: { accountAddress: Address; tokenAddress: Address }) {
   const { removeToken } = useTokensStore()
 
-  const { data: balance } = useErc20Balance({
+  const { data: balance, error: balanceError } = useErc20Balance({
     address: accountAddress,
     tokenAddress,
   })
-  // TODO: Handle errors (+ UI for errors) for both metadata + balance queries.
-  const { data } = useErc20Metadata({
+
+  const { data, error: metadataError } = useErc20Metadata({
     tokenAddress,
   })
 
-  // TODO: Remove this in favor of loading state.
-  if (!data) return null
+  useEffect(() => {
+    if (balanceError) toast.error((balanceError as BaseError).shortMessage)
+  }, [balanceError])
 
-  const { name, symbol, decimals } = data
+  useEffect(() => {
+    if (metadataError) toast.error((metadataError as BaseError).shortMessage)
+  }, [metadataError])
+
+  const isLoading = !data
+  const { name, symbol, decimals } = data || {}
+
   return (
     <>
       <Inset vertical="12px">
         <Box position="relative">
           <Columns alignVertical="center" gap="4px">
             <Column>
-              <Tooltip label={`${tokenAddress}, ${decimals} dec`}>
-                <Rows gap="8px">
-                  <Row>
+              <Rows gap="8px">
+                <Row>
+                  {isLoading ? (
+                    <Inline alignVertical="center" gap="4px">
+                      <Spinner size="11px" />
+                      <Text color="text/tertiary" size="12px">
+                        Importing...
+                      </Text>
+                    </Inline>
+                  ) : (
                     <Text size="12px">{name}</Text>
-                  </Row>
-                  <Row>
-                    <Inline>
-                      <Box style={{ maxWidth: '156px' }}>
+                  )}
+                </Row>
+                <Row>
+                  <Inline>
+                    <Box style={{ maxWidth: '156px' }}>
+                      <Tooltip label={tokenAddress}>
                         <Text.Truncated color="text/tertiary" size="11px">
                           {tokenAddress}
                         </Text.Truncated>
-                      </Box>
+                      </Tooltip>
+                    </Box>
+                    {symbol && (
                       <Box position="relative">
                         <Box position="absolute" style={{ left: 4, top: -2.5 }}>
                           <Box
@@ -212,13 +235,13 @@ function TokenRow({
                           </Box>
                         </Box>
                       </Box>
-                    </Inline>
-                  </Row>
-                </Rows>
-              </Tooltip>
+                    )}
+                  </Inline>
+                </Row>
+              </Rows>
             </Column>
             <Column>
-              {typeof balance === 'bigint' && (
+              {typeof balance === 'bigint' && typeof decimals === 'number' && (
                 <BalanceInput
                   address={accountAddress}
                   balance={balance}
