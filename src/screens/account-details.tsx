@@ -8,6 +8,7 @@ import {
   BaseError,
   formatUnits,
   isAddress,
+  parseAbiItem,
   parseUnits,
 } from 'viem'
 
@@ -31,7 +32,9 @@ import {
 } from '~/design-system'
 import { useErc20Balance } from '~/hooks/useErc20Balance'
 import { useErc20Metadata } from '~/hooks/useErc20Metadata'
+import { useGetLogs } from '~/hooks/useGetLogs'
 import { useSetErc20Balance } from '~/hooks/useSetErc20Balance'
+import { useNetworkStore } from '~/zustand'
 import { useTokensStore } from '~/zustand/tokens'
 
 export default function AccountDetails() {
@@ -88,8 +91,47 @@ export default function AccountDetails() {
   )
 }
 
+function useImportTransferredTokens() {
+  const { address: accountAddress } = useParams()
+  const { addToken } = useTokensStore()
+  const { network } = useNetworkStore()
+
+  const { data: transfersFrom } = useGetLogs({
+    event: parseAbiItem(
+      'event Transfer(address indexed from, address indexed to, uint256)',
+    ),
+    args: {
+      from: accountAddress as Address,
+    },
+    fromBlock: network.forkBlockNumber,
+    toBlock: 'latest',
+  })
+  const { data: transfersTo } = useGetLogs({
+    event: parseAbiItem(
+      'event Transfer(address indexed from, address indexed to, uint256)',
+    ),
+    args: {
+      to: accountAddress as Address,
+    },
+    fromBlock: network.forkBlockNumber,
+    toBlock: 'latest',
+  })
+
+  if (accountAddress) {
+    ;[
+      ...new Set([
+        ...(transfersFrom?.map((t) => t.address) || []),
+        ...(transfersTo?.map((t) => t.address) || []),
+      ]),
+    ].forEach((addr) => {
+      addToken(addr, accountAddress as Address)
+    })
+  }
+}
+
 function Tokens({ accountAddress }: { accountAddress: Address }) {
   const { tokens } = useTokensStore()
+  useImportTransferredTokens()
 
   if (!accountAddress) return null
   return (
