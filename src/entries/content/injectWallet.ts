@@ -56,7 +56,7 @@ function injectIframe({
   extensionId,
 }: { container: HTMLElement; extensionId: string }) {
   const iframe = document.createElement('iframe')
-  iframe.src = `chrome-extension://${extensionId}/src/index.html`
+  iframe.src = `chrome-extension://${extensionId}/src/entries/iframe/index.html`
   iframe.allow = 'clipboard-write'
   iframe.style.width = '100%'
   iframe.style.height = '100%'

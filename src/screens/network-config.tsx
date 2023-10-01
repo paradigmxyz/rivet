@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 
 import { Container } from '~/components'
 import * as Form from '~/components/form'
@@ -13,6 +13,7 @@ import { useNetworkStore } from '~/zustand'
 export default function Network() {
   const { networks, upsertNetwork } = useNetworkStore()
   const { rpcUrl } = useParams()
+  const navigate = useNavigate()
 
   const network = useMemo(
     () => networks.find((n) => n.rpcUrl === rpcUrl),
@@ -39,7 +40,7 @@ export default function Network() {
 
   const onSubmit = handleSubmit(async ({ name, rpcUrl }) => {
     await upsertNetwork({ rpcUrl: network?.rpcUrl, network: { name, rpcUrl } })
-    history.back()
+    navigate(-1)
   })
 
   return (

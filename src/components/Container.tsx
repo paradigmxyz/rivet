@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useNavigate } from 'react-router'
 import {
   Box,
   Button,
@@ -30,6 +31,7 @@ export function Container({
   footer?: ReactNode
   scrollable?: boolean
 }) {
+  const navigate = useNavigate()
   return (
     <Rows fit={fit}>
       <Row
@@ -61,7 +63,7 @@ export function Container({
                     {dismissable && (
                       <Button.Symbol
                         height="24px"
-                        onClick={() => history.back()}
+                        onClick={() => navigate(-1)}
                         symbol="xmark"
                         variant="ghost primary"
                       />
