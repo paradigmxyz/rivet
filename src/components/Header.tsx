@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { formatGwei } from 'viem'
 
 import { Tooltip } from '~/components'
@@ -242,6 +242,7 @@ function ReinjectButton() {
 // Middle Bar
 
 function Network() {
+  const { pathname } = useLocation()
   const navigate = useNavigate()
   const { network } = useNetworkStore()
   return (
@@ -270,7 +271,11 @@ function Network() {
               <Button.Symbol
                 onClick={(e) => {
                   e.preventDefault()
-                  navigate(`/networks/${encodeURIComponent(network.rpcUrl)}`)
+                  navigate(`/networks/${encodeURIComponent(network.rpcUrl)}`, {
+                    replace: pathname.includes(
+                      `/networks/${encodeURIComponent(network.rpcUrl)}`,
+                    ),
+                  })
                 }}
                 variant="ghost primary"
                 height="24px"

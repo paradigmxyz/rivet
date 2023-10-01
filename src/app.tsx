@@ -2,7 +2,7 @@ import './hmr'
 
 import { useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider, createHashRouter } from 'react-router-dom'
+import { RouterProvider, createMemoryRouter } from 'react-router-dom'
 import { numberToHex } from 'viem'
 
 import { getTheme, setTheme } from '~/design-system'
@@ -37,88 +37,96 @@ import OnboardingStart from './screens/onboarding/start'
 import Session from './screens/session'
 import TransactionDetails from './screens/transaction-details'
 
-syncStores()
+export function init({ routerType }: { routerType: 'memory' | 'hash' }) {
+  syncStores()
 
-const router = createHashRouter([
-  {
-    path: '/',
-    element: <Layout />,
-    children: [
-      {
-        path: '',
-        element: <Index />,
-      },
-      {
-        path: 'account/:address',
-        element: <AccountDetails />,
-      },
-      {
-        path: 'block-config',
-        element: <BlockConfig />,
-      },
-      {
-        path: 'block/:blockNumber',
-        element: <BlockDetails />,
-      },
-      {
-        path: 'transaction/:transactionHash',
-        element: <TransactionDetails />,
-      },
-      {
-        path: 'networks',
-        element: <Networks />,
-      },
-      {
-        path: 'networks/:rpcUrl',
-        element: <NetworkConfig />,
-      },
-      {
-        path: 'session',
-        element: <Session />,
-      },
-      {
-        path: 'onboarding',
-        children: [
-          {
-            path: '',
-            element: <OnboardingStart />,
-          },
-          {
-            path: 'configure',
-            element: <OnboardingConfigure />,
-          },
-          {
-            path: 'download',
-            element: <OnboardingDownload />,
-          },
-          {
-            path: 'run',
-            element: <OnboardingRun />,
-          },
-        ],
-      },
-    ],
-  },
-])
+  const createRouter = (() => {
+    if (routerType === 'memory') return createMemoryRouter
+    if (routerType === 'hash') return createMemoryRouter
+    throw new Error(`Invalid router type: ${routerType}`)
+  })()
 
-// Handle requests from background to toggle the theme.
-const backgroundMessenger = getMessenger('background:wallet')
-backgroundMessenger.reply('toggleTheme', async () => {
-  const { storageTheme, systemTheme } = getTheme()
-  const theme = storageTheme || systemTheme
-  setTheme(theme === 'dark' ? 'light' : 'dark')
-})
+  const router = createRouter([
+    {
+      path: '/',
+      element: <Layout />,
+      children: [
+        {
+          path: '',
+          element: <Index />,
+        },
+        {
+          path: 'account/:address',
+          element: <AccountDetails />,
+        },
+        {
+          path: 'block-config',
+          element: <BlockConfig />,
+        },
+        {
+          path: 'block/:blockNumber',
+          element: <BlockDetails />,
+        },
+        {
+          path: 'transaction/:transactionHash',
+          element: <TransactionDetails />,
+        },
+        {
+          path: 'networks',
+          element: <Networks />,
+        },
+        {
+          path: 'networks/:rpcUrl',
+          element: <NetworkConfig />,
+        },
+        {
+          path: 'session',
+          element: <Session />,
+        },
+        {
+          path: 'onboarding',
+          children: [
+            {
+              path: '',
+              element: <OnboardingStart />,
+            },
+            {
+              path: 'configure',
+              element: <OnboardingConfigure />,
+            },
+            {
+              path: 'download',
+              element: <OnboardingDownload />,
+            },
+            {
+              path: 'run',
+              element: <OnboardingRun />,
+            },
+          ],
+        },
+      ],
+    },
+  ])
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <QueryClientProvider>
-    <AccountsChangedEmitter />
-    <NetworkChangedEmitter />
-    <SyncBlockNumber />
-    <SyncJsonRpcAccounts />
-    <SyncNetwork />
-    <RouterProvider router={router} />
-  </QueryClientProvider>,
-)
+  // Handle requests from background to toggle the theme.
+  const backgroundMessenger = getMessenger('background:wallet')
+  backgroundMessenger.reply('toggleTheme', async () => {
+    const { storageTheme, systemTheme } = getTheme()
+    const theme = storageTheme || systemTheme
+    setTheme(theme === 'dark' ? 'light' : 'dark')
+  })
+
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <QueryClientProvider>
+      <AccountsChangedEmitter />
+      <NetworkChangedEmitter />
+      <SyncBlockNumber />
+      <SyncJsonRpcAccounts />
+      <SyncNetwork />
+      <RouterProvider router={router} />
+    </QueryClientProvider>,
+  )
+}
 
 ////////////////////////////////////////////////////////////////////////////
 

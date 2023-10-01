@@ -1,7 +1,7 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
   type Address,
@@ -37,6 +37,7 @@ import { useTokensStore } from '~/zustand/tokens'
 export default function AccountDetails() {
   const { address } = useParams()
   const [params, setParams] = useSearchParams({ tab: 'tokens' })
+  const navigate = useNavigate()
 
   if (!address) return null
   return (
@@ -45,7 +46,7 @@ export default function AccountDetails() {
         <Inset horizontal="4px">
           <Inline gap="4px">
             <Button.Symbol
-              onClick={() => history.back()}
+              onClick={() => navigate(-1)}
               symbol="chevron.left"
               height="24px"
               variant="ghost primary"

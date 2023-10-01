@@ -24,6 +24,7 @@ export default defineConfig({
       additionalInputs: {
         html: [
           'src/index.html',
+          'src/entries/iframe/index.html',
           'src/components/_playground/index.html',
           'src/design-system/_playground/index.html',
         ],
