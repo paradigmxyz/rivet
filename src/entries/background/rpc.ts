@@ -13,7 +13,7 @@ import {
   UnsupportedProviderMethodError,
   UserRejectedRequestError,
 } from '~/errors'
-import { getMessenger } from '~/messengers'
+import { type Messenger, getMessenger } from '~/messengers'
 import { buildChain } from '~/viem'
 import {
   accountStore,
@@ -66,9 +66,11 @@ export function getRpcClient({
 const inpageMessenger = getMessenger('background:inpage')
 const walletMessenger = getMessenger('background:wallet')
 
-export function setupRpcHandler() {
-  inpageMessenger.reply('request', async ({ request, rpcUrl }, meta) => {
-    const isInpage = !meta.sender.frameId || meta.sender.frameId === 0
+export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
+  messenger.reply('request', async ({ request, rpcUrl }, meta) => {
+    const isInpage =
+      !meta.sender.tab?.url?.includes('extension://') &&
+      (!meta.sender.frameId || meta.sender.frameId === 0)
     const rpcClient = getRpcClient({ rpcUrl })
 
     const hasOnboarded = isInpage ? networkStore.getState().onboarded : rpcUrl

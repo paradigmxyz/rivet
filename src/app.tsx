@@ -2,7 +2,11 @@ import './hmr'
 
 import { useEffect, useRef } from 'react'
 import ReactDOM from 'react-dom/client'
-import { RouterProvider, createMemoryRouter } from 'react-router-dom'
+import {
+  RouterProvider,
+  createHashRouter,
+  createMemoryRouter,
+} from 'react-router-dom'
 import { numberToHex } from 'viem'
 
 import { getTheme, setTheme } from '~/design-system'
@@ -23,6 +27,7 @@ import {
   useSessionsStore,
 } from '~/zustand'
 
+import { type AppMeta, AppMetaContext } from './contexts'
 import Layout from './screens/_layout'
 import AccountDetails from './screens/account-details'
 import BlockConfig from './screens/block-config'
@@ -37,13 +42,12 @@ import OnboardingStart from './screens/onboarding/start'
 import Session from './screens/session'
 import TransactionDetails from './screens/transaction-details'
 
-export function init({ routerType }: { routerType: 'memory' | 'hash' }) {
+export function init({ type = 'standalone' }: { type?: AppMeta['type'] } = {}) {
   syncStores()
 
   const createRouter = (() => {
-    if (routerType === 'memory') return createMemoryRouter
-    if (routerType === 'hash') return createMemoryRouter
-    throw new Error(`Invalid router type: ${routerType}`)
+    if (type === 'embedded') return createMemoryRouter
+    return createHashRouter
   })()
 
   const router = createRouter([
@@ -117,14 +121,16 @@ export function init({ routerType }: { routerType: 'memory' | 'hash' }) {
   })
 
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-    <QueryClientProvider>
-      <AccountsChangedEmitter />
-      <NetworkChangedEmitter />
-      <SyncBlockNumber />
-      <SyncJsonRpcAccounts />
-      <SyncNetwork />
-      <RouterProvider router={router} />
-    </QueryClientProvider>,
+    <AppMetaContext.Provider value={{ type }}>
+      <QueryClientProvider>
+        <AccountsChangedEmitter />
+        <NetworkChangedEmitter />
+        <SyncBlockNumber />
+        <SyncJsonRpcAccounts />
+        <SyncNetwork />
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </AppMetaContext.Provider>,
   )
 }
 

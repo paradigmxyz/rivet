@@ -74,9 +74,9 @@ export default function App() {
       <Box
         backgroundColor="surface/primary"
         marginHorizontal="auto"
-        maxWidth="1152px"
         paddingTop="40px"
         paddingBottom="152px"
+        style={{ maxWidth: '1152px' }}
       >
         <Stack gap="32px">
           <Text weight="semibold" size="32px">
@@ -113,9 +113,9 @@ function InstallExtension() {
     <Box
       backgroundColor="surface/primary"
       marginHorizontal="auto"
-      maxWidth="1152px"
       paddingTop="40px"
       paddingBottom="152px"
+      style={{ maxWidth: '1152px' }}
     >
       <Stack gap="28px">
         <Text weight="bold" size="32px">

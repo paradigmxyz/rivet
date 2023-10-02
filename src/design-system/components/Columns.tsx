@@ -1,4 +1,4 @@
-import { type ReactNode, forwardRef } from 'react'
+import { type CSSProperties, type ReactNode, forwardRef } from 'react'
 import flattenChildren from 'react-flatten-children'
 
 import type { Spacing } from '../tokens'
@@ -73,6 +73,7 @@ type ColumnProps = {
   alignHorizontal?: AlignHorizontal
   alignVertical?: AlignVertical
   width?: 'content' | keyof typeof styles.width
+  style?: CSSProperties
   children: ReactNode
 }
 
@@ -103,6 +104,7 @@ function PrivateColumn({
   alignHorizontal,
   alignVertical,
   children,
+  style,
   width,
 }: ColumnProps) {
   if (width) {
@@ -120,6 +122,7 @@ function PrivateColumn({
         justifyContent={
           alignVertical && alignVerticalToAlignItems[alignVertical]
         }
+        style={style}
       >
         {children}
       </Box>
@@ -136,6 +139,7 @@ function PrivateColumn({
       flexBasis="0"
       justifyContent={alignVertical && alignVerticalToAlignItems[alignVertical]}
       height="full"
+      style={style}
     >
       {children}
     </Box>

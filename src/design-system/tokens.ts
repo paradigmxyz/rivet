@@ -395,6 +395,11 @@ export const defaultInheritedColor = {
 } as const satisfies Record<string, DefaultInheritedColorValue>
 export type InheritedColor = keyof typeof defaultInheritedColor
 
+export const breakpoints = {
+  '480px': '480px',
+}
+export type Breakpoint = keyof typeof breakpoints
+
 export const fontFamily = {
   default:
     "'SFPro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif",
@@ -653,8 +658,3 @@ export type SymbolName = typeof symbolNames[number]
 
 export const textAlignment = ['left', 'center', 'right'] as const
 export type TextAlignment = typeof textAlignment[number]
-
-export const viewports = {
-  '1152px': '72rem',
-}
-export type Viewport = keyof typeof viewports

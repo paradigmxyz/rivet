@@ -8,12 +8,17 @@ import { setupInpage } from './inpage'
 import { interceptJsonRpcRequests } from './intercept-requests'
 import { setupRpcHandler } from './rpc'
 
-getMessenger('background:contentScript').reply('ping', async () => 'pong')
+const contentMessenger = getMessenger('background:contentScript')
+const inpageMessenger = getMessenger('background:inpage')
+const walletMessenger = getMessenger('background:wallet')
+
+contentMessenger.reply('ping', async () => 'pong')
 
 handleCommands()
 interceptJsonRpcRequests()
 setupContextMenu()
 setupExtensionId()
 setupInpage()
-setupRpcHandler()
+setupRpcHandler({ messenger: inpageMessenger })
+setupRpcHandler({ messenger: walletMessenger })
 syncStores()
