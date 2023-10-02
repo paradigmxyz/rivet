@@ -39,5 +39,6 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          body_path: ${{ github.workspace }}/.github/assets/setup.md
           files: dist/extension.zip
           tag_name: 'v${{ steps.package-version.outputs.current-version }}'
