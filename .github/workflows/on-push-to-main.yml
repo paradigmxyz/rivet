@@ -16,3 +16,10 @@ jobs:
   artifacts:
     name: Artifacts
     uses: ./.github/workflows/artifacts.yml
+    secrets: inherit
+
+  release:
+    needs: verify
+    name: Release
+    uses: ./.github/workflows/release.yml
+    secrets: inherit

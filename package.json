@@ -1,6 +1,7 @@
 {
   "name": "rivet",
   "version": "0.0.1",
+  "private": true,
   "extension": {
     "name": "Rivet",
     "description": "Developer Wallet & DevTools for Ethereum"

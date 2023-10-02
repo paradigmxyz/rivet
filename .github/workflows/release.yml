@@ -1,0 +1,36 @@
+name: Release
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check version
+        id: check-version
+        continue-on-error: true
+        uses: technote-space/package-version-check-action@v1
+
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Build
+        run: bun run build
+
+      - name: Zip
+        run: cd dist/build && zip -r ../extension.zip *
+
+      - name: Submit to the chrome webstore
+        if: steps.check-version.outcome == 'success'
+        uses: PlasmoHQ/bpp@v3.5.0
+        with:
+          artifact: ./dist/extension.zip
+          keys: ${{ secrets.BPP_KEYS }}
+
+      
