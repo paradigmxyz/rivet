@@ -34,12 +34,12 @@ Rivet is aimed to be **contributor first & friendly**. If you would like to cont
 
 Rivet is currently in active development. If you would like to try out the latest features, you can download the latest nightly build below:
 
-- **Chromium (Chrome, Brave, Arc, etc)**: [Download](https://github.com/paradigmxyz/rivet/suites/16766965773/artifacts/957464144)
+- **Chromium (Chrome, Brave, Arc, etc)**: [Download](https://github.com/paradigmxyz/rivet/releases/latest)
 
 <details>
   <summary>Setup Instructions</summary>
   <ol>
-    <li>Download the nightly build from the link above</li>
+    <li>Download the asset `extension.zip` from the link above</li>
     <li>Unzip the downloaded file</li>
     <li>Open your chromium browser and navigate to <code>chrome://extensions</code></li>
     <li>Enable <code>Developer Mode</code> in the top right corner</li>
