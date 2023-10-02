@@ -16,7 +16,11 @@ jobs:
         uses: ./.github/actions/install-dependencies
 
       - name: Set version
-        run: npm --no-git-tag-version version patch
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          npm version patch -m "chore: submit %s to web store"
+          git push --tags
 
       - name: Build
         run: bun run build
@@ -24,22 +28,26 @@ jobs:
       - name: Zip
         run: cd dist/build && zip -r ../extension.zip *
 
-      - name: Submit to the chrome webstore
+      - name: Submit to Chrome Web Store
         uses: PlasmoHQ/bpp@v3.5.0
+        continue-on-error: true
         with:
-          artifact: ./dist/build/extension.zip
+          artifact: ./dist/extension.zip
           keys: ${{ secrets.BPP_KEYS }}
 
-      - name: get-npm-version
+      - name: Get NPM version
         id: package-version
         uses: martinbeentjes/npm-get-version-action@v1.3.1
 
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
         with:
-          commit_message: 'chore: version (${{ steps.package-version.outputs.current-version }})'
-          commit_user_name: 'github-actions[bot]'
-          commit_user_email: 'github-actions[bot]@users.noreply.github.com'
+          files: dist/extension.zip
+          tag_name: 'v${{ steps.package-version.outputs.current-version }}'
 
+      - name: Push
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
       
