@@ -3,6 +3,9 @@
 <p align="center"><strong>Developer wallet & DevTools for Anvil</strong></p>
 
 <div align="center">
+  <a href="https://chrome.google.com/webstore/detail/rivet/mobmnpcacgadhkjfelhpemphmmnggnod">
+    <img alt="Chrome Web Store Version" src="https://img.shields.io/chrome-web-store/v/mobmnpcacgadhkjfelhpemphmmnggnod">
+  </a>
   <a href="https://github.com/paradigmxyz/rivet/actions/workflows/on-push-to-main.yml">
     <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/paradigmxyz/rivet/on-push-to-main.yml">
   </a>
@@ -17,9 +20,34 @@ Rivet is a developer Wallet & DevTools for Anvil (akin to [Browser DevTools](htt
 
 By integrating [EIP-6963: Multi Injected Provider Discovery](https://eips.ethereum.org/EIPS/eip-6963), Rivet is designed to be used alongside and with other consumer browser wallets like MetaMask or Rainbow to provide more engrained developer tooling and workflows for Ethereum.
 
-Rivet is currently a **work-in-progress prototype**, and aimed to be **contributor first & friendly**. If you would like to contribute, check out the [Contributing Guide](/.github/CONTRIBUTING.md) and [good first issues](https://github.com/paradigmxyz/rivet/labels/good%20first%20issue).
+Rivet is aimed to be **contributor first & friendly**. If you would like to contribute, check out the [Contributing Guide](/.github/CONTRIBUTING.md) and [good first issues](https://github.com/paradigmxyz/rivet/labels/good%20first%20issue).
 
 ![screenshots](https://github.com/paradigmxyz/rivet/assets/7336481/7eb57ff3-1f47-486d-b433-6a3346ac3e4b)
+
+## Download
+
+- **Chromium (Chrome, Brave, Arc, etc)**: [Chrome Web Store](https://chrome.google.com/webstore/detail/rivet/mobmnpcacgadhkjfelhpemphmmnggnod)
+- **Firefox**: coming soon
+- **Safari**: coming soon
+
+### Nightly Release
+
+Rivet is currently in active development. If you would like to try out the latest features, you can download the latest nightly build below:
+
+- **Chromium (Chrome, Brave, Arc, etc)**: [Download](https://github.com/paradigmxyz/rivet/suites/16766965773/artifacts/957464144)
+
+<details>
+  <summary>Setup Instructions</summary>
+  <ol>
+    <li>Download the nightly build from the link above</li>
+    <li>Unzip the downloaded file</li>
+    <li>Open your chromium browser and navigate to <code>chrome://extensions</code></li>
+    <li>Enable <code>Developer Mode</code> in the top right corner</li>
+    <li>Click <code>Load Unpacked</code> in the top left corner</li>
+    <li>Select the unzipped folder</li>
+    <li>Done! You should now see the Rivet extension in your browser</li>
+  <ol>
+</details>
 
 ## Features
 
