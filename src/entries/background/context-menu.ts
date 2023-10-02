@@ -14,13 +14,14 @@ export function setupContextMenu() {
   //   contexts: ['selection'],
   // })
 
+  chrome.contextMenus.create({
+    id: 'open-wallet-tab',
+    title: 'Open Wallet in a New Tab',
+    type: 'normal',
+    contexts: ['action'],
+  })
+
   if (process.env.NODE_ENV === 'development') {
-    chrome.contextMenus.create({
-      id: 'open-wallet-tab',
-      title: 'Open Wallet in a New Tab',
-      type: 'normal',
-      contexts: ['action'],
-    })
     chrome.contextMenus.create({
       id: 'open-design-system',
       title: 'Open Design System',

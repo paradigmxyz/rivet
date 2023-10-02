@@ -20,7 +20,11 @@ function Components() {
   }
 
   return (
-    <Box marginHorizontal="auto" maxWidth="1152px" paddingTop="40px">
+    <Box
+      marginHorizontal="auto"
+      paddingTop="40px"
+      style={{ maxWidth: '1152px' }}
+    >
       <Box
         as="button"
         onClick={toggleTheme}

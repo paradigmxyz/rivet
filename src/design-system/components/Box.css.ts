@@ -11,12 +11,12 @@ import {
   textColorForBackgroundColorVars,
 } from '../styles/theme.css'
 import {
+  breakpoints,
   negatedSpacing,
   positionSpacing,
   radii,
   spacing,
   strokeWeights,
-  viewports,
 } from '../tokens'
 
 const opacities = [
@@ -132,7 +132,7 @@ const boxBaseProperties = defineProperties({
     marginLeft: { auto: 'auto', ...negatedSpacing },
     marginRight: { auto: 'auto', ...negatedSpacing },
     marginTop: { auto: 'auto', ...negatedSpacing },
-    maxWidth: viewports,
+    maxWidth: breakpoints,
     opacity: opacities,
     overflow: ['hidden', 'visible'],
     paddingBottom: spacing,

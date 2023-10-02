@@ -4,6 +4,7 @@ import { formatGwei } from 'viem'
 
 import { Tooltip } from '~/components'
 import { BrandIcon } from '~/components/svgs'
+import { useAppMeta } from '~/contexts'
 import {
   Box,
   Button,
@@ -32,6 +33,7 @@ const contentMessenger = getMessenger('wallet:contentScript')
 const inpageMessenger = getMessenger('wallet:inpage')
 
 export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
+  const { type } = useAppMeta()
   return (
     <Rows>
       <Row>
@@ -42,28 +44,32 @@ export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
           <Column width="content">
             <Separator orientation="vertical" />
           </Column>
-          <Column>
+          <Column style={{ maxWidth: '340px' }}>
             <Account />
           </Column>
-          <Column width="content">
-            <Separator orientation="vertical" />
-          </Column>
-          <Column>
-            <DappConnection />
-          </Column>
-          <Column width="content">
-            <Separator orientation="vertical" />
-          </Column>
-          <Column width="content">
-            {/** TODO: Remove this once EIP-6963 is widely adopted across wallets & dapps. */}
-            <ReinjectButton />
-          </Column>
-          <Column width="content">
-            <Separator orientation="vertical" />
-          </Column>
-          <Column width="content">
-            <CollapseButton />
-          </Column>
+          {type === 'embedded' && (
+            <>
+              <Column width="content">
+                <Separator orientation="vertical" />
+              </Column>
+              <Column>
+                <DappConnection />
+              </Column>
+              <Column width="content">
+                <Separator orientation="vertical" />
+              </Column>
+              <Column width="content">
+                {/** TODO: Remove this once EIP-6963 is widely adopted across wallets & dapps. */}
+                <ReinjectButton />
+              </Column>
+              <Column width="content">
+                <Separator orientation="vertical" />
+              </Column>
+              <Column width="content">
+                <CollapseButton />
+              </Column>
+            </>
+          )}
         </Columns>
       </Row>
       <Row height="content">
@@ -254,7 +260,7 @@ function Network() {
         }}
         display="flex"
         height="full"
-        width="full"
+        maxWidth="480px"
         style={{ cursor: 'default' }}
       >
         <Inset horizontal="8px">
@@ -341,6 +347,7 @@ function Block() {
         }}
         display="flex"
         height="full"
+        maxWidth="480px"
         width="full"
         style={{ cursor: 'default' }}
       >

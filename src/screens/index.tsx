@@ -187,12 +187,14 @@ function AccountRow({ account }: { account: Account }) {
             </Inline>
           </Box>
         </LabelledContent>
-        <Columns gap="4px">
-          <Balance address={account.address} />
+        <Inline gap="4px">
+          <Box style={{ width: '100px' }}>
+            <Balance address={account.address} />
+          </Box>
           <Box style={{ width: '50px' }}>
             <Nonce address={account.address} />
           </Box>
-        </Columns>
+        </Inline>
       </Stack>
       {account.state === 'loaded' && (
         <Box position="absolute" style={{ bottom: '12px', right: '12px' }}>

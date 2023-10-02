@@ -41,8 +41,8 @@ function DesignSystem() {
       <Box
         backgroundColor="surface/primary"
         marginHorizontal="auto"
-        maxWidth="1152px"
         paddingTop="40px"
+        style={{ maxWidth: '1152px' }}
       >
         <Box
           as="button"

@@ -1,3 +1,3 @@
 import { init } from '../../app'
 
-init({ routerType: 'hash' })
+init({ type: 'embedded' })
