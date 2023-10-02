@@ -16,3 +16,4 @@ jobs:
   artifacts:
     name: Artifacts
     uses: ./.github/workflows/artifacts.yml
+    secrets: inherit
