@@ -1,0 +1,45 @@
+name: Release
+on:
+  workflow_call:
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        uses: ./.github/actions/install-dependencies
+
+      - name: Set version
+        run: npm --no-git-tag-version version patch
+
+      - name: Build
+        run: bun run build
+
+      - name: Zip
+        run: cd dist/build && zip -r ../extension.zip *
+
+      - name: Submit to the chrome webstore
+        uses: PlasmoHQ/bpp@v3.5.0
+        with:
+          artifact: ./dist/build/extension.zip
+          keys: ${{ secrets.BPP_KEYS }}
+
+      - name: get-npm-version
+        id: package-version
+        uses: martinbeentjes/npm-get-version-action@v1.3.1
+
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commit_message: 'chore: version (${{ steps.package-version.outputs.current-version }})'
+          commit_user_name: 'github-actions[bot]'
+          commit_user_email: 'github-actions[bot]@users.noreply.github.com'
+
+      
