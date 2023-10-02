@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/verify.yml
     secrets: inherit
 
-  artifacts:
-    name: Artifacts
-    uses: ./.github/workflows/artifacts.yml
+  prerelease:
+    name: Prerelease
+    uses: ./.github/workflows/prerelease.yml
     secrets: inherit
