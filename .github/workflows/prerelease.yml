@@ -1,11 +1,11 @@
-name: Release
+name: Prerelease
 on:
   workflow_call:
   workflow_dispatch:
 
 jobs:
-  release:
-    name: Release
+  prerelease:
+    name: Prerelease
     runs-on: ubuntu-latest
 
     steps:
@@ -19,7 +19,8 @@ jobs:
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
-          npm version patch -m "chore: submit %s to web store"
+          npm version 0.0.0
+          npm version $(npm pkg get version | sed 's/"//g')-$(date +'%Y%m%dT%H%M%S')
           git push --tags
 
       - name: Build
@@ -27,12 +28,6 @@ jobs:
 
       - name: Zip
         run: cd dist/build && zip -r ../extension.zip *
-
-      - name: Submit to Chrome Web Store
-        uses: PlasmoHQ/bpp@v3.5.0
-        with:
-          artifact: ./dist/extension.zip
-          keys: ${{ secrets.BPP_KEYS }}
 
       - name: Get NPM version
         id: package-version
@@ -43,10 +38,3 @@ jobs:
         with:
           files: dist/extension.zip
           tag_name: 'v${{ steps.package-version.outputs.current-version }}'
-
-      - name: Push
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
-      
