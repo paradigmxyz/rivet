@@ -551,19 +551,19 @@ function Transactions() {
     if (!debouncedSearchText) return blockTransactions
 
     // If we have some search text, try and find transaction in list.
-    const filteredTransaction = blockTransactions.filter(({ transaction }) => {
-      const _to = (transaction.to || '').toLowerCase()
-      const _from = transaction.from.toLowerCase()
-      const _hash = transaction.hash.toLowerCase()
-      const _searchText = debouncedSearchText.toLowerCase()
+    const filteredTransactions = blockTransactions.filter(({ transaction }) => {
+      const to = (transaction.to || '').toLowerCase()
+      const from = transaction.from.toLowerCase()
+      const hash = transaction.hash.toLowerCase()
+      const searchText = debouncedSearchText.toLowerCase()
 
       return (
-        _to.includes(_searchText) ||
-        _from.includes(_searchText) ||
-        _hash.includes(_searchText)
+        to.includes(searchText) ||
+        from.includes(searchText) ||
+        hash.includes(searchText)
       )
     })
-    return filteredTransaction
+    return filteredTransactions
   }, [blockTransactions, debouncedSearchText, transaction])
 
   const isEmpty = isFetched && transactions.length === 0
