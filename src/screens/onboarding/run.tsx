@@ -69,12 +69,7 @@ export default function OnboardingRun() {
             {command}
           </Text>
           <Box position="absolute" top="4px" right="4px">
-            <Button.Symbol
-              symbol="doc.on.doc"
-              height="24px"
-              variant="ghost primary"
-              onClick={() => navigator.clipboard.writeText(command)}
-            />
+            <Button.Copy height="24px" variant="ghost primary" text={command} />
           </Box>
         </Box>
         <Text color="text/secondary" size="14px">

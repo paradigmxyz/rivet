@@ -427,6 +427,20 @@ function DesignSystem() {
                     Button
                   </Button>
                 </Box>
+                <Box display="flex" gap="8px">
+                  <Button height="18px" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="stroked invert" height="18px" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="tint green" height="18px" width="fit">
+                    Button
+                  </Button>
+                  <Button variant="ghost primary" height="18px" width="fit">
+                    Button
+                  </Button>
+                </Box>
               </Stack>
               <Stack gap="16px">
                 <Text weight="medium" size="18px">
@@ -595,6 +609,176 @@ function DesignSystem() {
                     symbol="trash"
                     variant="ghost red"
                   />
+                </Box>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol height="18px" symbol="trash" />
+                  <Button.Symbol
+                    height="18px"
+                    symbol="trash"
+                    variant="stroked invert"
+                  />
+                  <Button.Symbol
+                    height="18px"
+                    symbol="trash"
+                    variant="tint green"
+                  />
+                  <Button.Symbol
+                    height="18px"
+                    symbol="trash"
+                    variant="ghost red"
+                  />
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Disabled
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Symbol disabled symbol="trash" />
+                  <Button.Symbol
+                    disabled
+                    symbol="trash"
+                    variant="stroked invert"
+                  />
+                  <Button.Symbol disabled symbol="trash" variant="tint green" />
+                  <Button.Symbol
+                    disabled
+                    symbol="trash"
+                    variant="ghost primary"
+                  />
+                </Box>
+              </Stack>
+            </Stack>
+          </Box>
+          <Box
+            backgroundColor="surface/primary/elevated"
+            margin="-24px"
+            borderRadius="12px"
+            padding="24px"
+          >
+            <Stack gap="24px">
+              <Text weight="medium" size="22px">
+                Button.Copy
+              </Text>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Solid
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Copy text="Hello" />
+                  <Button.Copy text="Hello" variant="solid primary" />
+                  <Button.Copy text="Hello" variant="solid fill" />
+                  <Button.Copy text="Hello" variant="solid blue" />
+                  <Button.Copy text="Hello" variant="solid green" />
+                  <Button.Copy text="Hello" variant="solid red" />
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Stroked
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Copy text="Hello" variant="stroked fill" />
+                  <Button.Copy text="Hello" variant="stroked invert" />
+                  <Button.Copy text="Hello" variant="stroked blue" />
+                  <Button.Copy text="Hello" variant="stroked green" />
+                  <Button.Copy text="Hello" variant="stroked red" />
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Tint
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Copy text="Hello" variant="tint blue" />
+                  <Button.Copy text="Hello" variant="tint green" />
+                  <Button.Copy text="Hello" variant="tint red" />
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Ghost
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Copy text="Hello" variant="ghost primary" />
+                  <Button.Copy text="Hello" variant="ghost blue" />
+                  <Button.Copy text="Hello" variant="ghost green" />
+                  <Button.Copy text="Hello" variant="ghost red" />
+                </Box>
+              </Stack>
+              <Stack gap="16px">
+                <Text weight="medium" size="18px">
+                  Height
+                </Text>
+                <Box display="flex" gap="8px">
+                  <Button.Copy height="44px" text="Hello" />
+                  <Button.Copy
+                    height="44px"
+                    text="Hello"
+                    variant="stroked invert"
+                  />
+                  <Button.Copy
+                    height="44px"
+                    text="Hello"
+                    variant="tint green"
+                  />
+                  <Button.Copy height="44px" text="Hello" variant="ghost red" />
+                </Box>
+                <Box display="flex" gap="8px">
+                  <Button.Copy height="36px" text="Hello" />
+                  <Button.Copy
+                    height="36px"
+                    text="Hello"
+                    variant="stroked invert"
+                  />
+                  <Button.Copy
+                    height="36px"
+                    text="Hello"
+                    variant="tint green"
+                  />
+                  <Button.Copy height="36px" text="Hello" variant="ghost red" />
+                </Box>
+                <Box display="flex" gap="8px">
+                  <Button.Copy height="24px" text="Hello" />
+                  <Button.Copy
+                    height="24px"
+                    text="Hello"
+                    variant="stroked invert"
+                  />
+                  <Button.Copy
+                    height="24px"
+                    text="Hello"
+                    variant="tint green"
+                  />
+                  <Button.Copy height="24px" text="Hello" variant="ghost red" />
+                </Box>
+                <Box display="flex" gap="8px">
+                  <Button.Copy height="20px" text="Hello" />
+                  <Button.Copy
+                    height="20px"
+                    text="Hello"
+                    variant="stroked invert"
+                  />
+                  <Button.Copy
+                    height="20px"
+                    text="Hello"
+                    variant="tint green"
+                  />
+                  <Button.Copy height="20px" text="Hello" variant="ghost red" />
+                </Box>
+                <Box display="flex" gap="8px">
+                  <Button.Copy height="18px" text="Hello" />
+                  <Button.Copy
+                    height="18px"
+                    text="Hello"
+                    variant="stroked invert"
+                  />
+                  <Button.Copy
+                    height="18px"
+                    text="Hello"
+                    variant="tint green"
+                  />
+                  <Button.Copy height="18px" text="Hello" variant="ghost red" />
                 </Box>
               </Stack>
               <Stack gap="16px">
@@ -1077,7 +1261,7 @@ function DesignSystem() {
               <Text>
                 This is some <Text color="surface/blue">inline text</Text>.
               </Text>
-              <Text.Truncated size="32px">
+              <Text.Truncated size="22px">
                 0xabcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789abcdefABCDEF0123456789
               </Text.Truncated>
             </Stack>

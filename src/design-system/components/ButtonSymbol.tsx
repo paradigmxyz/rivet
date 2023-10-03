@@ -14,7 +14,10 @@ type ButtonSymbolProps = UnionOmit<ButtonRootProps, 'children'> & {
   symbolProps?: Partial<SFSymbolProps>
 }
 
-const symbolStylesForHeight = {
+export const symbolStylesForHeight = {
+  '18px': {
+    size: '11px',
+  },
   '20px': {
     size: '11px',
   },
@@ -29,7 +32,7 @@ const symbolStylesForHeight = {
   },
 } satisfies Record<ButtonHeight, { size: SFSymbolProps['size'] }>
 
-const symbolStylesForVariant = {
+export const symbolStylesForVariant = {
   'ghost primary': {},
   'ghost blue': {
     color: 'surface/blue',

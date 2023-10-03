@@ -8,6 +8,7 @@ import {
   type ButtonVariant,
   buttonHeightStyles,
 } from './Button.css'
+import { ButtonCopy } from './ButtonCopy'
 import { ButtonSymbol } from './ButtonSymbol'
 import { ButtonText } from './ButtonText'
 
@@ -16,31 +17,23 @@ export type ButtonRootProps = {
   className?: ClassValue
   disabled?: boolean
   height?: ButtonHeight
+  onClick?: MouseEventHandler<HTMLButtonElement>
   width?: 'fit' | 'full'
   variant?: ButtonVariant
 } & (
   | {
-      as: 'button'
-      href?: never
-      onClick?: MouseEventHandler<HTMLButtonElement>
-      type?: 'button' | 'submit'
-    }
-  | {
       as?: 'button'
       href?: never
-      onClick?: MouseEventHandler<HTMLButtonElement>
       type: 'button' | 'submit'
     }
   | {
       as?: 'div'
       href?: never
-      onClick?: MouseEventHandler<HTMLDivElement>
       type?: never
     }
   | {
       as?: 'a'
       href: string
-      onClick?: never
       type?: never
     }
 )
@@ -178,5 +171,6 @@ export const ButtonRoot = forwardRef<HTMLDivElement, ButtonRootProps>(
 
 export const Button = Object.assign(ButtonText, {
   Root: ButtonRoot,
+  Copy: ButtonCopy,
   Symbol: ButtonSymbol,
 })

@@ -174,12 +174,9 @@ function AccountRow({ account }: { account: Account }) {
               </Tooltip>
               {account.address && (
                 <Box position="absolute" style={{ right: -24, top: -6 }}>
-                  <Button.Symbol
-                    symbol="doc.on.doc"
+                  <Button.Copy
                     height="20px"
-                    onClick={() =>
-                      navigator.clipboard.writeText(account.address!)
-                    }
+                    text={account.address!}
                     variant="ghost primary"
                   />
                 </Box>

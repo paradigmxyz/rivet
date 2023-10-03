@@ -36,15 +36,10 @@ export default function OnboardingDownload() {
             curl -L https://foundry.paradigm.xyz | bash
           </Text>
           <Box position="absolute" right="12px">
-            <Button.Symbol
-              symbol="doc.on.doc"
+            <Button.Copy
               height="24px"
               variant="ghost primary"
-              onClick={() =>
-                navigator.clipboard.writeText(
-                  'curl -L https://foundry.paradigm.xyz | bash',
-                )
-              }
+              text="curl -L https://foundry.paradigm.xyz | bash"
             />
           </Box>
         </Box>

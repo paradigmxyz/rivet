@@ -14,6 +14,7 @@ import { truncate } from '~/utils'
 import { fontAttributes } from '../tokens'
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
+import { Button, type ButtonRootProps } from './Button'
 import type { TextStyles } from './Text.css'
 import * as styles from './Text.css'
 
@@ -134,6 +135,23 @@ export const TextBase = forwardRef<HTMLDivElement, TextProps>(
   },
 )
 
+const heightForSize = {
+  '9px': '18px',
+  '11px': '18px',
+  '12px': '20px',
+  '14px': '24px',
+  '15px': '24px',
+  '16px': '24px',
+  '18px': '24px',
+  '20px': '24px',
+  '22px': '24px',
+  '26px': '36px',
+  '32px': '44px',
+} satisfies Record<
+  Extract<TextProps['size'], string>,
+  ButtonRootProps['height']
+>
+
 export type TextTruncatedProps = Omit<TextWrapperProps, 'children' | 'wrap'> & {
   children?: string | null
   end?: number
@@ -170,8 +188,8 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
       const letterWidth = fontAttributes[size].letterWidth
       return typeof width === 'number'
         ? truncate(children || '', {
-            start: Math.floor(width / letterWidth) / 2,
-            end: Math.floor(width / letterWidth) / 2,
+            start: Math.floor(width / letterWidth) / 2 + 1,
+            end: Math.floor(width / letterWidth) / 2 - 1,
           })
         : children
     }, [children, size, width])
@@ -183,16 +201,36 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
         color={color}
         family={family}
         size={size}
-        style={style}
+        style={{ ...style, opacity: width ? 1 : 0 }}
         weight={weight}
         testId={testId}
       >
-        <Box ref={wrapperRef}>
+        <Box
+          style={{
+            width: `calc(100% - ${heightForSize[size]})`,
+          }}
+          ref={wrapperRef}
+        >
           <Box
             as="span"
             className={[tabular && styles.tabular, styles.overflow]}
+            position="relative"
           >
             {truncatedText || '‎'}
+            <Box
+              position="absolute"
+              style={{
+                right: -(parseInt(heightForSize[size].replace('px', '')) + 2),
+                top: -3,
+                width: heightForSize[size],
+              }}
+            >
+              <Button.Copy
+                height={heightForSize[size]}
+                text={children || ''}
+                variant="ghost primary"
+              />
+            </Box>
           </Box>
         </Box>
       </TextWrapper>

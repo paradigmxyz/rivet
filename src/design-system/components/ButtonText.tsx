@@ -9,6 +9,9 @@ import { Text, type TextProps } from './Text'
 type ButtonTextProps = ButtonRootProps
 
 const stylesForHeight = {
+  '18px': {
+    paddingHorizontal: '6px',
+  },
   '20px': {
     paddingHorizontal: '6px',
   },
@@ -24,6 +27,9 @@ const stylesForHeight = {
 } satisfies Record<ButtonHeight, BoxStyles>
 
 const textStylesForHeight = {
+  '18px': {
+    size: '11px',
+  },
   '20px': {
     size: '11px',
   },
