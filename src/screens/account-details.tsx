@@ -216,7 +216,7 @@ function TokenRow({
                 </Row>
                 <Row>
                   <Inline>
-                    <Box style={{ maxWidth: '156px' }}>
+                    <Box paddingRight="16px" style={{ maxWidth: '140px' }}>
                       <Tooltip label={tokenAddress}>
                         <Text.Truncated color="text/tertiary" size="11px">
                           {tokenAddress}
@@ -302,7 +302,7 @@ function BalanceInput({
             <Spinner size="15px" />
           </Column>
         )}
-        <Column width="4/5">
+        <Column alignHorizontal="right" width="4/5">
           <Input
             onChange={(e) => setValue(e.target.value)}
             onClick={(e) => e.stopPropagation()}
@@ -320,7 +320,7 @@ function BalanceInput({
               }
             }}
             height="24px"
-            style={{ textAlign: 'right' }}
+            style={{ maxWidth: '180px', textAlign: 'right' }}
             value={value}
           />
         </Column>

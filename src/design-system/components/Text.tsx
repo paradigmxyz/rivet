@@ -3,6 +3,7 @@ import {
   createContext,
   forwardRef,
   useContext,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -176,20 +177,31 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
     const wrapperRef = useRef(null)
     const [width, setWidth] = useState<number | undefined>()
 
+    const [mounted, setMounted] = useState(false)
+    useEffect(() => {
+      setTimeout(() => setMounted(true), 16)
+    }, [])
+
     useLayoutEffect(() => {
       setWidth(
         ((wrapperRef.current as any).getBoundingClientRect() as DOMRectReadOnly)
           .width,
       )
     }, [])
-    useResizeObserver(wrapperRef, (entry) => setWidth(entry.contentRect.width))
+    useResizeObserver(wrapperRef, (entry) =>
+      mounted ? setWidth(entry.contentRect.width) : undefined,
+    )
 
     const truncatedText = useMemo(() => {
       const letterWidth = fontAttributes[size].letterWidth
-      return typeof width === 'number'
+
+      const width_ = width
+        ? width - parseInt(heightForSize[size].replace('px', ''))
+        : undefined
+      return typeof width_ === 'number'
         ? truncate(children || '', {
-            start: Math.floor(width / letterWidth) / 2 + 1,
-            end: Math.floor(width / letterWidth) / 2 - 1,
+            start: Math.floor(width_ / letterWidth) / 2 + 1,
+            end: Math.floor(width_ / letterWidth) / 2 - 1,
           })
         : children
     }, [children, size, width])
@@ -205,12 +217,7 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
         weight={weight}
         testId={testId}
       >
-        <Box
-          style={{
-            width: `calc(100% - ${heightForSize[size]})`,
-          }}
-          ref={wrapperRef}
-        >
+        <Box ref={wrapperRef}>
           <Box
             as="span"
             className={[tabular && styles.tabular, styles.overflow]}
@@ -220,7 +227,7 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
             <Box
               position="absolute"
               style={{
-                right: -(parseInt(heightForSize[size].replace('px', '')) + 2),
+                right: -parseInt(heightForSize[size].replace('px', '')),
                 top: -3,
                 width: heightForSize[size],
               }}
