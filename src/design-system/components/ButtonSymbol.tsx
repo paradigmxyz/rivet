@@ -2,6 +2,7 @@ import { forwardRef } from 'react'
 
 import type { UnionOmit } from '~/utils/types'
 
+import { Tooltip } from '../../components'
 import type { SymbolName } from '../tokens'
 import { ButtonRoot, type ButtonRootProps } from './Button'
 import { type ButtonHeight, type ButtonVariant } from './Button.css'
@@ -10,6 +11,7 @@ import { SFSymbol } from './SFSymbol'
 import type { SFSymbolProps } from './SFSymbol'
 
 type ButtonSymbolProps = UnionOmit<ButtonRootProps, 'children'> & {
+  label: string
   symbol: SymbolName
   symbolProps?: Partial<SFSymbolProps>
 }
@@ -66,22 +68,28 @@ export const symbolStylesForVariant = {
 } satisfies Record<ButtonVariant, { color?: SFSymbolProps['color'] }>
 
 export const ButtonSymbol = forwardRef<HTMLDivElement, ButtonSymbolProps>(
-  ({ symbol, symbolProps, width, ...rootProps }: ButtonSymbolProps, ref) => {
+  (
+    { label, symbol, symbolProps, width, ...rootProps }: ButtonSymbolProps,
+    ref,
+  ) => {
     const { height = '36px', variant = 'solid invert' } = rootProps
     return (
-      <ButtonRoot
-        ref={ref}
-        {...rootProps}
-        className={[!width && widthForHeight[height], rootProps.className]}
-        width={width}
-      >
-        <SFSymbol
-          symbol={symbol}
-          {...symbolStylesForHeight[height]}
-          {...symbolStylesForVariant[variant]}
-          {...symbolProps}
-        />
-      </ButtonRoot>
+      <Tooltip label={label}>
+        <ButtonRoot
+          ref={ref}
+          aria-label={label}
+          {...rootProps}
+          className={[!width && widthForHeight[height], rootProps.className]}
+          width={width}
+        >
+          <SFSymbol
+            symbol={symbol}
+            {...symbolStylesForHeight[height]}
+            {...symbolStylesForVariant[variant]}
+            {...symbolProps}
+          />
+        </ButtonRoot>
+      </Tooltip>
     )
   },
 )

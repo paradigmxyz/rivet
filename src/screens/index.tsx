@@ -198,6 +198,7 @@ function AccountRow({ account }: { account: Account }) {
           <Inline gap="4px" wrap={false}>
             {account.impersonate && (
               <Button.Symbol
+                label="Remove"
                 symbol="trash"
                 height="24px"
                 variant="stroked red"
@@ -209,6 +210,7 @@ function AccountRow({ account }: { account: Account }) {
             )}
             {!active && (
               <Button.Symbol
+                label="Switch Account"
                 height="24px"
                 onClick={() => setAccount({ account, setActive: true })}
                 symbol="arrow.left.arrow.right"
@@ -218,6 +220,7 @@ function AccountRow({ account }: { account: Account }) {
             <Link to={`account/${account.address}`}>
               <Box style={{ width: active ? '52px' : '24px' }}>
                 <Button.Symbol
+                  label="Account Details"
                   height="24px"
                   width="full"
                   onClick={() => {}}

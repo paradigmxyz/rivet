@@ -62,6 +62,7 @@ export function Container({
                     )}
                     {dismissable && (
                       <Button.Symbol
+                        label="Close"
                         height="24px"
                         onClick={() => navigate(-1)}
                         symbol="xmark"

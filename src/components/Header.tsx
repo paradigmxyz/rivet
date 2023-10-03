@@ -275,6 +275,7 @@ function Network() {
             </Column>
             <Column width="content">
               <Button.Symbol
+                label="Network Settings"
                 onClick={(e) => {
                   e.preventDefault()
                   navigate(`/networks/${encodeURIComponent(network.rpcUrl)}`, {
@@ -443,6 +444,7 @@ function MineButton() {
       style={{ marginTop: '8px' }}
     >
       <Button.Symbol
+        label="Mine Block"
         height="20px"
         onClick={(e) => {
           e.preventDefault()

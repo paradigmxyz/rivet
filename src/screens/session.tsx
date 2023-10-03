@@ -91,6 +91,7 @@ export default function Session() {
                       </Text>
                     </LabelledContent>
                     <Button.Symbol
+                      label="Remove"
                       height="24px"
                       symbol="trash"
                       onClick={() => {

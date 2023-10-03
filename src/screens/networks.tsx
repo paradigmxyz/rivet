@@ -187,6 +187,7 @@ function NetworkRow({
             <Inline gap="4px">
               {showRemove && (
                 <Button.Symbol
+                  label="Remove"
                   onClick={() => removeNetwork(network.rpcUrl)}
                   height="20px"
                   symbol="trash"
@@ -194,6 +195,7 @@ function NetworkRow({
                 />
               )}
               <Button.Symbol
+                label="Edit"
                 onClick={() =>
                   navigate(`/networks/${encodeURIComponent(network.rpcUrl)}`)
                 }
@@ -202,6 +204,7 @@ function NetworkRow({
                 variant="stroked fill"
               />
               <Button.Symbol
+                label="Switch Network"
                 disabled={active || !data}
                 onClick={() => switchNetwork(network.rpcUrl)}
                 height="20px"

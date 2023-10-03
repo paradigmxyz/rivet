@@ -46,6 +46,7 @@ export default function AccountDetails() {
         <Inset horizontal="4px">
           <Inline gap="4px">
             <Button.Symbol
+              label="Back"
               onClick={() => navigate(-1)}
               symbol="chevron.left"
               height="24px"
@@ -253,6 +254,7 @@ function TokenRow({
             </Column>
             <Column width="content">
               <Button.Symbol
+                label="Delete"
                 symbol="trash"
                 height="24px"
                 variant="ghost red"
