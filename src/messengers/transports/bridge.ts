@@ -17,29 +17,35 @@ export const createBridgeTransport = <TConnection extends string>(
   available: transport.available,
   connection,
   async send(topic, payload, { id } = {}) {
-    return transport.send(topic, payload, { id })
+    return transport.send(topic, payload, { connection, id })
   },
   reply(topic, callback) {
-    return transport.reply(topic, callback)
+    return transport.reply(topic, callback, { connection })
   },
 })
 
 export function setupBridgeTransportRelay() {
   // inpage -> content script -> background
-  windowTransport.reply('*', async (payload, { topic, id }) => {
+  windowTransport.reply('*', async (payload, { connection, topic, id }) => {
     if (!topic) return
 
     const topic_ = topic.replace('> ', '')
-    const response = await tabTransport.send(topic_, payload, { id })
+    const response = await tabTransport.send(topic_, payload, {
+      id,
+      connection,
+    })
     return response
   })
 
   // background -> content script -> inpage
-  tabTransport.reply('*', async (payload, { topic, id }) => {
+  tabTransport.reply('*', async (payload, { connection, topic, id }) => {
     if (!topic) return
 
     const topic_: string = topic.replace('> ', '')
-    const response = await windowTransport.send(topic_, payload, { id })
+    const response = await windowTransport.send(topic_, payload, {
+      id,
+      connection,
+    })
     return response
   })
 }

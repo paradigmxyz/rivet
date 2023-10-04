@@ -10,8 +10,16 @@ export const createWindowTransport = <TConnection extends string>(
 ): Transport<TConnection> => ({
   available: typeof window !== 'undefined',
   connection,
-  async send(topic, payload, { id } = {}) {
-    window.postMessage({ topic: `> ${topic}`, payload, id }, '*')
+  async send(topic, payload, { connection: connection_, id } = {}) {
+    window.postMessage(
+      {
+        connection: connection_ || connection,
+        topic: `> ${topic}`,
+        payload,
+        id,
+      },
+      '*',
+    )
     return new Promise((resolve, reject) => {
       const listener = (event: MessageEvent) => {
         if (!isValidReply({ id, message: event.data, topic })) return
@@ -26,9 +34,9 @@ export const createWindowTransport = <TConnection extends string>(
       window.addEventListener('message', listener)
     })
   },
-  reply(topic, callback) {
+  reply(topic, callback, options) {
     const listener = async (event: MessageEvent<SendMessage<any>>) => {
-      if (!isValidSend({ message: event.data, topic })) return
+      if (!isValidSend({ message: event.data, options, topic })) return
 
       const sender = event.source
       if (sender !== window) return
@@ -37,6 +45,7 @@ export const createWindowTransport = <TConnection extends string>(
       let response
       try {
         response = await callback(event.data.payload, {
+          connection: event.data.connection,
           topic: event.data.topic,
           sender,
           id: event.data.id,
@@ -47,6 +56,7 @@ export const createWindowTransport = <TConnection extends string>(
 
       const repliedTopic = event.data.topic.replace('>', '<')
       window.postMessage({
+        connection: event.data.connection,
         topic: repliedTopic,
         payload: { error, response },
         id: event.data.id,

@@ -18,7 +18,10 @@ export const createExtensionTransport = <TConnection extends string>(
   async send<TPayload, TResponse>(
     topic: string,
     payload: TPayload,
-    { id }: { id?: number | string } = {},
+    {
+      connection: connection_,
+      id,
+    }: { connection?: string; id?: number | string } = {},
   ) {
     return new Promise<TResponse>((resolve, reject) => {
       const listener = (message: ReplyMessage<TResponse>) => {
@@ -33,6 +36,7 @@ export const createExtensionTransport = <TConnection extends string>(
       chrome.runtime.onMessage.addListener(listener)
 
       chrome.runtime.sendMessage({
+        connection: connection_ || connection,
         topic: `> ${topic}`,
         payload,
         id,
@@ -47,17 +51,20 @@ export const createExtensionTransport = <TConnection extends string>(
       message: SendMessage<TPayload>,
       sender: chrome.runtime.MessageSender,
     ) => {
+      if (topic !== '*' && message.connection !== connection) return
       if (!isValidSend({ message, topic })) return
 
       const repliedTopic = message.topic.replace('>', '<')
 
       callback(message.payload, {
+        connection: message.connection,
         id: message.id,
         sender,
         topic: message.topic,
       })
         .then((response) =>
           chrome.runtime.sendMessage({
+            connection: message.connection,
             topic: repliedTopic,
             payload: { response },
             id: message.id,
@@ -71,6 +78,7 @@ export const createExtensionTransport = <TConnection extends string>(
             error[key] = (<Error>error_)[<keyof Error>key]
           }
           chrome.runtime.sendMessage({
+            connection: message.connection,
             topic: repliedTopic,
             payload: { error },
             id: message.id,

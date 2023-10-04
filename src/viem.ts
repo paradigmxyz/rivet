@@ -57,7 +57,8 @@ export function getClient({ rpcUrl }: { rpcUrl: string }): Client {
     chain: buildChain({ rpcUrl }),
     transport: custom(
       getProvider({
-        messenger,
+        eventMessenger: messenger,
+        requestMessenger: messenger,
         rpcUrl,
       }),
       { retryCount: 0 },

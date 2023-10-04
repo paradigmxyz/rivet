@@ -12,7 +12,7 @@ export const createTabTransport = <TConnection extends string>(
     typeof chrome !== 'undefined' && chrome.runtime?.id && chrome.tabs,
   ),
   connection,
-  async send(topic, payload, { id } = {}) {
+  async send(topic, payload, { connection: connection_, id } = {}) {
     return new Promise((resolve, reject) => {
       const listener = (message: ReplyMessage<any>) => {
         if (!isValidReply({ id, message, topic })) return
@@ -26,21 +26,30 @@ export const createTabTransport = <TConnection extends string>(
       chrome.runtime.onMessage.addListener(listener)
 
       getActiveTabs().then(([tab]) => {
-        sendMessage({ topic: `> ${topic}`, payload, id }, { tabId: tab?.id })
+        sendMessage(
+          {
+            connection: connection_ || connection,
+            topic: `> ${topic}`,
+            payload,
+            id,
+          },
+          { tabId: tab?.id },
+        )
       })
     })
   },
-  reply(topic, callback) {
+  reply(topic, callback, options) {
     const listener = (
       message: SendMessage<any>,
       sender: chrome.runtime.MessageSender,
     ) => {
-      if (!isValidSend({ message, topic })) return
+      if (!isValidSend({ message, options, topic })) return
 
       const repliedTopic = message.topic.replace('>', '<')
 
       getActiveTabs().then(([tab]) => {
         callback(message.payload, {
+          connection: message.connection,
           id: message.id,
           sender,
           topic: message.topic,
@@ -48,6 +57,7 @@ export const createTabTransport = <TConnection extends string>(
           .then((response) =>
             sendMessage(
               {
+                connection: message.connection,
                 topic: repliedTopic,
                 payload: { response },
                 id: message.id,
@@ -62,6 +72,7 @@ export const createTabTransport = <TConnection extends string>(
             }
             sendMessage(
               {
+                connection: message.connection,
                 topic: repliedTopic,
                 payload: { error },
                 id: message.id,

@@ -1,4 +1,6 @@
 export type CallbackOptions = {
+  /** The connection of the messenger. */
+  connection: string
   /** The sender of the message. */
   sender: chrome.runtime.MessageSender
   /** The topic provided. */
@@ -31,6 +33,8 @@ export type Transport<
     /** The payload to send to the `reply` handler. */
     payload: TSchema extends TransportSchema ? TSchema[TTopic][0] : unknown,
     options?: {
+      /** The connection of the messenger. */
+      connection?: string
       /** Identify & scope the request via an ID. */
       id?: string | number
     },
@@ -43,16 +47,22 @@ export type Transport<
       TSchema extends TransportSchema ? TSchema[TTopic][0] : unknown,
       TSchema extends TransportSchema ? TSchema[TTopic][1] : unknown
     >,
+    options?: {
+      /** The connection of the messenger. */
+      connection?: string
+    },
   ) => () => void
 }
 
 export type SendMessage<TPayload = unknown> = {
+  connection: string
   topic: string
   payload: TPayload
   id?: number | string
 }
 
 export type ReplyMessage<TResponse = unknown> = {
+  connection: string
   topic: string
   id: number | string
   payload: { response: TResponse; error: Error }

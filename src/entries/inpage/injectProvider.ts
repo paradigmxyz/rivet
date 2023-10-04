@@ -10,7 +10,8 @@ const walletMessenger = getMessenger('wallet:inpage')
 export function injectProvider() {
   const provider = getProvider({
     host: window.location.host,
-    messenger: backgroundMessenger,
+    eventMessenger: [walletMessenger, backgroundMessenger],
+    requestMessenger: backgroundMessenger,
   })
 
   // Inject provider directly onto window
