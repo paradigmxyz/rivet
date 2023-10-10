@@ -32,6 +32,16 @@ export function useGetLogsQueryOptions<
 
   return queryOptions({
     enabled: Boolean(parameters),
+    gcTime:
+      typeof parameters.fromBlock === 'bigint' &&
+      typeof parameters.toBlock === 'bigint'
+        ? Infinity
+        : undefined,
+    staleTime:
+      typeof parameters.fromBlock === 'bigint' &&
+      typeof parameters.toBlock === 'bigint'
+        ? Infinity
+        : undefined,
     queryKey: getLogsQueryKey([client.key, stringify(parameters)]),
     async queryFn() {
       return await client.getLogs(parameters)

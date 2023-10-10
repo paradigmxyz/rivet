@@ -25,9 +25,11 @@ import {
   useAccountStore,
   useNetworkStore,
   useSessionsStore,
+  useTokensStore,
 } from '~/zustand'
 
 import { type AppMeta, AppMetaContext } from './contexts'
+import { useImportTransferredTokens } from './hooks/useImportTransferredTokens'
 import Layout from './screens/_layout'
 import AccountDetails from './screens/account-details'
 import BlockConfig from './screens/block-config'
@@ -126,6 +128,7 @@ export function init({ type = 'standalone' }: { type?: AppMeta['type'] } = {}) {
         <AccountsChangedEmitter />
         <NetworkChangedEmitter />
         <SyncBlockNumber />
+        <SyncTransferredTokens />
         <SyncJsonRpcAccounts />
         <SyncNetwork />
         <RouterProvider router={router} />
@@ -194,6 +197,19 @@ function NetworkChangedEmitter() {
 /** Keeps block number in sync. */
 function SyncBlockNumber() {
   usePendingBlock()
+  return null
+}
+
+/** Keeps Transfer event imported tokens in sync. */
+function SyncTransferredTokens() {
+  const { account } = useAccountStore()
+  const { addToken } = useTokensStore()
+  const tokens = useImportTransferredTokens()
+  if (account?.address) {
+    tokens.forEach((addr) => {
+      addToken(addr, account.address)
+    })
+  }
   return null
 }
 

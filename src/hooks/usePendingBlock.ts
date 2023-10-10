@@ -1,12 +1,12 @@
 import { type InfiniteData, useQuery } from '@tanstack/react-query'
-import type { Block, Client, Transaction } from 'viem'
+import { type Block, type Client, type Transaction, parseAbiItem } from 'viem'
 
 import {
   createQueryKey,
   queryClient,
   updateInfiniteQueryData,
 } from '~/react-query'
-import { useNetworkStore } from '~/zustand'
+import { useAccountStore, useNetworkStore, useTokensStore } from '~/zustand'
 
 import { getBalanceQueryKey } from './useBalance'
 import { getBlockQueryKey } from './useBlock'
@@ -31,6 +31,8 @@ export function usePendingBlockQueryOptions({
 }: UsePendingBlockParameters = {}) {
   const { network } = useNetworkStore()
   const { data: chainId } = useNetworkStatus()
+  const { addToken } = useTokensStore()
+  const { account } = useAccountStore()
   const client = useClient()
 
   return {
@@ -52,6 +54,39 @@ export function usePendingBlockQueryOptions({
         prevBlock.transactions.length === block.transactions.length
       )
         return prevBlock || null
+
+      // Import any tokens from Transfer event
+      if (account && prevBlock.number) {
+        const transfersFrom = await client.getLogs({
+          event: parseAbiItem(
+            'event Transfer(address indexed from, address indexed to, uint256)',
+          ),
+          args: {
+            from: account.address,
+          },
+          fromBlock: prevBlock.number,
+          toBlock: 'latest',
+        })
+        const transfersTo = await client.getLogs({
+          event: parseAbiItem(
+            'event Transfer(address indexed from, address indexed to, uint256)',
+          ),
+          args: {
+            to: account.address,
+          },
+          fromBlock: prevBlock.number,
+          toBlock: 'latest',
+        })
+        ;[
+          ...new Set([
+            ...(transfersFrom?.map((t) => t.address) || []),
+            ...(transfersTo?.map((t) => t.address) || []),
+          ]),
+        ].forEach((addr) => {
+          console.log(addr)
+          addToken(addr, account.address)
+        })
+      }
 
       queryClient.invalidateQueries({
         queryKey: getBalanceQueryKey([client.key]),
