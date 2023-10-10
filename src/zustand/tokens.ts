@@ -8,26 +8,51 @@ type Token = {
   removed: boolean
 }
 
+type TokensKey = string
+
 export type TokensState = {
-  tokens: Record<Address, Token[]>
+  tokens: Record<TokensKey, Token[]>
 }
 export type TokensActions = {
-  addToken: (tokenAddress: Address, address: Address) => void
-  removeToken: (tokenAddress: Address, address: Address) => void
-  syncTokens: (tokenAddresses: Address[], address: Address) => void
+  addToken: (parameters: {
+    accountAddress: Address
+    tokenAddress: Address
+    rpcUrl: string
+  }) => void
+  removeToken: (parameters: {
+    accountAddress: Address
+    tokenAddress: Address
+    rpcUrl: string
+  }) => void
+  syncTokens: (parameters: {
+    accountAddress: Address
+    tokenAddresses: Address[]
+    rpcUrl: string
+  }) => void
 }
 export type TokensStore = TokensState & TokensActions
+
+export function getTokensKey(args: {
+  accountAddress: Address
+  rpcUrl: string
+}): TokensKey {
+  const { accountAddress, rpcUrl } = args
+  return `${rpcUrl}-${accountAddress}`.replace(/\./g, '-')
+}
 
 export const tokensStore = createStore<TokensStore>(
   (set) => ({
     tokens: {},
-    addToken(tokenAddress: Address, accountAddress: Address) {
+    addToken(args) {
+      const { accountAddress, tokenAddress, rpcUrl } = args
+      const key = getTokensKey({ accountAddress, rpcUrl })
+
       set((state) => {
         const tokens = { ...state.tokens }
-        tokens[accountAddress] = uniqBy(
+        tokens[key] = uniqBy(
           [
             { address: tokenAddress, removed: false },
-            ...(state.tokens[accountAddress] || []),
+            ...(state.tokens[key] || []),
           ],
           (x) => x.address,
         )
@@ -38,36 +63,40 @@ export const tokensStore = createStore<TokensStore>(
         }
       })
     },
-    removeToken(tokenAddress: Address, accountAddress: Address) {
+    removeToken(args) {
+      const { accountAddress, tokenAddress, rpcUrl } = args
+      const key = getTokensKey({ accountAddress, rpcUrl })
+
       set((state) => {
         const tokens = { ...state.tokens }
-        tokens[accountAddress] = (state.tokens[accountAddress] || []).map(
-          (token) => {
-            if (token.address === tokenAddress)
-              return {
-                ...token,
-                removed: true,
-              }
-            return token
-          },
-        )
+        tokens[key] = (state.tokens[key] || []).map((token) => {
+          if (token.address === tokenAddress)
+            return {
+              ...token,
+              removed: true,
+            }
+          return token
+        })
         return {
           ...state,
           tokens,
         }
       })
     },
-    syncTokens(tokenAddresses: Address[], accountAddress: Address) {
+    syncTokens(args) {
+      const { accountAddress, tokenAddresses, rpcUrl } = args
+      const key = getTokensKey({ accountAddress, rpcUrl })
+
       set((state) => {
         const tokens = { ...state.tokens }
 
         for (const tokenAddress of tokenAddresses) {
-          const exists = (tokens[accountAddress] || []).some(
+          const exists = (tokens[key] || []).some(
             (x) => x.address === tokenAddress,
           )
           if (!exists)
-            tokens[accountAddress] = [
-              ...(tokens[accountAddress] || []),
+            tokens[key] = [
+              ...(tokens[key] || []),
               {
                 address: tokenAddress,
                 removed: false,
