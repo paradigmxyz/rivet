@@ -73,7 +73,6 @@ export default function OnboardingConfigure() {
         rpcUrl: defaultNetwork.rpcUrl,
         network: {
           blockTime: Number(values.blockTime),
-          forkBlockNumber: BigInt(values.forkBlockNumber),
           chainId: Number(values.chainId),
           name: values.networkName,
           rpcUrl,
