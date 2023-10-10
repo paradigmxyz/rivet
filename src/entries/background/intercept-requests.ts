@@ -132,7 +132,7 @@ function isJsonRpcRequest(details: chrome.webRequest.WebRequestBodyDetails) {
     } catch {}
   })()
   const request = Array.isArray(json) ? json[0] : json
-  const isJsonRpcRequest = request?.jsonrpc === '2.0'
+  const isJsonRpcRequest = (request as { jsonrpc: string }).jsonrpc === '2.0'
   if (!isJsonRpcRequest) return false
   return true
 }
