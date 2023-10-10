@@ -1,7 +1,16 @@
 {
   "$schema": "https://biomejs.dev/schemas/1.0.0/schema.json",
   "files": {
-    "ignore": ["node_modules", "public", "dist", "symbols/generated"]
+    "ignore": [
+      "node_modules",
+      "public",
+      "dist",
+      "contracts/cache",
+      "contracts/out",
+      "contracts/generated",
+      "keys.json",
+      "symbols/generated"
+    ]
   },
   "formatter": {
     "enabled": true,
