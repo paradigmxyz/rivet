@@ -56,7 +56,7 @@ function createWebextStorage({
       const result = await storage.get(getKey(key))
       const value = result[getKey(key)]
       try {
-        return value ? JSON.parse(value, reviver) : defaultState
+        return value ? (JSON.parse(value, reviver) as any) : defaultState
       } catch (error) {
         console.warn(error)
         return defaultState

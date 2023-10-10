@@ -39,7 +39,7 @@ function createWindowStorage({
     getItem(key, defaultValue = null) {
       const value = storage.getItem(getKey(key))
       try {
-        return value ? JSON.parse(value, reviver) : defaultValue
+        return value ? (JSON.parse(value, reviver) as any) : defaultValue
       } catch (error) {
         console.warn(error)
         return defaultValue

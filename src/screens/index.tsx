@@ -1,8 +1,6 @@
 import * as Tabs from '@radix-ui/react-tabs'
-import { useVirtualizer } from '@tanstack/react-virtual'
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useInView } from 'react-intersection-observer'
 import { Link, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
@@ -17,9 +15,11 @@ import {
 import {
   Container,
   LabelledContent,
+  LoadMore,
   TabsContent,
   TabsList,
   Tooltip,
+  useVirtualList,
 } from '~/components'
 import * as Form from '~/components/form'
 import { Spinner } from '~/components/svgs'
@@ -58,6 +58,7 @@ import {
 } from '~/zustand'
 import type { Account } from '~/zustand/account'
 
+import { useSearchParamsState } from '../hooks/useSearchParamsState'
 import OnboardingStart from './onboarding/start'
 
 export default function Index() {
@@ -396,12 +397,10 @@ function Nonce({ address }: { address?: Address }) {
 
 function Blocks() {
   const { data: pendingBlock } = usePendingBlock()
-  const {
-    data: infiniteBlocks,
-    fetchNextPage,
-    isFetching,
-    isFetchingNextPage,
-  } = useInfiniteBlocks()
+
+  const query = useInfiniteBlocks()
+  const { data: infiniteBlocks } = query
+
   const blocks = [
     { block: pendingBlock, status: 'pending' },
     ...(infiniteBlocks?.pages
@@ -409,61 +408,93 @@ function Blocks() {
       ?.map((block) => ({ block, status: 'mined' })) || []),
   ]
 
-  const parentRef = useRef<HTMLDivElement>(null)
-  const virtualizer = useVirtualizer({
-    count: blocks.length,
-    getScrollElement: () => parentRef.current!,
-    estimateSize: () => 40,
+  const VirtualList = useVirtualList({
+    layout: useMemo(
+      () => [
+        { size: 24, sticky: true, type: 'header' },
+        ...blocks.map(
+          (_, index) =>
+            ({
+              index,
+              size: 32,
+              type: 'item',
+            }) as const,
+        ),
+        { size: 40, type: 'load-more' },
+      ],
+      [blocks],
+    ),
   })
 
-  const { position, setPosition } = useScrollPositionStore()
-  useEffect(() => {
-    parentRef.current?.scrollTo({ top: position })
-  }, [position])
-
-  const { ref, inView } = useInView()
-  useEffect(() => {
-    if (isFetching) return
-    if (isFetchingNextPage) return
-    if (inView) fetchNextPage()
-  }, [fetchNextPage, inView, isFetching, isFetchingNextPage])
-
   return (
-    <Box
-      ref={parentRef}
-      marginHorizontal="-8px"
-      style={{ height: '100%', overflowY: 'scroll' }}
-    >
-      <Box
-        position="relative"
-        width="full"
-        style={{
-          height: `${virtualizer.getTotalSize()}px`,
-        }}
-      >
-        {virtualizer.getVirtualItems().map(({ key, index, size, start }) => {
-          const { block, status } = blocks[index] || {}
-          if (!block) return
-          return (
-            <Link
-              onClick={() => setPosition(parentRef.current?.scrollTop!)}
-              to={`block/${block.number}?status=${status}`}
-              key={key}
-            >
-              <VirtualItem size={size} start={start}>
-                <Box
-                  backgroundColor={{ hover: 'surface/fill/quarternary' }}
-                  paddingHorizontal="8px"
-                  paddingVertical="8px"
-                >
-                  <Inline wrap={false}>
-                    <LabelledContent label="Block">
-                      <Box style={{ width: '80px' }}>
+    <VirtualList.Wrapper marginHorizontal="-8px">
+      <VirtualList>
+        {({ getLayoutItem, items }) =>
+          items.map((item) => {
+            const layoutItem = getLayoutItem(item.index)
+
+            if (layoutItem.type === 'header')
+              return (
+                <VirtualList.Item {...item}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    height="full"
+                    paddingHorizontal="8px"
+                    width="full"
+                  >
+                    <Columns alignHorizontal="justify" gap="4px" width="full">
+                      <Column width="1/4" alignVertical="center">
+                        <Text color="text/tertiary" size="9px" wrap={false}>
+                          BLOCK
+                        </Text>
+                      </Column>
+                      <Column alignVertical="center">
+                        <Text color="text/tertiary" size="9px" wrap={false}>
+                          TIMESTAMP
+                        </Text>
+                      </Column>
+                      <Column alignVertical="center">
+                        <Text color="text/tertiary" size="9px" wrap={false}>
+                          TRANSACTIONS
+                        </Text>
+                      </Column>
+                    </Columns>
+                  </Box>
+                  <Separator />
+                </VirtualList.Item>
+              )
+
+            if (layoutItem.type === 'load-more')
+              return (
+                <VirtualList.Item {...item}>
+                  <LoadMore query={query}>
+                    <Inset space="8px">
+                      <Text color="text/tertiary">Loading...</Text>
+                    </Inset>
+                  </LoadMore>
+                </VirtualList.Item>
+              )
+
+            const { block, status } = blocks[layoutItem.index ?? 0] || {}
+            if (!block) return
+            return (
+              <VirtualList.Item {...item}>
+                <VirtualList.Link to={`block/${block.number}?status=${status}`}>
+                  <Box marginHorizontal="-8px">
+                    <Separator />
+                  </Box>
+                  <Box
+                    backgroundColor={{ hover: 'surface/fill/quarternary' }}
+                    paddingHorizontal="8px"
+                    paddingVertical="8px"
+                    height="full"
+                  >
+                    <Columns alignHorizontal="justify" gap="4px" width="full">
+                      <Column width="1/4" alignVertical="center">
                         <Text size="12px">{block.number!.toString()}</Text>
-                      </Box>
-                    </LabelledContent>
-                    <LabelledContent label="Timestamp">
-                      <Box style={{ width: '148px' }}>
+                      </Column>
+                      <Column alignVertical="center">
                         {status === 'pending' ? (
                           <Text color="text/tertiary" size="12px">
                             Pending
@@ -475,31 +506,21 @@ function Blocks() {
                             ).toLocaleString()}
                           </Text>
                         )}
-                      </Box>
-                    </LabelledContent>
-                    <LabelledContent label="Transactions">
-                      <Text size="12px">
-                        {block.transactions.length || '0'}
-                      </Text>
-                    </LabelledContent>
-                  </Inline>
-                </Box>
-                <Box marginHorizontal="-8px">
-                  <Separator />
-                </Box>
-              </VirtualItem>
-            </Link>
-          )
-        })}
-      </Box>
-      <Inset space="12px">
-        <Box ref={ref}>
-          {(isFetching || isFetchingNextPage) && (
-            <Text color="text/tertiary">Loading...</Text>
-          )}
-        </Box>
-      </Inset>
-    </Box>
+                      </Column>
+                      <Column alignVertical="center">
+                        <Text size="12px">
+                          {block.transactions.length || '0'}
+                        </Text>
+                      </Column>
+                    </Columns>
+                  </Box>
+                </VirtualList.Link>
+              </VirtualList.Item>
+            )
+          })
+        }
+      </VirtualList>
+    </VirtualList.Wrapper>
   )
 }
 
@@ -512,13 +533,10 @@ const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
 
 function Transactions() {
   const { data: pendingTransactions } = usePendingTransactions()
-  const {
-    data: infiniteBlockTransactions,
-    fetchNextPage,
-    isFetching,
-    isFetchingNextPage,
-    isFetched,
-  } = useInfiniteBlockTransactions()
+
+  const query = useInfiniteBlockTransactions()
+  const { data: infiniteBlockTransactions, isFetched } = query
+
   const blockTransactions = useMemo(
     () => [
       ...(pendingTransactions?.map((transaction) => ({
@@ -535,7 +553,7 @@ function Transactions() {
     [pendingTransactions, infiniteBlockTransactions],
   )
 
-  const [searchText, setSearchText] = useState('')
+  const [searchText, setSearchText] = useSearchParamsState('searchText', '')
   const debouncedSearchText = useDebounce(searchText)
 
   const { data: transaction, isLoading } = useTransaction({
@@ -568,43 +586,43 @@ function Transactions() {
 
   const isEmpty = isFetched && transactions.length === 0
 
-  const parentRef = useRef<HTMLDivElement>(null)
-  const virtualizer = useVirtualizer({
-    count: transactions.length + (isLoading || isEmpty ? 2 : 1),
-    getScrollElement: () => parentRef.current!,
-    estimateSize: () => 40,
+  const VirtualList = useVirtualList({
+    layout: useMemo(
+      () => [
+        { size: 40, sticky: Boolean(debouncedSearchText), type: 'search' },
+        { size: 24, sticky: true, type: 'header' },
+        isLoading ? { size: 40, type: 'loading' } : undefined,
+        isEmpty ? { size: 40, type: 'empty' } : undefined,
+        ...transactions.map(
+          (_, index) =>
+            ({
+              index,
+              size: 32,
+              type: 'item',
+            }) as const,
+        ),
+        !debouncedSearchText ? { size: 40, type: 'load-more' } : undefined,
+      ],
+      [isLoading, isEmpty, transactions, debouncedSearchText],
+    ),
   })
 
-  const { position, setPosition } = useScrollPositionStore()
+  // Preserve input focus when searching.
+  const inputRef = useRef<HTMLInputElement>(null)
   useEffect(() => {
-    parentRef.current?.scrollTo({ top: position })
-  }, [position])
-
-  const { ref, inView } = useInView()
-  useEffect(() => {
-    if (isFetching) return
-    if (isFetchingNextPage) return
-    if (inView) fetchNextPage()
-  }, [fetchNextPage, inView, isFetching, isFetchingNextPage])
+    if (debouncedSearchText) inputRef.current?.focus()
+  }, [debouncedSearchText])
 
   return (
-    <>
-      <Box
-        ref={parentRef}
-        marginHorizontal="-8px"
-        style={{ height: '100%', overflowY: 'scroll' }}
-      >
-        <Box
-          position="relative"
-          width="full"
-          style={{
-            height: `${virtualizer.getTotalSize()}px`,
-          }}
-        >
-          {virtualizer.getVirtualItems().map(({ key, index, size, start }) => {
-            if (index === 0) {
+    <VirtualList.Wrapper marginHorizontal="-8px">
+      <VirtualList>
+        {({ getLayoutItem, items }) =>
+          items.map((item) => {
+            const layoutItem = getLayoutItem(item.index)
+
+            if (layoutItem.type === 'search')
               return (
-                <VirtualItem key={key} size={size} start={start}>
+                <VirtualList.Item {...item}>
                   <Box
                     display="flex"
                     alignItems="center"
@@ -612,30 +630,84 @@ function Transactions() {
                     paddingHorizontal="8px"
                   >
                     <Input
+                      ref={inputRef}
                       height="24px"
                       onChange={(e) => setSearchText(e.target.value)}
-                      placeholder="Search by transaction hash..."
+                      placeholder="Search by transaction hash or address..."
                       value={searchText}
                     />
                   </Box>
-                </VirtualItem>
+                </VirtualList.Item>
               )
-            }
-            if (index === 1) {
-              if (isLoading)
-                return (
-                  <VirtualItem key={key} size={size} start={start}>
-                    <Box display="flex" height="full" padding="8px">
-                      <Text color="text/secondary" size="14px">
-                        Loading...
-                      </Text>
-                    </Box>
-                  </VirtualItem>
-                )
-              if (isEmpty)
-                return (
-                  <VirtualItem key={key} size={size} start={start}>
-                    <Box display="flex" height="full" padding="8px">
+
+            if (layoutItem.type === 'header')
+              return (
+                <VirtualList.Item {...item}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    height="full"
+                    paddingHorizontal="8px"
+                    width="full"
+                  >
+                    <Columns alignHorizontal="justify" gap="4px" width="full">
+                      <Column alignVertical="center">
+                        <Text color="text/tertiary" size="9px" wrap={false}>
+                          BLOCK
+                        </Text>
+                      </Column>
+                      <Column alignVertical="center">
+                        <Text color="text/tertiary" size="9px" wrap={false}>
+                          FROM
+                        </Text>
+                      </Column>
+                      <Column alignVertical="center">
+                        <Text color="text/tertiary" size="9px" wrap={false}>
+                          TO
+                        </Text>
+                      </Column>
+                      <Column alignVertical="center">
+                        <Text
+                          align="right"
+                          color="text/tertiary"
+                          size="9px"
+                          wrap={false}
+                        >
+                          VALUE
+                        </Text>
+                      </Column>
+                    </Columns>
+                  </Box>
+                  <Separator />
+                </VirtualList.Item>
+              )
+
+            if (layoutItem.type === 'loading')
+              return (
+                <VirtualList.Item {...item}>
+                  <Box
+                    display="flex"
+                    height="full"
+                    padding="8px"
+                    paddingVertical="12px"
+                  >
+                    <Text color="text/secondary" size="14px">
+                      Loading...
+                    </Text>
+                  </Box>
+                </VirtualList.Item>
+              )
+
+            if (layoutItem.type === 'empty')
+              return (
+                <VirtualList.Item {...item}>
+                  <Box
+                    display="flex"
+                    height="full"
+                    padding="8px"
+                    paddingVertical="12px"
+                  >
+                    {debouncedSearchText ? (
                       <Text color="text/secondary" size="14px">
                         No transactions found by search text "
                         <Text color="text" wrap="anywhere">
@@ -643,20 +715,32 @@ function Transactions() {
                         </Text>
                         ".
                       </Text>
-                    </Box>
-                  </VirtualItem>
-                )
-            }
+                    ) : (
+                      <Text color="text/secondary" size="14px">
+                        No transactions found.
+                      </Text>
+                    )}
+                  </Box>
+                </VirtualList.Item>
+              )
 
-            const { transaction, status } = transactions[index - 1] || {}
+            if (layoutItem.type === 'load-more')
+              return (
+                <VirtualList.Item {...item}>
+                  <LoadMore query={query}>
+                    <Inset space="8px">
+                      <Text color="text/tertiary">Loading...</Text>
+                    </Inset>
+                  </LoadMore>
+                </VirtualList.Item>
+              )
+
+            const { transaction, status } =
+              transactions[layoutItem.index ?? 0] || {}
             if (!transaction || typeof transaction === 'string') return
             return (
-              <Link
-                key={key}
-                onClick={() => setPosition(parentRef.current?.scrollTop!)}
-                to={`/transaction/${transaction.hash}`}
-              >
-                <VirtualItem size={size} start={start}>
+              <VirtualList.Item {...item}>
+                <VirtualList.Link to={`/transaction/${transaction.hash}`}>
                   <Box marginHorizontal="-8px">
                     <Separator />
                   </Box>
@@ -664,93 +748,57 @@ function Transactions() {
                     backgroundColor={{ hover: 'surface/fill/quarternary' }}
                     paddingHorizontal="8px"
                     paddingVertical="8px"
+                    height="full"
                   >
                     <Columns gap="6px" alignVertical="center">
-                      <LabelledContent label="Block">
-                        <Inline alignVertical="center" gap="4px" wrap={false}>
-                          <Text size="12px">
-                            {transaction.blockNumber?.toString()}
-                          </Text>
-                          {status === 'pending' && (
-                            <SFSymbol
-                              color="text/tertiary"
-                              size="11px"
-                              symbol="clock"
-                              weight="semibold"
-                            />
-                          )}
-                        </Inline>
-                      </LabelledContent>
-                      <LabelledContent label="From">
-                        <Tooltip label={transaction.from}>
+                      <Inline alignVertical="center" gap="4px" wrap={false}>
+                        <Text size="12px">
+                          {transaction.blockNumber?.toString()}
+                        </Text>
+                        {status === 'pending' && (
+                          <SFSymbol
+                            color="text/tertiary"
+                            size="11px"
+                            symbol="clock"
+                            weight="semibold"
+                          />
+                        )}
+                      </Inline>
+                      <Column alignVertical="center">
+                        <Tooltip side="bottom" label={transaction.from}>
                           <Text.Truncated size="12px">
                             {transaction.from}
                           </Text.Truncated>
                         </Tooltip>
-                      </LabelledContent>
-                      <LabelledContent label="To">
-                        <Tooltip label={transaction.to}>
+                      </Column>
+                      <Column alignVertical="center">
+                        <Tooltip side="bottom" label={transaction.to}>
                           <Text.Truncated size="12px">
                             {transaction.to}
                           </Text.Truncated>
                         </Tooltip>
-                      </LabelledContent>
-                      <Column>
-                        <Box
-                          display="flex"
-                          alignItems="flex-end"
-                          justifyContent="flex-end"
+                      </Column>
+                      <Column alignVertical="center">
+                        <Text
+                          align="right"
+                          wrap={false}
+                          size="12px"
+                          width="full"
                         >
-                          <LabelledContent label="Value">
-                            <Text wrap={false} size="12px">
-                              {numberIntl4SigFigs.format(
-                                Number(formatEther(transaction.value!)),
-                              )}{' '}
-                              <Text color="text/tertiary">ETH</Text>
-                            </Text>
-                          </LabelledContent>
-                        </Box>
+                          {numberIntl4SigFigs.format(
+                            Number(formatEther(transaction.value!)),
+                          )}{' '}
+                          <Text color="text/tertiary">ETH</Text>
+                        </Text>
                       </Column>
                     </Columns>
                   </Box>
-                </VirtualItem>
-              </Link>
+                </VirtualList.Link>
+              </VirtualList.Item>
             )
-          })}
-        </Box>
-        {!debouncedSearchText && (
-          <Inset space="12px">
-            <Box ref={ref}>
-              {(isFetching || isFetchingNextPage) && (
-                <Text color="text/tertiary">Loading...</Text>
-              )}
-            </Box>
-          </Inset>
-        )}
-      </Box>
-    </>
-  )
-}
-
-function VirtualItem({
-  children,
-  size,
-  start,
-  ...props
-}: { children: React.ReactNode; size: number; start: number }) {
-  return (
-    <Box
-      position="absolute"
-      top="0px"
-      left="0px"
-      width="full"
-      style={{
-        height: `${size}px`,
-        transform: `translateY(${start}px)`,
-      }}
-      {...props}
-    >
-      {children}
-    </Box>
+          })
+        }
+      </VirtualList>
+    </VirtualList.Wrapper>
   )
 }

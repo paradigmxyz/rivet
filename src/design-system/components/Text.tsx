@@ -107,6 +107,7 @@ export const TextBase = forwardRef<HTMLDivElement, TextProps>(
       style,
       tabular = false,
       weight = 'regular',
+      width,
       wrap = 'break-word',
       testId,
     }: TextProps,
@@ -122,6 +123,7 @@ export const TextBase = forwardRef<HTMLDivElement, TextProps>(
         size={size}
         style={style}
         weight={weight}
+        width={width}
         testId={testId}
       >
         <Box
