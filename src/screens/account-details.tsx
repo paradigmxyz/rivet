@@ -29,6 +29,7 @@ import {
   Stack,
   Text,
 } from '~/design-system'
+import { useAccountTokens } from '~/hooks/useAccountTokens'
 import { useErc20Balance } from '~/hooks/useErc20Balance'
 import { useErc20Metadata } from '~/hooks/useErc20Metadata'
 import { useSetErc20Balance } from '~/hooks/useSetErc20Balance'
@@ -89,6 +90,8 @@ export default function AccountDetails() {
 }
 
 function Tokens({ accountAddress }: { accountAddress: Address }) {
+  useAccountTokens({ address: accountAddress })
+
   const { tokens } = useTokensStore()
 
   if (!accountAddress) return null
@@ -117,13 +120,15 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
         <Separator />
       </Bleed>
       {/* TODO: Handle empty state. */}
-      {tokens[accountAddress]?.map((tokenAddress) => (
-        <TokenRow
-          accountAddress={accountAddress}
-          tokenAddress={tokenAddress}
-          key={tokenAddress}
-        />
-      ))}
+      {tokens[accountAddress]?.map(({ address: tokenAddress, removed }) =>
+        !removed ? (
+          <TokenRow
+            accountAddress={accountAddress}
+            tokenAddress={tokenAddress}
+            key={tokenAddress}
+          />
+        ) : null,
+      )}
     </Inset>
   )
 }
@@ -185,12 +190,18 @@ function TokenRow({
   })
 
   useEffect(() => {
-    if (balanceError) toast.error((balanceError as BaseError).shortMessage)
-  }, [balanceError])
+    if (balanceError) {
+      toast.error((balanceError as BaseError).shortMessage)
+      removeToken(tokenAddress, accountAddress)
+    }
+  }, [balanceError, tokenAddress, accountAddress, removeToken])
 
   useEffect(() => {
-    if (metadataError) toast.error((metadataError as BaseError).shortMessage)
-  }, [metadataError])
+    if (metadataError) {
+      toast.error((metadataError as BaseError).shortMessage)
+      removeToken(tokenAddress, accountAddress)
+    }
+  }, [metadataError, tokenAddress, accountAddress, removeToken])
 
   const isLoading = !data
   const { name, symbol, decimals } = data || {}
@@ -216,7 +227,7 @@ function TokenRow({
                 </Row>
                 <Row>
                   <Inline>
-                    <Box paddingRight="16px" style={{ maxWidth: '140px' }}>
+                    <Box paddingRight="16px" style={{ width: '160px' }}>
                       <Tooltip label={tokenAddress}>
                         <Text.Truncated color="text/tertiary" size="11px">
                           {tokenAddress}
@@ -225,7 +236,10 @@ function TokenRow({
                     </Box>
                     {symbol && (
                       <Box position="relative">
-                        <Box position="absolute" style={{ left: 4, top: -2.5 }}>
+                        <Box
+                          position="absolute"
+                          style={{ left: -10, top: -2.5 }}
+                        >
                           <Box
                             borderWidth="1px"
                             borderColor="surface/invert@0.2"

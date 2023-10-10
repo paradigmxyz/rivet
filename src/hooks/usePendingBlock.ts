@@ -1,5 +1,5 @@
 import { type InfiniteData, useQuery } from '@tanstack/react-query'
-import type { Block, Client, Transaction } from 'viem'
+import { type Block, type Client, type Transaction } from 'viem'
 
 import {
   createQueryKey,
@@ -8,6 +8,7 @@ import {
 } from '~/react-query'
 import { useNetworkStore } from '~/zustand'
 
+import { getAccountTokensQueryKey } from './useAccountTokens'
 import { getBalanceQueryKey } from './useBalance'
 import { getBlockQueryKey } from './useBlock'
 import { useClient } from './useClient'
@@ -53,6 +54,9 @@ export function usePendingBlockQueryOptions({
       )
         return prevBlock || null
 
+      queryClient.invalidateQueries({
+        queryKey: getAccountTokensQueryKey([client.key]),
+      })
       queryClient.invalidateQueries({
         queryKey: getBalanceQueryKey([client.key]),
       })

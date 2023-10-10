@@ -36,14 +36,33 @@ export function useNetworkStatus({
       try {
         const chainId = await client.getChainId()
         const network = networks.find((x) => x.rpcUrl === client.key)
-        if (
-          network &&
-          chainId &&
-          network.rpcUrl === client.key &&
-          network.chainId !== chainId
-        ) {
-          upsertNetwork({ rpcUrl, network: { chainId } })
+
+        if (network) {
+          let updatedNetwork = {}
+
+          // If chain becomes out of sync, update to the new chain.
+          if (
+            chainId &&
+            network.rpcUrl === client.key &&
+            network.chainId !== chainId
+          )
+            updatedNetwork = { ...updatedNetwork, chainId }
+
+          // If there is no fork block number, update to the current block number.
+          if (typeof network.forkBlockNumber !== 'bigint') {
+            updatedNetwork = {
+              ...updatedNetwork,
+              forkBlockNumber: await client.getBlockNumber(),
+            }
+          }
+
+          if (Object.keys(updatedNetwork).length > 0)
+            upsertNetwork({
+              network: updatedNetwork,
+              rpcUrl: client.key,
+            })
         }
+
         return chainId
       } catch {
         return false

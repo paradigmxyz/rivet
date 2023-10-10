@@ -222,7 +222,7 @@ function SyncNetwork() {
   const prevListening = usePrevious(listening)
   useEffect(() => {
     // Reset stale queries that are dependent on the client when node comes back online.
-    if (!prevListening && listening) {
+    if (prevListening === false && listening) {
       queryClient.removeQueries({
         predicate(query) {
           return query.queryKey.includes(client.key)
