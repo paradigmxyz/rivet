@@ -18,7 +18,7 @@ export function useInfiniteBlockTransactionsQueryOptions() {
 
   return {
     enabled: Boolean(block?.number),
-    defaultPageParam: 0,
+    initialPageParam: 0,
     getNextPageParam: (_: unknown, pages: unknown[]) => pages.length,
     queryKey: getInfiniteBlockTransactionsQueryKey([client.key]),
     async queryFn({ pageParam }: { pageParam: number }) {
