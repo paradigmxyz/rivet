@@ -1,6 +1,6 @@
 {
   "name": "rivet",
-  "version": "0.0.4",
+  "version": "0.0.0-nightly.ff15804",
   "private": true,
   "extension": {
     "name": "Rivet",
