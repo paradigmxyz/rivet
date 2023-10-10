@@ -6,6 +6,7 @@ import { createQueryKey } from '~/react-query'
 import type { Client } from '~/viem'
 import { useNetworkStore, useTokensStore } from '~/zustand'
 
+import { useCallback, useMemo } from 'react'
 import { useClient } from './useClient'
 
 type UseAccountTokensParameters = {
@@ -42,5 +43,31 @@ export function useAccountTokensQueryOptions(args: UseAccountTokensParameters) {
 
 export function useAccountTokens(args: UseAccountTokensParameters) {
   const queryOptions = useAccountTokensQueryOptions(args)
-  return useQuery(queryOptions)
+  const tokensStore = useTokensStore()
+
+  const addToken = useCallback(
+    (address: Address) =>
+      args.address ? tokensStore.addToken(address, args.address) : undefined,
+    [args.address, tokensStore.addToken],
+  )
+  const removeToken = useCallback(
+    (address: Address) =>
+      args.address ? tokensStore.removeToken(address, args.address) : undefined,
+    [args.address, tokensStore.removeToken],
+  )
+  const tokens = useMemo(
+    () =>
+      args.address
+        ? tokensStore.tokens[args.address]
+            ?.map((token) => (!token.removed ? token.address : undefined))
+            .filter(Boolean)
+        : [],
+    [args.address, tokensStore.tokens],
+  )
+
+  return Object.assign(useQuery(queryOptions), {
+    addToken,
+    removeToken,
+    tokens,
+  })
 }

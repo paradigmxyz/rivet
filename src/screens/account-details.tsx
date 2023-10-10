@@ -33,7 +33,6 @@ import { useAccountTokens } from '~/hooks/useAccountTokens'
 import { useErc20Balance } from '~/hooks/useErc20Balance'
 import { useErc20Metadata } from '~/hooks/useErc20Metadata'
 import { useSetErc20Balance } from '~/hooks/useSetErc20Balance'
-import { useTokensStore } from '~/zustand/tokens'
 
 export default function AccountDetails() {
   const { address } = useParams()
@@ -90,9 +89,7 @@ export default function AccountDetails() {
 }
 
 function Tokens({ accountAddress }: { accountAddress: Address }) {
-  useAccountTokens({ address: accountAddress })
-
-  const { tokens } = useTokensStore()
+  const { tokens } = useAccountTokens({ address: accountAddress })
 
   if (!accountAddress) return null
   return (
@@ -120,21 +117,19 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
         <Separator />
       </Bleed>
       {/* TODO: Handle empty state. */}
-      {tokens[accountAddress]?.map(({ address: tokenAddress, removed }) =>
-        !removed ? (
-          <TokenRow
-            accountAddress={accountAddress}
-            tokenAddress={tokenAddress}
-            key={tokenAddress}
-          />
-        ) : null,
-      )}
+      {tokens?.map((tokenAddress) => (
+        <TokenRow
+          accountAddress={accountAddress}
+          tokenAddress={tokenAddress}
+          key={tokenAddress}
+        />
+      ))}
     </Inset>
   )
 }
 
 function ImportToken({ accountAddress }: { accountAddress: Address }) {
-  const { addToken } = useTokensStore()
+  const { addToken } = useAccountTokens({ address: accountAddress })
 
   const { handleSubmit, register, reset } = useForm<{ address: string }>({
     defaultValues: {
@@ -150,7 +145,7 @@ function ImportToken({ accountAddress }: { accountAddress: Address }) {
         return
       }
 
-      addToken(address as Address, accountAddress)
+      addToken(address)
     } finally {
       reset()
     }
@@ -178,7 +173,7 @@ function TokenRow({
   accountAddress,
   tokenAddress,
 }: { accountAddress: Address; tokenAddress: Address }) {
-  const { removeToken } = useTokensStore()
+  const { removeToken } = useAccountTokens({ address: accountAddress })
 
   const { data: balance, error: balanceError } = useErc20Balance({
     address: accountAddress,
@@ -192,16 +187,16 @@ function TokenRow({
   useEffect(() => {
     if (balanceError) {
       toast.error((balanceError as BaseError).shortMessage)
-      removeToken(tokenAddress, accountAddress)
+      removeToken(tokenAddress)
     }
-  }, [balanceError, tokenAddress, accountAddress, removeToken])
+  }, [balanceError, tokenAddress, removeToken])
 
   useEffect(() => {
     if (metadataError) {
       toast.error((metadataError as BaseError).shortMessage)
-      removeToken(tokenAddress, accountAddress)
+      removeToken(tokenAddress)
     }
-  }, [metadataError, tokenAddress, accountAddress, removeToken])
+  }, [metadataError, tokenAddress, removeToken])
 
   const isLoading = !data
   const { name, symbol, decimals } = data || {}
@@ -274,7 +269,7 @@ function TokenRow({
                 variant="ghost red"
                 onClick={(e) => {
                   e.stopPropagation()
-                  removeToken(tokenAddress, accountAddress)
+                  removeToken(tokenAddress)
                 }}
               />
             </Column>
