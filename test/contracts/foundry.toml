@@ -1,8 +1,10 @@
 [profile.default]
 src = 'src'
 solc_version = "0.8.18"
+libs = ['../../node_modules']
 
 ignored_error_codes = ["license", "unused-param", "unused-var"]
+
 
 [fmt]
 line_length = 80

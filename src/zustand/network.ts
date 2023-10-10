@@ -9,7 +9,7 @@ import { createStore } from './utils'
 type RpcUrl = string
 export type Network = {
   blockTime: number
-  forkBlockNumber: bigint
+  forkBlockNumber?: bigint
   chainId: number
   name: string
   rpcUrl: RpcUrl
@@ -36,7 +36,7 @@ export type NetworkStore = NetworkState & NetworkActions
 
 export const defaultNetwork = {
   blockTime: 0,
-  forkBlockNumber: 0n,
+  forkBlockNumber: undefined,
   chainId: -1,
   name: '',
   rpcUrl: '',
@@ -92,6 +92,12 @@ export const networkStore = createStore<NetworkStore>(
       })()
       const forkBlockNumber = await (async () => {
         if (network_.forkBlockNumber) return network_.forkBlockNumber
+
+        const network = get().networks.find(
+          (network) => network.rpcUrl === rpcUrl,
+        )
+        if (network?.forkBlockNumber) return network.forkBlockNumber
+
         try {
           return await getClient({
             rpcUrl,

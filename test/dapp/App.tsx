@@ -39,7 +39,8 @@ import {
   Text,
 } from '~/design-system'
 import type { Client } from '~/viem'
-import { Playground } from '../contracts/generated'
+
+import { MockERC20, MockERC721, Playground } from '../contracts/generated'
 
 const store = createStore()
 
@@ -99,9 +100,17 @@ export default function App() {
           <SignMessage />
           <SignTypedData />
           <Text weight="semibold" size="22px">
-            Misc.
+            Contract: Playground.sol
           </Text>
-          <WriteContract />
+          <ContractPlayground />
+          <Text weight="semibold" size="22px">
+            Contract: MockERC20.sol
+          </Text>
+          <ContractMockERC20 />
+          <Text weight="semibold" size="22px">
+            Contract: MockERC721.sol
+          </Text>
+          <ContractMockERC721 />
         </Stack>
       </Box>
     </Context.Provider>
@@ -533,15 +542,29 @@ function SignTypedData() {
   )
 }
 
-function WriteContract() {
+function ContractPlayground() {
   const { client } = useContext(Context)
 
-  const test_1 = async (e: React.FormEvent) => {
+  const [deployedAddress, setDeployedAddress] = useState<Hex | null>(null)
+
+  const deploy = async () => {
+    const [address] = await client.getAddresses()
+    const hash = await client.deployContract({
+      abi: Playground.abi,
+      bytecode: Playground.bytecode.object,
+      account: address,
+      chain: null,
+    })
+    const transaction = await client.getTransactionReceipt({ hash })
+    setDeployedAddress(transaction.contractAddress)
+  }
+
+  const test_rivet_1 = async (e: React.FormEvent) => {
     e.preventDefault()
     const [address] = await client.getAddresses()
     await client.writeContract({
       abi: Playground.abi,
-      address: '0x6345e50859b0Ce82D8A495ba9894C6C81de385F3',
+      address: deployedAddress!,
       account: address,
       chain: null,
       functionName: 'test_rivet_1',
@@ -549,12 +572,12 @@ function WriteContract() {
     })
   }
 
-  const test_2 = async (e: React.FormEvent) => {
+  const approve = async (e: React.FormEvent) => {
     e.preventDefault()
     const [address] = await client.getAddresses()
     await client.writeContract({
       abi: Playground.abi,
-      address: '0x6345e50859b0Ce82D8A495ba9894C6C81de385F3',
+      address: deployedAddress!,
       account: address,
       chain: null,
       functionName: 'approve',
@@ -562,24 +585,112 @@ function WriteContract() {
     })
   }
 
+  if (!deployedAddress)
+    return (
+      <Button onClick={deploy} width="fit">
+        deploy
+      </Button>
+    )
   return (
     <Stack gap="12px">
-      <Text size="18px" weight="semibold">
-        write: test_rivet_1
-      </Text>
-      <Inline wrap={false} gap="12px">
-        <Button onClick={test_1} width="fit">
-          Write
-        </Button>
-      </Inline>
-      <Text size="18px" weight="semibold">
-        write: approve
-      </Text>
-      <Inline wrap={false} gap="12px">
-        <Button onClick={test_2} width="fit">
-          Write
-        </Button>
-      </Inline>
+      <Button onClick={test_rivet_1} width="fit">
+        test_rivet_1
+      </Button>
+      <Button onClick={approve} width="fit">
+        approve
+      </Button>
+    </Stack>
+  )
+}
+
+function ContractMockERC20() {
+  const { client } = useContext(Context)
+
+  const [deployedAddress, setDeployedAddress] = useState<Hex | null>(null)
+
+  const deploy = async () => {
+    const [address] = await client.getAddresses()
+    const hash = await client.deployContract({
+      abi: MockERC20.abi,
+      bytecode: MockERC20.bytecode.object,
+      account: address,
+      chain: null,
+      args: ['MockERC20', 'M20', 18],
+    })
+    const transaction = await client.getTransactionReceipt({ hash })
+    setDeployedAddress(transaction.contractAddress)
+  }
+
+  const mint = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const [address] = await client.getAddresses()
+    await client.writeContract({
+      abi: MockERC20.abi,
+      address: deployedAddress!,
+      account: address,
+      chain: null,
+      functionName: 'mint',
+      args: [address, parseEther('1')],
+    })
+  }
+
+  if (!deployedAddress)
+    return (
+      <Button onClick={deploy} width="fit">
+        deploy
+      </Button>
+    )
+  return (
+    <Stack gap="12px">
+      <Button onClick={mint} width="fit">
+        mint
+      </Button>
+    </Stack>
+  )
+}
+
+function ContractMockERC721() {
+  const { client } = useContext(Context)
+
+  const [deployedAddress, setDeployedAddress] = useState<Hex | null>(null)
+
+  const deploy = async () => {
+    const [address] = await client.getAddresses()
+    const hash = await client.deployContract({
+      abi: MockERC721.abi,
+      bytecode: MockERC721.bytecode.object,
+      account: address,
+      chain: null,
+      args: ['MockERC721', 'M721'],
+    })
+    const transaction = await client.getTransactionReceipt({ hash })
+    setDeployedAddress(transaction.contractAddress)
+  }
+
+  const mint = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const [address] = await client.getAddresses()
+    await client.writeContract({
+      abi: MockERC721.abi,
+      address: deployedAddress!,
+      account: address,
+      chain: null,
+      functionName: 'mint',
+      args: [address, 69n],
+    })
+  }
+
+  if (!deployedAddress)
+    return (
+      <Button onClick={deploy} width="fit">
+        deploy
+      </Button>
+    )
+  return (
+    <Stack gap="12px">
+      <Button onClick={mint} width="fit">
+        mint
+      </Button>
     </Stack>
   )
 }

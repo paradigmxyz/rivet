@@ -2,7 +2,6 @@ import { queryOptions, useQuery } from '@tanstack/react-query'
 import {
   type BlockNumber,
   type BlockTag,
-  type Client,
   type GetLogsParameters,
   stringify,
 } from 'viem'
@@ -10,50 +9,66 @@ import {
 import { createQueryKey } from '~/react-query'
 
 import type { AbiEvent } from 'abitype'
+import type { Client } from '../viem'
 import { useClient } from './useClient'
 
 type UseLogsParameters<
   TAbiEvent extends AbiEvent,
   TFromBlock extends BlockNumber | BlockTag,
   TToBlock extends BlockNumber | BlockTag,
-> = GetLogsParameters<TAbiEvent, TAbiEvent[], undefined, TFromBlock, TToBlock>
+> = GetLogsParameters<
+  TAbiEvent,
+  TAbiEvent[],
+  undefined,
+  TFromBlock,
+  TToBlock
+> & {
+  enabled?: boolean
+}
 
 export const getLogsQueryKey = createQueryKey<
   'get-logs',
   [key: Client['key'], args: string]
 >('get-logs')
 
+export function getLogsQueryOptions<
+  TAbiEvent extends AbiEvent,
+  TFromBlock extends BlockNumber | BlockTag,
+  TToBlock extends BlockNumber | BlockTag,
+>(client: Client, args: UseLogsParameters<TAbiEvent, TFromBlock, TToBlock>) {
+  const { enabled = true, fromBlock, toBlock } = args
+
+  return queryOptions({
+    enabled,
+    gcTime:
+      typeof fromBlock === 'bigint' && typeof toBlock === 'bigint'
+        ? Infinity
+        : undefined,
+    staleTime:
+      typeof fromBlock === 'bigint' && typeof toBlock === 'bigint'
+        ? Infinity
+        : undefined,
+    queryKey: getLogsQueryKey([client.key, stringify(args)]),
+    async queryFn() {
+      return await client.getLogs(args)
+    },
+  })
+}
+
 export function useGetLogsQueryOptions<
   TAbiEvent extends AbiEvent,
   TFromBlock extends BlockNumber | BlockTag,
   TToBlock extends BlockNumber | BlockTag,
->(parameters: UseLogsParameters<TAbiEvent, TFromBlock, TToBlock>) {
+>(args: UseLogsParameters<TAbiEvent, TFromBlock, TToBlock>) {
   const client = useClient()
-
-  return queryOptions({
-    enabled: Boolean(parameters),
-    gcTime:
-      typeof parameters.fromBlock === 'bigint' &&
-      typeof parameters.toBlock === 'bigint'
-        ? Infinity
-        : undefined,
-    staleTime:
-      typeof parameters.fromBlock === 'bigint' &&
-      typeof parameters.toBlock === 'bigint'
-        ? Infinity
-        : undefined,
-    queryKey: getLogsQueryKey([client.key, stringify(parameters)]),
-    async queryFn() {
-      return await client.getLogs(parameters)
-    },
-  })
+  return getLogsQueryOptions(client, args)
 }
 
 export function useGetLogs<
   TAbiEvent extends AbiEvent,
   TFromBlock extends BlockNumber | BlockTag,
   TToBlock extends BlockNumber | BlockTag,
->(parameters: UseLogsParameters<TAbiEvent, TFromBlock, TToBlock>) {
-  const queryOptions = useGetLogsQueryOptions(parameters)
+>(args: UseLogsParameters<TAbiEvent, TFromBlock, TToBlock>) {
+  const queryOptions = useGetLogsQueryOptions(args)
   return useQuery(queryOptions)
 }
