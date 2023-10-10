@@ -9,7 +9,7 @@ export function useHost() {
         lastFocusedWindow: true,
       })
       if (!tab.url) return null
-      return new URL(tab.url).host
+      return new URL(tab.url).host.replace('www.', '')
     },
   })
 }

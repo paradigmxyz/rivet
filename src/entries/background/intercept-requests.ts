@@ -37,7 +37,9 @@ export async function interceptJsonRpcRequests() {
           rule.condition.initiatorDomains?.includes(initiatorDomain),
         )
 
-        const initiatorAuthorized = sessions.find((x) => x.host === initiator)
+        const initiatorAuthorized = sessions.find(
+          (x) => x.host === initiator.replace('www.', ''),
+        )
         if (initiatorAuthorized) {
           // If rule has already been added (same redirect url), do not add again.
           if (rule?.action.redirect?.url === redirectUrl) return
@@ -96,7 +98,13 @@ export async function interceptJsonRpcRequests() {
     removeRuleIds: rules.map(({ id }) => id),
   })
 
-  let unwatch = () => {}
+  const sessions = sessionsStore.getState().sessions
+  const network = networkStore.getState().network
+
+  let unwatch = watchRequests({
+    redirectUrl: network.rpcUrl,
+    sessions: sessions,
+  })
 
   // Subscribe to network changes (Anvil RPC URL).
   networkStore.subscribe(async ({ network }) => {
@@ -132,6 +140,7 @@ function isJsonRpcRequest(details: chrome.webRequest.WebRequestBodyDetails) {
     } catch {}
   })()
   const request = Array.isArray(json) ? json[0] : json
+  if (!request) return false
   const isJsonRpcRequest = (request as { jsonrpc: string }).jsonrpc === '2.0'
   if (!isJsonRpcRequest) return false
   return true
