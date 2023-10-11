@@ -26,7 +26,7 @@ jobs:
         run: bun run build
 
       - name: Zip
-        run: cd dist/build && zip -r ../extension.zip *
+        run: cd dist && zip -r extension.zip build
 
       - name: Submit to Chrome Web Store
         uses: PlasmoHQ/bpp@v3.5.0

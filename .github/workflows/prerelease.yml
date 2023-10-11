@@ -19,6 +19,9 @@ jobs:
         id: sha
         run: echo "sha_short=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
 
+      - name: Build
+        run: bun run build
+
       - name: Set version
         run: |
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
@@ -26,11 +29,8 @@ jobs:
           npm version 0.0.0-nightly.${{ steps.sha.outputs.sha_short }}
           git push --tags
 
-      - name: Build
-        run: bun run build
-
       - name: Zip
-        run: cd dist/build && zip -r ../extension.zip *
+        run: cd dist && zip -r extension.zip build
 
       - name: Get NPM version
         id: package-version
