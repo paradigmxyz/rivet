@@ -8,7 +8,7 @@
   },
   "scripts": {
     "anvil": "anvil --fork-url https://cloudflare-eth.com",
-    "build": "tsc && vite build && bun run build:inpage",
+    "build": "tsc && bun run build:ds && vite build && bun run build:inpage",
     "build:ds": "vite build -c src/design-system/vite.config.ts",
     "build:inpage": "vite build -c vite.config.inpage.ts",
     "clean": "rimraf dist",
