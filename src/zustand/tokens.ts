@@ -131,6 +131,8 @@ export const tokensStore = createStore<TokensStore>(
             ]
         }
 
+        console.log(tokens)
+
         return {
           ...state,
           tokens,
