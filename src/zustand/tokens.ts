@@ -5,7 +5,7 @@ import { createStore } from './utils'
 
 type Token = {
   address: Address
-  removed: boolean
+  visible: boolean
 }
 
 type TokensKey = string
@@ -13,8 +13,14 @@ type TokensKey = string
 export type TokensState = {
   tokens: Record<TokensKey, Token[]>
 }
+
 export type TokensActions = {
   addToken: (parameters: {
+    accountAddress: Address
+    tokenAddress: Address
+    rpcUrl: string
+  }) => void
+  hideToken: (parameters: {
     accountAddress: Address
     tokenAddress: Address
     rpcUrl: string
@@ -51,12 +57,32 @@ export const tokensStore = createStore<TokensStore>(
         const tokens = { ...state.tokens }
         tokens[key] = uniqBy(
           [
-            { address: tokenAddress, removed: false },
+            { address: tokenAddress, visible: true },
             ...(state.tokens[key] || []),
           ],
           (x) => x.address,
         )
 
+        return {
+          ...state,
+          tokens,
+        }
+      })
+    },
+    hideToken(args) {
+      const { accountAddress, tokenAddress, rpcUrl } = args
+      const key = getTokensKey({ accountAddress, rpcUrl })
+
+      set((state) => {
+        const tokens = { ...state.tokens }
+        tokens[key] = (state.tokens[key] || []).map((token) => {
+          if (token.address === tokenAddress)
+            return {
+              ...token,
+              visible: false,
+            }
+          return token
+        })
         return {
           ...state,
           tokens,
@@ -69,14 +95,9 @@ export const tokensStore = createStore<TokensStore>(
 
       set((state) => {
         const tokens = { ...state.tokens }
-        tokens[key] = (state.tokens[key] || []).map((token) => {
-          if (token.address === tokenAddress)
-            return {
-              ...token,
-              removed: true,
-            }
-          return token
-        })
+        tokens[key] = (state.tokens[key] || []).filter(
+          (token) => token.address !== tokenAddress,
+        )
         return {
           ...state,
           tokens,
@@ -99,7 +120,7 @@ export const tokensStore = createStore<TokensStore>(
               ...(tokens[key] || []),
               {
                 address: tokenAddress,
-                removed: false,
+                visible: true,
               },
             ]
         }
@@ -142,7 +163,7 @@ function migrate(persistedState: unknown, version: number): TokensStore {
             address,
             tokenAddresses.map((tokenAddress) => ({
               address: tokenAddress,
-              removed: false,
+              visible: false,
             })),
           ]),
         ),

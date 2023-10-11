@@ -117,13 +117,15 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
         <Separator />
       </Bleed>
       {/* TODO: Handle empty state. */}
-      {tokens?.map((tokenAddress) => (
-        <TokenRow
-          accountAddress={accountAddress}
-          tokenAddress={tokenAddress}
-          key={tokenAddress}
-        />
-      ))}
+      {tokens?.map((token) =>
+        token.visible ? (
+          <TokenRow
+            accountAddress={accountAddress}
+            tokenAddress={token.address}
+            key={token.address}
+          />
+        ) : null,
+      )}
     </Inset>
   )
 }
@@ -145,7 +147,7 @@ function ImportToken({ accountAddress }: { accountAddress: Address }) {
         return
       }
 
-      addToken(address)
+      addToken({ tokenAddress: address })
     } finally {
       reset()
     }
@@ -173,7 +175,9 @@ function TokenRow({
   accountAddress,
   tokenAddress,
 }: { accountAddress: Address; tokenAddress: Address }) {
-  const { removeToken } = useAccountTokens({ address: accountAddress })
+  const { hideToken, removeToken } = useAccountTokens({
+    address: accountAddress,
+  })
 
   const { data: balance, error: balanceError } = useErc20Balance({
     address: accountAddress,
@@ -187,14 +191,14 @@ function TokenRow({
   useEffect(() => {
     if (balanceError) {
       toast.error((balanceError as BaseError).shortMessage)
-      removeToken(tokenAddress)
+      removeToken({ tokenAddress })
     }
   }, [balanceError, tokenAddress, removeToken])
 
   useEffect(() => {
     if (metadataError) {
       toast.error((metadataError as BaseError).shortMessage)
-      removeToken(tokenAddress)
+      removeToken({ tokenAddress })
     }
   }, [metadataError, tokenAddress, removeToken])
 
@@ -269,7 +273,7 @@ function TokenRow({
                 variant="ghost red"
                 onClick={(e) => {
                   e.stopPropagation()
-                  removeToken(tokenAddress)
+                  hideToken({ tokenAddress })
                 }}
               />
             </Column>
