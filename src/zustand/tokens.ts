@@ -3,56 +3,66 @@ import type { Address } from 'viem'
 import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
 import { createStore } from './utils'
 
-type Token = {
+export type Token = {
   address: Address
-  removed: boolean
+  visible: boolean
 }
 
-type TokensKey = string
+export type TokensKey = {
+  accountAddress: Address
+  rpcUrl: string
+}
+export type SerializedTokensKey = string
 
 export type TokensState = {
-  tokens: Record<TokensKey, Token[]>
+  tokens: Record<SerializedTokensKey, Token[]>
 }
+
 export type TokensActions = {
-  addToken: (parameters: {
-    accountAddress: Address
-    tokenAddress: Address
-    rpcUrl: string
-  }) => void
-  removeToken: (parameters: {
-    accountAddress: Address
-    tokenAddress: Address
-    rpcUrl: string
-  }) => void
-  syncTokens: (parameters: {
-    accountAddress: Address
-    tokenAddresses: Address[]
-    rpcUrl: string
-  }) => void
+  addToken: (
+    key: TokensKey,
+    parameters: {
+      tokenAddress: Address
+    },
+  ) => void
+  hideToken: (
+    key: TokensKey,
+    parameters: {
+      tokenAddress: Address
+    },
+  ) => void
+  removeToken: (
+    key: TokensKey,
+    parameters: {
+      tokenAddress: Address
+    },
+  ) => void
+  syncTokens: (
+    key: TokensKey,
+    parameters: {
+      tokenAddresses: Address[]
+    },
+  ) => void
 }
 export type TokensStore = TokensState & TokensActions
 
-export function getTokensKey(args: {
-  accountAddress: Address
-  rpcUrl: string
-}): TokensKey {
-  const { accountAddress, rpcUrl } = args
-  return `${rpcUrl}-${accountAddress}`.replace(/\./g, '-')
+export function getTokensKey(key: TokensKey): SerializedTokensKey {
+  return `${key.accountAddress}-${key.rpcUrl}`.replace(/\./g, '-')
 }
 
 export const tokensStore = createStore<TokensStore>(
   (set) => ({
     tokens: {},
-    addToken(args) {
-      const { accountAddress, tokenAddress, rpcUrl } = args
-      const key = getTokensKey({ accountAddress, rpcUrl })
+    addToken(key, args) {
+      const { tokenAddress } = args
+      const serializedKey = getTokensKey(key)
 
       set((state) => {
         const tokens = { ...state.tokens }
-        tokens[key] = uniqBy(
+        tokens[serializedKey] = uniqBy(
           [
-            { address: tokenAddress, removed: false },
-            ...(state.tokens[key] || []),
+            { address: tokenAddress, visible: true },
+            ...(state.tokens[serializedKey] || []),
           ],
           (x) => x.address,
         )
@@ -63,43 +73,60 @@ export const tokensStore = createStore<TokensStore>(
         }
       })
     },
-    removeToken(args) {
-      const { accountAddress, tokenAddress, rpcUrl } = args
-      const key = getTokensKey({ accountAddress, rpcUrl })
+    hideToken(key, args) {
+      const { tokenAddress } = args
+      const serializedKey = getTokensKey(key)
 
       set((state) => {
         const tokens = { ...state.tokens }
-        tokens[key] = (state.tokens[key] || []).map((token) => {
-          if (token.address === tokenAddress)
-            return {
-              ...token,
-              removed: true,
-            }
-          return token
-        })
+        tokens[serializedKey] = (state.tokens[serializedKey] || []).map(
+          (token) => {
+            if (token.address === tokenAddress)
+              return {
+                ...token,
+                visible: false,
+              }
+            return token
+          },
+        )
         return {
           ...state,
           tokens,
         }
       })
     },
-    syncTokens(args) {
-      const { accountAddress, tokenAddresses, rpcUrl } = args
-      const key = getTokensKey({ accountAddress, rpcUrl })
+    removeToken(key, args) {
+      const { tokenAddress } = args
+      const serializedKey = getTokensKey(key)
+
+      set((state) => {
+        const tokens = { ...state.tokens }
+        tokens[serializedKey] = (state.tokens[serializedKey] || []).filter(
+          (token) => token.address !== tokenAddress,
+        )
+        return {
+          ...state,
+          tokens,
+        }
+      })
+    },
+    syncTokens(key, args) {
+      const { tokenAddresses } = args
+      const serializedKey = getTokensKey(key)
 
       set((state) => {
         const tokens = { ...state.tokens }
 
         for (const tokenAddress of tokenAddresses) {
-          const exists = (tokens[key] || []).some(
+          const exists = (tokens[serializedKey] || []).some(
             (x) => x.address === tokenAddress,
           )
           if (!exists)
-            tokens[key] = [
-              ...(tokens[key] || []),
+            tokens[serializedKey] = [
+              ...(tokens[serializedKey] || []),
               {
                 address: tokenAddress,
-                removed: false,
+                visible: true,
               },
             ]
         }
@@ -142,7 +169,7 @@ function migrate(persistedState: unknown, version: number): TokensStore {
             address,
             tokenAddresses.map((tokenAddress) => ({
               address: tokenAddress,
-              removed: false,
+              visible: false,
             })),
           ]),
         ),
