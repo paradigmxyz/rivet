@@ -15,12 +15,12 @@ jobs:
       - name: Install dependencies
         uses: ./.github/actions/install-dependencies
 
-      - name: Set version
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          npm version patch -m "chore: submit %s to web store"
-          git push --tags
+      # - name: Set version
+      #   run: |
+      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      #     git config --global user.name "github-actions[bot]"
+      #     npm version patch -m "chore: submit %s to web store"
+      #     git push --tags
 
       - name: Build
         run: bun run build
@@ -28,25 +28,31 @@ jobs:
       - name: Zip
         run: cd dist/build && zip -r ../extension.zip *
 
-      - name: Submit to Chrome Web Store
-        uses: PlasmoHQ/bpp@v3.5.0
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
         with:
-          artifact: ./dist/extension.zip
-          keys: ${{ secrets.BPP_KEYS }}
+          name: extension-release
+          path: dist
 
-      - name: Get NPM version
-        id: package-version
-        uses: martinbeentjes/npm-get-version-action@v1.3.1
+      # - name: Submit to Chrome Web Store
+      #   uses: PlasmoHQ/bpp@v3.5.0
+      #   with:
+      #     artifact: ./dist/extension.zip
+      #     keys: ${{ secrets.BPP_KEYS }}
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: dist/extension.zip
-          tag_name: 'v${{ steps.package-version.outputs.current-version }}'
+      # - name: Get NPM version
+      #   id: package-version
+      #   uses: martinbeentjes/npm-get-version-action@v1.3.1
 
-      - name: Push
-        uses: ad-m/github-push-action@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.ref }}
+      # - name: Release
+      #   uses: softprops/action-gh-release@v1
+      #   with:
+      #     files: dist/extension.zip
+      #     tag_name: 'v${{ steps.package-version.outputs.current-version }}'
+
+      # - name: Push
+      #   uses: ad-m/github-push-action@master
+      #   with:
+      #     github_token: ${{ secrets.GITHUB_TOKEN }}
+      #     branch: ${{ github.ref }}
       
