@@ -30,7 +30,7 @@ jobs:
           git push --tags
 
       - name: Zip
-        run: cd dist && zip -r extension.zip build
+        run: bun run zip
 
       - name: Get NPM version
         id: package-version

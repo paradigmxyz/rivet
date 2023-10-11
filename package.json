@@ -24,7 +24,8 @@
     "prepare": "bun run build:ds",
     "symbols": "bun scripts/symbols.ts",
     "sync": "git submodule init && git submodule update",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "zip": "web-ext build --source-dir ./dist/build --artifacts-dir ./dist --filename extension.zip"
   },
   "dependencies": {
     "@capsizecss/core": "^3.1.0",
