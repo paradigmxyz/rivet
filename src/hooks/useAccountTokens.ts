@@ -7,7 +7,7 @@ import { createQueryKey } from '~/react-query'
 import type { Client } from '~/viem'
 import { useNetworkStore, useTokensStore } from '~/zustand'
 
-import { getTokensKey } from '~/zustand/tokens'
+import { type TokensActions, getTokensKey } from '~/zustand/tokens'
 import { useClient } from './useClient'
 
 type UseAccountTokensParameters = {
@@ -36,60 +36,83 @@ export function useAccountTokensQueryOptions(args: UseAccountTokensParameters) {
         fromBlock: network.forkBlockNumber,
         toBlock: 'latest',
       })
-      syncTokens({
-        accountAddress: address,
-        tokenAddresses: tokens,
-        rpcUrl: network.rpcUrl,
-      })
+      syncTokens(
+        {
+          accountAddress: address,
+          rpcUrl: network.rpcUrl,
+        },
+        {
+          tokenAddresses: tokens,
+        },
+      )
       return tokens
     },
   })
 }
 
-export function useAccountTokens(args: UseAccountTokensParameters) {
-  const queryOptions = useAccountTokensQueryOptions(args)
+export function useAccountTokens({ address }: UseAccountTokensParameters) {
+  const queryOptions = useAccountTokensQueryOptions({ address })
   const tokensStore = useTokensStore()
   const { network } = useNetworkStore()
 
   const addToken = useCallback(
-    (address: Address) =>
-      args.address
-        ? tokensStore.addToken({
-            accountAddress: args.address,
-            rpcUrl: network.rpcUrl,
-            tokenAddress: address,
-          })
+    (args: Parameters<TokensActions['addToken']>[1]) =>
+      address
+        ? tokensStore.addToken(
+            {
+              accountAddress: address,
+              rpcUrl: network.rpcUrl,
+            },
+            args,
+          )
         : undefined,
-    [args.address, network.rpcUrl, tokensStore.addToken],
+    [address, network.rpcUrl, tokensStore.addToken],
   )
+
+  const hideToken = useCallback(
+    (args: Parameters<TokensActions['hideToken']>[1]) =>
+      address
+        ? tokensStore.hideToken(
+            {
+              accountAddress: address,
+              rpcUrl: network.rpcUrl,
+            },
+            args,
+          )
+        : undefined,
+    [address, network.rpcUrl, tokensStore.hideToken],
+  )
+
   const removeToken = useCallback(
-    (address: Address) =>
-      args.address
-        ? tokensStore.removeToken({
-            accountAddress: args.address,
-            rpcUrl: network.rpcUrl,
-            tokenAddress: address,
-          })
+    (args: Parameters<TokensActions['removeToken']>[1]) =>
+      address
+        ? tokensStore.removeToken(
+            {
+              accountAddress: address,
+              rpcUrl: network.rpcUrl,
+            },
+            args,
+          )
         : undefined,
-    [args.address, network.rpcUrl, tokensStore.removeToken],
+    [address, network.rpcUrl, tokensStore.removeToken],
   )
+
   const tokens = useMemo(
     () =>
-      args.address
+      address
         ? tokensStore.tokens[
             getTokensKey({
-              accountAddress: args.address,
+              accountAddress: address,
               rpcUrl: network.rpcUrl,
             })
           ]
-            ?.map((token) => (!token.removed ? token.address : undefined))
-            .filter(Boolean)
         : [],
-    [args.address, network.rpcUrl, tokensStore.tokens],
+    [address, network.rpcUrl, tokensStore.tokens],
   )
 
   return Object.assign(useQuery(queryOptions), {
     addToken,
+    hideToken,
     removeToken,
     tokens,
   })

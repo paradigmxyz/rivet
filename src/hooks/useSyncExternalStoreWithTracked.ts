@@ -20,6 +20,8 @@ export function useSyncExternalStoreWithTracked<Snapshot, Selection = Snapshot>(
   }: UseSyncExternalStoreWithTrackedOptions<Snapshot, Selection> = {},
 ) {
   const trackedKeys = useRef<string[]>([])
+  const tempTrackedKeys = useRef<string[]>([])
+
   const result = useSyncExternalStoreWithSelector<Snapshot, Selection>(
     subscribe,
     getSnapshot,
@@ -44,6 +46,11 @@ export function useSyncExternalStoreWithTracked<Snapshot, Selection = Snapshot>(
         trackedResult,
         Object.entries(trackedResult as { [key: string]: any }).reduce(
           (res, [key, value]) => {
+            if (isPlainObject(value) && Object.keys(value).length === 0) {
+              trackedKeys.current.push(key)
+              tempTrackedKeys.current.push(key)
+            }
+
             return {
               ...res,
               [key]: {
@@ -51,6 +58,14 @@ export function useSyncExternalStoreWithTracked<Snapshot, Selection = Snapshot>(
                 enumerable: true,
                 get: () => {
                   const newKey = `${prefix ? `${prefix}.` : ''}${key}`
+
+                  if (tempTrackedKeys.current.length > 0)
+                    tempTrackedKeys.current.forEach(
+                      (key) =>
+                        (tempTrackedKeys.current =
+                          tempTrackedKeys.current.filter((x) => x !== key)),
+                    )
+
                   if (isPlainObject(value)) return track(value, newKey)
 
                   if (trackedKeys.current.includes(newKey)) return value
