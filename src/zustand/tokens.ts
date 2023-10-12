@@ -1,7 +1,7 @@
 import { uniqBy } from 'remeda'
 import type { Address } from 'viem'
 import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
-import { createStore } from './utils'
+import { createStore, getKey } from './utils'
 
 export type Token = {
   address: Address
@@ -47,7 +47,7 @@ export type TokensActions = {
 export type TokensStore = TokensState & TokensActions
 
 export function getTokensKey(key: TokensKey): SerializedTokensKey {
-  return `${key.accountAddress}-${key.rpcUrl}`.replace(/\./g, '-')
+  return getKey(Object.values(key))
 }
 
 export const tokensStore = createStore<TokensStore>(
@@ -123,11 +123,11 @@ export const tokensStore = createStore<TokensStore>(
           )
           if (!exists)
             tokens[serializedKey] = [
-              ...(tokens[serializedKey] || []),
               {
                 address: tokenAddress,
                 visible: true,
               },
+              ...(tokens[serializedKey] || []),
             ]
         }
 

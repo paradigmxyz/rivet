@@ -12,6 +12,7 @@ import { getAccountTokensQueryKey } from './useAccountTokens'
 import { getBalanceQueryKey } from './useBalance'
 import { getBlockQueryKey } from './useBlock'
 import { useClient } from './useClient'
+import { getContractsQueryKey } from './useContracts'
 import { getErc20BalanceQueryKey } from './useErc20Balance'
 import { getInfiniteBlockTransactionsQueryKey } from './useInfiniteBlockTransactions'
 import { getInfiniteBlocksQueryKey } from './useInfiniteBlocks'
@@ -61,6 +62,9 @@ export function usePendingBlockQueryOptions({
         queryKey: getBalanceQueryKey([client.key]),
       })
       queryClient.invalidateQueries({
+        queryKey: getContractsQueryKey([client.key]),
+      })
+      queryClient.invalidateQueries({
         queryKey: getErc20BalanceQueryKey([client.key]),
       })
       queryClient.invalidateQueries({
@@ -92,7 +96,7 @@ export function usePendingBlockQueryOptions({
     },
     gcTime: 0,
     refetchInterval:
-      refetchInterval ?? network.blockTime * 1_000 ?? client.pollingInterval,
+      refetchInterval ?? (network.blockTime * 1_000 || client.pollingInterval),
   }
 }
 

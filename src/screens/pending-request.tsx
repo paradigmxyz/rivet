@@ -2,6 +2,8 @@ import * as Tabs from '@radix-ui/react-tabs'
 import { useMemo, useState } from 'react'
 import { omitBy } from 'remeda'
 import {
+  BaseError,
+  type TransactionRequest,
   formatEther,
   formatGwei,
   formatTransaction,
@@ -102,23 +104,27 @@ type ExtractRequest<Method extends string> = Extract<
   { method: Method }
 >
 
-function SendTransactionRequest({
-  request,
-}: {
+function SendTransactionRequest(args: {
   request: ExtractRequest<'eth_sendTransaction'>
 }) {
   // Format transaction request from RPC format (hex) into readable format (bigint, etc).
   const transactionRequest = useMemo(
-    () => formatTransaction(request.params[0]),
-    [request.params],
+    () => formatTransaction(args.request.params[0]) as TransactionRequest,
+    [args.request.params],
   )
 
   // Prepare the transaction request for signing (populate gas estimate, fees, etc if non-existent).
   const { account: account_ } = useAccountStore()
-  const { data: preparedRequest, isLoading } = usePrepareTransactionRequest({
+  const {
+    data: preparedRequest,
+    error,
+    isLoading,
+  } = usePrepareTransactionRequest({
     ...transactionRequest,
     account: account_,
   } as unknown as UsePrepareTransactionRequestParameters)
+
+  const request = preparedRequest || transactionRequest || {}
   const {
     from,
     to,
@@ -128,7 +134,7 @@ function SendTransactionRequest({
     value,
     gas,
     data,
-  } = preparedRequest || {}
+  } = request
 
   ////////////////////////////////////////////////////////////////////////
 
@@ -137,14 +143,12 @@ function SendTransactionRequest({
   const txpoolQueryOptions = useTxpoolQueryOptions()
 
   const handleApprove = async () => {
-    if (!preparedRequest) return
-
     // Serialize the transaction request into RPC format (hex).
-    const txRequest = formatTransactionRequest(preparedRequest)
+    const txRequest = formatTransactionRequest(request)
     const params = [omitBy(txRequest, (value) => !isHex(value))]
 
     await backgroundMessenger.send('pendingRequest', {
-      request: { ...request, params: params as any },
+      request: { ...args.request, params: params as any },
       status: 'approved',
     })
 
@@ -156,7 +160,7 @@ function SendTransactionRequest({
 
   const handleReject = async () => {
     await backgroundMessenger.send('pendingRequest', {
-      request,
+      request: args.request,
       status: 'rejected',
     })
   }
@@ -175,6 +179,22 @@ function SendTransactionRequest({
       onReject={handleReject}
     >
       <Stack gap="20px">
+        {error && (
+          <Box backgroundColor="surface/yellowTint" padding="8px">
+            <Stack gap="12px">
+              <Text size="11px">
+                An error occurred while simulating transaction execution. This
+                transaction will unlikely succeed.
+              </Text>
+              {error instanceof BaseError && (
+                <>
+                  <Text size="11px">Reason: {error.shortMessage}</Text>
+                  <Text size="11px">Details: {error.details}</Text>
+                </>
+              )}
+            </Stack>
+          </Box>
+        )}
         <Columns gap="12px">
           <Column width="1/3">
             <LabelledContent label="From">
