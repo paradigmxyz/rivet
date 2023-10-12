@@ -40,12 +40,14 @@ import {
 import { useAccounts } from '~/hooks/useAccounts'
 import { useBalance } from '~/hooks/useBalance'
 import { useClient } from '~/hooks/useClient'
+import { useContracts } from '~/hooks/useContracts'
 import { useDebounce } from '~/hooks/useDebounce'
 import { useInfiniteBlockTransactions } from '~/hooks/useInfiniteBlockTransactions'
 import { useInfiniteBlocks } from '~/hooks/useInfiniteBlocks'
 import { useNonce } from '~/hooks/useNonce'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { usePendingTransactions } from '~/hooks/usePendingTransactions'
+import { useSearchParamsState } from '~/hooks/useSearchParamsState'
 import { useSetAccount } from '~/hooks/useSetAccount'
 import { useSetBalance } from '~/hooks/useSetBalance'
 import { useSetNonce } from '~/hooks/useSetNonce'
@@ -58,7 +60,6 @@ import {
 } from '~/zustand'
 import type { Account } from '~/zustand/account'
 
-import { useSearchParamsState } from '../hooks/useSearchParamsState'
 import OnboardingStart from './onboarding/start'
 
 export default function Index() {
@@ -75,6 +76,7 @@ export default function Index() {
               { label: 'Accounts', value: 'accounts' },
               { label: 'Blocks', value: 'blocks' },
               { label: 'Transactions', value: 'transactions' },
+              { label: 'Contracts', value: 'contracts' },
             ]}
             onSelect={(item) => {
               setParams({ tab: item.value })
@@ -89,6 +91,9 @@ export default function Index() {
           </TabsContent>
           <TabsContent inset={false} scrollable="auto" value="transactions">
             <Transactions />
+          </TabsContent>
+          <TabsContent inset={false} scrollable="auto" value="contracts">
+            <Contracts />
           </TabsContent>
         </Box>
       </Tabs.Root>
@@ -314,7 +319,7 @@ function ImportAccount() {
           hideLabel
           label="Import address"
           placeholder="Import address or ENS name..."
-          register={register('addressOrEns')}
+          register={register('addressOrEns', { required: true })}
         />
         <Button height="24px" variant="stroked fill" width="fit" type="submit">
           Import
@@ -772,11 +777,17 @@ function Transactions() {
                         </Tooltip>
                       </Column>
                       <Column alignVertical="center">
-                        <Tooltip side="bottom" label={transaction.to}>
-                          <Text.Truncated size="12px">
-                            {transaction.to}
-                          </Text.Truncated>
-                        </Tooltip>
+                        {transaction.to ? (
+                          <Tooltip side="bottom" label={transaction.to}>
+                            <Text.Truncated size="12px">
+                              {transaction.to}
+                            </Text.Truncated>
+                          </Tooltip>
+                        ) : (
+                          <Text color="text/tertiary" size="11px" wrap={false}>
+                            Deploy Contract
+                          </Text>
+                        )}
                       </Column>
                       <Column alignVertical="center">
                         <Text
@@ -800,5 +811,261 @@ function Transactions() {
         }
       </VirtualList>
     </VirtualList.Wrapper>
+  )
+}
+
+////////////////////////////////////////////////////////////////////////
+// Contracts
+
+function Contracts() {
+  const { contracts: contracts_, hideContract } = useContracts()
+
+  const contracts = contracts_.filter((contract) => contract.visible)
+
+  const VirtualList = useVirtualList({
+    // rome-ignore lint/nursery/useExhaustiveDependencies:
+    layout: useMemo(
+      () => [
+        { size: 40, sticky: true, type: 'search' },
+        { size: 24, sticky: true, type: 'header' },
+        ...contracts.map(
+          (_, index) =>
+            ({
+              index,
+              size: 32,
+              type: 'item',
+            }) as const,
+        ),
+      ],
+      [contracts.length],
+    ),
+  })
+
+  return (
+    <VirtualList.Wrapper marginHorizontal="-8px">
+      <VirtualList>
+        {({ getLayoutItem, items }) =>
+          items.map((item) => {
+            const layoutItem = getLayoutItem(item.index)
+
+            if (layoutItem.type === 'search')
+              return (
+                <VirtualList.Item {...item}>
+                  <Inset space="8px">
+                    <ImportContract />
+                  </Inset>
+                </VirtualList.Item>
+              )
+
+            if (layoutItem.type === 'header')
+              return (
+                <VirtualList.Item {...item}>
+                  <Box
+                    display="flex"
+                    alignItems="center"
+                    height="full"
+                    paddingHorizontal="8px"
+                    width="full"
+                  >
+                    <Columns alignHorizontal="justify" gap="4px" width="full">
+                      <Column alignVertical="center">
+                        <Text color="text/tertiary" size="9px" wrap={false}>
+                          ADDRESS
+                        </Text>
+                      </Column>
+                    </Columns>
+                  </Box>
+                  <Separator />
+                </VirtualList.Item>
+              )
+
+            if (layoutItem.type === 'loading')
+              return (
+                <VirtualList.Item {...item}>
+                  <Box
+                    display="flex"
+                    height="full"
+                    padding="8px"
+                    paddingVertical="12px"
+                  >
+                    <Text color="text/secondary" size="14px">
+                      Loading...
+                    </Text>
+                  </Box>
+                </VirtualList.Item>
+              )
+
+            const contract = contracts[layoutItem.index ?? 0] || {}
+            if (!contract) return
+            return (
+              <VirtualList.Item {...item}>
+                {/* <VirtualList.Link to={`/contract/${contract.hash}`}> */}
+                <Box marginHorizontal="-8px">
+                  <Separator />
+                </Box>
+                <Box
+                  backgroundColor={{ hover: 'surface/fill/quarternary' }}
+                  paddingHorizontal="8px"
+                  paddingVertical="8px"
+                  height="full"
+                >
+                  <Columns alignHorizontal="justify" gap="4px" width="full">
+                    <Column alignVertical="center">
+                      <Text size="11px" wrap={false}>
+                        {contract.address}
+                      </Text>
+                    </Column>
+                    <Column alignVertical="center" width="content">
+                      <Button.Symbol
+                        label="Delete"
+                        symbol="trash"
+                        height="24px"
+                        variant="ghost red"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          hideContract({
+                            address: contract.address,
+                          })
+                        }}
+                      />
+                    </Column>
+                  </Columns>
+                </Box>
+                {/* </VirtualList.Link> */}
+              </VirtualList.Item>
+            )
+          })
+        }
+      </VirtualList>
+    </VirtualList.Wrapper>
+  )
+}
+
+function ImportContract() {
+  const { account } = useAccountStore()
+  const client = useClient()
+  const { addContract, contracts, updateContract, removeContract } =
+    useContracts()
+
+  const { formState, handleSubmit, register, reset, watch } = useForm<{
+    addressOrBytecode: string
+  }>({
+    defaultValues: {
+      addressOrBytecode: '',
+    },
+    mode: 'onChange',
+  })
+
+  const submit = handleSubmit(async ({ addressOrBytecode }) => {
+    reset()
+
+    const isAlreadyImported = contracts?.some(
+      (contract) =>
+        contract.visible &&
+        contract.address.toLowerCase() === addressOrBytecode.toLowerCase(),
+    )
+    if (isAlreadyImported) {
+      toast(`"${addressOrBytecode}" is already imported.`)
+      return
+    }
+
+    const address = isAddress(addressOrBytecode) ? addressOrBytecode : undefined
+    const bytecode = isAddress(addressOrBytecode)
+      ? undefined
+      : (addressOrBytecode as Hex)
+    const key = `${address}-${bytecode}`
+
+    try {
+      addContract({
+        address: address ?? '0x',
+        bytecode,
+        key,
+        state: 'loading',
+      })
+
+      // Add contract address.
+      if (address) {
+        const bytecode_ = await client.getBytecode({ address })
+        if (!bytecode_) throw new Error()
+
+        updateContract({
+          address,
+          bytecode: bytecode_,
+          key,
+          state: 'loaded',
+        })
+        return
+      }
+
+      // Deploy contract bytecode.
+      if (bytecode) {
+        if (!account?.address) throw new Error()
+
+        const hash = await client.deployContract({
+          abi: [],
+          bytecode,
+          account: account.address,
+          chain: null,
+        })
+        await client.mine({ blocks: 1 })
+        const receipt = await client.getTransactionReceipt({ hash })
+
+        if (!receipt.contractAddress) throw new Error()
+
+        updateContract({
+          address: receipt.contractAddress,
+          bytecode,
+          key,
+          receipt,
+          state: 'loaded',
+        })
+        return
+      }
+    } catch {
+      removeContract({ key })
+      toast.error(
+        `"${addressOrBytecode}" is not a valid contract address or bytecode.`,
+      )
+    }
+  })
+
+  const watchAddressOrBytecode = watch('addressOrBytecode')
+  const submitText = useMemo(() => {
+    if (!formState.isDirty) return 'Import'
+    if (formState.errors.addressOrBytecode) return 'Import'
+    if (isAddress(watchAddressOrBytecode)) return 'Import'
+    return 'Deploy'
+  }, [
+    formState.errors.addressOrBytecode,
+    formState.isDirty,
+    watchAddressOrBytecode,
+  ])
+
+  return (
+    <Form.Root onSubmit={submit} style={{ width: '100%' }}>
+      <Inline gap="4px" wrap={false}>
+        <Form.InputField
+          height="24px"
+          hideLabel
+          label="Import address"
+          placeholder="Import contract address or deploy bytecode..."
+          register={register('addressOrBytecode', {
+            pattern: /^0x[a-fA-F0-9]+$/,
+            required: true,
+          })}
+        />
+        {formState.isDirty && (
+          <Button
+            disabled={!formState.isValid}
+            height="24px"
+            variant="stroked fill"
+            width="fit"
+            type="submit"
+          >
+            {submitText}
+          </Button>
+        )}
+      </Inline>
+    </Form.Root>
   )
 }

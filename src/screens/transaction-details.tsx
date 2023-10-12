@@ -113,11 +113,24 @@ export default function TransactionDetails() {
               </LabelledContent>
             </Column>
             <Column width="1/3">
-              <LabelledContent label="To">
-                <Tooltip label={transaction.to}>
-                  <Text.Truncated size="12px">{transaction.to}</Text.Truncated>
-                </Tooltip>
-              </LabelledContent>
+              {transaction.to && (
+                <LabelledContent label="To">
+                  <Tooltip label={transaction.to}>
+                    <Text.Truncated size="12px">
+                      {transaction.to}
+                    </Text.Truncated>
+                  </Tooltip>
+                </LabelledContent>
+              )}
+              {receipt?.contractAddress && (
+                <LabelledContent label="Contract">
+                  <Tooltip label={receipt.contractAddress}>
+                    <Text.Truncated size="12px">
+                      {receipt.contractAddress}
+                    </Text.Truncated>
+                  </Tooltip>
+                </LabelledContent>
+              )}
             </Column>
             <Column width="1/3">
               <LabelledContent label="Value">

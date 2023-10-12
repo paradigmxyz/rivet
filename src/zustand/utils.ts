@@ -86,3 +86,7 @@ export function syncStores() {
       syncStore({ store: store as StoreWithPersist<unknown> })
   })
 }
+
+export function getKey(args: string[]): string {
+  return args.join('-').replace(/\./g, '-')
+}

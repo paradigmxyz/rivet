@@ -25,5 +25,7 @@ keys.json
 *.sw?
 
 # Foundry
+/cache
+/out
 test/contracts/cache
 test/contracts/out
