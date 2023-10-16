@@ -30,15 +30,11 @@ import {
   Stack,
   Text,
 } from '~/design-system'
-import { usePendingBlockQueryOptions } from '~/hooks/usePendingBlock'
-import { usePendingTransactionsQueryOptions } from '~/hooks/usePendingTransactions'
 import {
   type UsePrepareTransactionRequestParameters,
   usePrepareTransactionRequest,
 } from '~/hooks/usePrepareTransactionRequest'
-import { useTxpoolQueryOptions } from '~/hooks/useTxpool'
 import { getMessenger } from '~/messengers'
-import { queryClient } from '~/react-query'
 import { useAccountStore } from '~/zustand'
 import type { PendingRequest } from '~/zustand/pending-requests'
 
@@ -138,10 +134,6 @@ function SendTransactionRequest(args: {
 
   ////////////////////////////////////////////////////////////////////////
 
-  const pendingBlockQueryOptions = usePendingBlockQueryOptions()
-  const pendingTransactionsQueryOptions = usePendingTransactionsQueryOptions()
-  const txpoolQueryOptions = useTxpoolQueryOptions()
-
   const handleApprove = async () => {
     // Serialize the transaction request into RPC format (hex).
     const txRequest = formatTransactionRequest(request)
@@ -151,11 +143,6 @@ function SendTransactionRequest(args: {
       request: { ...args.request, params: params as any },
       status: 'approved',
     })
-
-    // Invalidate resources that depend on pending transactions.
-    queryClient.invalidateQueries(pendingBlockQueryOptions)
-    queryClient.invalidateQueries(pendingTransactionsQueryOptions)
-    queryClient.invalidateQueries(txpoolQueryOptions)
   }
 
   const handleReject = async () => {

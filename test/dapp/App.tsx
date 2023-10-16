@@ -64,6 +64,7 @@ export default function App() {
     () =>
       createClient({
         transport: custom(provider),
+        pollingInterval: 100,
       })
         .extend(publicActions)
         .extend(walletActions) as unknown as Client,
@@ -555,7 +556,7 @@ function ContractPlayground() {
       account: address,
       chain: null,
     })
-    const transaction = await client.getTransactionReceipt({ hash })
+    const transaction = await client.waitForTransactionReceipt({ hash })
     setDeployedAddress(transaction.contractAddress)
   }
 
@@ -617,7 +618,7 @@ function ContractMockERC20() {
       chain: null,
       args: ['MockERC20', 'M20', 18],
     })
-    const transaction = await client.getTransactionReceipt({ hash })
+    const transaction = await client.waitForTransactionReceipt({ hash })
     setDeployedAddress(transaction.contractAddress)
   }
 
@@ -663,7 +664,7 @@ function ContractMockERC721() {
       chain: null,
       args: ['MockERC721', 'M721'],
     })
-    const transaction = await client.getTransactionReceipt({ hash })
+    const transaction = await client.waitForTransactionReceipt({ hash })
     setDeployedAddress(transaction.contractAddress)
   }
 

@@ -20,7 +20,11 @@ import {
   networkStore,
   pendingRequestsStore,
   sessionsStore,
+  settingsStore,
 } from '~/zustand'
+
+const inpageMessenger = getMessenger('background:inpage')
+const walletMessenger = getMessenger('background:wallet')
 
 const clientCache = new Map()
 export function getRpcClient({
@@ -49,12 +53,17 @@ export function getRpcClient({
           },
           timeout: 5_000,
         })
+
+        if (method === 'eth_sendTransaction')
+          walletMessenger.send('transactionExecuted', undefined)
+
         if ((response as { success?: boolean }).success === false)
           return {
             id,
             jsonrpc: '2.0',
             error: 'An unknown error occurred.',
           } as RpcResponse
+
         return response
       },
     }),
@@ -62,9 +71,6 @@ export function getRpcClient({
   clientCache.set(rpcUrl, client)
   return client
 }
-
-const inpageMessenger = getMessenger('background:inpage')
-const walletMessenger = getMessenger('background:wallet')
 
 export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
   messenger.reply('request', async ({ request, rpcUrl }, meta) => {
@@ -74,7 +80,6 @@ export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
     const rpcClient = getRpcClient({ rpcUrl })
 
     const hasOnboarded = isInpage ? networkStore.getState().onboarded : rpcUrl
-
     if (!hasOnboarded)
       return {
         id: request.id,
@@ -85,12 +90,14 @@ export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
         },
       } as RpcResponse
 
+    const { bypassSignatureAuth, bypassTransactionAuth } =
+      settingsStore.getState()
     // If the method is a "signable" method, request approval from the user.
     if (
-      request.method === 'eth_sendTransaction' ||
-      request.method === 'eth_sign' ||
-      request.method === 'eth_signTypedData_v4' ||
-      request.method === 'personal_sign'
+      (request.method === 'eth_sendTransaction' && !bypassTransactionAuth) ||
+      (request.method === 'eth_sign' && !bypassSignatureAuth) ||
+      (request.method === 'eth_signTypedData_v4' && !bypassSignatureAuth) ||
+      (request.method === 'personal_sign' && !bypassSignatureAuth)
     ) {
       const { addPendingRequest, removePendingRequest } =
         pendingRequestsStore.getState()
@@ -136,14 +143,10 @@ export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
     }
 
     if (isInpage && request.method === 'eth_requestAccounts') {
-      const { addPendingRequest, removePendingRequest } =
-        pendingRequestsStore.getState()
-
-      const { addSession, instantAuth } = sessionsStore.getState()
-
       const authorize = () => {
         const { accountsForRpcUrl } = accountStore.getState()
         const { network } = networkStore.getState()
+        const { addSession } = sessionsStore.getState()
 
         const accounts = accountsForRpcUrl({
           activeFirst: true,
@@ -165,7 +168,11 @@ export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
         } as RpcResponse
       }
 
-      if (instantAuth) return authorize()
+      const { bypassConnectAuth } = settingsStore.getState()
+      if (bypassConnectAuth) return authorize()
+
+      const { addPendingRequest, removePendingRequest } =
+        pendingRequestsStore.getState()
 
       addPendingRequest({ ...request, sender: meta.sender })
 

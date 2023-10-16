@@ -173,6 +173,10 @@ export const contractsStore = createStore<ContractsStore>(
             ]
         }
 
+        contracts[serializedKey] = contracts[serializedKey]?.filter(
+          (c) => c.address !== '0x',
+        )
+
         return {
           ...state,
           contracts,
