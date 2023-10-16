@@ -13,14 +13,21 @@ import { getTheme, setTheme } from '~/design-system'
 import '~/design-system/styles/global.css'
 import { useClient } from '~/hooks/useClient'
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
-import { usePendingBlock } from '~/hooks/usePendingBlock'
+import {
+  getPendingBlockQueryKey,
+  usePendingBlock,
+} from '~/hooks/usePendingBlock'
+import { getPendingTransactionsQueryKey } from '~/hooks/usePendingTransactions'
 import { usePrevious } from '~/hooks/usePrevious'
+import { getTxpoolQueryKey } from '~/hooks/useTxpool'
 import { getMessenger } from '~/messengers'
 import { QueryClientProvider, queryClient } from '~/react-query'
 import { deepEqual } from '~/utils'
+import { getClient } from '~/viem'
 import {
   type AccountState,
   type NetworkState,
+  networkStore,
   syncStores,
   useAccountStore,
   useNetworkStore,
@@ -40,6 +47,7 @@ import OnboardingDownload from './screens/onboarding/download'
 import OnboardingRun from './screens/onboarding/run'
 import OnboardingStart from './screens/onboarding/start'
 import Session from './screens/session'
+import Settings from './screens/settings'
 import TransactionDetails from './screens/transaction-details'
 
 export function init({ type = 'standalone' }: { type?: AppMeta['type'] } = {}) {
@@ -88,6 +96,10 @@ export function init({ type = 'standalone' }: { type?: AppMeta['type'] } = {}) {
           element: <Session />,
         },
         {
+          path: 'settings',
+          element: <Settings />,
+        },
+        {
           path: 'onboarding',
           children: [
             {
@@ -112,12 +124,31 @@ export function init({ type = 'standalone' }: { type?: AppMeta['type'] } = {}) {
     },
   ])
 
-  // Handle requests from background to toggle the theme.
   const backgroundMessenger = getMessenger('background:wallet')
+
+  // Handle requests from background to toggle the theme.
   backgroundMessenger.reply('toggleTheme', async () => {
     const { storageTheme, systemTheme } = getTheme()
     const theme = storageTheme || systemTheme
     setTheme(theme === 'dark' ? 'light' : 'dark')
+  })
+
+  // Handle executed transactions to invalidate stale queries.
+  backgroundMessenger.reply('transactionExecuted', async () => {
+    const {
+      network: { rpcUrl },
+    } = networkStore.getState()
+    const client = getClient({ rpcUrl })
+
+    queryClient.invalidateQueries({
+      queryKey: getPendingBlockQueryKey([client.key]),
+    })
+    queryClient.invalidateQueries({
+      queryKey: getPendingTransactionsQueryKey([client.key]),
+    })
+    queryClient.invalidateQueries({
+      queryKey: getTxpoolQueryKey([client.key]),
+    })
   })
 
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(

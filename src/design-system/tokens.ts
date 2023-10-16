@@ -653,6 +653,7 @@ export const symbolNames = [
   'gearshape.fill',
   'square.and.pencil',
   'plus',
+  'gear',
 ] as const
 export type SymbolName = typeof symbolNames[number]
 

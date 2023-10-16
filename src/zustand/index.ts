@@ -47,6 +47,14 @@ export {
 } from './sessions'
 
 export {
+  type SettingsActions,
+  type SettingsState,
+  type SettingsStore,
+  settingsStore,
+  useSettingsStore,
+} from './settings'
+
+export {
   type TokensActions,
   type TokensState,
   type TokensStore,

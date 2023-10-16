@@ -1,5 +1,5 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { formatGwei } from 'viem'
 
 import { Tooltip } from '~/components'
@@ -30,7 +30,6 @@ import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 import * as styles from './Header.css'
 
 const contentMessenger = getMessenger('wallet:contentScript')
-const inpageMessenger = getMessenger('wallet:inpage')
 
 export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
   const { type } = useAppMeta()
@@ -59,8 +58,7 @@ export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
                 <Separator orientation="vertical" />
               </Column>
               <Column width="content">
-                {/** TODO: Remove this once EIP-6963 is widely adopted across wallets & dapps. */}
-                <ReinjectButton />
+                <SettingsButton />
               </Column>
               <Column width="content">
                 <Separator orientation="vertical" />
@@ -219,27 +217,24 @@ function CollapseButton() {
   )
 }
 
-function ReinjectButton() {
-  const handleInject = useCallback(() => {
-    inpageMessenger.send('injectProvider', undefined)
-  }, [])
-
+function SettingsButton() {
   return (
-    <Tooltip label="Re-inject Wallet into Dapp" height="full">
-      <Box
-        alignItems="center"
-        as="button"
-        backgroundColor={{
-          hover: 'surface/fill/quarternary',
-        }}
-        display="flex"
-        justifyContent="center"
-        height="full"
-        onClick={handleInject}
-        style={{ width: '28px' }}
-      >
-        <SFSymbol size="14px" symbol="square.and.arrow.down" weight="medium" />
-      </Box>
+    <Tooltip label="Settings" height="full">
+      <Link to="/settings">
+        <Box
+          alignItems="center"
+          as="button"
+          backgroundColor={{
+            hover: 'surface/fill/quarternary',
+          }}
+          display="flex"
+          justifyContent="center"
+          height="full"
+          style={{ width: '28px' }}
+        >
+          <SFSymbol size="14px" symbol="gear" weight="medium" />
+        </Box>
+      </Link>
     </Tooltip>
   )
 }
@@ -248,9 +243,6 @@ function ReinjectButton() {
 // Middle Bar
 
 function Network() {
-  const { pathname } = useLocation()
-  const navigate = useNavigate()
-  const { network } = useNetworkStore()
   return (
     <Link to="networks" style={{ height: '100%', width: '100%' }}>
       <Box
@@ -272,22 +264,6 @@ function Network() {
               <Inset left="8px">
                 <Chain />
               </Inset>
-            </Column>
-            <Column width="content">
-              <Button.Symbol
-                label="Network Settings"
-                onClick={(e) => {
-                  e.preventDefault()
-                  navigate(`/networks/${encodeURIComponent(network.rpcUrl)}`, {
-                    replace: pathname.includes(
-                      `/networks/${encodeURIComponent(network.rpcUrl)}`,
-                    ),
-                  })
-                }}
-                variant="ghost primary"
-                height="24px"
-                symbol="gearshape.fill"
-              />
             </Column>
           </Columns>
         </Inset>

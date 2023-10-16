@@ -6,20 +6,17 @@ type Host = string
 type Session = { host: Host; autoApprove?: boolean }
 
 export type SessionsState = {
-  instantAuth: boolean
   sessions: Session[]
 }
 export type SessionsActions = {
   addSession: ({ session }: { session: Session }) => void
   getSession: ({ host }: { host: Host }) => Session | undefined
   removeSession: ({ host }: { host: Host }) => void
-  setInstantAuth: (value: boolean) => void
 }
 export type SessionsStore = SessionsState & SessionsActions
 
 export const sessionsStore = createStore<SessionsStore>(
   (set, get) => ({
-    instantAuth: true,
     sessions: [],
     addSession({ session }) {
       if (get().sessions.find((s) => s.host === session.host)) return
@@ -41,9 +38,6 @@ export const sessionsStore = createStore<SessionsStore>(
           sessions,
         }
       })
-    },
-    setInstantAuth(value) {
-      set({ instantAuth: value })
     },
   }),
   {

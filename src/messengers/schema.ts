@@ -38,4 +38,5 @@ export type Schema = {
       | undefined,
     response: void,
   ]
+  transactionExecuted: [payload: void, response: void]
 }

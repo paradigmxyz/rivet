@@ -1,15 +1,7 @@
 import { Fragment } from 'react'
 import { connect, disconnect } from '~/actions'
 import { Container, LabelledContent } from '~/components'
-import {
-  Box,
-  Button,
-  Inline,
-  Inset,
-  Separator,
-  Stack,
-  Text,
-} from '~/design-system'
+import { Box, Button, Inline, Separator, Stack, Text } from '~/design-system'
 import { useHost } from '~/hooks/useHost'
 import { getMessenger } from '~/messengers'
 import { useSessionsStore } from '~/zustand'
@@ -18,8 +10,7 @@ const inpageMessenger = getMessenger('wallet:inpage')
 
 export default function Session() {
   const { data: host } = useHost()
-  const { getSession, sessions, instantAuth, setInstantAuth } =
-    useSessionsStore()
+  const { getSession, sessions } = useSessionsStore()
   const isConnected = Boolean(host && getSession({ host }))
 
   return (
@@ -45,33 +36,6 @@ export default function Session() {
               Connect
             </Button>
           )}
-        </Container>
-      </Box>
-      <Box>
-        <Container fit header={'Authorization'}>
-          <Inset right="4px">
-            <Box>
-              <Inline
-                alignVertical="center"
-                alignHorizontal="justify"
-                wrap={false}
-              >
-                <Box as="label" htmlFor="instant-auth" width="full">
-                  <Text size="12px">Enable Instant Authorization</Text>
-                </Box>
-                {/** TODO: <Checkbox> component */}
-                <Box
-                  as="input"
-                  id="instant-auth"
-                  checked={instantAuth}
-                  onChange={(e) => {
-                    setInstantAuth(e.target.checked)
-                  }}
-                  type="checkbox"
-                />
-              </Inline>
-            </Box>
-          </Inset>
         </Container>
       </Box>
       <Box>

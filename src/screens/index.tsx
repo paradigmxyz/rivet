@@ -63,13 +63,15 @@ import type { Account } from '~/zustand/account'
 import OnboardingStart from './onboarding/start'
 
 export default function Index() {
+  const defaultTab = 'accounts'
+
   const { setPosition } = useScrollPositionStore()
-  const [params, setParams] = useSearchParams({ tab: 'accounts' })
+  const [params, setParams] = useSearchParams({ tab: defaultTab })
   const { onboarded } = useNetworkStore()
   if (!onboarded) return <OnboardingStart />
   return (
     <Container scrollable={false} verticalInset={false}>
-      <Tabs.Root asChild value={params.get('tab')!}>
+      <Tabs.Root asChild value={params.get('tab') || defaultTab}>
         <Box display="flex" flexDirection="column" height="full">
           <TabsList
             items={[
@@ -823,7 +825,6 @@ function Contracts() {
   const contracts = contracts_.filter((contract) => contract.visible)
 
   const VirtualList = useVirtualList({
-    // rome-ignore lint/nursery/useExhaustiveDependencies:
     layout: useMemo(
       () => [
         { size: 40, sticky: true, type: 'search' },
@@ -837,7 +838,7 @@ function Contracts() {
             }) as const,
         ),
       ],
-      [contracts.length],
+      [contracts],
     ),
   })
 
@@ -911,9 +912,15 @@ function Contracts() {
                 >
                   <Columns alignHorizontal="justify" gap="4px" width="full">
                     <Column alignVertical="center">
-                      <Text size="11px" wrap={false}>
-                        {contract.address}
-                      </Text>
+                      {contract.address !== '0x' ? (
+                        <Text size="11px" wrap={false}>
+                          {contract.address}
+                        </Text>
+                      ) : (
+                        <Text color="text/tertiary" size="11px" wrap={false}>
+                          Deploying...
+                        </Text>
+                      )}
                     </Column>
                     <Column alignVertical="center" width="content">
                       <Button.Symbol
@@ -1001,24 +1008,13 @@ function ImportContract() {
       if (bytecode) {
         if (!account?.address) throw new Error()
 
-        const hash = await client.deployContract({
+        await client.deployContract({
           abi: [],
           bytecode,
           account: account.address,
           chain: null,
         })
-        await client.mine({ blocks: 1 })
-        const receipt = await client.getTransactionReceipt({ hash })
 
-        if (!receipt.contractAddress) throw new Error()
-
-        updateContract({
-          address: receipt.contractAddress,
-          bytecode,
-          key,
-          receipt,
-          state: 'loaded',
-        })
         return
       }
     } catch {
