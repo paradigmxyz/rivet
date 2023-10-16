@@ -6,6 +6,7 @@ import type { Client } from '~/viem'
 import { useContractsStore, useNetworkStore } from '~/zustand'
 import { type ContractsActions, getContractsKey } from '~/zustand/contracts'
 import { getContracts } from '../actions/getContracts'
+import { useBlock } from './useBlock'
 import { useClient } from './useClient'
 
 export const getContractsQueryKey = createQueryKey<
@@ -14,19 +15,24 @@ export const getContractsQueryKey = createQueryKey<
 >('contracts')
 
 export function useContractsQueryOptions() {
+  const { data: block } = useBlock()
   const { syncContracts } = useContractsStore()
   const { network } = useNetworkStore()
   const client = useClient()
 
   return queryOptions({
     staleTime: Infinity,
-    enabled: Boolean(network.forkBlockNumber),
+    enabled: Boolean(
+      block?.number &&
+        network.forkBlockNumber &&
+        block?.number > network.forkBlockNumber,
+    ),
     queryKey: getContractsQueryKey([client.key]),
     async queryFn() {
       if (!network.forkBlockNumber) throw new Error()
 
       const contracts = await getContracts(client, {
-        fromBlock: network.forkBlockNumber,
+        fromBlock: network.forkBlockNumber + 1n,
         toBlock: 'latest',
       })
       syncContracts({ rpcUrl: network.rpcUrl }, { contracts })
