@@ -1,8 +1,11 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import { useMemo, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { omitBy } from 'remeda'
 import {
+  type Address,
   BaseError,
+  type Hex,
   type TransactionRequest,
   formatEther,
   formatGwei,
@@ -10,16 +13,21 @@ import {
   formatTransactionRequest,
   hexToString,
   isHex,
+  numberToHex,
+  parseEther,
+  parseGwei,
 } from 'viem'
 
 import {
   Container,
   DecodedCalldata,
   LabelledContent,
+  Popover,
   TabsContent,
   TabsList,
   Tooltip,
 } from '~/components'
+import { InputField } from '~/components/form'
 import {
   Box,
   Button,
@@ -35,7 +43,7 @@ import {
   usePrepareTransactionRequest,
 } from '~/hooks/usePrepareTransactionRequest'
 import { getMessenger } from '~/messengers'
-import { useAccountStore } from '~/zustand'
+import { useAccountStore, usePendingRequestsStore } from '~/zustand'
 import type { PendingRequest } from '~/zustand/pending-requests'
 
 const backgroundMessenger = getMessenger('background:wallet')
@@ -152,6 +160,56 @@ function SendTransactionRequest(args: {
     })
   }
 
+  type FormValues = {
+    data: Hex;
+    from: Address;
+    gas: Hex;
+    maxFeePerGas: Hex;
+    maxPriorityFeePerGas: Hex;
+    nonce: Hex;
+    to: Address;
+    value: Hex;
+  }
+
+  const { updatePendingRequest } = usePendingRequestsStore();
+  const { formState, handleSubmit, register } = useForm<FormValues>()
+
+  const handleUpdate = (formData: FormValues) => {
+
+    const updatedData = formData.data || data
+    const updatedFrom = formData.from || from
+    const updatedGas = formData.gas || gas
+    const updatedMaxFeePerGas = formData.maxFeePerGas || (typeof maxFeePerGas === 'bigint' ? formatGwei(maxFeePerGas) : undefined)
+    const updatedMaxPriorityFeePerGas =
+      (formData.maxPriorityFeePerGas) || (typeof maxPriorityFeePerGas === 'bigint' ? formatGwei(maxPriorityFeePerGas) : undefined)
+    const updatedNonce = formData.nonce || nonce
+    const updatedTo = formData.to || (to ? to : "0x0000000000000000000000000000000000000000")
+    const updatedValue = formData.value || (typeof value === 'bigint' ? formatEther(value) : undefined) 
+
+    const updatedRequest = {
+      ...args.request,
+      params: [{
+        data: updatedData,
+        from: updatedFrom,
+        gas: updatedGas.toString(),
+        maxFeePerGas: updatedMaxFeePerGas
+          ? numberToHex(parseGwei(updatedMaxFeePerGas))
+          : undefined,
+        maxPriorityFeePerGas: 
+          updatedMaxPriorityFeePerGas
+          ? numberToHex(parseGwei(updatedMaxPriorityFeePerGas))
+          : undefined,
+        nonce: updatedNonce.toString(),
+        to: updatedTo,
+        value: updatedValue ? numberToHex(parseEther(updatedValue)) : undefined,
+      }]
+    } as PendingRequest
+
+    updatePendingRequest(updatedRequest)
+  }
+
+  const submit = handleSubmit(handleUpdate)
+
   ////////////////////////////////////////////////////////////////////////
 
   const [tab, setTab] = useState('data')
@@ -184,21 +242,78 @@ function SendTransactionRequest(args: {
         )}
         <Columns gap="12px">
           <Column width="1/3">
-            <LabelledContent label="From">
+            <LabelledContent 
+              label="From"
+              labelButton={
+                <Popover.Form 
+                  isValid={formState.isValid} 
+                  onSubmit={submit}
+                >
+                  <InputField
+                    defaultValue={from} 
+                    label="From"
+                    placeholder="from"
+                    register={register('from', {
+                      pattern: /^0x[a-fA-F0-9]+$/
+                    })}
+                    style={{width: "360px"}}
+                  />
+                </Popover.Form>
+              }
+            >
               <Tooltip label={from}>
                 <Text.Truncated size="12px">{from}</Text.Truncated>
               </Tooltip>
             </LabelledContent>
           </Column>
           <Column width="1/3">
-            <LabelledContent label="To">
+            <LabelledContent 
+              label="To"
+              labelButton={
+                <Popover.Form 
+                  isValid={formState.isValid} 
+                  onSubmit={submit}
+                >
+                  <InputField 
+                    defaultValue={to} 
+                    label="To"
+                    placeholder="to"
+                    register={register('to', {
+                      pattern: /^0x[a-fA-F0-9]+$/
+                    })}
+                    style={{width: "360px"}}
+                  />
+                </Popover.Form>
+              }
+            >
               <Tooltip label={to}>
                 <Text.Truncated size="12px">{to}</Text.Truncated>
               </Tooltip>
             </LabelledContent>
           </Column>
           <Column width="1/3">
-            <LabelledContent label="Value">
+            <LabelledContent 
+              label="Value"
+              labelButton={
+                <Popover.Form 
+                  isValid={formState.isValid} 
+                  onSubmit={submit}
+                >
+                  <InputField
+                    defaultValue={typeof value === 'bigint' ?
+                    numberIntl8SigFigs.format(
+                      Number(formatEther(value)),
+                    ) : ''}
+                    label="Value"
+                    placeholder="value"
+                    register={register('value', {
+                      min: 0,
+                    })}
+                    type="number"
+                  />
+                </Popover.Form>
+              }
+            >
               <Text size="12px">
                 {typeof value === 'bigint' &&
                   `${numberIntl8SigFigs.format(
@@ -210,14 +325,54 @@ function SendTransactionRequest(args: {
         </Columns>
         <Columns gap="12px">
           <Column width="1/3">
-            <LabelledContent label="Gas Limit">
+            <LabelledContent 
+              label="Gas Limit"
+              labelButton={
+                <Popover.Form 
+                  isValid={formState.isValid} 
+                  onSubmit={submit}
+                >
+                  <InputField
+                    defaultValue={typeof gas === 'bigint' ?
+                      gas.toString() : ''}
+                    label="Gas Limit"
+                    placeholder="gas"
+                    register={register('gas', {
+                      min: 0
+                    })}
+                    type="number"
+                  />
+                </Popover.Form>
+              }
+            >
               <Text size="12px">
                 {typeof gas === 'bigint' && numberIntl.format(gas)}
               </Text>
             </LabelledContent>
           </Column>
           <Column width="1/3">
-            <LabelledContent label="Tip Per Gas">
+            <LabelledContent 
+              label="Tip Per Gas"
+              labelButton={
+                <Popover.Form 
+                  isValid={formState.isValid} 
+                  onSubmit={submit}
+                >
+                  <InputField
+                    defaultValue={typeof maxPriorityFeePerGas === 'bigint' ?
+                      numberIntl8SigFigs.format(
+                        Number(formatGwei(maxPriorityFeePerGas)),
+                      ) : ''
+                    }
+                    label="Tip Per Gas"
+                    placeholder="maxPriorityFeePerGas"
+                    register={register('maxPriorityFeePerGas', {
+                      min: 0
+                    })}
+                  />
+                </Popover.Form>
+              }
+            >
               <Text size="12px">
                 {typeof maxPriorityFeePerGas === 'bigint' && (
                   <>
@@ -231,7 +386,28 @@ function SendTransactionRequest(args: {
             </LabelledContent>
           </Column>
           <Column width="1/3">
-            <LabelledContent label="Max Fee Per Gas">
+            <LabelledContent 
+              label="Max Fee Per Gas"
+              labelButton={
+                <Popover.Form 
+                  isValid={formState.isValid} 
+                  onSubmit={submit}
+                >
+                  <InputField
+                    defaultValue={typeof maxFeePerGas === 'bigint' ?
+                      numberIntl8SigFigs.format(
+                        Number(formatGwei(maxFeePerGas)),
+                      ) : ''
+                    }
+                    label="Max Fee Per Gas" 
+                    placeholder="maxFeePerGas"
+                    register={register('maxFeePerGas', {
+                      min: 0
+                    })}
+                  />
+                </Popover.Form>
+              }
+            >
               <Text size="12px">
                 {typeof maxFeePerGas === 'bigint' && (
                   <>
@@ -247,12 +423,29 @@ function SendTransactionRequest(args: {
         </Columns>
         <Columns gap="12px">
           <Column>
-            <LabelledContent label="Nonce">
+            <LabelledContent 
+              label="Nonce"
+              labelButton={
+                <Popover.Form 
+                  isValid={formState.isValid} 
+                  onSubmit={submit}
+                >
+                  <InputField
+                    defaultValue={nonce} 
+                    label="Nonce"
+                    placeholder="nonce"
+                    register={register('nonce', {
+                      min: 0
+                    })}
+                    type="number"
+                  />
+                </Popover.Form>
+              }
+            >
               <Text size="12px">{nonce}</Text>
             </LabelledContent>
           </Column>
         </Columns>
-        {data && (
           <Tabs.Root asChild value={tab}>
             <Box display="flex" flexDirection="column" height="full">
               <TabsList
@@ -266,7 +459,28 @@ function SendTransactionRequest(args: {
               />
               <Inset vertical="16px" bottom="152px">
                 <TabsContent inset={false} scrollable={false} value="data">
-                  <DecodedCalldata address={to} data={data} />
+                  <Box display="flex" flexDirection="row" alignItems="center">
+                  <DecodedCalldata 
+                    address={to} 
+                    data={data || "0x"} 
+                    labelButton={
+                      <Popover.Form 
+                        isValid={formState.isValid} 
+                        onSubmit={submit}
+                      >
+                        <InputField
+                          defaultValue={data || "0x"} 
+                          label="Raw Data"
+                          placeholder="data"
+                          register={register('data', {
+                            pattern: /^0x[a-fA-F0-9]*$/
+                          })}
+                          style={{width: "360px"}}
+                        />
+                      </Popover.Form>
+                    }
+                  />
+                  </Box>
                 </TabsContent>
                 <TabsContent inset={false} value="state">
                   {''}
@@ -274,7 +488,6 @@ function SendTransactionRequest(args: {
               </Inset>
             </Box>
           </Tabs.Root>
-        )}
       </Stack>
     </PendingRequestContainer>
   )
