@@ -13,6 +13,7 @@ export type PendingRequestsState = {
 export type PendingRequestsActions = {
   addPendingRequest: (request: PendingRequest) => void
   removePendingRequest: (requestId: number) => void
+  updatePendingRequest: (updatedRequest: PendingRequest) => void
 }
 export type PendingRequestsStore = PendingRequestsState & PendingRequestsActions
 
@@ -33,6 +34,14 @@ export const pendingRequestsStore = createStore<PendingRequestsStore>(
         ),
       }))
     },
+    updatePendingRequest(updatedRequest) {
+      set((state) => ({
+        ...state,
+        pendingRequests: state.pendingRequests.map(
+          (request) => request.id !== updatedRequest.id ? request : updatedRequest
+        )
+      }))
+    }
   }),
   {
     persist: {
