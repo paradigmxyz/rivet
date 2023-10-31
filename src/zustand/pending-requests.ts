@@ -37,11 +37,11 @@ export const pendingRequestsStore = createStore<PendingRequestsStore>(
     updatePendingRequest(updatedRequest) {
       set((state) => ({
         ...state,
-        pendingRequests: state.pendingRequests.map(
-          (request) => request.id !== updatedRequest.id ? request : updatedRequest
-        )
+        pendingRequests: state.pendingRequests.map((request) =>
+          request.id !== updatedRequest.id ? request : updatedRequest,
+        ),
       }))
-    }
+    },
   }),
   {
     persist: {

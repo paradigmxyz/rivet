@@ -16,6 +16,9 @@ export default defineConfig({
     emptyOutDir: false,
     outDir,
   },
+  optimizeDeps: {
+    exclude: ['mipd', 'viem'],
+  },
   plugins: [
     tsconfigPaths(),
     react(),

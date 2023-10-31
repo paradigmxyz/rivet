@@ -6,7 +6,7 @@ import { etherscanApiUrls } from '../constants/etherscan'
 import { useClient } from './useClient'
 
 type AutoloadAbiParameters = {
-  address?: Address
+  address?: Address | null
   enabled?: boolean
 }
 

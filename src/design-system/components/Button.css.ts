@@ -1,7 +1,7 @@
 import { styleVariants } from '@vanilla-extract/css'
 
 export const buttonHeight = {
-  '12px': 12,
+  '16px': 16,
   '18px': 18,
   '20px': 20,
   '24px': 24,

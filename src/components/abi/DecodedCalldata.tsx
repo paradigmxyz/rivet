@@ -23,8 +23,8 @@ import { FormattedAbiItem } from './FormattedAbiItem'
 export function DecodedCalldata({
   address,
   data,
-  labelButton,
-}: { address?: Address; data: Hex, labelButton?: ReactNode }) {
+  labelRight,
+}: { address?: Address | null; data: Hex; labelRight?: ReactNode }) {
   const selector = slice(data, 0, 4)
 
   // Try extract ABI from whatsabi autoloading (etherscan, 4byte dbs, etc)
@@ -129,7 +129,7 @@ export function DecodedCalldata({
         </>
       )}
       {abiItem && <Separator />}
-      <LabelledContent label="Raw Data" labelButton={labelButton}>
+      <LabelledContent label="Raw Data" labelRight={labelRight}>
         <Box
           backgroundColor="surface/primary"
           paddingHorizontal="8px"

@@ -1,5 +1,6 @@
+import * as Popover from '@radix-ui/react-popover'
 import * as Tabs from '@radix-ui/react-tabs'
-import { useMemo, useState } from 'react'
+import { type ReactNode, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { omitBy } from 'remeda'
 import {
@@ -22,12 +23,11 @@ import {
   Container,
   DecodedCalldata,
   LabelledContent,
-  Popover,
   TabsContent,
   TabsList,
   Tooltip,
 } from '~/components'
-import { InputField } from '~/components/form'
+import * as Form from '~/components/form'
 import {
   Box,
   Button,
@@ -96,7 +96,7 @@ function PendingRequestContainer({
 }
 
 ////////////////////////////////////////////////////////////////////////
-// Detail Components
+// Send Transaction View
 
 const numberIntl = new Intl.NumberFormat()
 const numberIntl8SigFigs = new Intl.NumberFormat('en-US', {
@@ -160,55 +160,60 @@ function SendTransactionRequest(args: {
     })
   }
 
-  type FormValues = {
-    data: Hex;
-    from: Address;
-    gas: Hex;
-    maxFeePerGas: Hex;
-    maxPriorityFeePerGas: Hex;
-    nonce: Hex;
-    to: Address;
-    value: Hex;
-  }
+  ////////////////////////////////////////////////////////////////////////
 
-  const { updatePendingRequest } = usePendingRequestsStore();
+  type FormValues = {
+    data: Hex
+    from: Address
+    gas: Hex
+    maxFeePerGas: Hex
+    maxPriorityFeePerGas: Hex
+    nonce: Hex
+    to: Address
+    value: Hex
+  }
+  const { updatePendingRequest } = usePendingRequestsStore()
   const { formState, handleSubmit, register } = useForm<FormValues>()
 
-  const handleUpdate = (formData: FormValues) => {
+  const update = handleSubmit((formData) => {
+    const data_ = formData.data || data
+    const from_ = formData.from || from
+    const gas_ = formData.gas || gas
+    const maxFeePerGas_ =
+      formData.maxFeePerGas ||
+      (typeof maxFeePerGas === 'bigint' ? formatGwei(maxFeePerGas) : undefined)
+    const maxPriorityFeePerGas_ =
+      formData.maxPriorityFeePerGas ||
+      (typeof maxPriorityFeePerGas === 'bigint'
+        ? formatGwei(maxPriorityFeePerGas)
+        : undefined)
+    const nonce_ = formData.nonce || nonce
+    const to_ =
+      formData.to || (to ? to : '0x0000000000000000000000000000000000000000')
+    const value_ =
+      formData.value ||
+      (typeof value === 'bigint' ? formatEther(value) : undefined)
 
-    const updatedData = formData.data || data
-    const updatedFrom = formData.from || from
-    const updatedGas = formData.gas || gas
-    const updatedMaxFeePerGas = formData.maxFeePerGas || (typeof maxFeePerGas === 'bigint' ? formatGwei(maxFeePerGas) : undefined)
-    const updatedMaxPriorityFeePerGas =
-      (formData.maxPriorityFeePerGas) || (typeof maxPriorityFeePerGas === 'bigint' ? formatGwei(maxPriorityFeePerGas) : undefined)
-    const updatedNonce = formData.nonce || nonce
-    const updatedTo = formData.to || (to ? to : "0x0000000000000000000000000000000000000000")
-    const updatedValue = formData.value || (typeof value === 'bigint' ? formatEther(value) : undefined) 
-
-    const updatedRequest = {
+    updatePendingRequest({
       ...args.request,
-      params: [{
-        data: updatedData,
-        from: updatedFrom,
-        gas: updatedGas.toString(),
-        maxFeePerGas: updatedMaxFeePerGas
-          ? numberToHex(parseGwei(updatedMaxFeePerGas))
-          : undefined,
-        maxPriorityFeePerGas: 
-          updatedMaxPriorityFeePerGas
-          ? numberToHex(parseGwei(updatedMaxPriorityFeePerGas))
-          : undefined,
-        nonce: updatedNonce.toString(),
-        to: updatedTo,
-        value: updatedValue ? numberToHex(parseEther(updatedValue)) : undefined,
-      }]
-    } as PendingRequest
-
-    updatePendingRequest(updatedRequest)
-  }
-
-  const submit = handleSubmit(handleUpdate)
+      params: [
+        {
+          data: data_,
+          from: from_,
+          gas: gas_.toString(),
+          maxFeePerGas: maxFeePerGas_
+            ? numberToHex(parseGwei(maxFeePerGas_))
+            : undefined,
+          maxPriorityFeePerGas: maxPriorityFeePerGas_
+            ? numberToHex(parseGwei(maxPriorityFeePerGas_))
+            : undefined,
+          nonce: nonce_.toString(),
+          to: to_,
+          value: value_ ? numberToHex(parseEther(value_)) : undefined,
+        },
+      ],
+    } as PendingRequest)
+  })
 
   ////////////////////////////////////////////////////////////////////////
 
@@ -242,23 +247,25 @@ function SendTransactionRequest(args: {
         )}
         <Columns gap="12px">
           <Column width="1/3">
-            <LabelledContent 
+            <LabelledContent
               label="From"
-              labelButton={
-                <Popover.Form 
-                  isValid={formState.isValid} 
-                  onSubmit={submit}
+              labelRight={
+                <UpdateFieldPopover
+                  disabled={!formState.isValid}
+                  onSubmit={update}
                 >
-                  <InputField
-                    defaultValue={from} 
+                  <Form.InputField
+                    defaultValue={from}
                     label="From"
+                    height="24px"
+                    hideLabel
                     placeholder="from"
                     register={register('from', {
-                      pattern: /^0x[a-fA-F0-9]+$/
+                      pattern: /^0x[a-fA-F0-9]+$/,
                     })}
-                    style={{width: "360px"}}
+                    style={{ width: '360px' }}
                   />
-                </Popover.Form>
+                </UpdateFieldPopover>
               }
             >
               <Tooltip label={from}>
@@ -267,23 +274,25 @@ function SendTransactionRequest(args: {
             </LabelledContent>
           </Column>
           <Column width="1/3">
-            <LabelledContent 
+            <LabelledContent
               label="To"
-              labelButton={
-                <Popover.Form 
-                  isValid={formState.isValid} 
-                  onSubmit={submit}
+              labelRight={
+                <UpdateFieldPopover
+                  disabled={!formState.isValid}
+                  onSubmit={update}
                 >
-                  <InputField 
-                    defaultValue={to} 
+                  <Form.InputField
+                    defaultValue={to ?? ''}
                     label="To"
+                    height="24px"
+                    hideLabel
                     placeholder="to"
                     register={register('to', {
-                      pattern: /^0x[a-fA-F0-9]+$/
+                      pattern: /^0x[a-fA-F0-9]+$/,
                     })}
-                    style={{width: "360px"}}
+                    style={{ width: '360px' }}
                   />
-                </Popover.Form>
+                </UpdateFieldPopover>
               }
             >
               <Tooltip label={to}>
@@ -292,26 +301,29 @@ function SendTransactionRequest(args: {
             </LabelledContent>
           </Column>
           <Column width="1/3">
-            <LabelledContent 
+            <LabelledContent
               label="Value"
-              labelButton={
-                <Popover.Form 
-                  isValid={formState.isValid} 
-                  onSubmit={submit}
+              labelRight={
+                <UpdateFieldPopover
+                  disabled={!formState.isValid}
+                  onSubmit={update}
                 >
-                  <InputField
-                    defaultValue={typeof value === 'bigint' ?
-                    numberIntl8SigFigs.format(
-                      Number(formatEther(value)),
-                    ) : ''}
+                  <Form.InputField
+                    defaultValue={
+                      typeof value === 'bigint'
+                        ? numberIntl8SigFigs.format(Number(formatEther(value)))
+                        : ''
+                    }
                     label="Value"
+                    height="24px"
+                    hideLabel
                     placeholder="value"
                     register={register('value', {
                       min: 0,
                     })}
                     type="number"
                   />
-                </Popover.Form>
+                </UpdateFieldPopover>
               }
             >
               <Text size="12px">
@@ -325,24 +337,25 @@ function SendTransactionRequest(args: {
         </Columns>
         <Columns gap="12px">
           <Column width="1/3">
-            <LabelledContent 
+            <LabelledContent
               label="Gas Limit"
-              labelButton={
-                <Popover.Form 
-                  isValid={formState.isValid} 
-                  onSubmit={submit}
+              labelRight={
+                <UpdateFieldPopover
+                  disabled={!formState.isValid}
+                  onSubmit={update}
                 >
-                  <InputField
-                    defaultValue={typeof gas === 'bigint' ?
-                      gas.toString() : ''}
+                  <Form.InputField
+                    defaultValue={typeof gas === 'bigint' ? gas.toString() : ''}
                     label="Gas Limit"
+                    height="24px"
+                    hideLabel
                     placeholder="gas"
                     register={register('gas', {
-                      min: 0
+                      min: 0,
                     })}
                     type="number"
                   />
-                </Popover.Form>
+                </UpdateFieldPopover>
               }
             >
               <Text size="12px">
@@ -351,26 +364,30 @@ function SendTransactionRequest(args: {
             </LabelledContent>
           </Column>
           <Column width="1/3">
-            <LabelledContent 
+            <LabelledContent
               label="Tip Per Gas"
-              labelButton={
-                <Popover.Form 
-                  isValid={formState.isValid} 
-                  onSubmit={submit}
+              labelRight={
+                <UpdateFieldPopover
+                  disabled={!formState.isValid}
+                  onSubmit={update}
                 >
-                  <InputField
-                    defaultValue={typeof maxPriorityFeePerGas === 'bigint' ?
-                      numberIntl8SigFigs.format(
-                        Number(formatGwei(maxPriorityFeePerGas)),
-                      ) : ''
+                  <Form.InputField
+                    defaultValue={
+                      typeof maxPriorityFeePerGas === 'bigint'
+                        ? numberIntl8SigFigs.format(
+                            Number(formatGwei(maxPriorityFeePerGas)),
+                          )
+                        : ''
                     }
                     label="Tip Per Gas"
+                    height="24px"
+                    hideLabel
                     placeholder="maxPriorityFeePerGas"
                     register={register('maxPriorityFeePerGas', {
-                      min: 0
+                      min: 0,
                     })}
                   />
-                </Popover.Form>
+                </UpdateFieldPopover>
               }
             >
               <Text size="12px">
@@ -386,26 +403,30 @@ function SendTransactionRequest(args: {
             </LabelledContent>
           </Column>
           <Column width="1/3">
-            <LabelledContent 
+            <LabelledContent
               label="Max Fee Per Gas"
-              labelButton={
-                <Popover.Form 
-                  isValid={formState.isValid} 
-                  onSubmit={submit}
+              labelRight={
+                <UpdateFieldPopover
+                  disabled={!formState.isValid}
+                  onSubmit={update}
                 >
-                  <InputField
-                    defaultValue={typeof maxFeePerGas === 'bigint' ?
-                      numberIntl8SigFigs.format(
-                        Number(formatGwei(maxFeePerGas)),
-                      ) : ''
+                  <Form.InputField
+                    defaultValue={
+                      typeof maxFeePerGas === 'bigint'
+                        ? numberIntl8SigFigs.format(
+                            Number(formatGwei(maxFeePerGas)),
+                          )
+                        : ''
                     }
-                    label="Max Fee Per Gas" 
+                    label="Max Fee Per Gas"
+                    height="24px"
+                    hideLabel
                     placeholder="maxFeePerGas"
                     register={register('maxFeePerGas', {
-                      min: 0
+                      min: 0,
                     })}
                   />
-                </Popover.Form>
+                </UpdateFieldPopover>
               }
             >
               <Text size="12px">
@@ -423,75 +444,145 @@ function SendTransactionRequest(args: {
         </Columns>
         <Columns gap="12px">
           <Column>
-            <LabelledContent 
+            <LabelledContent
               label="Nonce"
-              labelButton={
-                <Popover.Form 
-                  isValid={formState.isValid} 
-                  onSubmit={submit}
+              labelRight={
+                <UpdateFieldPopover
+                  disabled={!formState.isValid}
+                  onSubmit={update}
                 >
-                  <InputField
-                    defaultValue={nonce} 
+                  <Form.InputField
+                    defaultValue={nonce}
                     label="Nonce"
+                    height="24px"
+                    hideLabel
                     placeholder="nonce"
                     register={register('nonce', {
-                      min: 0
+                      min: 0,
                     })}
                     type="number"
                   />
-                </Popover.Form>
+                </UpdateFieldPopover>
               }
             >
               <Text size="12px">{nonce}</Text>
             </LabelledContent>
           </Column>
         </Columns>
-          <Tabs.Root asChild value={tab}>
-            <Box display="flex" flexDirection="column" height="full">
-              <TabsList
-                items={[
-                  { label: 'Data', value: 'data' },
-                  { label: 'Trace', value: 'trace' },
-                ]}
-                onSelect={(item) => {
-                  setTab(item.value)
-                }}
-              />
-              <Inset vertical="16px" bottom="152px">
-                <TabsContent inset={false} scrollable={false} value="data">
-                  <Box display="flex" flexDirection="row" alignItems="center">
-                  <DecodedCalldata 
-                    address={to} 
-                    data={data || "0x"} 
-                    labelButton={
-                      <Popover.Form 
-                        isValid={formState.isValid} 
-                        onSubmit={submit}
+        <Tabs.Root asChild value={tab}>
+          <Box display="flex" flexDirection="column" height="full">
+            <TabsList
+              items={[
+                { label: 'Data', value: 'data' },
+                { label: 'Trace', value: 'trace' },
+              ]}
+              onSelect={(item) => {
+                setTab(item.value)
+              }}
+            />
+            <Inset vertical="16px" bottom="152px">
+              <TabsContent inset={false} scrollable={false} value="data">
+                <Box display="flex" flexDirection="row" alignItems="center">
+                  <DecodedCalldata
+                    address={to}
+                    data={data || '0x'}
+                    labelRight={
+                      <UpdateFieldPopover
+                        disabled={!formState.isValid}
+                        onSubmit={update}
                       >
-                        <InputField
-                          defaultValue={data || "0x"} 
+                        <Form.InputField
+                          defaultValue={data || '0x'}
                           label="Raw Data"
+                          height="24px"
+                          hideLabel
                           placeholder="data"
                           register={register('data', {
-                            pattern: /^0x[a-fA-F0-9]*$/
+                            pattern: /^0x[a-fA-F0-9]*$/,
                           })}
-                          style={{width: "360px"}}
+                          style={{ width: '360px' }}
                         />
-                      </Popover.Form>
+                      </UpdateFieldPopover>
                     }
                   />
-                  </Box>
-                </TabsContent>
-                <TabsContent inset={false} value="state">
-                  {''}
-                </TabsContent>
-              </Inset>
-            </Box>
-          </Tabs.Root>
+                </Box>
+              </TabsContent>
+              <TabsContent inset={false} value="state">
+                {''}
+              </TabsContent>
+            </Inset>
+          </Box>
+        </Tabs.Root>
       </Stack>
     </PendingRequestContainer>
   )
 }
+
+function UpdateFieldPopover({
+  children,
+  disabled,
+  onSubmit,
+}: {
+  children: ReactNode
+  disabled: boolean
+  onSubmit: (e: React.FormEvent) => void
+}) {
+  const [open, setOpen] = useState(false)
+
+  return (
+    <Popover.Root open={open}>
+      <Popover.Trigger asChild>
+        <Box position="absolute" style={{ top: -6 }}>
+          <Button.Symbol
+            label="Edit"
+            height="16px"
+            onClick={() => setOpen(true)}
+            symbol="square.and.pencil"
+            variant="ghost primary"
+          />
+        </Box>
+      </Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Content
+          onEscapeKeyDown={() => setOpen(false)}
+          onPointerDownOutside={() => setOpen(false)}
+          style={{ zIndex: 1 }}
+        >
+          <Box
+            backgroundColor="surface/secondary/elevated"
+            borderWidth="1px"
+            gap="4px"
+            padding="8px"
+            width="full"
+          >
+            <Form.Root
+              onSubmit={(e) => {
+                onSubmit(e)
+                setOpen(false)
+              }}
+            >
+              <Stack gap="8px">
+                {children}
+                <Button
+                  disabled={disabled}
+                  height="20px"
+                  type="submit"
+                  variant="stroked fill"
+                  width="fit"
+                >
+                  Update
+                </Button>
+              </Stack>
+            </Form.Root>
+          </Box>
+        </Popover.Content>
+      </Popover.Portal>
+    </Popover.Root>
+  )
+}
+
+////////////////////////////////////////////////////////////////////////
+// Request Accounts View
 
 function RequestAccounts({
   request,
@@ -538,6 +629,9 @@ function RequestAccounts({
     </PendingRequestContainer>
   )
 }
+
+////////////////////////////////////////////////////////////////////////
+// Sign Message View
 
 function SignMessageRequest({
   request,
@@ -587,6 +681,9 @@ function SignMessageRequest({
     </PendingRequestContainer>
   )
 }
+
+////////////////////////////////////////////////////////////////////////
+// Sign Typed Data View
 
 function SignTypedDataRequest({
   request,
