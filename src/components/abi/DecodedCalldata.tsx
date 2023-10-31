@@ -1,5 +1,5 @@
 import type { AbiFunction } from 'abitype'
-import { useMemo } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import {
   type Abi,
   type AbiItem,
@@ -23,7 +23,8 @@ import { FormattedAbiItem } from './FormattedAbiItem'
 export function DecodedCalldata({
   address,
   data,
-}: { address?: Address; data: Hex }) {
+  labelRight,
+}: { address?: Address | null; data: Hex; labelRight?: ReactNode }) {
   const selector = slice(data, 0, 4)
 
   // Try extract ABI from whatsabi autoloading (etherscan, 4byte dbs, etc)
@@ -128,7 +129,7 @@ export function DecodedCalldata({
         </>
       )}
       {abiItem && <Separator />}
-      <LabelledContent label="Raw Data">
+      <LabelledContent label="Raw Data" labelRight={labelRight}>
         <Box
           backgroundColor="surface/primary"
           paddingHorizontal="8px"

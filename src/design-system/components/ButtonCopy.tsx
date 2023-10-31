@@ -16,6 +16,9 @@ type ButtonCopyProps = UnionOmit<
 }
 
 export const checkmarkStylesForHeight = {
+  '16px': {
+    size: '9px',
+  },
   '18px': {
     size: '9px',
   },
