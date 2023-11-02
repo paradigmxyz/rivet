@@ -1,11 +1,12 @@
-import type { Address } from 'abitype'
+import type { Abi, Address } from 'abitype'
 import type { Hex, TransactionReceipt } from 'viem'
+import { useStore } from 'zustand'
 
-import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
 import type { RequiredBy } from '~/utils/types'
 import { createStore, getKey } from './utils'
 
 type Contract = {
+  abi?: Abi
   address: Address
   bytecode?: Hex | null
   key: string
@@ -192,8 +193,4 @@ export const contractsStore = createStore<ContractsStore>(
   },
 )
 
-export const useContractsStore = () =>
-  useSyncExternalStoreWithTracked(
-    contractsStore.subscribe,
-    contractsStore.getState,
-  )
+export const useContractsStore = () => useStore(contractsStore)

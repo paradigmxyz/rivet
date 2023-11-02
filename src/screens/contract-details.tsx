@@ -1,5 +1,6 @@
 import * as Tabs from '@radix-ui/react-tabs'
-import type { AbiFunction } from 'abitype'
+import { useMutation } from '@tanstack/react-query'
+import type { Abi, AbiFunction } from 'abitype'
 import { useMemo } from 'react'
 import { useParams } from 'react-router'
 
@@ -16,17 +17,19 @@ import { useContracts } from '~/hooks/useContracts'
 
 export default function ContractDetails() {
   const { contractAddress } = useParams()
-  const { contracts } = useContracts({ enabled: false })
+  const { contracts, updateContract } = useContracts({ enabled: false })
   const contract = contracts.find((c) => c.address === contractAddress)
 
   const {
-    data: abi,
+    data: autoloadAbi,
     isLoading,
     isFetched,
   } = useAutoloadAbi({
     address: contract?.address,
-    enabled: Boolean(contract?.address),
+    enabled: Boolean(!contract?.abi && contract?.address),
   })
+
+  const abi = (contract?.abi || autoloadAbi) as Abi
 
   const abiFunctions = useMemo(() => {
     if (!abi) return undefined
@@ -42,6 +45,8 @@ export default function ContractDetails() {
   const hasStateMutability = !abiFunctions?.some(
     (abiItem) => !('stateMutability' in abiItem),
   )
+
+  const isGuessedAbi = !hasStateMutability
 
   const [readAbi, writeAbi] = useMemo(() => {
     if (!abiFunctions) return [undefined, undefined]
@@ -69,6 +74,25 @@ export default function ContractDetails() {
             <Text size="12px">{contract?.address}</Text>
           </LabelledContent>
         </Box>
+        {(isGuessedAbi || contract?.abi) && (
+          <UploadAbi
+            onUpload={({ abi }) =>
+              updateContract({ abi, address: contract?.address! })
+            }
+          />
+        )}
+        {isGuessedAbi && (
+          <>
+            <Box backgroundColor="surface/yellowTint" padding="8px">
+              <Text size="11px">
+                Warning: We could not accurately extract the ABI for this
+                contract. The methods below are a best guess based on the
+                selectors in the bytecode. It is recommended to upload the ABI
+                using the button above.
+              </Text>
+            </Box>
+          </>
+        )}
         {isLoading && (
           <Text color="text/tertiary" size="12px">
             Loading...
@@ -123,5 +147,43 @@ export default function ContractDetails() {
         )}
       </Stack>
     </Container>
+  )
+}
+
+function UploadAbi({ onUpload }: { onUpload: (abi: { abi: Abi }) => void }) {
+  const { error, mutateAsync: uploadAbi } = useMutation({
+    async mutationFn(files: FileList | null) {
+      if (!files) return
+      const file = files[0]
+      const json = JSON.parse(await file.text()) as any
+      const abi = json.abi || json
+
+      const isAbi = (() => {
+        if (!Array.isArray(abi)) return false
+        if (!abi.every((abiItem: any) => 'type' in abiItem)) return false
+        return true
+      })()
+      if (!isAbi)
+        throw new Error('ABI is not valid. Please upload a valid ABI.')
+
+      onUpload({ abi })
+    },
+  })
+
+  return (
+    <Stack gap="8px">
+      <LabelledContent label="Upload ABI">
+        <input
+          accept=".json"
+          onChange={(e) => uploadAbi(e.target.files)}
+          type="file"
+        />
+      </LabelledContent>
+      {error && (
+        <Text color="surface/red" size="11px">
+          {error.message}
+        </Text>
+      )}
+    </Stack>
   )
 }
