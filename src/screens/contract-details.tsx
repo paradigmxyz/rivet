@@ -1,18 +1,18 @@
 import * as Tabs from '@radix-ui/react-tabs'
+import type { AbiFunction } from 'abitype'
 import { useMemo } from 'react'
 import { useParams } from 'react-router'
 
-import type { AbiFunction } from 'abitype'
 import {
+  AbiFunctionsAccordion,
   Container,
   LabelledContent,
   TabsContent,
   TabsList,
-} from '../components'
-import { AbiFunctionsAccordion } from '../components/abi/AbiFunctionsAccordion'
-import { Bleed, Box, Stack, Text } from '../design-system'
-import { useAutoloadAbi } from '../hooks/useAutoloadAbi'
-import { useContracts } from '../hooks/useContracts'
+} from '~/components'
+import { Bleed, Box, Stack, Text } from '~/design-system'
+import { useAutoloadAbi } from '~/hooks/useAutoloadAbi'
+import { useContracts } from '~/hooks/useContracts'
 
 export default function ContractDetails() {
   const { contractAddress } = useParams()

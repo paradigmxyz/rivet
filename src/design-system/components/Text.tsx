@@ -124,7 +124,6 @@ export const TextBase = forwardRef<HTMLDivElement, TextProps>(
         style={style}
         weight={weight}
         width={width}
-        wrap={wrap}
         testId={testId}
       >
         <Box

@@ -1,4 +1,5 @@
 export {
+  AbiFunctionsAccordion,
   AbiParametersInputs,
   DecodedCalldata,
   DecodedAbiParameters,
