@@ -1,13 +1,14 @@
 import '../../hmr'
 
+import { parseAbiItem } from 'abitype'
 import { useState } from 'react'
 import ReactDOM from 'react-dom/client'
 
 import '~/design-system/styles/global.css'
 
-import { parseAbiItem } from 'abitype'
 import { DecodedAbiParameters, FormattedAbiItem } from '~/components'
 import { Box, Stack, Text, type Theme } from '~/design-system'
+import { AbiParametersInputs } from '../abi/AbiParametersInputs.playground'
 import { fulfillAvailableAdvancedOrdersAbiItem } from './constants'
 
 function Components() {
@@ -264,6 +265,16 @@ function Components() {
               [[{ a: true }]],
             ]}
           />
+        </Box>
+        <Text weight="medium" size="22px">
+          AbiParametersInputs
+        </Text>
+        <Box
+          backgroundColor="surface/primary/elevated"
+          paddingVertical="12px"
+          style={{ maxWidth: '375px' }}
+        >
+          <AbiParametersInputs />
         </Box>
       </Stack>
     </Box>

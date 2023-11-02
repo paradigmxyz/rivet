@@ -20,6 +20,7 @@ export function DecodedAbiParameters<
   params,
   args,
   level = 0,
+  variant,
 }: {
   expandable?: boolean
   params: TParams
@@ -27,6 +28,7 @@ export function DecodedAbiParameters<
     ? AbiParametersToPrimitiveTypes<TParams>
     : never
   level?: number
+  variant?: 'inline'
 }) {
   return (
     <Accordion.Root className={styles.root} type="multiple">
@@ -38,6 +40,7 @@ export function DecodedAbiParameters<
           index={index}
           level={level}
           param={param}
+          variant={variant}
         />
       ))}
     </Accordion.Root>
@@ -47,15 +50,17 @@ export function DecodedAbiParameters<
 export function DecodedAbiParameter<TAbiParameter extends AbiParameter>({
   args,
   expandable: expandable_,
-  index,
-  level,
+  index = 0,
+  level = 0,
   param: param_,
+  variant,
 }: {
   args: [AbiParameterToPrimitiveType<TAbiParameter>] | readonly unknown[]
   expandable?: boolean
   param: TAbiParameter
-  level: number
-  index: number
+  level?: number
+  index?: number
+  variant?: 'inline'
 }) {
   // TODO: Make truncate length responsive to element width.
   const truncateLength = 20
@@ -111,7 +116,20 @@ export function DecodedAbiParameter<TAbiParameter extends AbiParameter>({
   const expandable =
     expandable_ && (isExpandableParams || isExpandablePrimitive)
 
-  if (!expandable) {
+  if (variant === 'inline')
+    return (
+      <Box className={styles.staticItem}>
+        <ParameterRow level={level} value={value} variant="inline">
+          <Text family="mono" size="11px" width="full" wrap="anywhere">
+            <Text color="text/tertiary">
+              {param.internalType || param.type} {param.name}{' '}
+            </Text>
+            {(value ?? '').toString()}
+          </Text>
+        </ParameterRow>
+      </Box>
+    )
+  if (!expandable)
     return (
       <Box className={styles.staticItem}>
         <ParameterRow level={level} value={value}>
@@ -126,7 +144,6 @@ export function DecodedAbiParameter<TAbiParameter extends AbiParameter>({
         </ParameterRow>
       </Box>
     )
-  }
   return (
     <Accordion.Item className={styles.item} value={`${index}`}>
       <ParameterTrigger>
@@ -198,11 +215,13 @@ export function ParameterRow({
   expandable,
   level,
   value,
+  variant,
 }: {
   children: React.ReactNode
   expandable?: boolean
   level: number
   value?: unknown
+  variant?: 'inline'
 }) {
   const [copied, setCopied] = useState(false)
   useEffect(() => {
@@ -231,15 +250,15 @@ export function ParameterRow({
         justifyContent="space-between"
         paddingVertical="8px"
         height="full"
-        width="full"
+        width={variant ? 'fit' : 'full'}
       >
         {children}
       </Box>
       <Box
         display="flex"
         alignItems="center"
-        justifyContent="center"
-        style={{ width: '22px' }}
+        justifyContent="flex-end"
+        style={{ width: '16px' }}
       >
         {expandable ? (
           <SFSymbol
@@ -259,7 +278,7 @@ export function ParameterRow({
             />
           ) : (
             <SFSymbol
-              color="text/quarternary"
+              color="text/tertiary"
               size="9px"
               symbol="doc.on.doc"
               weight="medium"
@@ -271,7 +290,7 @@ export function ParameterRow({
   )
 }
 
-function Indent({ level }: { level: number }) {
+export function Indent({ level }: { level: number }) {
   if (level === 0) return null
   return (
     <>
@@ -297,7 +316,11 @@ function ParameterLabel({
   index,
   truncateLength,
   param,
-}: { index: number; truncateLength: number; param: AbiParameter }) {
+}: {
+  index: number
+  truncateLength: number
+  param: AbiParameter
+}) {
   const internalTypeArray = param.internalType?.split('.').join('').split(' ')
   const internalType = internalTypeArray?.[internalTypeArray.length - 1]
   const label = `${internalType || param.type} ${
@@ -343,7 +366,7 @@ function PrimitiveValue({
   value,
 }: { truncateLength: number; value: unknown }) {
   return (
-    <Text family="mono" size="11px">
+    <Text family="mono" size="11px" wrap="anywhere">
       {truncate((value ?? '').toString(), {
         start: truncateLength / 2,
         end: truncateLength / 2,

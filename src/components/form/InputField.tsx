@@ -7,6 +7,7 @@ import type { InputProps } from '~/design-system/components/Input'
 
 export type InputFieldProps = Form.FormControlProps & {
   defaultValue?: InputProps['defaultValue']
+  errorMessage?: string
   formState?: FormState<any>
   height?: InputProps['height']
   hideLabel?: boolean
@@ -21,11 +22,13 @@ export type InputFieldProps = Form.FormControlProps & {
   required?: boolean
   state?: InputProps['state']
   style?: any
+  textAlign?: 'left' | 'right'
   type?: InputProps['type']
 }
 
 export function InputField({
   defaultValue,
+  errorMessage,
   height,
   hideLabel,
   hint,
@@ -37,7 +40,9 @@ export function InputField({
   placeholder,
   register,
   required,
+  state,
   style,
+  textAlign,
   type,
   ...formControlProps
 }: InputFieldProps) {
@@ -70,15 +75,16 @@ export function InputField({
               <Form.Control
                 asChild
                 {...formControlProps}
-                {...register}
                 defaultValue={defaultValue}
                 min={min}
                 required={required}
                 type={type}
+                {...register}
               >
                 <Input
                   height={height}
                   placeholder={placeholder}
+                  state={state || errorMessage ? 'error' : undefined}
                   style={{
                     paddingLeft: innerLeft
                       ? (innerLeftWidth || 0) + 12
@@ -86,6 +92,7 @@ export function InputField({
                     paddingRight: innerRight
                       ? (innerRightWidth || 0) + 12
                       : undefined,
+                    textAlign,
                   }}
                 />
               </Form.Control>
@@ -99,6 +106,11 @@ export function InputField({
                 </Box>
               )}
             </Box>
+            {errorMessage && (
+              <Text color="surface/red" size="12px">
+                {errorMessage}
+              </Text>
+            )}
             <Form.Message match="valueMissing">
               <Text color="surface/red" size="12px">
                 {label} is required

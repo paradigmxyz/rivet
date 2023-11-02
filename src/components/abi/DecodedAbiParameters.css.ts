@@ -1,3 +1,5 @@
+// TODO: Dedupe common styles between all of our accordions
+
 import { globalStyle, keyframes, style } from '@vanilla-extract/css'
 
 const fadeIn = keyframes({

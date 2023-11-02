@@ -74,7 +74,7 @@ type ColumnProps = {
   alignVertical?: AlignVertical
   width?: 'content' | keyof typeof styles.width
   style?: CSSProperties
-  children: ReactNode
+  children?: ReactNode
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -131,6 +131,9 @@ function PrivateColumn({
 
   return (
     <Box
+      alignItems={
+        alignHorizontal && alignHorizontalToJustifyContent[alignHorizontal]
+      }
       className={styles.width['0']}
       display="flex"
       flexDirection="column"

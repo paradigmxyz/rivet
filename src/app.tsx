@@ -39,6 +39,7 @@ import Layout from './screens/_layout'
 import AccountDetails from './screens/account-details'
 import BlockConfig from './screens/block-config'
 import BlockDetails from './screens/block-details'
+import ContractDetails from './screens/contract-details'
 import Index from './screens/index'
 import NetworkConfig from './screens/network-config'
 import Networks from './screens/networks'
@@ -78,6 +79,10 @@ export function init({ type = 'standalone' }: { type?: AppMeta['type'] } = {}) {
         {
           path: 'block/:blockNumber',
           element: <BlockDetails />,
+        },
+        {
+          path: 'contract/:contractAddress',
+          element: <ContractDetails />,
         },
         {
           path: 'transaction/:transactionHash',

@@ -20,6 +20,7 @@ import {
   Row,
   Rows,
   SFSymbol,
+  Select,
   Separator,
   Stack,
   Text,
@@ -1089,6 +1090,32 @@ function DesignSystem() {
                   </Row>
                 </Rows>
               </Box>
+            </Stack>
+          </Box>
+          <Box
+            backgroundColor="surface/primary/elevated"
+            margin="-24px"
+            borderRadius="12px"
+            padding="24px"
+          >
+            <Stack gap="24px">
+              <Text weight="medium" size="22px">
+                Select
+              </Text>
+              <Select height="24px">
+                <option value="" disabled selected>
+                  Select a fruit...
+                </option>
+                <option value="oranges">Oranges</option>
+                <option value="apples">Apples</option>
+              </Select>
+              <Select>
+                <option value="" disabled selected>
+                  Select a fruit...
+                </option>
+                <option value="oranges">Oranges</option>
+                <option value="apples">Apples</option>
+              </Select>
             </Stack>
           </Box>
           <Box

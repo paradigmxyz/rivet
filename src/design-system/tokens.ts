@@ -424,7 +424,7 @@ export const fontAttributes = {
     fontSize: 11,
     letterSpacing: 0.56,
     letterWidth: 6.9,
-    lineHeight: 13,
+    lineHeight: 15,
   },
   '12px': {
     fontSize: 12,
@@ -654,6 +654,7 @@ export const symbolNames = [
   'square.and.pencil',
   'plus',
   'gear',
+  'minus',
 ] as const
 export type SymbolName = typeof symbolNames[number]
 

@@ -71,10 +71,14 @@ const select = style([
   {
     '@layer': {
       [reset]: {
+        backgroundColor: 'unset',
         ':disabled': {
           opacity: 1,
         },
         selectors: {
+          '&:focus-visible': {
+            outline: 'none',
+          },
           '&::-ms-expand': {
             display: 'none',
           },

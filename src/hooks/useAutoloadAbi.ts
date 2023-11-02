@@ -30,12 +30,15 @@ export function useAutoloadAbiQueryOptions({
       if (!client) throw new Error('client is required')
       const result = await whatsabi.autoload(address, {
         provider: client,
+        followProxies: true,
         abiLoader: new loaders.MultiABILoader([
+          new loaders.SourcifyABILoader({
+            chainId: client.chain.id,
+          }),
           new loaders.EtherscanABILoader({
             baseURL:
               (etherscanApiUrls as any)[client.chain.id] || etherscanApiUrls[1],
           }),
-          new loaders.SourcifyABILoader(),
         ]),
       })
       if (!result.abi.some((item) => (item as { name?: string }).name))

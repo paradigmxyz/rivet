@@ -9,12 +9,18 @@ import { getContracts } from '../actions/getContracts'
 import { useBlock } from './useBlock'
 import { useClient } from './useClient'
 
+type UseContractsParameters = {
+  enabled?: boolean
+}
+
 export const getContractsQueryKey = createQueryKey<
   'contracts',
   [key: Client['key']]
 >('contracts')
 
-export function useContractsQueryOptions() {
+export function useContractsQueryOptions({
+  enabled = true,
+}: UseContractsParameters = {}) {
   const { data: block } = useBlock()
   const { syncContracts } = useContractsStore()
   const { network } = useNetworkStore()
@@ -23,7 +29,8 @@ export function useContractsQueryOptions() {
   return queryOptions({
     staleTime: Infinity,
     enabled: Boolean(
-      block?.number &&
+      enabled &&
+        block?.number &&
         network.forkBlockNumber &&
         block?.number > network.forkBlockNumber,
     ),
@@ -41,8 +48,8 @@ export function useContractsQueryOptions() {
   })
 }
 
-export function useContracts() {
-  const queryOptions = useContractsQueryOptions()
+export function useContracts({ enabled = true }: UseContractsParameters = {}) {
+  const queryOptions = useContractsQueryOptions({ enabled })
   const contractsStore = useContractsStore()
   const { network } = useNetworkStore()
 

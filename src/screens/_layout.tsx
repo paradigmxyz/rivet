@@ -63,10 +63,7 @@ export default function Layout() {
         {pendingRequests.length > 0 && (
           <PendingRequest request={pendingRequest} />
         )}
-        <Box
-          display={pendingRequests.length > 0 ? 'none' : 'block'}
-          height="full"
-        >
+        <Box height="full">
           <Outlet />
         </Box>
       </Box>

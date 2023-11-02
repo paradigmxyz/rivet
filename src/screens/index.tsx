@@ -900,45 +900,46 @@ function Contracts() {
             if (!contract) return
             return (
               <VirtualList.Item {...item}>
-                {/* <VirtualList.Link to={`/contract/${contract.hash}`}> */}
                 <Box marginHorizontal="-8px">
                   <Separator />
                 </Box>
-                <Box
-                  backgroundColor={{ hover: 'surface/fill/quarternary' }}
-                  paddingHorizontal="8px"
-                  paddingVertical="8px"
-                  height="full"
-                >
-                  <Columns alignHorizontal="justify" gap="4px" width="full">
-                    <Column alignVertical="center">
-                      {contract.address !== '0x' ? (
-                        <Text size="11px" wrap={false}>
-                          {contract.address}
-                        </Text>
-                      ) : (
-                        <Text color="text/tertiary" size="11px" wrap={false}>
-                          Deploying...
-                        </Text>
-                      )}
-                    </Column>
-                    <Column alignVertical="center" width="content">
-                      <Button.Symbol
-                        label="Delete"
-                        symbol="trash"
-                        height="24px"
-                        variant="ghost red"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          hideContract({
-                            address: contract.address,
-                          })
-                        }}
-                      />
-                    </Column>
-                  </Columns>
-                </Box>
-                {/* </VirtualList.Link> */}
+                <VirtualList.Link to={`/contract/${contract.address}`}>
+                  <Box
+                    backgroundColor={{ hover: 'surface/fill/quarternary' }}
+                    paddingHorizontal="8px"
+                    paddingVertical="8px"
+                    height="full"
+                  >
+                    <Columns alignHorizontal="justify" gap="4px" width="full">
+                      <Column alignVertical="center">
+                        {contract.address !== '0x' ? (
+                          <Text size="11px" wrap={false}>
+                            {contract.address}
+                          </Text>
+                        ) : (
+                          <Text color="text/tertiary" size="11px" wrap={false}>
+                            Deploying...
+                          </Text>
+                        )}
+                      </Column>
+                      <Column alignVertical="center" width="content">
+                        <Button.Symbol
+                          label="Delete"
+                          symbol="trash"
+                          height="24px"
+                          variant="ghost red"
+                          onClick={(e) => {
+                            e.preventDefault()
+                            e.stopPropagation()
+                            hideContract({
+                              address: contract.address,
+                            })
+                          }}
+                        />
+                      </Column>
+                    </Columns>
+                  </Box>
+                </VirtualList.Link>
               </VirtualList.Item>
             )
           })

@@ -54,7 +54,7 @@ const slideUp = keyframes({
 
 export const item = style({
   borderBottomWidth: 1,
-  borderBottomColor: `rgb(${backgroundColorVars['surface/fill']})`,
+  borderBottomColor: `rgb(${backgroundColorVars['surface/fill/tertiary']})`,
   borderBottomStyle: 'solid',
 })
 export const root = style({

@@ -13,7 +13,7 @@ export function LabelledContent({
   width,
 }: {
   children: ReactNode
-  label: string
+  label: string | ReactNode
   labelRight?: ReactNode
   labelColor?: TextStyles['color']
   width?: StackProps['width']
@@ -27,9 +27,13 @@ export function LabelledContent({
         gap="2px"
         position="relative"
       >
-        <Text color={labelColor} size="9px" wrap={false}>
-          {label.toUpperCase()}
-        </Text>
+        {typeof label === 'string' ? (
+          <Text color={labelColor} size="9px" wrap={false}>
+            {label.toUpperCase()}
+          </Text>
+        ) : (
+          label
+        )}
         <Box style={{ marginBottom: '-2px' }}>{labelRight}</Box>
       </Box>
       <Box>{children}</Box>

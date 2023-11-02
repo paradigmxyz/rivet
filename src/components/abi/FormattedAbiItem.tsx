@@ -3,22 +3,29 @@ import { Fragment } from 'react'
 import type { AbiItem } from 'viem'
 
 import { Text } from '~/design-system'
+import type { TextProps } from '~/design-system/components/Text'
 
 export function FormattedAbiItem({
   abiItem,
   compact,
   showIndexed = true,
   showParameterNames = true,
+  showStateMutability = true,
+  showReturns = true,
   showType = true,
+  wrap = 'anywhere',
 }: {
   abiItem: AbiItem
   compact?: boolean
   showIndexed?: boolean
   showParameterNames?: boolean
+  showStateMutability?: boolean
+  showReturns?: boolean
   showType?: boolean
+  wrap?: TextProps['wrap']
 }) {
   return (
-    <Text family="mono" size="11px">
+    <Text family="mono" size="11px" wrap={wrap}>
       {abiItem.type === 'function' && (
         <>
           {showType && <Text color="text/tertiary">function </Text>}
@@ -30,11 +37,12 @@ export function FormattedAbiItem({
             />
           )}
           )
-          {abiItem.stateMutability &&
+          {showStateMutability &&
+            abiItem.stateMutability &&
             abiItem.stateMutability !== 'nonpayable' && (
               <Text> {abiItem.stateMutability} </Text>
             )}
-          {abiItem.outputs?.length > 0 && (
+          {showReturns && abiItem.outputs?.length > 0 && (
             <>
               {' '}
               returns (
@@ -106,7 +114,7 @@ export function FormattedAbiItem({
 
 ////////////////////////////////////////////////////////////////////////
 
-function FormattedAbiParameters({
+export function FormattedAbiParameters({
   compact,
   params,
   showIndexed,
@@ -122,29 +130,42 @@ function FormattedAbiParameters({
       {params?.map((x, index) => (
         <Fragment key={index}>
           {index !== 0 ? `,${!compact ? ' ' : ''}` : ''}
-          <ParameterType type={x.internalType || x.type} />
-          {showIndexed && 'indexed' in x && x.indexed ? (
-            <Text color="text/tertiary"> indexed</Text>
-          ) : null}
-          {showNames && <ParameterProperty index={index} name={x.name} />}
+          <FormattedAbiParameter
+            param={x}
+            showIndexed={showIndexed}
+            showName={showNames}
+          />
         </Fragment>
       ))}
     </Text>
   )
 }
 
-function ParameterType({ type }: { type: string }) {
+export function FormattedAbiParameter({
+  param,
+  showIndexed = true,
+  showName = true,
+  showType = true,
+}: {
+  param: AbiParameter
+  showIndexed?: boolean
+  showName?: boolean
+  showType?: boolean
+}) {
+  const { internalType, type, name } = param
+  return (
+    <Text>
+      {showType && <ParameterType type={internalType || type} />}
+      {showIndexed && 'indexed' in param && param.indexed ? (
+        <Text color="text/tertiary"> indexed</Text>
+      ) : null}
+      {showName && name ? ` ${name}` : ''}
+    </Text>
+  )
+}
+
+export function ParameterType({ type }: { type: string }) {
   const typeArray = type?.split('.').join('').split(' ')
   const type_ = typeArray?.[typeArray.length - 1]
   return <Text color="text/tertiary">{type_}</Text>
-}
-
-function ParameterProperty({
-  index,
-  name,
-}: {
-  index: number
-  name?: string
-}) {
-  return <Text> {name || index.toString()}</Text>
 }
