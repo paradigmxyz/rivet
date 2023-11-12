@@ -1,6 +1,5 @@
-import * as Popover from '@radix-ui/react-popover'
 import * as Tabs from '@radix-ui/react-tabs'
-import { type ReactNode, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { omitBy } from 'remeda'
 import {
@@ -22,6 +21,7 @@ import {
 import {
   Container,
   DecodedCalldata,
+  FormPopover,
   LabelledContent,
   TabsContent,
   TabsList,
@@ -250,10 +250,7 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="From"
               labelRight={
-                <UpdateFieldPopover
-                  disabled={!formState.isValid}
-                  onSubmit={update}
-                >
+                <FormPopover disabled={!formState.isValid} onSubmit={update}>
                   <Form.InputField
                     defaultValue={from}
                     label="From"
@@ -265,7 +262,7 @@ function SendTransactionRequest(args: {
                     })}
                     style={{ width: '360px' }}
                   />
-                </UpdateFieldPopover>
+                </FormPopover>
               }
             >
               <Tooltip label={from}>
@@ -277,10 +274,7 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="To"
               labelRight={
-                <UpdateFieldPopover
-                  disabled={!formState.isValid}
-                  onSubmit={update}
-                >
+                <FormPopover disabled={!formState.isValid} onSubmit={update}>
                   <Form.InputField
                     defaultValue={to ?? ''}
                     label="To"
@@ -292,7 +286,7 @@ function SendTransactionRequest(args: {
                     })}
                     style={{ width: '360px' }}
                   />
-                </UpdateFieldPopover>
+                </FormPopover>
               }
             >
               <Tooltip label={to}>
@@ -304,10 +298,7 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="Value"
               labelRight={
-                <UpdateFieldPopover
-                  disabled={!formState.isValid}
-                  onSubmit={update}
-                >
+                <FormPopover disabled={!formState.isValid} onSubmit={update}>
                   <Form.InputField
                     defaultValue={
                       typeof value === 'bigint'
@@ -323,7 +314,7 @@ function SendTransactionRequest(args: {
                     })}
                     type="number"
                   />
-                </UpdateFieldPopover>
+                </FormPopover>
               }
             >
               <Text size="12px">
@@ -340,10 +331,7 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="Gas Limit"
               labelRight={
-                <UpdateFieldPopover
-                  disabled={!formState.isValid}
-                  onSubmit={update}
-                >
+                <FormPopover disabled={!formState.isValid} onSubmit={update}>
                   <Form.InputField
                     defaultValue={typeof gas === 'bigint' ? gas.toString() : ''}
                     label="Gas Limit"
@@ -355,7 +343,7 @@ function SendTransactionRequest(args: {
                     })}
                     type="number"
                   />
-                </UpdateFieldPopover>
+                </FormPopover>
               }
             >
               <Text size="12px">
@@ -367,10 +355,7 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="Tip Per Gas"
               labelRight={
-                <UpdateFieldPopover
-                  disabled={!formState.isValid}
-                  onSubmit={update}
-                >
+                <FormPopover disabled={!formState.isValid} onSubmit={update}>
                   <Form.InputField
                     defaultValue={
                       typeof maxPriorityFeePerGas === 'bigint'
@@ -387,7 +372,7 @@ function SendTransactionRequest(args: {
                       min: 0,
                     })}
                   />
-                </UpdateFieldPopover>
+                </FormPopover>
               }
             >
               <Text size="12px">
@@ -406,10 +391,7 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="Max Fee Per Gas"
               labelRight={
-                <UpdateFieldPopover
-                  disabled={!formState.isValid}
-                  onSubmit={update}
-                >
+                <FormPopover disabled={!formState.isValid} onSubmit={update}>
                   <Form.InputField
                     defaultValue={
                       typeof maxFeePerGas === 'bigint'
@@ -426,7 +408,7 @@ function SendTransactionRequest(args: {
                       min: 0,
                     })}
                   />
-                </UpdateFieldPopover>
+                </FormPopover>
               }
             >
               <Text size="12px">
@@ -447,10 +429,7 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="Nonce"
               labelRight={
-                <UpdateFieldPopover
-                  disabled={!formState.isValid}
-                  onSubmit={update}
-                >
+                <FormPopover disabled={!formState.isValid} onSubmit={update}>
                   <Form.InputField
                     defaultValue={nonce}
                     label="Nonce"
@@ -462,7 +441,7 @@ function SendTransactionRequest(args: {
                     })}
                     type="number"
                   />
-                </UpdateFieldPopover>
+                </FormPopover>
               }
             >
               <Text size="12px">{nonce}</Text>
@@ -487,7 +466,7 @@ function SendTransactionRequest(args: {
                     address={to}
                     data={data || '0x'}
                     labelRight={
-                      <UpdateFieldPopover
+                      <FormPopover
                         disabled={!formState.isValid}
                         onSubmit={update}
                       >
@@ -502,7 +481,7 @@ function SendTransactionRequest(args: {
                           })}
                           style={{ width: '360px' }}
                         />
-                      </UpdateFieldPopover>
+                      </FormPopover>
                     }
                   />
                 </Box>
@@ -515,69 +494,6 @@ function SendTransactionRequest(args: {
         </Tabs.Root>
       </Stack>
     </PendingRequestContainer>
-  )
-}
-
-function UpdateFieldPopover({
-  children,
-  disabled,
-  onSubmit,
-}: {
-  children: ReactNode
-  disabled: boolean
-  onSubmit: (e: React.FormEvent) => void
-}) {
-  const [open, setOpen] = useState(false)
-
-  return (
-    <Popover.Root open={open}>
-      <Popover.Trigger asChild>
-        <Box position="absolute" style={{ top: -6 }}>
-          <Button.Symbol
-            label="Edit"
-            height="16px"
-            onClick={() => setOpen(true)}
-            symbol="square.and.pencil"
-            variant="ghost primary"
-          />
-        </Box>
-      </Popover.Trigger>
-      <Popover.Portal>
-        <Popover.Content
-          onEscapeKeyDown={() => setOpen(false)}
-          onPointerDownOutside={() => setOpen(false)}
-          style={{ zIndex: 1 }}
-        >
-          <Box
-            backgroundColor="surface/secondary/elevated"
-            borderWidth="1px"
-            gap="4px"
-            padding="8px"
-            width="full"
-          >
-            <Form.Root
-              onSubmit={(e) => {
-                onSubmit(e)
-                setOpen(false)
-              }}
-            >
-              <Stack gap="8px">
-                {children}
-                <Button
-                  disabled={disabled}
-                  height="20px"
-                  type="submit"
-                  variant="stroked fill"
-                  width="fit"
-                >
-                  Update
-                </Button>
-              </Stack>
-            </Form.Root>
-          </Box>
-        </Popover.Content>
-      </Popover.Portal>
-    </Popover.Root>
   )
 }
 

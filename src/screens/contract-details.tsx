@@ -2,15 +2,18 @@ import * as Tabs from '@radix-ui/react-tabs'
 import { useMutation } from '@tanstack/react-query'
 import type { Abi, AbiFunction } from 'abitype'
 import { useMemo } from 'react'
+import { useForm } from 'react-hook-form'
 import { useParams } from 'react-router'
 
 import {
   AbiFunctionsAccordion,
   Container,
+  FormPopover,
   LabelledContent,
   TabsContent,
   TabsList,
 } from '~/components'
+import * as Form from '~/components/form'
 import { Bleed, Box, Stack, Text } from '~/design-system'
 import { useAutoloadAbi } from '~/hooks/useAutoloadAbi'
 import { useContracts } from '~/hooks/useContracts'
@@ -20,11 +23,19 @@ export default function ContractDetails() {
   const { contracts, updateContract } = useContracts({ enabled: false })
   const contract = contracts.find((c) => c.address === contractAddress)
 
-  const {
-    data: autoloadAbi,
-    isLoading,
-    isFetched,
-  } = useAutoloadAbi({
+  ////////////////////////////////////////////////////////////////////////
+
+  const { formState, register, handleSubmit } = useForm({
+    defaultValues: { name: contract?.name },
+  })
+
+  const update = handleSubmit(({ name }) => {
+    updateContract({ address: contract?.address!, name })
+  })
+
+  ////////////////////////////////////////////////////////////////////////
+
+  const { data: autoloadAbi, isLoading } = useAutoloadAbi({
     address: contract?.address,
     enabled: Boolean(!contract?.abi && contract?.address),
   })
@@ -66,18 +77,40 @@ export default function ContractDetails() {
     return [read as {} as AbiFunction[], write as {} as AbiFunction[]]
   }, [abiFunctions, hasStateMutability])
 
+  ////////////////////////////////////////////////////////////////////////
+
   return (
     <Container dismissable header="Contract Details">
       <Stack gap="20px">
-        <Box>
-          <LabelledContent label="Contract Address">
-            <Text size="12px">{contract?.address}</Text>
-          </LabelledContent>
-        </Box>
+        <LabelledContent
+          label="Label"
+          labelRight={
+            <FormPopover disabled={!formState.isValid} onSubmit={update}>
+              <Form.InputField
+                label="Label"
+                height="24px"
+                hideLabel
+                register={register('name', {
+                  required: true,
+                })}
+                style={{ width: '360px' }}
+              />
+            </FormPopover>
+          }
+        >
+          <Text size="12px">{contract?.name ?? 'Unnamed Contract'}</Text>
+        </LabelledContent>
+        <LabelledContent label="Contract Address">
+          <Text size="12px">{contract?.address}</Text>
+        </LabelledContent>
         {(isGuessedAbi || contract?.abi) && (
           <UploadAbi
-            onUpload={({ abi }) =>
-              updateContract({ abi, address: contract?.address! })
+            onUpload={({ abi, file }) =>
+              updateContract({
+                abi,
+                address: contract?.address!,
+                name: file.name.replace('.json', ''),
+              })
             }
           />
         )}
@@ -98,7 +131,7 @@ export default function ContractDetails() {
             Loading...
           </Text>
         )}
-        {isFetched && (
+        {abi && (
           <Tabs.Root asChild defaultValue="read">
             <Box display="flex" flexDirection="column" height="full">
               {hasStateMutability ? (
@@ -150,7 +183,9 @@ export default function ContractDetails() {
   )
 }
 
-function UploadAbi({ onUpload }: { onUpload: (abi: { abi: Abi }) => void }) {
+function UploadAbi({
+  onUpload,
+}: { onUpload: (abi: { abi: Abi; file: File }) => void }) {
   const { error, mutateAsync: uploadAbi } = useMutation({
     async mutationFn(files: FileList | null) {
       if (!files) return
@@ -166,7 +201,7 @@ function UploadAbi({ onUpload }: { onUpload: (abi: { abi: Abi }) => void }) {
       if (!isAbi)
         throw new Error('ABI is not valid. Please upload a valid ABI.')
 
-      onUpload({ abi })
+      onUpload({ abi, file })
     },
   })
 

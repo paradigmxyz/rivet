@@ -1,3 +1,4 @@
+import { selectorsFromBytecode } from '@shazow/whatsabi'
 import type { Abi, Address } from 'abitype'
 import type { Hex, TransactionReceipt } from 'viem'
 import { useStore } from 'zustand'
@@ -9,6 +10,7 @@ type Contract = {
   abi?: Abi
   address: Address
   bytecode?: Hex | null
+  name?: string
   key: string
   receipt?: TransactionReceipt
   state: 'loaded' | 'loading'
@@ -72,7 +74,14 @@ export const contractsStore = createStore<ContractsStore>(
       set((state) => {
         const contracts = { ...state.contracts }
 
+        const { abi, name } = getContractAbi({
+          contracts,
+          contract,
+        })
+
         const contract_ = {
+          abi,
+          name,
           key: `${contract.address}-${contract.bytecode}`,
           state: 'loaded',
           visible: true,
@@ -162,9 +171,15 @@ export const contractsStore = createStore<ContractsStore>(
           const exists = (contracts[serializedKey] || []).some(
             (x) => x.address === contract.address,
           )
-          if (!exists)
+          if (!exists) {
+            const { abi, name } = getContractAbi({
+              contracts,
+              contract,
+            })
             contracts[serializedKey] = [
               {
+                abi,
+                name,
                 ...contract,
                 key: contract.address,
                 state: 'loaded',
@@ -172,6 +187,7 @@ export const contractsStore = createStore<ContractsStore>(
               },
               ...(contracts[serializedKey] || []),
             ]
+          }
         }
 
         contracts[serializedKey] = contracts[serializedKey]?.filter(
@@ -194,3 +210,27 @@ export const contractsStore = createStore<ContractsStore>(
 )
 
 export const useContractsStore = () => useStore(contractsStore)
+
+///////////////////////////////////////////////////////////////
+
+function getContractAbi({
+  contracts,
+  contract,
+}: { contract: Partial<Contract>; contracts: ContractsState['contracts'] }) {
+  if (contract.abi) return contract
+
+  const allContracts = Object.values(contracts).flat()
+  const contracts_ = allContracts.filter(
+    (c) =>
+      c?.abi &&
+      c.bytecode &&
+      contract.bytecode &&
+      selectorsFromBytecode(c.bytecode).join() ===
+        selectorsFromBytecode(contract.bytecode).join(),
+  )
+  const contract_ = contracts_?.[0]
+  return {
+    abi: contract_?.abi,
+    name: contract_?.name,
+  }
+}

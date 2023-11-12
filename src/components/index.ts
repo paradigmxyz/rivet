@@ -9,6 +9,7 @@ export { DecodedLogs } from './logs'
 export { TabsContent, TabsList } from './tabs'
 
 export { Container } from './Container'
+export { FormPopover } from './FormPopover'
 export { Header } from './Header'
 export { LabelledContent } from './LabelledContent'
 export { LoadMore } from './LoadMore'

@@ -833,7 +833,7 @@ function Contracts() {
           (_, index) =>
             ({
               index,
-              size: 32,
+              size: 40,
               type: 'item',
             }) as const,
         ),
@@ -908,19 +908,39 @@ function Contracts() {
                     backgroundColor={{ hover: 'surface/fill/quarternary' }}
                     paddingHorizontal="8px"
                     paddingVertical="8px"
-                    height="full"
+                    style={{ minHeight: '40px' }}
                   >
-                    <Columns alignHorizontal="justify" gap="4px" width="full">
+                    <Columns
+                      alignHorizontal="justify"
+                      gap="4px"
+                      alignVertical="center"
+                      width="full"
+                    >
                       <Column alignVertical="center">
-                        {contract.address !== '0x' ? (
-                          <Text size="11px" wrap={false}>
-                            {contract.address}
-                          </Text>
-                        ) : (
-                          <Text color="text/tertiary" size="11px" wrap={false}>
-                            Deploying...
-                          </Text>
-                        )}
+                        <Stack gap="8px">
+                          {contract.address !== '0x' ? (
+                            <>
+                              <Text size="11px" wrap={false}>
+                                {contract.name || 'Unnamed Contract'}
+                              </Text>
+                              <Text
+                                color="text/secondary"
+                                size="9px"
+                                wrap={false}
+                              >
+                                {contract.address}
+                              </Text>
+                            </>
+                          ) : (
+                            <Text
+                              color="text/tertiary"
+                              size="11px"
+                              wrap={false}
+                            >
+                              Deploying...
+                            </Text>
+                          )}
+                        </Stack>
                       </Column>
                       <Column alignVertical="center" width="content">
                         <Button.Symbol
