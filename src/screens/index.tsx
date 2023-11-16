@@ -5,6 +5,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
   type Address,
+  type Block,
   type Hex,
   type Transaction,
   formatEther,
@@ -60,6 +61,8 @@ import {
 } from '~/zustand'
 import type { Account } from '~/zustand/account'
 
+import { useRevert } from '../hooks/useRevert'
+import { useSnapshot } from '../hooks/useSnapshot'
 import OnboardingStart from './onboarding/start'
 
 export default function Index() {
@@ -519,6 +522,13 @@ function Blocks() {
                           {block.transactions.length || '0'}
                         </Text>
                       </Column>
+                      <Column width="content">
+                        <Box style={{ width: '20px' }}>
+                          {status !== 'pending' && (
+                            <RevertButton block={block} />
+                          )}
+                        </Box>
+                      </Column>
                     </Columns>
                   </Box>
                 </VirtualList.Link>
@@ -528,6 +538,28 @@ function Blocks() {
         }
       </VirtualList>
     </VirtualList.Wrapper>
+  )
+}
+
+function RevertButton({ block }: { block?: Block }) {
+  const { data: snapshot } = useSnapshot({
+    blockNumber: block?.number,
+    enabled: false,
+  })
+  const { mutateAsync: revert } = useRevert()
+
+  if (!snapshot || !block?.timestamp) return null
+  return (
+    <Button.Symbol
+      label="Revert Block"
+      height="20px"
+      onClick={(e) => {
+        e.preventDefault()
+        revert({ id: snapshot! })
+      }}
+      symbol="arrow.counterclockwise"
+      variant="ghost primary"
+    />
   )
 }
 

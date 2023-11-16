@@ -655,6 +655,8 @@ export const symbolNames = [
   'plus',
   'gear',
   'minus',
+  'backward.fill',
+  'arrow.counterclockwise',
 ] as const
 export type SymbolName = typeof symbolNames[number]
 

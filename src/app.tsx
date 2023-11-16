@@ -35,6 +35,7 @@ import {
 } from '~/zustand'
 
 import { type AppMeta, AppMetaContext } from './contexts'
+import { useSnapshot } from './hooks/useSnapshot'
 import Layout from './screens/_layout'
 import AccountDetails from './screens/account-details'
 import BlockConfig from './screens/block-config'
@@ -229,7 +230,8 @@ function NetworkChangedEmitter() {
 
 /** Keeps block number in sync. */
 function SyncBlockNumber() {
-  usePendingBlock()
+  const { data: block } = usePendingBlock()
+  useSnapshot({ blockNumber: block?.number })
   return null
 }
 

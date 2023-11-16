@@ -68,6 +68,21 @@ export function createQueryKey<
     [id, ...(deps ? deps : [])] as unknown as [key, ...deps]
 }
 
+export function filterInfiniteQueryData<data extends unknown[]>(
+  predicate: (page: data[number]) => boolean,
+) {
+  return (prev: InfiniteData<data> | undefined) => {
+    const pages = prev?.pages
+      .map((page) => page.filter(predicate))
+      .filter((page) => page.length > 0)! as data[]
+    return {
+      ...prev,
+      pageParams: Array.from({ length: pages!.length }, (_, i) => i),
+      pages,
+    }
+  }
+}
+
 export function updateInfiniteQueryData<data extends unknown[]>(data: data) {
   return (prev: InfiniteData<data> | undefined) => {
     if (!prev) return
@@ -78,6 +93,7 @@ export function updateInfiniteQueryData<data extends unknown[]>(data: data) {
         pageParams: [...prev.pageParams, prev.pageParams.length],
         pages: [data, first, ...rest],
       }
+
     return {
       ...prev,
       pages: [[...data, ...first], ...rest],

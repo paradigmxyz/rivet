@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { formatGwei } from 'viem'
+import { type Hex, formatGwei } from 'viem'
 
 import { Tooltip } from '~/components'
 import { BrandIcon } from '~/components/svgs'
@@ -27,6 +27,8 @@ import { usePendingBlock } from '~/hooks/usePendingBlock'
 import { getMessenger } from '~/messengers'
 import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 
+import { useRevert } from '../hooks/useRevert'
+import { useSnapshot } from '../hooks/useSnapshot'
 import * as styles from './Header.css'
 
 const contentMessenger = getMessenger('wallet:contentScript')
@@ -352,19 +354,24 @@ function Block() {
 
 function BlockNumber() {
   const { data: block } = usePendingBlock()
+  const { data: snapshot } = useSnapshot({
+    blockNumber: block?.number ? block?.number - 1n : undefined,
+    enabled: false,
+  })
   return (
     <Box position="relative">
-      <Inline wrap={false}>
-        <HeaderItem label="Block">
-          <Text size="12px" tabular>
-            {block?.number ? block?.number.toString() : ''}
-          </Text>
-        </HeaderItem>
-        {block && (
-          <Inset horizontal="2px">
-            <MineButton />
-          </Inset>
-        )}
+      <Inline gap="4px" wrap={false}>
+        <Box width="fit">
+          <HeaderItem label="Block">
+            <Text size="12px" tabular>
+              {block?.number ? block?.number.toString() : ''}
+            </Text>
+          </HeaderItem>
+        </Box>
+        <Inline wrap={false}>
+          {block && <MineButton />}
+          <RevertButton snapshot={snapshot} />
+        </Inline>
       </Inline>
     </Box>
   )
@@ -414,11 +421,7 @@ function MineButton() {
   const { mutateAsync: mine } = useMine()
 
   return (
-    <Box
-      key={block?.number?.toString()}
-      position="absolute"
-      style={{ marginTop: '8px' }}
-    >
+    <Box key={block?.number?.toString()} style={{ marginTop: '8px' }}>
       <Button.Symbol
         label="Mine Block"
         height="20px"
@@ -428,6 +431,26 @@ function MineButton() {
         }}
         symbol="hammer.fill"
         symbolProps={{ className: styles.mineSymbol }}
+        variant="ghost primary"
+      />
+    </Box>
+  )
+}
+
+function RevertButton({ snapshot }: { snapshot?: Hex }) {
+  const { mutateAsync: revert } = useRevert()
+
+  return (
+    <Box key={snapshot} style={{ marginTop: '8px' }}>
+      <Button.Symbol
+        disabled={!snapshot}
+        label="Revert Block"
+        height="20px"
+        onClick={(e) => {
+          e.preventDefault()
+          revert({ id: snapshot! })
+        }}
+        symbol="backward.fill"
         variant="ghost primary"
       />
     </Box>

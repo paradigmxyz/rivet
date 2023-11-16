@@ -3,6 +3,7 @@ import { type Block, type Client, type Transaction } from 'viem'
 
 import {
   createQueryKey,
+  filterInfiniteQueryData,
   queryClient,
   updateInfiniteQueryData,
 } from '~/react-query'
@@ -42,55 +43,76 @@ export function usePendingBlockQueryOptions({
       const block = await client.getBlock({
         blockTag: 'pending',
       })
-      const prevBlock = queryClient.getQueryData([
-        'pending-block',
-        client.key,
-      ]) as Block
 
-      if (
-        block &&
-        prevBlock &&
-        prevBlock.number === block.number &&
-        prevBlock.transactions.length === block.transactions.length
-      )
-        return prevBlock || null
+      try {
+        const prevBlock = queryClient.getQueryData([
+          'pending-block',
+          client.key,
+        ]) as Block
 
-      queryClient.invalidateQueries({
-        queryKey: getAccountTokensQueryKey([client.key]),
-      })
-      queryClient.invalidateQueries({
-        queryKey: getBalanceQueryKey([client.key]),
-      })
-      queryClient.invalidateQueries({
-        queryKey: getContractsQueryKey([client.key]),
-      })
-      queryClient.invalidateQueries({
-        queryKey: getErc20BalanceQueryKey([client.key]),
-      })
-      queryClient.invalidateQueries({
-        queryKey: getBlockQueryKey([client.key, 'latest']),
-      })
-      queryClient.invalidateQueries({
-        queryKey: getNonceQueryKey([client.key]),
-      })
-      queryClient.invalidateQueries({
-        queryKey: getPendingTransactionsQueryKey([client.key]),
-      })
-      queryClient.invalidateQueries({
-        queryKey: getTxpoolQueryKey([client.key]),
-      })
+        if (
+          block &&
+          prevBlock &&
+          prevBlock.number === block.number &&
+          prevBlock.transactions.length === block.transactions.length
+        )
+          return prevBlock || null
 
-      const latestBlock = await client.getBlock({
-        includeTransactions: true,
-      })
-      queryClient.setQueryData<InfiniteData<Block[]>>(
-        getInfiniteBlocksQueryKey([client.key]),
-        updateInfiniteQueryData<Block[]>([latestBlock]),
-      )
-      queryClient.setQueryData<InfiniteData<Transaction[]>>(
-        getInfiniteBlockTransactionsQueryKey([client.key]),
-        updateInfiniteQueryData<Transaction[]>([...latestBlock.transactions]),
-      )
+        queryClient.invalidateQueries({
+          queryKey: getAccountTokensQueryKey([client.key]),
+        })
+        queryClient.invalidateQueries({
+          queryKey: getBalanceQueryKey([client.key]),
+        })
+        queryClient.invalidateQueries({
+          queryKey: getContractsQueryKey([client.key]),
+        })
+        queryClient.invalidateQueries({
+          queryKey: getErc20BalanceQueryKey([client.key]),
+        })
+        queryClient.invalidateQueries({
+          queryKey: getBlockQueryKey([client.key, 'latest']),
+        })
+        queryClient.invalidateQueries({
+          queryKey: getNonceQueryKey([client.key]),
+        })
+        queryClient.invalidateQueries({
+          queryKey: getPendingTransactionsQueryKey([client.key]),
+        })
+        queryClient.invalidateQueries({
+          queryKey: getTxpoolQueryKey([client.key]),
+        })
+
+        const latestBlock = await client.getBlock({
+          includeTransactions: true,
+        })
+
+        if (prevBlock.number && latestBlock.number < prevBlock.number) {
+          queryClient.setQueryData<InfiniteData<Block[]>>(
+            getInfiniteBlocksQueryKey([client.key]),
+            filterInfiniteQueryData<Block[]>(
+              (block) => block.number! <= latestBlock.number,
+            ),
+          )
+          queryClient.setQueryData<InfiniteData<Transaction[]>>(
+            getInfiniteBlockTransactionsQueryKey([client.key]),
+            filterInfiniteQueryData<Transaction[]>(
+              (tx) => !tx.blockNumber || tx.blockNumber! <= latestBlock.number,
+            ),
+          )
+        } else {
+          queryClient.setQueryData<InfiniteData<Block[]>>(
+            getInfiniteBlocksQueryKey([client.key]),
+            updateInfiniteQueryData<Block[]>([latestBlock]),
+          )
+          queryClient.setQueryData<InfiniteData<Transaction[]>>(
+            getInfiniteBlockTransactionsQueryKey([client.key]),
+            updateInfiniteQueryData<Transaction[]>([
+              ...latestBlock.transactions,
+            ]),
+          )
+        }
+      } catch {}
 
       return block || null
     },
