@@ -469,6 +469,9 @@ function Blocks() {
                           TRANSACTIONS
                         </Text>
                       </Column>
+                      <Column width="content">
+                        <Box style={{ width: '20px' }} />
+                      </Column>
                     </Columns>
                   </Box>
                   <Separator />
@@ -497,7 +500,6 @@ function Blocks() {
                   <Box
                     backgroundColor={{ hover: 'surface/fill/quarternary' }}
                     paddingHorizontal="8px"
-                    paddingVertical="8px"
                     height="full"
                   >
                     <Columns alignHorizontal="justify" gap="4px" width="full">
@@ -522,7 +524,7 @@ function Blocks() {
                           {block.transactions.length || '0'}
                         </Text>
                       </Column>
-                      <Column width="content">
+                      <Column alignVertical="center" width="content">
                         <Box style={{ width: '20px' }}>
                           {status !== 'pending' && (
                             <RevertButton block={block} />
