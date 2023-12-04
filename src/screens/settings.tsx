@@ -23,13 +23,13 @@ export default function Settings() {
               alignHorizontal="justify"
               wrap={false}
             >
-              <Box as="label" htmlFor="instant-auth" width="full">
+              <Box as="label" htmlFor="instant-connect-auth" width="full">
                 <Text size="12px">Bypass Connect Authorization</Text>
               </Box>
               {/** TODO: <Checkbox> component */}
               <Box
                 as="input"
-                id="instant-auth"
+                id="instant-connect-auth"
                 checked={bypassConnectAuth}
                 onChange={(e) => {
                   setBypassConnectAuth(e.target.checked)
@@ -42,13 +42,13 @@ export default function Settings() {
               alignHorizontal="justify"
               wrap={false}
             >
-              <Box as="label" htmlFor="instant-auth" width="full">
+              <Box as="label" htmlFor="instant-signature-auth" width="full">
                 <Text size="12px">Bypass Signature Authorization</Text>
               </Box>
               {/** TODO: <Checkbox> component */}
               <Box
                 as="input"
-                id="instant-auth"
+                id="instant-signature-auth"
                 checked={bypassSignatureAuth}
                 onChange={(e) => {
                   setBypassSignatureAuth(e.target.checked)
@@ -61,13 +61,13 @@ export default function Settings() {
               alignHorizontal="justify"
               wrap={false}
             >
-              <Box as="label" htmlFor="instant-auth" width="full">
+              <Box as="label" htmlFor="instant-transaction-auth" width="full">
                 <Text size="12px">Bypass Transaction Authorization</Text>
               </Box>
               {/** TODO: <Checkbox> component */}
               <Box
                 as="input"
-                id="instant-auth"
+                id="instant-transaction-auth"
                 checked={bypassTransactionAuth}
                 onChange={(e) => {
                   setBypassTransactionAuth(e.target.checked)
