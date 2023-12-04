@@ -1,6 +1,6 @@
 {
   "name": "rivet",
-  "version": "0.0.9",
+  "version": "0.0.0-nightly.cfe2005",
   "private": true,
   "extension": {
     "name": "Rivet",
