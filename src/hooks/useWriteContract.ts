@@ -16,7 +16,7 @@ export function useWriteContract<
 
   return useMutation({
     mutationFn(args: UseWriteContractParameters<TAbi, TFunctionName>) {
-      return client.writeContract(args as any)
+      return client.writeContract({ ...args, chain: null } as any)
     },
   })
 }
