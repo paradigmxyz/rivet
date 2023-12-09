@@ -293,7 +293,7 @@ function RpcUrl() {
           borderRadius="round"
           style={{ minWidth: 8, minHeight: 8 }}
         />
-        <Text size="12px" wrap={false} width="full">
+        <Text size="12px" wrap={false} width="full" style={{overflow: "hidden", textOverflow: "ellipsis"}}>
           {network.rpcUrl.replace(/https?:\/\//, '')}
         </Text>
       </Inline>
