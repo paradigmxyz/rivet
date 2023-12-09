@@ -166,7 +166,7 @@ function NetworkRow({
                   color={data ? 'text' : 'text/tertiary'}
                   size="12px"
                   wrap={false}
-                  style={{overflow: "hidden", textOverflow: "ellipsis"}}
+                  style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}
                 >
                   {network.rpcUrl.replace(/https?:\/\//, '')}
                 </Text>
