@@ -7,6 +7,7 @@ import { setupExtensionId } from './extension-id'
 import { setupInpage } from './inpage'
 import { interceptJsonRpcRequests } from './intercept-requests'
 import { setupRpcHandler } from './rpc'
+import { setupWalletSidebarHandler } from './wallet-sidebar'
 
 const contentMessenger = getMessenger('background:contentScript')
 const inpageMessenger = getMessenger('background:inpage')
@@ -21,4 +22,5 @@ setupExtensionId()
 setupInpage()
 setupRpcHandler({ messenger: inpageMessenger })
 setupRpcHandler({ messenger: walletMessenger })
+setupWalletSidebarHandler()
 syncStores()

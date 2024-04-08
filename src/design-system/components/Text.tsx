@@ -185,10 +185,15 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
     }, [])
 
     useLayoutEffect(() => {
-      setWidth(
-        ((wrapperRef.current as any).getBoundingClientRect() as DOMRectReadOnly)
-          .width,
-      )
+      setTimeout(() => {
+        setWidth(
+          (
+            (
+              wrapperRef.current as any
+            ).getBoundingClientRect() as DOMRectReadOnly
+          ).width,
+        )
+      }, 16)
     }, [])
     useResizeObserver(wrapperRef, (entry) =>
       mounted ? setWidth(entry.contentRect.width) : undefined,

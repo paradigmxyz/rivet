@@ -75,6 +75,7 @@ export function getRpcClient({
 export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
   messenger.reply('request', async ({ request, rpcUrl }, meta) => {
     const isInpage =
+      meta.sender.tab &&
       !meta.sender.tab?.url?.includes('extension://') &&
       (!meta.sender.frameId || meta.sender.frameId === 0)
     const rpcClient = getRpcClient({ rpcUrl })
@@ -103,8 +104,6 @@ export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
         pendingRequestsStore.getState()
 
       addPendingRequest({ ...request, sender: meta.sender })
-
-      inpageMessenger.send('toggleWallet', { open: true })
 
       try {
         const response = await new Promise((resolve, reject) => {
@@ -137,7 +136,6 @@ export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
         })
         return response as RpcResponse
       } finally {
-        inpageMessenger.send('toggleWallet', { useStorage: true })
         removePendingRequest(request.id)
       }
     }
@@ -175,8 +173,6 @@ export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
         pendingRequestsStore.getState()
 
       addPendingRequest({ ...request, sender: meta.sender })
-
-      inpageMessenger.send('toggleWallet', { open: true })
 
       try {
         const response = await new Promise((resolve) => {

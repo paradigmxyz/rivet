@@ -65,6 +65,12 @@ export function getProvider({
     removeListener: emitter.removeListener.bind(emitter),
     async request({ method, params }) {
       const id = _id++
+
+      window.postMessage({
+        type: 'openWallet',
+        payload: { method },
+      })
+
       const { result, error, ...response } = await requestMessenger.send(
         'request',
         {

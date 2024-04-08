@@ -1,11 +1,7 @@
-import { getMessenger } from '~/messengers'
-
-const inpageMessenger = getMessenger('background:inpage')
-
 export function setupContextMenu() {
-  chrome.action.onClicked.addListener(() => {
-    inpageMessenger.send('toggleWallet', undefined)
-  })
+  chrome.sidePanel
+    .setPanelBehavior({ openPanelOnActionClick: true })
+    .catch((error) => console.error(error))
 
   // TODO: Only create context menu if selected text is "openable" in Rivet.
   // chrome.contextMenus.create({

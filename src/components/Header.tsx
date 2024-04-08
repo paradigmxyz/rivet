@@ -1,4 +1,4 @@
-import { type ReactNode, useCallback, useMemo } from 'react'
+import { type ReactNode, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { type Hex, formatGwei } from 'viem'
 
@@ -24,14 +24,11 @@ import { useHost } from '~/hooks/useHost'
 import { useMine } from '~/hooks/useMine'
 import { useNetworkStatus } from '~/hooks/useNetworkStatus'
 import { usePendingBlock } from '~/hooks/usePendingBlock'
-import { getMessenger } from '~/messengers'
 import { useAccountStore, useNetworkStore, useSessionsStore } from '~/zustand'
 
 import { useRevert } from '../hooks/useRevert'
 import { useSnapshot } from '../hooks/useSnapshot'
 import * as styles from './Header.css'
-
-const contentMessenger = getMessenger('wallet:contentScript')
 
 export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
   const { type } = useAppMeta()
@@ -61,12 +58,6 @@ export function Header({ isNetworkOffline }: { isNetworkOffline?: boolean }) {
               </Column>
               <Column width="content">
                 <SettingsButton />
-              </Column>
-              <Column width="content">
-                <Separator orientation="vertical" />
-              </Column>
-              <Column width="content">
-                <CollapseButton />
               </Column>
             </>
           )}
@@ -194,31 +185,6 @@ function DappConnection() {
   )
 }
 
-function CollapseButton() {
-  const handleClose = useCallback(() => {
-    contentMessenger.send('toggleWallet', undefined)
-  }, [])
-
-  return (
-    <Tooltip label="Hide Wallet" height="full">
-      <Box
-        alignItems="center"
-        as="button"
-        backgroundColor={{
-          hover: 'surface/fill/quarternary',
-        }}
-        display="flex"
-        justifyContent="center"
-        height="full"
-        onClick={handleClose}
-        style={{ width: '28px' }}
-      >
-        <SFSymbol size="12px" symbol="chevron.right.2" weight="medium" />
-      </Box>
-    </Tooltip>
-  )
-}
-
 function SettingsButton() {
   return (
     <Tooltip label="Settings" height="full">
@@ -232,7 +198,7 @@ function SettingsButton() {
           display="flex"
           justifyContent="center"
           height="full"
-          style={{ width: '28px' }}
+          style={{ width: '32px' }}
         >
           <SFSymbol size="14px" symbol="gear" weight="medium" />
         </Box>

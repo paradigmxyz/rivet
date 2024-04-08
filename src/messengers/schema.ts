@@ -29,14 +29,5 @@ export type Schema = {
     response: RpcResponse,
   ]
   toggleTheme: [payload: void, response: void]
-  toggleWallet: [
-    payload:
-      | ({ route?: string } & (
-          | { open: boolean; useStorage?: never }
-          | { open?: never; useStorage?: true }
-        ))
-      | undefined,
-    response: void,
-  ]
   transactionExecuted: [payload: void, response: void]
 }

@@ -25,6 +25,9 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
         all_frames: true,
       },
     ],
+    side_panel: {
+      default_path: 'src/entries/iframe/index.html',
+    },
     icons: {
       '16': `icons/icon${dev ? '-dev' : ''}@16w.png`,
       '32': `icons/icon${dev ? '-dev' : ''}@32w.png`,
@@ -36,6 +39,7 @@ export const getManifest = ({ dev }: { dev?: boolean }) =>
       'contextMenus',
       'declarativeNetRequest',
       'scripting',
+      'sidePanel',
       'storage',
       'tabs',
       'unlimitedStorage',
