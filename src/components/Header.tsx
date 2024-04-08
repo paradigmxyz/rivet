@@ -280,7 +280,7 @@ function RpcUrl() {
 
   return (
     <HeaderItem label="RPC URL">
-      <Inline gap="4px" wrap={false}>
+      <Inline alignVertical="center" gap="4px" wrap={false}>
         <Box
           backgroundColor={
             status === 'pending'
@@ -291,7 +291,7 @@ function RpcUrl() {
           }
           borderWidth="1px"
           borderRadius="round"
-          style={{ minWidth: 8, minHeight: 8 }}
+          style={{ minWidth: 8, minHeight: 8, maxHeight: 8, maxWidth: 8 }}
         />
         <Text
           size="12px"
@@ -365,7 +365,7 @@ function BlockNumber() {
   })
   return (
     <Box position="relative">
-      <Inline gap="4px" wrap={false}>
+      <Inline alignVertical="center" gap="4px" wrap={false}>
         <Box width="fit">
           <HeaderItem label="Block">
             <Text size="12px" tabular>
@@ -426,7 +426,7 @@ function MineButton() {
   const { mutateAsync: mine } = useMine()
 
   return (
-    <Box key={block?.number?.toString()} style={{ marginTop: '8px' }}>
+    <Box key={block?.number?.toString()} style={{ marginTop: '14px' }}>
       <Button.Symbol
         label="Mine Block"
         height="20px"
@@ -446,7 +446,7 @@ function RevertButton({ snapshot }: { snapshot?: Hex }) {
   const { mutateAsync: revert } = useRevert()
 
   return (
-    <Box key={snapshot} style={{ marginTop: '8px' }}>
+    <Box key={snapshot} style={{ marginTop: '14px' }}>
       <Button.Symbol
         disabled={!snapshot}
         label="Revert Block"

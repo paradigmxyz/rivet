@@ -483,7 +483,7 @@ export const fontAttributes = {
 } satisfies { [key: string]: FontAttributes }
 
 const fontMetrics = {
-  capHeight: 1443,
+  capHeight: 1543,
   ascent: 1950,
   descent: -494,
   lineGap: 0,
