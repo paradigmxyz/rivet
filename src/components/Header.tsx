@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo } from 'react'
+import { type ReactNode, useLayoutEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { type Hex, formatGwei } from 'viem'
 
@@ -128,6 +128,13 @@ function HomeButton() {
 function Account() {
   const { account } = useAccountStore()
   if (!account) return null
+
+  // Hack to bypass truncated text mounting issues.
+  const [key, setKey] = useState(0)
+  useLayoutEffect(() => {
+    requestAnimationFrame(() => setKey((key) => key + 1))
+  }, [])
+
   return (
     <Link to="/" style={{ height: '100%' }}>
       <Box
@@ -143,7 +150,9 @@ function Account() {
           {account && (
             <HeaderItem label="Account">
               <Tooltip label={account.address}>
-                <Text.Truncated size="11px">{account.address}</Text.Truncated>
+                <Text.Truncated key={key} size="11px">
+                  {account.address}
+                </Text.Truncated>
               </Tooltip>
             </HeaderItem>
           )}

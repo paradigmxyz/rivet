@@ -464,8 +464,14 @@ function Blocks() {
                           TIMESTAMP
                         </Text>
                       </Column>
-                      <Column alignVertical="center">
-                        <Text color="text/tertiary" size="9px" wrap={false}>
+                      <Column width="1/5" alignVertical="center">
+                        <Text
+                          color="text/tertiary"
+                          size="9px"
+                          overflow
+                          wrap={false}
+                          style={{ overflow: 'visible' }}
+                        >
                           TRANSACTIONS
                         </Text>
                       </Column>
@@ -519,7 +525,7 @@ function Blocks() {
                           </Text>
                         )}
                       </Column>
-                      <Column alignVertical="center">
+                      <Column width="1/5" alignVertical="center">
                         <Text size="12px">
                           {block.transactions.length || '0'}
                         </Text>

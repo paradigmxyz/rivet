@@ -92,6 +92,7 @@ export const TextWrapper = forwardRef<HTMLDivElement, TextWrapperProps>(
 )
 
 export type TextProps = TextWrapperProps & {
+  overflow?: boolean
   tabular?: boolean
 }
 
@@ -103,6 +104,7 @@ export const TextBase = forwardRef<HTMLDivElement, TextProps>(
       children,
       color,
       family,
+      overflow,
       size,
       style,
       tabular = false,
@@ -128,7 +130,11 @@ export const TextBase = forwardRef<HTMLDivElement, TextProps>(
       >
         <Box
           as="span"
-          className={[tabular && styles.tabular, !wrap && styles.overflow]}
+          className={[
+            tabular && styles.tabular,
+            !wrap && styles.ellipsis,
+            overflow && styles.overflow,
+          ]}
           display={!wrap ? 'block' : undefined}
         >
           {children || '‎'}
@@ -185,15 +191,10 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
     }, [])
 
     useLayoutEffect(() => {
-      setTimeout(() => {
-        setWidth(
-          (
-            (
-              wrapperRef.current as any
-            ).getBoundingClientRect() as DOMRectReadOnly
-          ).width,
-        )
-      }, 16)
+      setWidth(
+        ((wrapperRef.current as any).getBoundingClientRect() as DOMRectReadOnly)
+          .width,
+      )
     }, [])
     useResizeObserver(wrapperRef, (entry) =>
       mounted ? setWidth(entry.contentRect.width) : undefined,
@@ -227,7 +228,7 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
         <Box ref={wrapperRef}>
           <Box
             as="span"
-            className={[tabular && styles.tabular, styles.overflow]}
+            className={[tabular && styles.tabular, styles.ellipsis]}
             position="relative"
           >
             {truncatedText || '‎'}

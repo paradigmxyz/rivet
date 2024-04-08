@@ -38,8 +38,12 @@ export const tabular = style({
   letterSpacing: '0px',
 })
 
-export const overflow = style({
+export const ellipsis = style({
   textOverflow: 'ellipsis',
   overflow: 'hidden',
   whiteSpace: 'nowrap',
+})
+
+export const overflow = style({
+  overflow: 'visible',
 })
