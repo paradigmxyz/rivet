@@ -1,0 +1,26 @@
+diff --git a/node_modules/@samrum/vite-plugin-web-extension/dist/index.cjs b/node_modules/@samrum/vite-plugin-web-extension/dist/index.cjs
+index b3007a2..69ef681 100644
+--- a/node_modules/@samrum/vite-plugin-web-extension/dist/index.cjs
++++ b/node_modules/@samrum/vite-plugin-web-extension/dist/index.cjs
+@@ -156,7 +156,7 @@ class DevBuilder {
+   }) {
+     this.hmrServerOrigin = this.getHmrServerOrigin(devServerPort);
+     this.hmrViteClientUrl = `${this.hmrServerOrigin}/@vite/client`;
+-    await fsExtra.emptyDir(this.outDir);
++    // await fsExtra.emptyDir(this.outDir);
+     const publicDir = path__default.resolve(
+       process.cwd(),
+       this.viteConfig.root,
+diff --git a/node_modules/@samrum/vite-plugin-web-extension/dist/index.mjs b/node_modules/@samrum/vite-plugin-web-extension/dist/index.mjs
+index dc8132c..0f57806 100644
+--- a/node_modules/@samrum/vite-plugin-web-extension/dist/index.mjs
++++ b/node_modules/@samrum/vite-plugin-web-extension/dist/index.mjs
+@@ -147,7 +147,7 @@ class DevBuilder {
+   }) {
+     this.hmrServerOrigin = this.getHmrServerOrigin(devServerPort);
+     this.hmrViteClientUrl = `${this.hmrServerOrigin}/@vite/client`;
+-    await emptyDir(this.outDir);
++    // await emptyDir(this.outDir);
+     const publicDir = path.resolve(
+       process.cwd(),
+       this.viteConfig.root,

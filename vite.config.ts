@@ -17,7 +17,7 @@ export default defineConfig({
     outDir,
   },
   optimizeDeps: {
-    exclude: ['mipd', 'viem'],
+    exclude: ['mipd', 'viem', '@vanilla-extract/css'],
   },
   plugins: [
     tsconfigPaths(),
