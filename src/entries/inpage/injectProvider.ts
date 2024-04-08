@@ -26,7 +26,7 @@ export function injectProvider() {
   // Announce provider
   announceProvider({
     info: {
-      icon: '',
+      icon: 'data:image/svg+xml,<svg width="337" height="337" viewBox="0 0 337 337" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="337" height="337" fill="black"/><path d="M169 72L253.004 120.5V217.5L169 266L84.9955 217.5V120.5L169 72Z" fill="white"/><circle cx="170.054" cy="167.946" r="43.2283" fill="black"/><circle cx="170.054" cy="167.946" r="22.1413" fill="white"/></svg>',
       name: 'Rivet',
       rdns: 'et.riv',
       uuid: uuidv4(),
