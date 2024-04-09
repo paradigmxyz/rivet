@@ -142,11 +142,11 @@ export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
 
     if (isInpage && request.method === 'eth_requestAccounts') {
       const authorize = () => {
-        const { accountsForRpcUrl } = accountStore.getState()
+        const { getAccounts } = accountStore.getState()
         const { network } = networkStore.getState()
         const { addSession } = sessionsStore.getState()
 
-        const accounts = accountsForRpcUrl({
+        const accounts = getAccounts({
           activeFirst: true,
           rpcUrl: network.rpcUrl,
         })
@@ -205,10 +205,10 @@ export function setupRpcHandler({ messenger }: { messenger: Messenger }) {
     }
 
     if (isInpage && request.method === 'eth_accounts') {
-      const { accountsForRpcUrl } = accountStore.getState()
+      const { getAccounts } = accountStore.getState()
       const { network } = networkStore.getState()
 
-      const accounts = accountsForRpcUrl({
+      const accounts = getAccounts({
         activeFirst: true,
         rpcUrl: network.rpcUrl,
       })

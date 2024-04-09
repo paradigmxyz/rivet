@@ -177,7 +177,7 @@ const inpageMessenger = getMessenger('wallet:inpage')
 
 /** Emits EIP-1193 `accountsChanged` Event */
 function AccountsChangedEmitter() {
-  const { account, accountsForRpcUrl } = useAccountStore()
+  const { account, getAccounts } = useAccountStore()
   const { sessions } = useSessionsStore()
 
   const prevAccounts = useRef<AccountState['accounts']>()
@@ -188,7 +188,7 @@ function AccountsChangedEmitter() {
       return
     }
 
-    let accounts_ = accountsForRpcUrl({ rpcUrl: account.rpcUrl })
+    let accounts_ = getAccounts({ rpcUrl: account.rpcUrl })
     accounts_ = [
       account,
       ...accounts_.filter((x) => x.address !== account.address),
@@ -239,7 +239,7 @@ function SyncBlockNumber() {
 function SyncJsonRpcAccounts() {
   const { data: chainId } = useNetworkStatus()
   const client = useClient()
-  const { accountsForRpcUrl, setJsonRpcAccounts } = useAccountStore()
+  const { getAccounts, setJsonRpcAccounts } = useAccountStore()
 
   // rome-ignore lint/nursery/useExhaustiveDependencies: <explanation>
   useEffect(() => {
@@ -247,7 +247,7 @@ function SyncJsonRpcAccounts() {
       const addresses = await client.getAddresses()
       setJsonRpcAccounts({ addresses, rpcUrl: client.rpcUrl })
     })()
-  }, [accountsForRpcUrl, chainId, setJsonRpcAccounts, client])
+  }, [getAccounts, chainId, setJsonRpcAccounts, client])
 
   return null
 }

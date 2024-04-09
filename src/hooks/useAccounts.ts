@@ -2,11 +2,12 @@ import { useMemo } from 'react'
 import { useAccountStore, useNetworkStore } from '~/zustand'
 
 export function useAccounts() {
-  const { accounts, accountsForRpcUrl } = useAccountStore()
+  const { accounts, getAccounts } = useAccountStore()
   const { network } = useNetworkStore()
 
+  // rome-ignore lint/nursery/useExhaustiveDependencies:
   return useMemo(
-    () => accountsForRpcUrl({ rpcUrl: network.rpcUrl }),
+    () => getAccounts({ rpcUrl: network.rpcUrl }),
     [accounts, network.rpcUrl],
   )
 }

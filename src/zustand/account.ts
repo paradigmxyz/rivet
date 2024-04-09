@@ -1,8 +1,13 @@
-import type { Address, JsonRpcAccount as JsonRpcAccount_ } from 'viem'
+import type {
+  Address,
+  JsonRpcAccount as JsonRpcAccount_,
+  LocalAccount,
+} from 'viem'
 
 import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
 
 import { uniqBy } from 'remeda'
+import type { OneOf } from '../utils/types'
 import { createStore } from './utils'
 
 // Only support JSON-RPC Accounts for now. In the future, we may want to add support
@@ -11,7 +16,7 @@ type JsonRpcAccount = JsonRpcAccount_ & {
   rpcUrl: string
   impersonate?: boolean
 }
-export type Account = JsonRpcAccount & {
+export type Account = OneOf<LocalAccount | JsonRpcAccount> & {
   displayName?: string
   key: string
   state: 'loaded' | 'loading'
@@ -22,10 +27,10 @@ export type AccountState = {
   accounts: readonly Account[]
 }
 export type AccountActions = {
-  accountsForRpcUrl({
+  getAccounts({
     activeFirst,
     rpcUrl,
-  }: { activeFirst?: boolean; rpcUrl: string }): readonly Account[]
+  }: { activeFirst?: boolean; rpcUrl?: string }): readonly Account[]
   removeAccount({ account }: { account: Account }): void
   setJsonRpcAccounts({
     addresses,
@@ -41,7 +46,7 @@ export const accountStore = createStore<AccountStore>(
     account: undefined,
     accounts: [],
 
-    accountsForRpcUrl({ activeFirst = false, rpcUrl }) {
+    getAccounts({ activeFirst = false, rpcUrl }) {
       const { account, accounts } = get()
       let accounts_ = accounts.filter((x) => !x.rpcUrl || x.rpcUrl === rpcUrl)
       if (activeFirst)
@@ -109,7 +114,7 @@ export const accountStore = createStore<AccountStore>(
         const account = {
           ...(index >= 0 ? accounts[index] : {}),
           ...account_,
-        }
+        } as Account
         if (index >= 0) accounts[index] = account
         else accounts.unshift(account)
 

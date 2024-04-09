@@ -33,7 +33,7 @@ export function useSetAccount() {
           ...account,
           key: key_,
           state: 'loaded',
-        },
+        } as Account,
       })
       if (setActive) switchAccount(key_)
       if (account.impersonate) await impersonate({ address: account.address })
