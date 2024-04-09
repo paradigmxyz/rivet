@@ -5,7 +5,7 @@ import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import {
   type Address,
-  BaseError,
+  type BaseError,
   formatUnits,
   isAddress,
   parseUnits,

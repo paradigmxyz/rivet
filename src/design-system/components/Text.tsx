@@ -204,7 +204,7 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
       const letterWidth = fontAttributes[size].letterWidth
 
       const width_ = width
-        ? width - parseInt(heightForSize[size].replace('px', ''))
+        ? width - Number.parseInt(heightForSize[size].replace('px', ''))
         : undefined
       return typeof width_ === 'number'
         ? truncate(children || '', {
@@ -235,7 +235,7 @@ export const TextTruncated = forwardRef<HTMLDivElement, TextTruncatedProps>(
             <Box
               position="absolute"
               style={{
-                right: -parseInt(heightForSize[size].replace('px', '')),
+                right: -Number.parseInt(heightForSize[size].replace('px', '')),
                 top: -3,
                 width: heightForSize[size],
               }}

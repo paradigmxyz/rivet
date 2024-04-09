@@ -1,6 +1,6 @@
 import { loaders, whatsabi } from '@shazow/whatsabi'
 import { queryOptions, useQuery } from '@tanstack/react-query'
-import { type Address, type Client } from 'viem'
+import type { Address, Client } from 'viem'
 import { createQueryKey } from '~/react-query'
 import { etherscanApiUrls } from '../constants/etherscan'
 import { useClient } from './useClient'
@@ -22,8 +22,8 @@ export function useAutoloadAbiQueryOptions({
   const client = useClient()
   return queryOptions({
     enabled: enabled && Boolean(address),
-    gcTime: Infinity,
-    staleTime: Infinity,
+    gcTime: Number.POSITIVE_INFINITY,
+    staleTime: Number.POSITIVE_INFINITY,
     queryKey: autoloadAbiQueryKey([client.key, address!]),
     async queryFn() {
       if (!address) throw new Error('address is required')

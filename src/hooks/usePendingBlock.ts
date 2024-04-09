@@ -1,5 +1,5 @@
 import { type InfiniteData, useQuery } from '@tanstack/react-query'
-import { type Block, type Client, type Transaction } from 'viem'
+import type { Block, Client, Transaction } from 'viem'
 
 import {
   createQueryKey,

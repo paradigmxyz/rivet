@@ -11,7 +11,7 @@ export type WebextStorage = {
   ): () => void
 }
 
-const noopStorage: typeof chrome.storage['local'] = {
+const noopStorage: (typeof chrome.storage)['local'] = {
   getBytesInUse: () => Promise.resolve(0),
   QUOTA_BYTES: 0,
   clear: () => Promise.resolve(),

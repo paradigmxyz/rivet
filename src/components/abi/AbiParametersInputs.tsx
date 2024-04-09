@@ -1,4 +1,4 @@
-import { type AbiFunction, type AbiParameter } from 'abitype'
+import type { AbiFunction, AbiParameter } from 'abitype'
 import { useEffect, useMemo } from 'react'
 import {
   type RegisterOptions,

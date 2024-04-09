@@ -76,8 +76,8 @@ export default function TransactionDetails() {
                         receipt?.status === 'success'
                           ? 'surface/green'
                           : receipt?.status === 'reverted'
-                          ? 'surface/red'
-                          : 'surface/invert@0.5'
+                            ? 'surface/red'
+                            : 'surface/invert@0.5'
                       }
                       borderWidth="1px"
                       borderRadius="round"

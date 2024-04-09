@@ -52,7 +52,7 @@ export const Box = forwardRef(
     ) as [BackgroundColor, string]
     const applyColorScheme =
       (backgroundColor === 'accent' || backgroundColors[baseBackgroundColor]) &&
-      (!opacity || parseFloat(opacity) > 0.5)
+      (!opacity || Number.parseFloat(opacity) > 0.5)
 
     const {
       scheme: accentColorScheme,

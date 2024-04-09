@@ -24,7 +24,6 @@ export default function Layout() {
   const showHeader = onboarded
 
   const isNetworkOffline = Boolean(network.rpcUrl && onboarded && !online)
-  // rome-ignore lint/nursery/useExhaustiveDependencies:
   useEffect(() => {
     contentMessenger.reply('pushRoute', async (route) => {
       navigate(route)

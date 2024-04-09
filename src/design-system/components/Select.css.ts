@@ -16,7 +16,7 @@ export type SelectKind = 'solid'
 export const selectVariants = [
   'solid',
 ] as const satisfies readonly `${SelectKind}`[]
-export type SelectVariant = typeof selectVariants[number]
+export type SelectVariant = (typeof selectVariants)[number]
 
 export const heightStyles = styleVariants(selectHeights, (height) => [
   { height },

@@ -155,8 +155,8 @@ function NetworkRow({
                     status === 'pending'
                       ? 'surface/invert@0.5'
                       : data
-                      ? 'surface/green'
-                      : 'surface/red'
+                        ? 'surface/green'
+                        : 'surface/red'
                   }
                   borderWidth="1px"
                   borderRadius="round"

@@ -36,4 +36,4 @@ export const buttonVariants = [
   'tint green',
   'tint red',
 ] as const satisfies readonly `${ButtonKind} ${string}`[]
-export type ButtonVariant = typeof buttonVariants[number]
+export type ButtonVariant = (typeof buttonVariants)[number]

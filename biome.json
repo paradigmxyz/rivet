@@ -1,5 +1,5 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.0.0/schema.json",
+  "$schema": "https://biomejs.dev/schemas/1.6.4/schema.json",
   "files": {
     "ignore": [
       "node_modules",
@@ -7,7 +7,7 @@
       "dist",
       "contracts/cache",
       "contracts/out",
-      "contracts/generated",
+      "contracts/generated.ts",
       "keys.json",
       "symbols/generated"
     ]
@@ -16,20 +16,22 @@
     "enabled": true,
     "formatWithErrors": false,
     "indentStyle": "space",
-    "indentSize": 2,
+    "indentWidth": 2,
     "lineWidth": 80
   },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
-      "nursery": {
-        "useExhaustiveDependencies": "error"
+      "complexity": {
+        "noForEach": "off"
       },
       "correctness": {
-        "noUnusedVariables": "error"
+        "noUnusedVariables": "error",
+        "useExhaustiveDependencies": "off"
       },
       "performance": {
+        "noAccumulatingSpread": "off",
         "noDelete": "off"
       },
       "style": {
@@ -39,6 +41,7 @@
       "suspicious": {
         "noArrayIndexKey": "off",
         "noAssignInExpressions": "off",
+        "noConfusingVoidType": "off",
         "noExplicitAny": "off"
       }
     }

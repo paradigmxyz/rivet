@@ -1,10 +1,11 @@
 import * as Accordion from '@radix-ui/react-accordion'
-import {
-  type AbiParameter,
-  type AbiParameterToPrimitiveType,
-  type AbiParametersToPrimitiveTypes,
+import type {
+  AbiParameter,
+  AbiParameterToPrimitiveType,
+  AbiParametersToPrimitiveTypes,
 } from 'abitype'
-import React, { useEffect, useMemo, useState } from 'react'
+import type React from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { type Hex, concat, decodeAbiParameters, stringify } from 'viem'
 
 import { Tooltip } from '~/components'

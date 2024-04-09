@@ -74,7 +74,7 @@
     "zustand": "^4.3.8"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.0.0",
+    "@biomejs/biome": "1.6.4",
     "@samrum/vite-plugin-web-extension": "^5.1.0",
     "@types/chroma-js": "^2.4.0",
     "@types/chrome": "^0.0.266",

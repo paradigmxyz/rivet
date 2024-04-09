@@ -18,7 +18,7 @@ export type InputKind = 'solid'
 export const inputVariants = [
   'solid',
 ] as const satisfies readonly `${InputKind}`[]
-export type InputVariant = typeof inputVariants[number]
+export type InputVariant = (typeof inputVariants)[number]
 
 export const heightStyles = styleVariants(inputHeights, (height) => [
   { height },

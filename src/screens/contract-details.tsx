@@ -48,9 +48,9 @@ export default function ContractDetails() {
       .filter((abiItem) => abiItem.type === 'function')
       .map((abiItem) => ({
         ...abiItem,
-        inputs: (abiItem as {} as AbiFunction).inputs || [],
-        outputs: (abiItem as {} as AbiFunction).outputs || [],
-      })) as {} as AbiFunction[]
+        inputs: (abiItem as unknown as AbiFunction).inputs || [],
+        outputs: (abiItem as unknown as AbiFunction).outputs || [],
+      })) as unknown as AbiFunction[]
   }, [abi])
 
   const hasStateMutability = !abiFunctions?.some(
@@ -74,7 +74,7 @@ export default function ContractDetails() {
         (abiItem.stateMutability === 'nonpayable' ||
           abiItem.stateMutability === 'payable'),
     )
-    return [read as {} as AbiFunction[], write as {} as AbiFunction[]]
+    return [read as unknown as AbiFunction[], write as unknown as AbiFunction[]]
   }, [abiFunctions, hasStateMutability])
 
   ////////////////////////////////////////////////////////////////////////

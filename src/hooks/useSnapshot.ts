@@ -21,7 +21,7 @@ export function useSnapshotQueryOptions({
 }: UseSnapshotParameters) {
   const client = useClient()
   return queryOptions({
-    gcTime: Infinity,
+    gcTime: Number.POSITIVE_INFINITY,
     staleTime: 0,
     enabled: Boolean(enabled && blockNumber),
     queryKey: getSnapshotQueryKey([client.key, (blockNumber || '').toString()]),

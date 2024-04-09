@@ -41,8 +41,8 @@ export const createWindowTransport = <TConnection extends string>(
       const sender = event.source
       if (sender !== window) return
 
-      let error
-      let response
+      let error: unknown
+      let response: unknown
       try {
         response = await callback(event.data.payload, {
           connection: event.data.connection,

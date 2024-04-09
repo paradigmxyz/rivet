@@ -1,6 +1,6 @@
 import { loaders } from '@shazow/whatsabi'
 import { queryOptions, useQuery } from '@tanstack/react-query'
-import { type Client, type Hex } from 'viem'
+import type { Client, Hex } from 'viem'
 import { createQueryKey } from '~/react-query'
 import { useClient } from './useClient'
 
@@ -21,8 +21,8 @@ export function useLookupSignatureQueryOptions({
   const client = useClient()
   return queryOptions({
     enabled: enabled && Boolean(selector),
-    gcTime: Infinity,
-    staleTime: Infinity,
+    gcTime: Number.POSITIVE_INFINITY,
+    staleTime: Number.POSITIVE_INFINITY,
     queryKey: lookupSignatureQueryKey([client.key, selector!]),
     async queryFn() {
       if (!selector) throw new Error('selector is required')

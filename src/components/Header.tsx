@@ -261,8 +261,8 @@ function RpcUrl() {
             status === 'pending'
               ? 'surface/invert@0.5'
               : listening
-              ? 'surface/green'
-              : 'surface/red'
+                ? 'surface/green'
+                : 'surface/red'
           }
           borderWidth="1px"
           borderRadius="round"
@@ -368,8 +368,8 @@ function MiningStatus() {
           ? automining
             ? 'Automine'
             : network.blockTime
-            ? `Interval: ${network.blockTime}s`
-            : 'On Demand'
+              ? `Interval: ${network.blockTime}s`
+              : 'On Demand'
           : ''}
       </Text>
     </HeaderItem>

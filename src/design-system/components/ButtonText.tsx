@@ -3,7 +3,7 @@ import { forwardRef } from 'react'
 import { Box } from './Box'
 import type { BoxStyles } from './Box.css'
 import { ButtonRoot, type ButtonRootProps } from './Button'
-import { type ButtonHeight, type ButtonVariant } from './Button.css'
+import type { ButtonHeight, ButtonVariant } from './Button.css'
 import { Text, type TextProps } from './Text'
 
 type ButtonTextProps = ButtonRootProps

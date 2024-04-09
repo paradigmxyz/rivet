@@ -495,7 +495,7 @@ function defineType(fontAttributes: FontAttributes, inline: boolean) {
   const leading =
     typeof lineHeight === 'number'
       ? lineHeight
-      : (fontSize * parseInt(lineHeight)) / 100
+      : (fontSize * Number.parseInt(lineHeight)) / 100
 
   if (inline) return { fontSize, letterSpacing }
   return {
@@ -658,7 +658,7 @@ export const symbolNames = [
   'backward.fill',
   'arrow.counterclockwise',
 ] as const
-export type SymbolName = typeof symbolNames[number]
+export type SymbolName = (typeof symbolNames)[number]
 
 export const textAlignment = ['left', 'center', 'right'] as const
-export type TextAlignment = typeof textAlignment[number]
+export type TextAlignment = (typeof textAlignment)[number]

@@ -181,7 +181,6 @@ function AccountsChangedEmitter() {
   const { sessions } = useSessionsStore()
 
   const prevAccounts = useRef<AccountState['accounts']>()
-  // rome-ignore lint/nursery/useExhaustiveDependencies:
   useEffect(() => {
     if (!account) {
       prevAccounts.current = []
@@ -212,7 +211,6 @@ function NetworkChangedEmitter() {
   const { sessions } = useSessionsStore()
 
   const prevNetwork = useRef<NetworkState['network']>()
-  // rome-ignore lint/nursery/useExhaustiveDependencies:
   useEffect(() => {
     if (!network.chainId) return
 
@@ -241,7 +239,6 @@ function SyncJsonRpcAccounts() {
   const client = useClient()
   const { getAccounts, setJsonRpcAccounts } = useAccountStore()
 
-  // rome-ignore lint/nursery/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     ;(async () => {
       const addresses = await client.getAddresses()

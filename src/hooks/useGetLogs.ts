@@ -42,11 +42,11 @@ export function getLogsQueryOptions<
     enabled,
     gcTime:
       typeof fromBlock === 'bigint' && typeof toBlock === 'bigint'
-        ? Infinity
+        ? Number.POSITIVE_INFINITY
         : undefined,
     staleTime:
       typeof fromBlock === 'bigint' && typeof toBlock === 'bigint'
-        ? Infinity
+        ? Number.POSITIVE_INFINITY
         : undefined,
     queryKey: getLogsQueryKey([client.key, stringify(args)]),
     async queryFn() {

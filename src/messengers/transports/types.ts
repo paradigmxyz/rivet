@@ -40,7 +40,7 @@ export type Transport<
     },
   ) => Promise<TSchema extends TransportSchema ? TSchema[TTopic][1] : unknown>
   /** Replies to `send`. */
-  reply: <TTopic extends keyof TSchema,>(
+  reply: <TTopic extends keyof TSchema>(
     /** A scoped topic that was sent from `send`. */
     topic: TTopic,
     callback: CallbackFunction<

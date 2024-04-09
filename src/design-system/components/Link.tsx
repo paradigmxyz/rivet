@@ -1,4 +1,5 @@
-import React, { forwardRef, useContext } from 'react'
+import type React from 'react'
+import { forwardRef, useContext } from 'react'
 import { Link as RouterLink } from 'react-router-dom'
 
 import { Box } from './Box'

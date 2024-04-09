@@ -27,7 +27,7 @@ export function useContractsQueryOptions({
   const client = useClient()
 
   return queryOptions({
-    staleTime: Infinity,
+    staleTime: Number.POSITIVE_INFINITY,
     enabled: Boolean(
       enabled &&
         block?.number &&
