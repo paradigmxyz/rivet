@@ -7,13 +7,14 @@ import {
   custom,
   numberToHex,
 } from 'viem'
-import { type RpcResponse, rpc } from 'viem/utils'
+import { rpc } from 'viem/utils'
 
 import {
   UnsupportedProviderMethodError,
   UserRejectedRequestError,
 } from '~/errors'
 import { type Messenger, getMessenger } from '~/messengers'
+import type { RpcResponse } from '~/types/rpc'
 import { buildChain } from '~/viem'
 import {
   accountStore,

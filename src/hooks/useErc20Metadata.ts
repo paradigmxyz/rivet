@@ -27,7 +27,7 @@ export function useErc20MetadataQueryOptions({
       const contract = getContract({
         address: tokenAddress,
         abi: erc20Abi,
-        publicClient: client,
+        client,
       })
       const [name, symbol, decimals, totalSupply] = await Promise.all([
         contract.read.name(),

@@ -1,13 +1,12 @@
+import { uniqBy } from 'remeda'
 import type {
   Address,
   JsonRpcAccount as JsonRpcAccount_,
   LocalAccount,
 } from 'viem'
-
 import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
+import type { OneOf } from '~/types/utils'
 
-import { uniqBy } from 'remeda'
-import type { OneOf } from '../utils/types'
 import { createStore } from './utils'
 
 // Only support JSON-RPC Accounts for now. In the future, we may want to add support

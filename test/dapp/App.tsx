@@ -557,7 +557,7 @@ function ContractPlayground() {
       chain: null,
     })
     const transaction = await client.waitForTransactionReceipt({ hash })
-    setDeployedAddress(transaction.contractAddress)
+    setDeployedAddress(transaction.contractAddress!)
   }
 
   const test_rivet_1 = async (e: React.FormEvent) => {
@@ -619,7 +619,7 @@ function ContractMockERC20() {
       args: ['MockERC20', 'M20', 18],
     })
     const transaction = await client.waitForTransactionReceipt({ hash })
-    setDeployedAddress(transaction.contractAddress)
+    setDeployedAddress(transaction.contractAddress!)
   }
 
   const mint = async (e: React.FormEvent) => {
@@ -665,7 +665,7 @@ function ContractMockERC721() {
       args: ['MockERC721', 'M721'],
     })
     const transaction = await client.waitForTransactionReceipt({ hash })
-    setDeployedAddress(transaction.contractAddress)
+    setDeployedAddress(transaction.contractAddress!)
   }
 
   const mint = async (e: React.FormEvent) => {

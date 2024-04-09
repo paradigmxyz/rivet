@@ -1,5 +1,5 @@
 import { useSyncExternalStoreWithTracked } from '~/hooks/useSyncExternalStoreWithTracked'
-import type { RpcRequest } from '~/messengers/schema'
+import type { RpcRequest } from '~/types/rpc'
 
 import { createStore } from './utils'
 

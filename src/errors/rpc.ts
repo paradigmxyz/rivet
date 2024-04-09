@@ -1,5 +1,4 @@
-import type { RpcRequest } from 'viem/utils'
-
+import type { RpcRequest } from '~/types/rpc'
 import { BaseError } from './base.js'
 
 export type ProviderRpcErrorCode =

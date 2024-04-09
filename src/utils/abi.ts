@@ -4,6 +4,7 @@ import type { AbiEvent } from 'abitype'
 import { FunctionFragment } from 'ethers'
 import {
   type AbiItem,
+  type ContractEventName,
   type DecodeEventLogParameters,
   type Hex,
   decodeEventLog,
@@ -18,7 +19,13 @@ export function decodeEventLogs_guessed<
   data,
   topics,
 }: { abiItem: AbiEvent } & Pick<
-  DecodeEventLogParameters<[TAbiEvent], string, TTopics, TData, true>,
+  DecodeEventLogParameters<
+    [TAbiEvent],
+    ContractEventName<[TAbiEvent]>,
+    TTopics,
+    TData,
+    true
+  >,
   'data' | 'topics'
 >) {
   const indexedValues = topics.slice(1)

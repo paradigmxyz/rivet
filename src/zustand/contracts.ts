@@ -3,7 +3,8 @@ import type { Abi, Address } from 'abitype'
 import type { Hex, TransactionReceipt } from 'viem'
 import { useStore } from 'zustand'
 
-import type { RequiredBy } from '~/utils/types'
+import type { RequiredBy } from '~/types/utils'
+
 import { createStore, getKey } from './utils'
 
 type Contract = {

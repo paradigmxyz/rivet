@@ -1,9 +1,7 @@
-import type { Address, EIP1193Parameters, EIP1474Methods } from 'viem'
-import type { RpcResponse } from 'viem/utils'
+import type { Address } from 'viem'
 
+import type { RpcRequest, RpcResponse } from '~/types/rpc'
 import type { SessionsState } from '~/zustand'
-
-export type RpcRequest = EIP1193Parameters<EIP1474Methods> & { id: number }
 
 export type Schema = {
   accountsChanged: [

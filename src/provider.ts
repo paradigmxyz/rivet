@@ -7,7 +7,7 @@ import {
   UserRejectedRequestError,
 } from '~/errors'
 import type { Messenger } from '~/messengers'
-import type { RpcRequest } from '~/messengers/schema'
+import type { RpcRequest } from '~/types/rpc'
 
 const providerCache = new Map<string, EIP1193Provider>()
 export function getProvider({

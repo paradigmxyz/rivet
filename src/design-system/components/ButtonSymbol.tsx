@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 
-import type { UnionOmit } from '~/utils/types'
+import type { UnionOmit } from '~/types/utils'
 
 import { Tooltip } from '../../components'
 import type { SymbolName } from '../tokens'

@@ -4,6 +4,7 @@ import {
   type BaseError,
   type CallParameters,
   type Client,
+  type ContractFunctionName,
   type DecodeFunctionResultParameters,
   type EncodeFunctionDataParameters,
   type Hash,
@@ -18,7 +19,10 @@ import { useClient } from './useClient'
 
 type ReadContractParameters<
   TAbi extends Abi | readonly unknown[] = Abi,
-  TFunctionName extends string = string,
+  TFunctionName extends ContractFunctionName<
+    TAbi,
+    'pure' | 'view'
+  > = ContractFunctionName<TAbi, 'pure' | 'view'>,
 > = ReadContractParameters_viem<TAbi, TFunctionName> & {
   enabled?: boolean
   raw?: boolean
@@ -31,7 +35,10 @@ export const readContractQueryKey = createQueryKey<
 
 export function useReadContractQueryOptions<
   const TAbi extends Abi | readonly unknown[] = Abi,
-  TFunctionName extends string = string,
+  TFunctionName extends ContractFunctionName<
+    TAbi,
+    'pure' | 'view'
+  > = ContractFunctionName<TAbi, 'pure' | 'view'>,
 >(params: ReadContractParameters<TAbi, TFunctionName>) {
   const client = useClient()
   return queryOptions({
@@ -72,7 +79,10 @@ export function useReadContractQueryOptions<
 
 export function useReadContract<
   const TAbi extends Abi | readonly unknown[] = Abi,
-  TFunctionName extends string = string,
+  TFunctionName extends ContractFunctionName<
+    TAbi,
+    'pure' | 'view'
+  > = ContractFunctionName<TAbi, 'pure' | 'view'>,
 >(args: ReadContractParameters<TAbi, TFunctionName>) {
   const queryOptions = useReadContractQueryOptions(args)
   return useQuery(queryOptions)

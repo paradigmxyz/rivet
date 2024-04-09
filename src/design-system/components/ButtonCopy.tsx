@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from 'react'
 
-import type { UnionOmit } from '~/utils/types'
+import type { UnionOmit } from '~/types/utils'
 
 import { ButtonRoot, type ButtonRootProps } from './Button'
 import type { ButtonHeight } from './Button.css'

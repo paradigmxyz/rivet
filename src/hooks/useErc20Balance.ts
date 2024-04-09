@@ -29,7 +29,7 @@ export function useErc20BalanceQueryOptions({
       const contract = getContract({
         address: tokenAddress,
         abi: erc20Abi,
-        publicClient: client,
+        client,
       })
       return contract.read.balanceOf([address])
     },
