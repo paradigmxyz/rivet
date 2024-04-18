@@ -15,12 +15,12 @@ jobs:
       - name: Install dependencies
         uses: ./.github/actions/install-dependencies
 
-      - name: Set version
-        run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          npm version patch -m "chore: submit %s to web store"
-          git push --tags
+      # - name: Set version
+      #   run: |
+      #     git config --global user.email "github-actions[bot]@users.noreply.github.com"
+      #     git config --global user.name "github-actions[bot]"
+      #     npm version patch -m "chore: submit %s to web store"
+      #     git push --tags
 
       - name: Build
         run: bun run build
