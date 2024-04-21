@@ -127,7 +127,6 @@ function HomeButton() {
 
 function Account() {
   const { account } = useAccountStore()
-  if (!account) return null
 
   // Hack to bypass truncated text mounting issues.
   const [key, setKey] = useState(0)
@@ -135,6 +134,7 @@ function Account() {
     requestAnimationFrame(() => setKey((key) => key + 1))
   }, [])
 
+  if (!account) return null
   return (
     <Link to="/" style={{ height: '100%' }}>
       <Box
