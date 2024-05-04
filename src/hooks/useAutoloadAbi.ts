@@ -43,7 +43,10 @@ export function useAutoloadAbiQueryOptions({
       })
       if (!result.abi.some((item) => (item as { name?: string }).name))
         return null
-      return result.abi || null
+      return result.abi.map((abiItem) => ({
+        ...abiItem,
+        outputs: 'outputs' in abiItem && abiItem.outputs ? abiItem.outputs : [],
+      }))
     },
   })
 }
