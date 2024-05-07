@@ -1,7 +1,8 @@
 import * as Tabs from '@radix-ui/react-tabs'
 import type { AbiEvent } from 'abitype'
-import { useParams } from 'react-router-dom'
-import { type Hash, type Log, formatEther, formatGwei } from 'viem'
+import { Fragment, useMemo } from 'react'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
+import { type Hash, type Log, formatEther, formatGwei, hexToBigInt } from 'viem'
 
 import {
   Container,
@@ -28,6 +29,8 @@ import { useTransaction } from '~/hooks/useTransaction'
 import { useTransactionConfirmations } from '~/hooks/useTransactionConfirmations'
 import { useTransactionReceipt } from '~/hooks/useTransactionReceipt'
 import { capitalize } from '~/utils'
+import { FormattedAbiFunctionName } from '../components/abi/FormattedAbiFunctionName'
+import { useBatchCallsStore } from '../zustand/batch-calls'
 
 const numberIntl = new Intl.NumberFormat()
 const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
@@ -36,6 +39,7 @@ const numberIntl4SigFigs = new Intl.NumberFormat('en-US', {
 
 export default function TransactionDetails() {
   const { transactionHash } = useParams()
+  const [params] = useSearchParams()
 
   const { data: transaction } = useTransaction({
     hash: transactionHash as Hash,
@@ -51,6 +55,17 @@ export default function TransactionDetails() {
     hash: receipt?.transactionHash as Hash,
   })
   const { data: block } = useBlock({ blockNumber: transaction?.blockNumber })
+
+  const { getBatchFromTransactionHash } = useBatchCallsStore()
+  const calls = useMemo(() => {
+    if (!receipt?.transactionHash) return null
+    const batch = getBatchFromTransactionHash(receipt.transactionHash)
+    if (!batch) return null
+    return batch.calls.map((call, i) => ({
+      ...call,
+      hash: batch.transactionHashes[i],
+    }))
+  }, [getBatchFromTransactionHash, receipt?.transactionHash])
 
   if (!transaction) return null
   return (
@@ -263,14 +278,14 @@ export default function TransactionDetails() {
               </Column>
             ) : null}
           </Columns>
-          <Tabs.Root asChild defaultValue="data">
+          <Tabs.Root asChild defaultValue={params.get('tab') ?? 'data'}>
             <Box display="flex" flexDirection="column" height="full">
               <TabsList
                 items={[
                   { label: 'Data', value: 'data' },
                   { label: 'Logs', value: 'logs' },
-                  { label: 'Trace', value: 'trace' },
-                ]}
+                  calls && { label: 'Calls', value: 'calls' },
+                ].filter(Boolean)}
               />
               <Inset vertical="16px" bottom="152px">
                 <TabsContent inset={false} scrollable={false} value="data">
@@ -306,8 +321,108 @@ export default function TransactionDetails() {
                     </>
                   )}
                 </TabsContent>
-                <TabsContent inset={false} value="state">
-                  {''}
+                <TabsContent inset={false} scrollable={false} value="calls">
+                  <Bleed horizontal="-8px" top="-16px">
+                    <Inset space="8px">
+                      <Columns alignVertical="center" gap="8px">
+                        <Column width="content">
+                          <Box style={{ width: '100px' }}>
+                            <Text color="text/tertiary" size="9px" wrap={false}>
+                              TYPE
+                            </Text>
+                          </Box>
+                        </Column>
+                        <Column>
+                          <Box style={{ width: '120px' }}>
+                            <Text color="text/tertiary" size="9px" wrap={false}>
+                              TO
+                            </Text>
+                          </Box>
+                        </Column>
+                        <Column alignHorizontal="right" alignVertical="center">
+                          <Text color="text/tertiary" size="9px" wrap={false}>
+                            VALUE
+                          </Text>
+                        </Column>
+                      </Columns>
+                    </Inset>
+                    <Separator />
+                    {calls?.map((call) => {
+                      const isSelf = call?.hash === receipt?.transactionHash
+                      const isTransfer = !call?.data
+
+                      return (
+                        <Fragment key={call.hash}>
+                          <Link
+                            to={`/transaction/${call.hash}?tab=calls`}
+                            replace
+                          >
+                            <Box
+                              as="button"
+                              alignItems="center"
+                              backgroundColor={(() => {
+                                if (isSelf) return 'surface/fill/quarternary'
+                                return { hover: 'surface/fill/quarternary' }
+                              })()}
+                              display="flex"
+                              width="full"
+                              style={{ height: '32px' }}
+                            >
+                              <Inset space="8px">
+                                <Columns alignVertical="center" gap="8px">
+                                  <Column
+                                    alignVertical="center"
+                                    width="content"
+                                  >
+                                    <Box style={{ width: '100px' }}>
+                                      {!isTransfer ? (
+                                        <FormattedAbiFunctionName
+                                          data={call.data!}
+                                        />
+                                      ) : (
+                                        <Text color="text/tertiary" size="11px">
+                                          Transfer
+                                        </Text>
+                                      )}
+                                    </Box>
+                                  </Column>
+                                  <Column
+                                    alignVertical="center"
+                                    width="content"
+                                  >
+                                    <Box style={{ width: '120px' }}>
+                                      {call?.to && (
+                                        <Text.Truncated size="11px">
+                                          {call.to}
+                                        </Text.Truncated>
+                                      )}
+                                    </Box>
+                                  </Column>
+                                  <Column
+                                    alignHorizontal="right"
+                                    alignVertical="center"
+                                  >
+                                    {call?.value && (
+                                      <Text size="11px">
+                                        {`${numberIntl.format(
+                                          Number(
+                                            formatEther(
+                                              hexToBigInt(call.value),
+                                            ),
+                                          ),
+                                        )} ETH`}
+                                      </Text>
+                                    )}
+                                  </Column>
+                                </Columns>
+                              </Inset>
+                            </Box>
+                          </Link>
+                          <Separator />
+                        </Fragment>
+                      )
+                    })}
+                  </Bleed>
                 </TabsContent>
               </Inset>
             </Box>

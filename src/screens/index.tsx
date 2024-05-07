@@ -582,7 +582,11 @@ function Transactions() {
   const { data: pendingTransactions } = usePendingTransactions()
 
   const query = useInfiniteBlockTransactions()
-  const { data: infiniteBlockTransactions, isFetched } = query
+  const {
+    data: infiniteBlockTransactions,
+    isFetched,
+    isFetchingNextPage,
+  } = query
 
   const blockTransactions = useMemo(
     () => [
@@ -775,9 +779,11 @@ function Transactions() {
               return (
                 <VirtualList.Item {...item}>
                   <LoadMore query={query}>
-                    <Inset space="8px">
-                      <Text color="text/tertiary">Loading...</Text>
-                    </Inset>
+                    {isFetchingNextPage && (
+                      <Inset space="8px">
+                        <Text color="text/tertiary">Loading...</Text>
+                      </Inset>
+                    )}
                   </LoadMore>
                 </VirtualList.Item>
               )

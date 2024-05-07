@@ -19,7 +19,10 @@ export function useInfiniteBlockTransactionsQueryOptions() {
   return {
     enabled: Boolean(block?.number),
     initialPageParam: 0,
-    getNextPageParam: (_: unknown, pages: unknown[]) => pages.length,
+    getNextPageParam: (lastPage: unknown[], pages: unknown[]) => {
+      if (lastPage.length < limit_) return null
+      return pages.length
+    },
     queryKey: getInfiniteBlockTransactionsQueryKey([client.key]),
     async queryFn({ pageParam }: { pageParam: number }) {
       let blockNumber = block?.number!
@@ -38,14 +41,16 @@ export function useInfiniteBlockTransactionsQueryOptions() {
         }
       }
 
+      let count = 0
       let transactions: Transaction[] = []
-      while (transactions.length < limit && blockNumber > 0n) {
+      while (transactions.length < limit && count < 10 && blockNumber > 0n) {
         const block_ = await client.getBlock({
           blockNumber,
           includeTransactions: true,
         })
         transactions = [...transactions, ...block_.transactions]
         blockNumber--
+        count++
       }
       return transactions
     },

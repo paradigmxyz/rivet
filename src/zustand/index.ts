@@ -7,6 +7,14 @@ export {
 } from './account'
 
 export {
+  type BatchCallsActions,
+  type BatchCallsState,
+  type BatchCallsStore,
+  batchCallsStore,
+  useBatchCallsStore,
+} from './batch-calls'
+
+export {
   type ContractsActions,
   type ContractsState,
   type ContractsStore,

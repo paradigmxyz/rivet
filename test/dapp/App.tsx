@@ -12,11 +12,15 @@ import {
   type EIP1193Provider,
   type Hash,
   type Hex,
+  type WalletCapabilities,
+  type WalletGetCallsStatusReturnType,
   createClient,
   custom,
+  encodeFunctionData,
   hexToNumber,
   isHex,
   numberToHex,
+  parseAbi,
   parseEther,
   parseGwei,
   publicActions,
@@ -112,6 +116,13 @@ export default function App() {
             Contract: MockERC721.sol
           </Text>
           <ContractMockERC721 />
+          <Text weight="semibold" size="22px">
+            EIP-5792
+          </Text>
+          <GetCapabilities />
+          <SendCalls />
+          <GetCallsStatus />
+          <ShowCallsStatus />
         </Stack>
       </Box>
     </Context.Provider>
@@ -692,6 +703,187 @@ function ContractMockERC721() {
       <Button onClick={mint} width="fit">
         mint
       </Button>
+    </Stack>
+  )
+}
+
+function GetCapabilities() {
+  const { provider } = useContext(Context)
+
+  const [capabilities, setCapabilities] = useState<
+    | {
+        [x: `0x${string}`]: WalletCapabilities
+      }
+    | undefined
+  >()
+
+  const fetch = async () => {
+    const [account] = await provider.request({
+      method: 'eth_accounts',
+    })
+    const capabilities = await provider.request({
+      method: 'wallet_getCapabilities',
+      params: [account],
+    })
+    setCapabilities(capabilities)
+  }
+
+  return (
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
+        wallet_getCapabilities
+      </Text>
+      <Button onClick={fetch} width="fit">
+        Fetch
+      </Button>
+      {capabilities && <Box as="pre">{stringify(capabilities, null, 2)}</Box>}
+    </Stack>
+  )
+}
+
+function SendCalls() {
+  const { provider } = useContext(Context)
+
+  const [id, setId] = useState<string | undefined>()
+  const [error, setError] = useState<Error>()
+
+  const handleClickSign = async () => {
+    setId(undefined)
+    try {
+      const [account] = await provider.request({
+        method: 'eth_accounts',
+      })
+      const chainId = await provider.request({ method: 'eth_chainId' })
+      const id = await provider.request({
+        method: 'wallet_sendCalls',
+        params: [
+          {
+            calls: [
+              {
+                data: encodeFunctionData({
+                  abi: parseAbi(['function mint()']),
+                  functionName: 'mint',
+                }),
+                to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+              },
+              {
+                data: encodeFunctionData({
+                  abi: parseAbi(['function mint()']),
+                  functionName: 'mint',
+                }),
+                to: '0xFBA3912Ca04dd458c843e2EE08967fC04f3579c2',
+              },
+              {
+                to: '0x70997970C51812dc3A010C7d01b50e0d17dc79C8',
+                value: numberToHex(parseEther('2')),
+              },
+            ],
+            chainId,
+            from: account,
+            version: '1',
+          },
+        ],
+      })
+      setId(id as string)
+    } catch (err) {
+      setError(err as Error)
+    }
+  }
+
+  return (
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
+        wallet_sendCalls
+      </Text>
+      <Inline wrap={false} gap="12px">
+        <Button onClick={handleClickSign} width="fit">
+          Send calls
+        </Button>
+      </Inline>
+      {id && <Text>ID: {id}</Text>}
+      {error && <Text>Error: {error.message}</Text>}
+    </Stack>
+  )
+}
+
+function GetCallsStatus() {
+  const { provider } = useContext(Context)
+
+  const [id, setId] = useState('')
+  const [status, setStatus] = useState<
+    WalletGetCallsStatusReturnType | undefined
+  >()
+  const [error, setError] = useState<Error>()
+
+  const handleClickSign = async () => {
+    if (!id) return
+
+    setStatus(undefined)
+    try {
+      const status = await provider.request({
+        method: 'wallet_getCallsStatus',
+        params: [id],
+      })
+      setStatus(status)
+    } catch (err) {
+      setError(err as Error)
+    }
+  }
+
+  return (
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
+        wallet_getCallsStatus
+      </Text>
+      <Inline wrap={false} gap="12px">
+        <Box style={{ width: '500px' }}>
+          <Input
+            onChange={(e) => setId(e.target.value)}
+            value={id}
+            placeholder="ID"
+          />
+        </Box>
+        <Button onClick={handleClickSign} width="fit">
+          Fetch
+        </Button>
+      </Inline>
+      {status && <Box as="pre">{stringify(status, null, 2)}</Box>}
+      {error && <Text>Error: {error.message}</Text>}
+    </Stack>
+  )
+}
+
+function ShowCallsStatus() {
+  const { provider } = useContext(Context)
+
+  const [id, setId] = useState('')
+
+  const handleShowCallsStatus = async () => {
+    if (!id) return
+
+    await provider.request({
+      method: 'wallet_showCallsStatus',
+      params: [id],
+    })
+  }
+
+  return (
+    <Stack gap="12px">
+      <Text size="18px" weight="semibold">
+        wallet_showCallsStatus
+      </Text>
+      <Inline wrap={false} gap="12px">
+        <Box style={{ width: '500px' }}>
+          <Input
+            onChange={(e) => setId(e.target.value)}
+            value={id}
+            placeholder="ID"
+          />
+        </Box>
+        <Button onClick={handleShowCallsStatus} width="fit">
+          Show
+        </Button>
+      </Inline>
     </Stack>
   )
 }
