@@ -8,10 +8,12 @@ export function setupWalletSidebarHandler() {
       const { method } = message.payload
       if (
         method === 'eth_requestAccounts' ||
+        method === 'wallet_showCallsStatus' ||
         (method === 'eth_sendTransaction' && !bypassTransactionAuth) ||
         (method === 'eth_sign' && !bypassSignatureAuth) ||
         (method === 'eth_signTypedData_v4' && !bypassSignatureAuth) ||
-        (method === 'personal_sign' && !bypassSignatureAuth)
+        (method === 'personal_sign' && !bypassSignatureAuth) ||
+        (method === 'wallet_sendCalls' && !bypassTransactionAuth)
       ) {
         chrome.sidePanel.open({ tabId: sender.tab!.id! })
       }

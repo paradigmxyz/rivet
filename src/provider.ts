@@ -3,6 +3,7 @@ import { type EIP1193Provider, UnknownRpcError } from 'viem'
 
 import {
   ProviderDisconnectedError,
+  UnauthorizedProviderError,
   UnsupportedProviderMethodError,
   UserRejectedRequestError,
 } from '~/errors'
@@ -89,6 +90,8 @@ export function getProvider({
           throw new UserRejectedRequestError(error)
         if (error.code === UnsupportedProviderMethodError.code)
           throw new UnsupportedProviderMethodError(error)
+        if (error.code === UnauthorizedProviderError.code)
+          throw new UnauthorizedProviderError(error)
         throw new UnknownRpcError(error)
       }
       return result

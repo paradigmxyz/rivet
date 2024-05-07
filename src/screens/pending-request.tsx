@@ -1,11 +1,14 @@
+import * as Accordion from '@radix-ui/react-accordion'
 import * as Tabs from '@radix-ui/react-tabs'
-import { useMemo, useState } from 'react'
-import { useForm } from 'react-hook-form'
+import { type ReactElement, cloneElement, useMemo, useState } from 'react'
+import {
+  type FieldValues,
+  type RegisterOptions,
+  useForm,
+} from 'react-hook-form'
 import { omitBy } from 'remeda'
 import {
-  type Address,
   BaseError,
-  type Hex,
   type TransactionRequest,
   formatEther,
   formatGwei,
@@ -27,30 +30,49 @@ import {
   TabsList,
   Tooltip,
 } from '~/components'
+import { FormattedAbiFunctionName } from '~/components/abi/FormattedAbiFunctionName'
 import * as Form from '~/components/form'
 import {
+  Bleed,
   Box,
   Button,
   Column,
   Columns,
   Inline,
   Inset,
+  SFSymbol,
+  Separator,
   Stack,
   Text,
 } from '~/design-system'
 import {
-  type UsePrepareTransactionRequestParameters,
+  type GetPrepareTransactionRequestQueryOptionsParameters,
   usePrepareTransactionRequest,
+  usePrepareTransactionRequests,
 } from '~/hooks/usePrepareTransactionRequest'
 import { getMessenger } from '~/messengers'
 import { useAccountStore, usePendingRequestsStore } from '~/zustand'
 import type { PendingRequest } from '~/zustand/pending-requests'
 
+import * as styles from './pending-request.css'
+
 const backgroundMessenger = getMessenger('background:wallet')
+
+const numberIntl = new Intl.NumberFormat()
+const numberIntl8SigFigs = new Intl.NumberFormat('en-US', {
+  maximumSignificantDigits: 8,
+})
+
+type ExtractRequest<Method extends string> = Extract<
+  PendingRequest,
+  { method: Method }
+>
 
 export default function PendingRequest_({
   request,
 }: { request: PendingRequest }) {
+  if (request.method === 'wallet_sendCalls')
+    return <SendCallsRequest request={request} />
   if (request.method === 'eth_sendTransaction')
     return <SendTransactionRequest request={request} />
   if (request.method === 'personal_sign')
@@ -96,17 +118,286 @@ function PendingRequestContainer({
 }
 
 ////////////////////////////////////////////////////////////////////////
+// Send Calls View
+
+function SendCallsRequest(args: {
+  request: ExtractRequest<'wallet_sendCalls'>
+}) {
+  const params = args.request.params![0]
+
+  // Prepare the transaction request for signing (populate gas estimate, fees, etc if non-existent).
+  const { account } = useAccountStore()
+  const calls = useMemo(
+    () => params.calls.map((call) => formatTransaction(call)),
+    [params.calls],
+  )
+  const preparedCallQueries = usePrepareTransactionRequests({
+    requests: calls.map(
+      (call) =>
+        ({
+          ...call,
+          account: params.from ?? account,
+        }) as GetPrepareTransactionRequestQueryOptionsParameters,
+    ),
+  })
+
+  const { from, maxFeePerGas, maxPriorityFeePerGas } =
+    preparedCallQueries[0].data || {}
+
+  const isFetched = preparedCallQueries.every((query) => query.isFetched)
+  const error = preparedCallQueries.find((query) => query.error)?.error
+
+  const handleApprove = async () => {
+    const serializedCalls = preparedCallQueries.map((query) =>
+      formatTransactionRequest(query.data!),
+    )
+    await backgroundMessenger.send('pendingRequest', {
+      request: {
+        ...args.request,
+        params: [
+          {
+            ...args.request.params![0],
+            calls: serializedCalls as any,
+          },
+        ],
+      },
+      status: 'approved',
+    })
+  }
+
+  const handleReject = async () => {
+    await backgroundMessenger.send('pendingRequest', {
+      request: args.request,
+      status: 'rejected',
+    })
+  }
+
+  return (
+    <PendingRequestContainer
+      isLoading={!isFetched}
+      header="Transaction Request"
+      onApprove={handleApprove}
+      onReject={handleReject}
+    >
+      <Stack gap="20px">
+        {error && (
+          <Box backgroundColor="surface/yellowTint" padding="8px">
+            <Stack gap="12px">
+              <Text size="11px">
+                An error occurred while simulating transaction execution. This
+                transaction will unlikely succeed.
+              </Text>
+              {error instanceof BaseError && (
+                <>
+                  <Text size="11px">Reason: {error.shortMessage}</Text>
+                  <Text size="11px">Details: {error.details}</Text>
+                </>
+              )}
+            </Stack>
+          </Box>
+        )}
+        <Columns gap="12px">
+          <Column width="1/3">
+            <LabelledContent label="From">
+              <Tooltip label={from}>
+                <Text.Truncated size="12px">{from}</Text.Truncated>
+              </Tooltip>
+            </LabelledContent>
+          </Column>
+          <Column width="1/3">
+            <LabelledContent label="Max Fee Per Gas">
+              <Text size="12px">
+                {typeof maxFeePerGas === 'bigint' && (
+                  <>
+                    {numberIntl8SigFigs.format(
+                      Number(formatGwei(maxFeePerGas)),
+                    )}{' '}
+                    <Text color="text/tertiary">gwei</Text>
+                  </>
+                )}
+              </Text>
+            </LabelledContent>
+          </Column>
+          <Column width="1/3">
+            <LabelledContent label="Tip Per Gas">
+              <Text size="12px">
+                {typeof maxPriorityFeePerGas === 'bigint' && (
+                  <>
+                    {numberIntl8SigFigs.format(
+                      Number(formatGwei(maxPriorityFeePerGas)),
+                    )}{' '}
+                    <Text color="text/tertiary">gwei</Text>
+                  </>
+                )}
+              </Text>
+            </LabelledContent>
+          </Column>
+        </Columns>
+        <Tabs.Root asChild value="calls">
+          <Box display="flex" flexDirection="column" height="full">
+            <TabsList
+              items={[
+                { label: 'Calls', value: 'calls' },
+                { label: 'Trace', value: 'trace' },
+              ]}
+            />
+            <Inset vertical="0px">
+              <TabsContent inset={false} scrollable={false} value="calls">
+                <Bleed horizontal="-8px">
+                  <Inset space="8px">
+                    <Columns alignVertical="center" gap="8px">
+                      <Column width="content">
+                        <Box style={{ width: '100px' }}>
+                          <Text color="text/tertiary" size="9px" wrap={false}>
+                            TYPE
+                          </Text>
+                        </Box>
+                      </Column>
+                      <Column>
+                        <Box style={{ width: '120px' }}>
+                          <Text color="text/tertiary" size="9px" wrap={false}>
+                            TO
+                          </Text>
+                        </Box>
+                      </Column>
+                      <Column alignHorizontal="right" alignVertical="center">
+                        <Box style={{ paddingRight: '22px' }}>
+                          <Text color="text/tertiary" size="9px" wrap={false}>
+                            VALUE
+                          </Text>
+                        </Box>
+                      </Column>
+                    </Columns>
+                  </Inset>
+                  <Separator />
+                  <Accordion.Root className={styles.root} type="multiple">
+                    {preparedCallQueries.map((query, index) => {
+                      const call = query.data
+                      const isTransfer = !call?.data
+                      return (
+                        <Accordion.Item
+                          key={index}
+                          className={styles.item}
+                          value={index.toString()}
+                        >
+                          <Accordion.Header asChild>
+                            <Accordion.Trigger
+                              asChild
+                              className={styles.trigger}
+                            >
+                              <Box
+                                as="button"
+                                alignItems="center"
+                                backgroundColor={
+                                  !isTransfer
+                                    ? {
+                                        hover: 'surface/fill/quarternary',
+                                      }
+                                    : {}
+                                }
+                                display="flex"
+                                width="full"
+                                style={{ height: '32px' }}
+                              >
+                                <Inset space="8px">
+                                  <Columns alignVertical="center" gap="8px">
+                                    <Column
+                                      alignVertical="center"
+                                      width="content"
+                                    >
+                                      <Box style={{ width: '100px' }}>
+                                        {!isTransfer ? (
+                                          <FormattedAbiFunctionName
+                                            data={call.data!}
+                                          />
+                                        ) : (
+                                          <Text
+                                            color="text/tertiary"
+                                            size="11px"
+                                          >
+                                            Transfer
+                                          </Text>
+                                        )}
+                                      </Box>
+                                    </Column>
+                                    <Column
+                                      alignVertical="center"
+                                      width="content"
+                                    >
+                                      <Box style={{ width: '120px' }}>
+                                        {call?.to && (
+                                          <Text.Truncated size="11px">
+                                            {call.to}
+                                          </Text.Truncated>
+                                        )}
+                                      </Box>
+                                    </Column>
+                                    <Column
+                                      alignHorizontal="right"
+                                      alignVertical="center"
+                                    >
+                                      {typeof call?.value === 'bigint' && (
+                                        <Text size="11px">
+                                          {`${numberIntl8SigFigs.format(
+                                            Number(formatEther(call.value)),
+                                          )} ETH`}
+                                        </Text>
+                                      )}
+                                    </Column>
+                                    <Column
+                                      alignVertical="center"
+                                      width="content"
+                                    >
+                                      <Box
+                                        display="flex"
+                                        paddingLeft="4px"
+                                        style={{ width: '16px' }}
+                                      >
+                                        {!isTransfer && (
+                                          <SFSymbol
+                                            className={styles.chevron}
+                                            color="text/tertiary"
+                                            size="9px"
+                                            symbol="chevron.down"
+                                            weight="medium"
+                                          />
+                                        )}
+                                      </Box>
+                                    </Column>
+                                  </Columns>
+                                </Inset>
+                              </Box>
+                            </Accordion.Trigger>
+                          </Accordion.Header>
+                          {!isTransfer && (
+                            <Accordion.Content asChild>
+                              <Box className={styles.content}>
+                                <Inset space="8px">
+                                  <DecodedCalldata
+                                    address={call.to}
+                                    data={call.data || '0x'}
+                                    showRawData={false}
+                                  />
+                                </Inset>
+                              </Box>
+                            </Accordion.Content>
+                          )}
+                        </Accordion.Item>
+                      )
+                    })}
+                  </Accordion.Root>
+                </Bleed>
+              </TabsContent>
+            </Inset>
+          </Box>
+        </Tabs.Root>
+      </Stack>
+    </PendingRequestContainer>
+  )
+}
+
+////////////////////////////////////////////////////////////////////////
 // Send Transaction View
-
-const numberIntl = new Intl.NumberFormat()
-const numberIntl8SigFigs = new Intl.NumberFormat('en-US', {
-  maximumSignificantDigits: 8,
-})
-
-type ExtractRequest<Method extends string> = Extract<
-  PendingRequest,
-  { method: Method }
->
 
 function SendTransactionRequest(args: {
   request: ExtractRequest<'eth_sendTransaction'>
@@ -125,10 +416,10 @@ function SendTransactionRequest(args: {
     isLoading,
   } = usePrepareTransactionRequest({
     ...transactionRequest,
-    account: account_,
-  } as unknown as UsePrepareTransactionRequestParameters)
+    account: transactionRequest.from ?? account_,
+  })
 
-  const request = preparedRequest || transactionRequest || {}
+  const request = preparedRequest || {}
   const {
     from,
     to,
@@ -162,58 +453,30 @@ function SendTransactionRequest(args: {
 
   ////////////////////////////////////////////////////////////////////////
 
-  type FormValues = {
-    data: Hex
-    from: Address
-    gas: Hex
-    maxFeePerGas: Hex
-    maxPriorityFeePerGas: Hex
-    nonce: Hex
-    to: Address
-    value: Hex
-  }
   const { updatePendingRequest } = usePendingRequestsStore()
-  const { formState, handleSubmit, register } = useForm<FormValues>()
 
-  const update = handleSubmit((formData) => {
-    const data_ = formData.data || data
-    const from_ = formData.from || from
-    const gas_ = formData.gas || gas
-    const maxFeePerGas_ =
-      formData.maxFeePerGas ||
-      (typeof maxFeePerGas === 'bigint' ? formatGwei(maxFeePerGas) : undefined)
-    const maxPriorityFeePerGas_ =
-      formData.maxPriorityFeePerGas ||
-      (typeof maxPriorityFeePerGas === 'bigint'
-        ? formatGwei(maxPriorityFeePerGas)
-        : undefined)
-    const nonce_ = formData.nonce || nonce
-    const to_ =
-      formData.to || (to ? to : '0x0000000000000000000000000000000000000000')
-    const value_ =
-      formData.value ||
-      (typeof value === 'bigint' ? formatEther(value) : undefined)
+  const update: UpdateValuePopoverProps['onSubmit'] = (values) => {
+    const { data, from, maxFeePerGas, maxPriorityFeePerGas, nonce, to, value } =
+      values
+
+    const request = { ...args.request.params[0] }
+    if (data) request.data = data
+    if (from) request.from = from
+    if (maxFeePerGas)
+      request.maxFeePerGas = numberToHex(parseGwei(maxFeePerGas))
+    if (maxPriorityFeePerGas)
+      request.maxPriorityFeePerGas = numberToHex(
+        parseGwei(maxPriorityFeePerGas),
+      )
+    if (typeof nonce === 'number') request.nonce = numberToHex(nonce)
+    if (to) request.to = to
+    if (value) request.value = numberToHex(parseEther(value))
 
     updatePendingRequest({
       ...args.request,
-      params: [
-        {
-          data: data_,
-          from: from_,
-          gas: gas_.toString(),
-          maxFeePerGas: maxFeePerGas_
-            ? numberToHex(parseGwei(maxFeePerGas_))
-            : undefined,
-          maxPriorityFeePerGas: maxPriorityFeePerGas_
-            ? numberToHex(parseGwei(maxPriorityFeePerGas_))
-            : undefined,
-          nonce: nonce_.toString(),
-          to: to_,
-          value: value_ ? numberToHex(parseEther(value_)) : undefined,
-        },
-      ],
+      params: [request],
     } as PendingRequest)
-  })
+  }
 
   ////////////////////////////////////////////////////////////////////////
 
@@ -250,19 +513,26 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="From"
               labelRight={
-                <FormPopover disabled={!formState.isValid} onSubmit={update}>
+                <UpdateValuePopover
+                  defaultValue={from}
+                  name="from"
+                  onSubmit={update}
+                  validate={{
+                    pattern: {
+                      message: 'Address is not valid',
+                      value: /^0x[a-fA-F0-9]+$/,
+                    },
+                    required: 'Address is required',
+                  }}
+                >
                   <Form.InputField
-                    defaultValue={from}
                     label="From"
                     height="24px"
                     hideLabel
-                    placeholder="from"
-                    register={register('from', {
-                      pattern: /^0x[a-fA-F0-9]+$/,
-                    })}
-                    style={{ width: '360px' }}
+                    placeholder="0xd2135CfB216b74109775236E36d4b433F1DF507B"
+                    style={{ width: '300px' }}
                   />
-                </FormPopover>
+                </UpdateValuePopover>
               }
             >
               <Tooltip label={from}>
@@ -274,19 +544,26 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="To"
               labelRight={
-                <FormPopover disabled={!formState.isValid} onSubmit={update}>
+                <UpdateValuePopover
+                  defaultValue={to ?? ''}
+                  name="to"
+                  onSubmit={update}
+                  validate={{
+                    pattern: {
+                      message: 'Address is not valid',
+                      value: /^0x[a-fA-F0-9]+$/,
+                    },
+                    required: 'Address is required',
+                  }}
+                >
                   <Form.InputField
-                    defaultValue={to ?? ''}
                     label="To"
                     height="24px"
                     hideLabel
-                    placeholder="to"
-                    register={register('to', {
-                      pattern: /^0x[a-fA-F0-9]+$/,
-                    })}
+                    placeholder="0xd2135CfB216b74109775236E36d4b433F1DF507B"
                     style={{ width: '360px' }}
                   />
-                </FormPopover>
+                </UpdateValuePopover>
               }
             >
               <Tooltip label={to}>
@@ -298,23 +575,26 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="Value"
               labelRight={
-                <FormPopover disabled={!formState.isValid} onSubmit={update}>
+                <UpdateValuePopover
+                  defaultValue={
+                    typeof value === 'bigint'
+                      ? numberIntl8SigFigs.format(Number(formatEther(value)))
+                      : ''
+                  }
+                  name="value"
+                  onSubmit={update}
+                  validate={{
+                    min: 0,
+                  }}
+                >
                   <Form.InputField
-                    defaultValue={
-                      typeof value === 'bigint'
-                        ? numberIntl8SigFigs.format(Number(formatEther(value)))
-                        : ''
-                    }
                     label="Value"
                     height="24px"
                     hideLabel
-                    placeholder="value"
-                    register={register('value', {
-                      min: 0,
-                    })}
+                    placeholder="2"
                     type="number"
                   />
-                </FormPopover>
+                </UpdateValuePopover>
               }
             >
               <Text size="12px">
@@ -331,19 +611,22 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="Gas Limit"
               labelRight={
-                <FormPopover disabled={!formState.isValid} onSubmit={update}>
+                <UpdateValuePopover
+                  defaultValue={typeof gas === 'bigint' ? gas.toString() : ''}
+                  name="gas"
+                  onSubmit={update}
+                  validate={{
+                    min: 0,
+                  }}
+                >
                   <Form.InputField
-                    defaultValue={typeof gas === 'bigint' ? gas.toString() : ''}
                     label="Gas Limit"
                     height="24px"
                     hideLabel
-                    placeholder="gas"
-                    register={register('gas', {
-                      min: 0,
-                    })}
+                    placeholder="10"
                     type="number"
                   />
-                </FormPopover>
+                </UpdateValuePopover>
               }
             >
               <Text size="12px">
@@ -355,24 +638,27 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="Tip Per Gas"
               labelRight={
-                <FormPopover disabled={!formState.isValid} onSubmit={update}>
+                <UpdateValuePopover
+                  defaultValue={
+                    typeof maxPriorityFeePerGas === 'bigint'
+                      ? numberIntl8SigFigs.format(
+                          Number(formatGwei(maxPriorityFeePerGas)),
+                        )
+                      : ''
+                  }
+                  name="maxPriorityFeePerGas"
+                  onSubmit={update}
+                  validate={{
+                    min: 0,
+                  }}
+                >
                   <Form.InputField
-                    defaultValue={
-                      typeof maxPriorityFeePerGas === 'bigint'
-                        ? numberIntl8SigFigs.format(
-                            Number(formatGwei(maxPriorityFeePerGas)),
-                          )
-                        : ''
-                    }
                     label="Tip Per Gas"
                     height="24px"
                     hideLabel
-                    placeholder="maxPriorityFeePerGas"
-                    register={register('maxPriorityFeePerGas', {
-                      min: 0,
-                    })}
+                    placeholder="1"
                   />
-                </FormPopover>
+                </UpdateValuePopover>
               }
             >
               <Text size="12px">
@@ -391,24 +677,27 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="Max Fee Per Gas"
               labelRight={
-                <FormPopover disabled={!formState.isValid} onSubmit={update}>
+                <UpdateValuePopover
+                  defaultValue={
+                    typeof maxFeePerGas === 'bigint'
+                      ? numberIntl8SigFigs.format(
+                          Number(formatGwei(maxFeePerGas)),
+                        )
+                      : ''
+                  }
+                  name="maxFeePerGas"
+                  onSubmit={update}
+                  validate={{
+                    min: 0,
+                  }}
+                >
                   <Form.InputField
-                    defaultValue={
-                      typeof maxFeePerGas === 'bigint'
-                        ? numberIntl8SigFigs.format(
-                            Number(formatGwei(maxFeePerGas)),
-                          )
-                        : ''
-                    }
                     label="Max Fee Per Gas"
                     height="24px"
                     hideLabel
-                    placeholder="maxFeePerGas"
-                    register={register('maxFeePerGas', {
-                      min: 0,
-                    })}
+                    placeholder="5"
                   />
-                </FormPopover>
+                </UpdateValuePopover>
               }
             >
               <Text size="12px">
@@ -429,19 +718,22 @@ function SendTransactionRequest(args: {
             <LabelledContent
               label="Nonce"
               labelRight={
-                <FormPopover disabled={!formState.isValid} onSubmit={update}>
+                <UpdateValuePopover
+                  defaultValue={nonce}
+                  name="nonce"
+                  onSubmit={update}
+                  validate={{
+                    min: 0,
+                  }}
+                >
                   <Form.InputField
-                    defaultValue={nonce}
                     label="Nonce"
                     height="24px"
                     hideLabel
-                    placeholder="nonce"
-                    register={register('nonce', {
-                      min: 0,
-                    })}
+                    placeholder="151"
                     type="number"
                   />
-                </FormPopover>
+                </UpdateValuePopover>
               }
             >
               <Text size="12px">{nonce}</Text>
@@ -466,22 +758,22 @@ function SendTransactionRequest(args: {
                     address={to}
                     data={data || '0x'}
                     labelRight={
-                      <FormPopover
-                        disabled={!formState.isValid}
+                      <UpdateValuePopover
+                        defaultValue={data || '0x'}
+                        name="data"
                         onSubmit={update}
+                        validate={{
+                          pattern: /^0x[a-fA-F0-9]*$/,
+                        }}
                       >
                         <Form.InputField
-                          defaultValue={data || '0x'}
                           label="Raw Data"
                           height="24px"
                           hideLabel
-                          placeholder="data"
-                          register={register('data', {
-                            pattern: /^0x[a-fA-F0-9]*$/,
-                          })}
+                          placeholder="0xdeadbeef"
                           style={{ width: '360px' }}
                         />
-                      </FormPopover>
+                      </UpdateValuePopover>
                     }
                   />
                 </Box>
@@ -649,5 +941,43 @@ function SignTypedDataRequest({
         </Columns>
       </Stack>
     </PendingRequestContainer>
+  )
+}
+
+///////////////////////////////////////////////////////////////
+
+type UpdateValuePopoverProps = {
+  children: ReactElement
+  defaultValue?: string | number
+  name: string
+  onSubmit: (values: FieldValues) => void
+  validate?: RegisterOptions
+}
+
+function UpdateValuePopover({
+  children,
+  defaultValue,
+  name,
+  onSubmit,
+  validate,
+}: UpdateValuePopoverProps) {
+  const { formState, handleSubmit, register } = useForm({
+    defaultValues: {
+      [name]: defaultValue,
+    },
+    mode: 'onChange',
+  })
+
+  return (
+    <FormPopover
+      disabled={!formState.isValid}
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      {cloneElement(children, {
+        name,
+        errorMessage: formState.errors[name]?.message,
+        register: register(name, validate),
+      })}
+    </FormPopover>
   )
 }

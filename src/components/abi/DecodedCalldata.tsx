@@ -24,7 +24,13 @@ export function DecodedCalldata({
   address,
   data,
   labelRight,
-}: { address?: Address | null; data: Hex; labelRight?: ReactNode }) {
+  showRawData,
+}: {
+  address?: Address | null
+  data: Hex
+  labelRight?: ReactNode
+  showRawData?: boolean
+}) {
   const selector = slice(data, 0, 4)
 
   // Try extract ABI from whatsabi autoloading (etherscan, 4byte dbs, etc)
@@ -107,7 +113,7 @@ export function DecodedCalldata({
               </Text>
             </Box>
           )}
-          <LabelledContent label="Function">
+          <LabelledContent label="Signature">
             <Box
               backgroundColor="surface/primary"
               paddingHorizontal="8px"
@@ -128,32 +134,41 @@ export function DecodedCalldata({
           )}
         </>
       )}
-      {abiItem && <Separator />}
-      <LabelledContent label="Raw Data" labelRight={labelRight}>
-        <Box
-          backgroundColor="surface/primary"
-          paddingHorizontal="8px"
-          paddingVertical="12px"
-        >
-          {selector && rawArgs ? (
-            <Text family="mono" size="11px">
-              <Text color="text/tertiary">{selector}</Text>
-              {rawArgs.replace('0x', '')}
-            </Text>
-          ) : (
-            <Text family="mono" size="11px">
-              {data}
-            </Text>
-          )}
-        </Box>
-      </LabelledContent>
+      {showRawData && abiItem && <Separator />}
+      {showRawData && (
+        <LabelledContent label="Raw Data" labelRight={labelRight}>
+          <Box
+            backgroundColor="surface/primary"
+            paddingHorizontal="8px"
+            paddingVertical="12px"
+          >
+            {selector && rawArgs ? (
+              <Text family="mono" size="11px">
+                <Text color="text/tertiary">{selector}</Text>
+                {rawArgs.replace('0x', '')}
+              </Text>
+            ) : (
+              <Text family="mono" size="11px">
+                {data}
+              </Text>
+            )}
+          </Box>
+        </LabelledContent>
+      )}
     </Stack>
   )
 }
 
 function getAbiItem({ abi, selector }: { abi: Abi; selector: Hex }) {
   const abiItem =
-    (getAbiItem_viem({ abi, name: selector }) as AbiItem) ||
+    (getAbiItem_viem({
+      abi: abi.map((x) => ({
+        ...x,
+        inputs: (x as any).inputs || [],
+        outputs: (x as any).outputs || [],
+      })),
+      name: selector,
+    }) as AbiItem) ||
     abi.find((x: any) => x.name === selector) ||
     abi.find((x: any) => x.selector === selector)
   if (!abiItem) return

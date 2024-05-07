@@ -10,6 +10,7 @@ export function FormattedAbiItem({
   compact,
   showIndexed = true,
   showParameterNames = true,
+  showParameters = true,
   showStateMutability = true,
   showReturns = true,
   showType = true,
@@ -19,6 +20,7 @@ export function FormattedAbiItem({
   compact?: boolean
   showIndexed?: boolean
   showParameterNames?: boolean
+  showParameters?: boolean
   showStateMutability?: boolean
   showReturns?: boolean
   showType?: boolean
@@ -30,7 +32,7 @@ export function FormattedAbiItem({
         <>
           {showType && <Text color="text/tertiary">function </Text>}
           {abiItem.name && <Text>{abiItem.name}</Text>}(
-          {abiItem.inputs && (
+          {showParameters && abiItem.inputs && (
             <FormattedAbiParameters
               params={abiItem.inputs}
               showNames={showParameterNames}
