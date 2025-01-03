@@ -6,7 +6,7 @@
   <a href="https://chrome.google.com/webstore/detail/rivet/mobmnpcacgadhkjfelhpemphmmnggnod">
     <img alt="Chrome Web Store Version" src="https://img.shields.io/chrome-web-store/v/mobmnpcacgadhkjfelhpemphmmnggnod">
   </a>
-  <a href="https://github.com/paradigmxyz/rivet/actions/workflows/on-push-to-main.yml">
+  <a href="https://github.com/paradigmxyz/rivet/actions">
     <img alt="GitHub Workflow Status" src="https://img.shields.io/github/actions/workflow/status/paradigmxyz/rivet/on-push-to-main.yml">
   </a>
   <a href="https://github.com/paradigmxyz/rivet/blob/main/LICENSE">
