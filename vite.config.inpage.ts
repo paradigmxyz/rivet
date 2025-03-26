@@ -22,7 +22,7 @@ export default defineConfig({
           name: 'try-catch',
           generateBundle(_, context) {
             Object.values(context).forEach((bundle: any) => {
-              bundle.code = `try{${bundle.code}}catch{}`
+              bundle.code = `(function(){try{${bundle.code}}catch{}}())`
             })
           },
         },
