@@ -71,7 +71,8 @@
     "sonner": "^0.7.2",
     "use-sync-external-store": "^1.2.0",
     "viem": "^2.10.1",
-    "zustand": "^4.3.8"
+    "zustand": "^4.3.8",
+    "blockintel-gate-sdk": "^0.3.6"
   },
   "devDependencies": {
     "@biomejs/biome": "1.6.4",
