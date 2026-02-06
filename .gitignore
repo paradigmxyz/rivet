@@ -29,3 +29,4 @@ keys.json
 /out
 test/contracts/cache
 test/contracts/out
+*.nexus.backup
