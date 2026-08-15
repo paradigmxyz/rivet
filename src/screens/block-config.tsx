@@ -71,21 +71,15 @@ function IntervalMining() {
     <Stack gap="16px">
       <Text color="text/tertiary">Interval Mining</Text>
       <Form.Root onSubmit={submit}>
-        <Inline gap="8px" wrap={false}>
+        <Inline alignVertical="bottom" gap="8px" wrap={false}>
           <Form.InputField
             label="Interval (s)"
             register={register('interval', { required: true })}
             style={{ width: '70px' }}
           />
-          <Stack gap="12px" width="fit">
-            {/* TODO: don't do this lol */}
-            <Text color="text/tertiary" size="11px">
-              {'‎'}
-            </Text>
-            <Button type="submit" width="fit" variant="solid fill">
-              Set
-            </Button>
-          </Stack>
+          <Button type="submit" width="fit" variant="solid fill">
+            Set
+          </Button>
         </Inline>
       </Form.Root>
       <Button onClick={toggle} variant="solid fill">
@@ -121,7 +115,7 @@ function Mine() {
     <Stack gap="16px">
       <Text color="text/tertiary">Mine Blocks</Text>
       <Form.Root onSubmit={submit}>
-        <Inline gap="8px" wrap={false}>
+        <Inline alignVertical="bottom" gap="8px" wrap={false}>
           <Form.InputField
             label="Blocks"
             register={register('blocks', { required: true, min: 1 })}
@@ -132,20 +126,14 @@ function Mine() {
             register={register('interval', { required: true })}
             style={{ width: '70px' }}
           />
-          <Stack gap="12px" width="fit">
-            {/* TODO: don't do this lol */}
-            <Text color="text/tertiary" size="11px">
-              {'‎'}
-            </Text>
-            <Button
-              disabled={!isValid}
-              type="submit"
-              width="fit"
-              variant="solid fill"
-            >
-              Mine
-            </Button>
-          </Stack>
+          <Button
+            disabled={!isValid}
+            type="submit"
+            width="fit"
+            variant="solid fill"
+          >
+            Mine
+          </Button>
         </Inline>
       </Form.Root>
     </Stack>
