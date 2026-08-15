@@ -288,23 +288,28 @@ function TextParameterInput({
         value: true,
       },
     }
-    if (type === 'address')
+    if (type === 'address') {
       options.pattern = {
         message: 'Must be an address',
         value: /^0x[0-9a-fA-F]{40}$/,
       }
-    if (type.startsWith('bytes'))
-      // TODO: handle bytesN validation.
+    } else if (type === 'bytes') {
       options.pattern = {
         message: 'Must be a hex string',
         value: /^0x[0-9a-fA-F]*$/,
       }
-    if (type.startsWith('int') || type.startsWith('uint'))
-      // TODO: handle u?intN validation.
+    } else if (type.startsWith('bytes')) {
+      const byteLength = Number(type.slice('bytes'.length))
       options.pattern = {
-        message: 'Must be a number',
-        value: /^[0-9]+$/,
+        message: `Must be ${byteLength} bytes (${byteLength * 2} hex chars)`,
+        value: new RegExp(`^0x[0-9a-fA-F]{${byteLength * 2}}$`),
       }
+    } else if (type.startsWith('uint') || type.startsWith('int')) {
+      const signed = type.startsWith('int')
+      const bits =
+        Number(type.slice(signed ? 'int'.length : 'uint'.length)) || 256
+      options.validate = (value) => validateInteger(String(value), bits, signed)
+    }
     return options
   }, [type])
 
@@ -336,6 +341,28 @@ function BooleanParameterInput({
       <option>true</option>
     </Form.SelectField>
   )
+}
+
+function validateInteger(value: string, bits: number, signed: boolean) {
+  if (value === '') return true
+
+  let parsed: bigint
+  try {
+    parsed = BigInt(value)
+  } catch {
+    return 'Must be a number'
+  }
+
+  if (signed) {
+    const min = -(1n << BigInt(bits - 1))
+    const max = (1n << BigInt(bits - 1)) - 1n
+    if (parsed < min || parsed > max) return `Must fit in int${bits}`
+  } else {
+    const max = (1n << BigInt(bits)) - 1n
+    if (parsed < 0n || parsed > max) return `Must fit in uint${bits}`
+  }
+
+  return true
 }
 
 function AddItemButton({ onClick }: { onClick: () => void }) {
