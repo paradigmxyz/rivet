@@ -89,9 +89,12 @@ export default function AccountDetails() {
 }
 
 function Tokens({ accountAddress }: { accountAddress: Address }) {
-  const { tokens } = useAccountTokens({ address: accountAddress })
+  const { tokens, isLoading } = useAccountTokens({ address: accountAddress })
 
   if (!accountAddress) return null
+
+  const visibleTokens = tokens?.filter((token) => token.visible)
+
   return (
     <Inset vertical="8px">
       <ImportToken accountAddress={accountAddress} />
@@ -116,15 +119,26 @@ function Tokens({ accountAddress }: { accountAddress: Address }) {
       <Bleed horizontal="-8px">
         <Separator />
       </Bleed>
-      {/* TODO: Handle empty state. */}
-      {tokens?.map((token) =>
-        token.visible ? (
+      {isLoading ? (
+        <Box style={{ paddingTop: '12px' }}>
+          <Inline alignHorizontal="center">
+            <Spinner size="15px" />
+          </Inline>
+        </Box>
+      ) : visibleTokens && visibleTokens.length > 0 ? (
+        visibleTokens.map((token) => (
           <TokenRow
             accountAddress={accountAddress}
             tokenAddress={token.address}
             key={token.address}
           />
-        ) : null,
+        ))
+      ) : (
+        <Box style={{ paddingTop: '12px' }}>
+          <Text color="text/tertiary" size="12px">
+            No tokens found for this account
+          </Text>
+        </Box>
       )}
     </Inset>
   )
